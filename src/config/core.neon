@@ -1,0 +1,66 @@
+parameters:
+    database:
+        host: 'incore-mysql-1'
+        dbname: 'incore'
+        user: root
+        password: Osm604155351
+
+services:
+    - App\Component\Translator\Translator
+    - App\Core\RouterFactory::createRouter
+    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%)
+    - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
+
+    -
+        create: App\Core\Authenticator
+        autowired: self
+
+search:
+    - in: '%vendorDir%/incore'
+      classes:
+          - *Factory
+          - *Facade
+          - *Command
+    - in: '%vendorDir%/incore/core/src/app/Model'
+      exclude:
+          classes:
+              - *Entity
+
+application:
+	errorPresenter:
+		4xx: Error:Error4xx
+		5xx: Error:Error5xx
+	mapping: App\UI\*\**Presenter
+
+
+
+latte:
+	strictTypes: yes
+	strictParsing: yes
+	extensions:
+		- App\UI\Accessory\LatteExtension
+
+database:
+	dsn: 'mysql:host=%database.host%;dbname=%database.dbname%'
+	user: '%database.user%'
+	password: '%database.password%'
+
+di:
+	export:
+		parameters: no
+		tags: no
+
+extensions:
+	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+
+console:
+	name: InCore
+	version: '1.0'
+	catchExceptions: true
+	autoExit: true
+	url: https://example.com
+
+session:
+
+	# doba neaktivity po které session vyexpiruje
+	expiration: 14 days  # (string) výchozí je '3 hours'
