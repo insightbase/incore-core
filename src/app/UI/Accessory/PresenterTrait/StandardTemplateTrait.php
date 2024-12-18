@@ -23,6 +23,7 @@ trait StandardTemplateTrait
             $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir . '/dist/version.txt'));
             $this->template->submenuFactory = $submenuFactory;
             $this->template->layoutFile = dirname(__FILE__) . '/../../@layout.latte';
+            $this->template->basicFormFile = dirname(__FILE__) . '/../Form/basic-form.latte';
         };
         $this->onStartup[] = function (): void {
             $storage = $this->getUser()->getStorage();

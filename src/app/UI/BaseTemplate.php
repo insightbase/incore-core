@@ -13,4 +13,5 @@ class BaseTemplate extends Template
     public string $layoutFile;
     public SubmenuFactory $submenuFactory;
     public array $flashes;
+    public string $basicFormFile;
 }
