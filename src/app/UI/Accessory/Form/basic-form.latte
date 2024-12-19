@@ -1,0 +1,25 @@
+{define basicForm, $form}
+    <form n:name=$form class="flex flex-col gap-6 max-w-2xl">
+        <div>
+            <ul class="errors" n:ifcontent>
+                <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+            </ul>
+
+            <div n:foreach="$form->getControls() as $input"
+                    n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
+                    class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4"
+            >
+                {label $input, class:"form-label max-w-32"/}
+                {input $input, class:"input flex-1"}
+                {inputError $input}
+            </div>
+            <div n:foreach="$form->getControls() as $input"
+                    n:if="$input->getOption(type) === button"
+                    class="flex justify-end mt-6"
+            >
+                {input $input, class:"btn btn-primary"}
+                {inputError $input}
+            </div>
+        </div>
+    </form>
+{/define}
