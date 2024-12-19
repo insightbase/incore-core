@@ -82,8 +82,8 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 			<div class="sidebar-content flex grow shrink-0 py-5 pe-2" id="sidebar_content">
 				<div class="scrollable-y-hover grow shrink-0 flex ps-2 lg:ps-5 pe-1 lg:pe-3" data-scrollable="true" data-scrollable-dependencies="#sidebar_header" data-scrollable-height="auto" data-scrollable-offset="0px" data-scrollable-wrappers="#sidebar_content" id="sidebar_scrollable">
 					<!-- Sidebar Menu -->
-					<div class="menu flex flex-col grow gap-0.5" data-menu="true" n:foreach="$menuModules as $module">
-						<div class="menu-item menu-item-accordion">
+					<div class="menu flex flex-col grow gap-0.5" data-menu="true">
+						<div class="menu-item menu-item-accordion" n:foreach="$menuModules as $module">
 							<div class="menu-link flex items-center grow cursor-pointer border border-transparent gap-[10px] ps-[10px] pe-[10px] py-[6px]" tabindex="0">
 								<a n:href="$module->presenter . ':default'" class="menu-title text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
 									<span class="menu-icon items-start text-gray-500 dark:text-gray-400 w-[20px]">

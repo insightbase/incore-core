@@ -5,7 +5,7 @@ namespace App\Model;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
 
-class EmailLog
+class EmailLog implements Model
 {
     /**
      * @return Selection<\App\Model\Entity\EmailLogEntity>

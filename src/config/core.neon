@@ -24,6 +24,11 @@ search:
           - *Factory
           - *Facade
           - *Command
+    - in: '%vendorDir%/incore'
+      implements:
+          - App\Model\Model
+          - App\Model\DoctrineEntity\Entity
+          - Doctrine\Common\DataFixtures\FixtureInterface
     - in: '%vendorDir%/incore/core/src/app/Model'
       exclude:
           classes:

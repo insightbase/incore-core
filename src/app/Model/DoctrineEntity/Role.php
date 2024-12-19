@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'role')]
-class Role
+class Role implements Entity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

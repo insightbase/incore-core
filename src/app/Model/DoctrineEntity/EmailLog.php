@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'email_log')]
-class EmailLog
+class EmailLog implements Entity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

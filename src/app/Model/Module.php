@@ -5,7 +5,7 @@ namespace App\Model;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
 
-class Module
+class Module implements Model
 {
     public function __construct(
         private Explorer $explorer,

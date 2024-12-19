@@ -7,7 +7,7 @@ use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
-readonly class User
+readonly class User implements Model
 {
     public function __construct(
         private Explorer $explorer,

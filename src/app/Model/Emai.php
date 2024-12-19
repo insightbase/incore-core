@@ -6,7 +6,7 @@ use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
-readonly class Email
+readonly class Email implements Model
 {
     public function __construct(
         private Explorer $explorer,
