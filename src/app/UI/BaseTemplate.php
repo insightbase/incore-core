@@ -7,6 +7,7 @@ use App\Model\Entity\ModuleEntity;
 use App\UI\Accessory\Submenu\SubmenuFactory;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Database\Table\Selection;
 
 class BaseTemplate extends Template
 {
