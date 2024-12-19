@@ -82,14 +82,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 			<div class="sidebar-content flex grow shrink-0 py-5 pe-2" id="sidebar_content">
 				<div class="scrollable-y-hover grow shrink-0 flex ps-2 lg:ps-5 pe-1 lg:pe-3" data-scrollable="true" data-scrollable-dependencies="#sidebar_header" data-scrollable-height="auto" data-scrollable-offset="0px" data-scrollable-wrappers="#sidebar_content" id="sidebar_scrollable">
 					<!-- Sidebar Menu -->
-					<div class="menu flex flex-col grow gap-0.5" data-menu="true">
+					<div class="menu flex flex-col grow gap-0.5" data-menu="true" n:foreach="$menuModules as $module">
 						<div class="menu-item menu-item-accordion">
 							<div class="menu-link flex items-center grow cursor-pointer border border-transparent gap-[10px] ps-[10px] pe-[10px] py-[6px]" tabindex="0">
-								<a n:href="User:default" class="menu-title text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
+								<a n:href="$module->presenter . ':default'" class="menu-title text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
 									<span class="menu-icon items-start text-gray-500 dark:text-gray-400 w-[20px]">
-										<i class="ki-filled ki-users text-lg"></i>
+										<i class="{$module->icon}"></i>
 									</span>
-									{_'Uživatelé'}
+									{$module->name}
 								</a>
 							</div>
 						</div>
@@ -132,12 +132,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 						<div class="menu" data-menu="true">
 							<div class="menu-item" data-menu-item-offset="20px, 10px" data-menu-item-offset-rtl="-20px, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
 								<div class="menu-toggle btn btn-icon rounded-full">
-									<img alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/dist/admin/assets/media/avatars/300-2.png" />
+									<img n:if="$user->getIdentity()->getData()['avatar'] === null" alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/dist/admin/assets/media/avatars/300-2.png" />
+									<img n:if="$user->getIdentity()->getData()['avatar'] !== null" alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="{$imageFacade->preview($user->getIdentity()->getData()['avatar'], 32, 32)}" />
 								</div>
 								<div class="menu-dropdown menu-default light:border-gray-300 w-screen max-w-[250px]">
 									<div class="flex items-center justify-between px-5 py-1.5 gap-1.5">
 										<div class="flex items-center gap-2">
-											<img alt="" class="size-9 rounded-full border-2 border-success" src="/dist/admin/assets/media/avatars/300-2.png" />
+											<img n:if="$user->getIdentity()->getData()['avatar'] === null" alt="" class="size-9 rounded-full border-2 border-success" src="/dist/admin/assets/media/avatars/300-2.png" />
+											<img n:if="$user->getIdentity()->getData()['avatar'] !== null" alt="" class="size-9 rounded-full border-2 border-success" src="{$imageFacade->preview($user->getIdentity()->getData()['avatar'], 32, 32)}" />
 											<div class="flex flex-col gap-1.5">
 											  <span class="text-sm text-gray-800 font-semibold leading-none">
 											   {$user->getIdentity()->getData()['firstname']} {$user->getIdentity()->getData()['lastname']}
@@ -232,7 +234,9 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<!-- End of Main -->
 {/if}
 {ifset $flashes}
-<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
+	<div class="flashes" style="display: none;">
+		<div n:foreach="$flashes as $flash" n:class="flash, $flash->type" data-toast="{if $flash->type === 'info'}success{elseif $flash->type === 'error'}error{/if}">{$flash->message}</div>
+	</div>
 {/ifset}
 <!-- End of Page -->
 <!-- Scripts -->

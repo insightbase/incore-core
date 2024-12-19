@@ -12,6 +12,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read string $password
  * @property-read int $role_id
  * @property-read RoleEntity $role
+ * @property-read ?string $avatar
  */
 class UserEntity extends ActiveRow
 {

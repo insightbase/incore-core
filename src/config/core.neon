@@ -4,11 +4,14 @@ parameters:
         dbname: 'incore'
         user: root
         password: Osm604155351
+    uploadDir: %appDir%/../files
+    previewWwwDir: '/images'
+    previewDir: %appDir%/../www%previewWwwDir%
 
 services:
     - App\Component\Translator\Translator
     - App\Core\RouterFactory::createRouter
-    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%)
+    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
 
     -

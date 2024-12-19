@@ -37,4 +37,7 @@ class User
 
     #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => null])]
     private ?\DateTimeImmutable $forgot_password_expire = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    private ?string $avatar = null;
 }

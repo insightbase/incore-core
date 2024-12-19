@@ -1,0 +1,39 @@
+{define basicForm, $form}
+    <form n:name=$form class="flex flex-col gap-6 max-w-2xl">
+        <div>
+            <ul class="errors" n:ifcontent>
+                <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+            </ul>
+
+            <div n:foreach="$form->getControls() as $input"
+                    n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
+                    class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4"
+            >
+                {label $input, class:"form-label max-w-32"/}
+                {var string $class = 'input'}
+                {if $input->hasErrors()}
+                    {var string $class = $class . ' border-danger'}
+                {/if}
+                <div class="flex flex-col w-full gap-1">
+                    {if $input instanceof App\UI\Accessory\Form\Controls\DropzoneInput}
+                        {$input->getControl()}
+                    {else}
+                        {input $input, class:$class}
+                        {if $input->hasErrors()}
+                            <span class="form-hint text-danger">
+                                {inputError $input}
+                            </span>
+                        {/if}
+                    {/if}
+                </div>
+            </div>
+            <div n:foreach="$form->getControls() as $input"
+                    n:if="$input->getOption(type) === button"
+                    class="flex justify-end mt-6"
+            >
+                {input $input, class:"btn btn-primary"}
+                {inputError $input}
+            </div>
+        </div>
+    </form>
+{/define}

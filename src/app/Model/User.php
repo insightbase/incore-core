@@ -36,11 +36,14 @@ readonly class User
      * @param string $email
      * @return UserEntity|null
      */
-    public function findByEmail(string $email):?ActiveRow
+    public function findByEmail(string $email, ?int $ignoreId = null):?ActiveRow
     {
-        return $this->getTable()
-            ->where('email', $email)
-            ->fetch();
+        $selection = $this->getTable()
+            ->where('email', $email);
+        if($ignoreId !== null){
+            $selection->where('id <> ?', $ignoreId);
+        }
+        return $selection->fetch();
     }
 
     public function insert(array $data):void
