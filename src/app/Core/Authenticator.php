@@ -5,11 +5,12 @@ namespace App\Core;
 use App\Component\Translator\Translator;
 use App\Model\User;
 use Nette\Security\AuthenticationException;
+use Nette\Security\IdentityHandler;
 use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
-readonly class Authenticator implements \Nette\Security\Authenticator
+readonly class Authenticator implements \Nette\Security\Authenticator, IdentityHandler
 {
     public function __construct(
         private User       $userModel,
@@ -17,6 +18,18 @@ readonly class Authenticator implements \Nette\Security\Authenticator
         private Passwords  $passwords,
     )
     {
+    }
+
+    public function wakeupIdentity(IIdentity $identity): ?IIdentity
+    {
+        $userArray = (array)$this->userModel->get($identity->getId());
+        unset($userArray['password']);
+        return new SimpleIdentity($user->id, ['user'], $userArray);
+    }
+
+    public function sleepIdentity(IIdentity $identity): IIdentity
+    {
+        return $identity;
     }
 
     function authenticate(string $username, string $password): IIdentity
