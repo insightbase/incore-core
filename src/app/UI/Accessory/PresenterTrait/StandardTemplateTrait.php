@@ -26,6 +26,7 @@ trait StandardTemplateTrait
             $this->template->submenuFactory = $submenuFactory;
             $this->template->layoutFile = dirname(__FILE__) . '/../../@layout.latte';
             $this->template->basicFormFile = dirname(__FILE__) . '/../Form/basic-form.latte';
+            $this->template->basicModalFile = dirname(__FILE__) . '/../Modal/basic-modal.latte';
             $this->template->imageFacade = $imageFacade;
             $this->template->menuModules = $moduleModel->getToMenu();
         };

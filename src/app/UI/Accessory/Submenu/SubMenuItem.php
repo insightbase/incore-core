@@ -5,6 +5,7 @@ namespace App\UI\Accessory\Submenu;
 class SubMenuItem
 {
     private bool $isPrimary = false;
+    private ?string $modalId = null;
 
     public function __construct(
         private string $name,
@@ -43,6 +44,17 @@ class SubMenuItem
     public function setUrl(string $url): self
     {
         $this->url = $url;
+        return $this;
+    }
+
+    public function getModalId(): ?string
+    {
+        return $this->modalId;
+    }
+
+    public function setModalId(?string $modalId): self
+    {
+        $this->modalId = $modalId;
         return $this;
     }
 }

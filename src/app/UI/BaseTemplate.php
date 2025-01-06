@@ -17,6 +17,7 @@ class BaseTemplate extends Template
     public SubmenuFactory $submenuFactory;
     public array $flashes;
     public string $basicFormFile;
+    public string $basicModalFile;
     public ImageFacade $imageFacade;
     /**
      * @var Selection<ModuleEntity>

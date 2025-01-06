@@ -1,5 +1,7 @@
 {templateType App\UI\BaseTemplate}
 {import $basicFormFile}
+{import $basicModalFile}
+
 <!--
 Product: Metronic is a toolkit of UI components built with Tailwind CSS for developing scalable web applications quickly and efficiently
 Version: v9.1.1
@@ -212,9 +214,12 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							</h1>
 						</div>
 						<div class="flex items-center gap-2.5" n:if="count($submenuFactory->getSubMenus()) > 0">
-							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{$subMenuItem->getUrl()}">
+							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{$subMenuItem->getUrl()}" n:if="$subMenuItem->getModalId() === null">
 								{$subMenuItem->getName()}
 							</a>
+							<button n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" n:if="$subMenuItem->getModalId() !== null" data-modal-toggle="#{$subMenuItem->getModalId()}">
+								{$subMenuItem->getName()}
+							</button>
 						</div>
 					</div>
 				</div>
