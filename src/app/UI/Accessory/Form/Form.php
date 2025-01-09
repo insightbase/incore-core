@@ -14,16 +14,6 @@ class Form extends \Nette\Application\UI\Form
     )
     {
         parent::__construct($parent, $name);
-        $this->onError[] = function(Form $form) use ($parent):void{
-            /** @var Nette\Forms\Controls\BaseControl $control */
-            foreach($form->getControls() as $control){
-                if($control->hasErrors()) {
-                    $parent->redrawControl($form->getName());
-                    $parent->redrawControl('error-' . $control->getHtmlName());
-                    dump($control->getErrors());
-                }
-            }
-        };
     }
 
     public function addDropzone(string $name, string $label):DropzoneInput

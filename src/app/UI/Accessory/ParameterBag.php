@@ -10,6 +10,7 @@ class ParameterBag
         public string $uploadDir,
         public string $previewDir,
         public string $previewWwwDir,
+        public string $tempDir,
     )
     {
     }
