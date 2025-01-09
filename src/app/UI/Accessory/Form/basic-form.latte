@@ -6,11 +6,33 @@
             </ul>
 
             {if count($form->getGroups()) > 0}
+                {var array $usedRepeaters = []}
                 {foreach $form->getGroups() as $group}
-                    <fieldset class="{$group->getOption('class')}">
-                        <legend>{$group->getOption('label')}</legend>
-                        {embed controls, $group->getControls()}{/embed}
-                    </fieldset>
+                    {if $group->getOption('repeater') !== null}
+                        {if !in_array($group->getOption('repeater'), $usedRepeaters)}
+                            <div class="form-group" data-repeater="{$group->getOption('repeater')}">
+                                <div class="fieldset-container space-y-4">
+                                    <fieldset class="fieldset bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 relative mt-4">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            {embed controls, $group->getControls(), true}{/embed}
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+                                {foreach $form->getControls() as $input}
+                                    {if $input->getOption(type) === button && $input->getOption(repeater) === $group->getOption('repeater')}
+                                        {input $input, class:"btn btn-primary mt-4", data-repeater-add: $group->getOption('repeater')}
+                                    {/if}
+                                {/foreach}
+                            </div>
+                            {php $usedRepeaters[] = $group->getOption('repeater')}
+                        {/if}
+                    {else}
+                        <fieldset class="{$group->getOption('class')}">
+                            <legend>{$group->getOption('label')}</legend>
+                            {embed controls, $group->getControls()}{/embed}
+                        </fieldset>
+                    {/if}
                 {/foreach}
             {else}
                 {embed controls, $form->getControls()}{/embed}
@@ -19,21 +41,35 @@
     </form>
 {/define}
 
-{define controls, \Iterator $controls}
+{define controls, \Iterator $controls, bool $repeater = false}
     <div n:foreach="$controls as $input"
             n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
-            class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4"
+            n:class="!$repeater ? 'flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4', $repeater ? 'form-control w-full'"
     >
-        {label $input, class:"form-label max-w-32"/}
+        {if $input->getOption(type) === 'checkbox'}
+            {label $input:, class:"form-label max-w-32"/}
+        {else}
+            {label $input, class:"form-label max-w-32"/}
+        {/if}
         {var string $class = 'input'}
         {if $input->hasErrors()}
-            {var string $class = $class . ' border-danger'}
+            {php $class .= ' border-danger'}
         {/if}
-        <div class="flex flex-col w-full gap-1">
+        {if $input->getOption(type) === 'checkbox'}
+            {php $class .= ' checkbox'}
+        {/if}
+        {if $input->getOption(type) === 'select'}
+            {php $class .= ' select'}
+        {/if}
+        <div class="flex flex-col w-full gap-1" n:tag-if="!$repeater">
             {if $input instanceof App\UI\Accessory\Form\Controls\DropzoneInput}
                 {$input->getControl()}
             {else}
-                {input $input, class:$class}
+                {if $input->getOption(type) === 'checkbox'}
+                    {input $input:, class:$class}
+                {else}
+                    {input $input, class:$class}
+                {/if}
                 {if $input->hasErrors()}
                     <span class="form-hint text-danger">
                         {inputError $input}
@@ -43,7 +79,7 @@
         </div>
     </div>
     <div n:foreach="$controls as $input"
-            n:if="$input->getOption(type) === button"
+            n:if="$input->getOption(type) === button && $input->getOption(repeater) === null"
             class="flex justify-end mt-6"
     >
         {input $input, class:"btn btn-primary"}
