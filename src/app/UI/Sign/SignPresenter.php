@@ -44,10 +44,10 @@ class SignPresenter extends Presenter
         try {
             $this->signFacade->checkForgotPasswordHash($hash);
         } catch (Exception\HashExpiredException $e) {
-            $this->flashMessage($this->translator->translate('Takový hash nebyl nalezen.'), 'error');
+            $this->flashMessage($this->translator->translate('flash_hasNotFound'), 'error');
             $this->redirect('forgotPassword');
         } catch (Exception\UserNotFoundException $e) {
-            $this->flashMessage($this->translator->translate('Platnost odkazu vypšela.'), 'error');
+            $this->flashMessage($this->translator->translate('flash_linkNotValid'), 'error');
             $this->redirect('forgotPassword');
         }
         $this->hash = $hash;
@@ -61,7 +61,7 @@ class SignPresenter extends Presenter
     #[NoReturn] public function actionLogout():void
     {
         $this->getUser()->logout();
-        $this->flashMessage($this->translator->translate('Uživatel byl odhlášen'));
+        $this->flashMessage($this->translator->translate('flash_userLoggedOut'));
         $this->redirect('Sign:login');
     }
 
@@ -97,10 +97,10 @@ class SignPresenter extends Presenter
             try{
                 $this->signFacade->resetPassword($this->hash, $data);
             } catch (Exception\HashExpiredException $e) {
-                $this->flashMessage($this->translator->translate('Takový hash nebyl nalezen.'), 'error');
+                $this->flashMessage($this->translator->translate('flash_hasNotFound'), 'error');
                 $this->redirect('forgotPassword');
             } catch (Exception\UserNotFoundException $e) {
-                $this->flashMessage($this->translator->translate('Platnost odkazu vypšela.'), 'error');
+                $this->flashMessage($this->translator->translate('flash_linkNotValid'), 'error');
                 $this->redirect('forgotPassword');
             }
             $this->redirect('passwordChanged');

@@ -36,10 +36,10 @@ readonly class Authenticator implements \Nette\Security\Authenticator, IdentityH
     {
         $user = $this->userModel->findByEmail($username);
         if($user === null) {
-            throw new AuthenticationException($this->translator->translate('Uživatel nebyl nalezen.'));
+            throw new AuthenticationException($this->translator->translate('flash_userNotFound'));
         }
         if(!$this->passwords->verify($password, $user->password)){
-            throw new AuthenticationException($this->translator->translate('Špatné heslo.'));
+            throw new AuthenticationException($this->translator->translate('flash_badPassword'));
         }
         $userArray = $user->toArray();
         unset($userArray['password']);

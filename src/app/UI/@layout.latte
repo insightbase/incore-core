@@ -162,7 +162,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 											  </i>
 											 </span>
 												<span class="menu-title">
-												  {_'Můj účet'}
+												  {_'my_account'}
 												 </span>
 											</a>
 										</div>
@@ -238,11 +238,13 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	</div>
 	<!-- End of Main -->
 {/if}
+{snippet flashes}
 {ifset $flashes}
 	<div class="flashes" style="display: none;">
 		<div n:foreach="$flashes as $flash" n:class="flash, $flash->type" data-toast="{if $flash->type === 'info'}success{elseif $flash->type === 'error'}error{/if}">{$flash->message}</div>
 	</div>
 {/ifset}
+{/snippet}
 <!-- End of Page -->
 <!-- Scripts -->
 {block scripts}

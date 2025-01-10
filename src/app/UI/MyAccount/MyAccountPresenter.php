@@ -16,10 +16,11 @@ class MyAccountPresenter extends Presenter
     use StandardTemplateTrait;
 
     public function __construct(
-        private MyAccountFormFactory $myAccountFormFactory,
-        private MyAccountFacade $myAccountFacade,
+        private readonly MyAccountFormFactory $myAccountFormFactory,
+        private readonly MyAccountFacade      $myAccountFacade,
     )
     {
+        parent::__construct();
     }
 
     protected function createComponentFormChangePassword():Form
@@ -27,7 +28,7 @@ class MyAccountPresenter extends Presenter
         $form = $this->myAccountFormFactory->createChangePassword();
         $form->onSuccess[] = function (Form $form, MyAccountChangePasswordData $data): void {
             $this->myAccountFacade->chnagePassword($data);
-            $this->flashMessage($this->translator->translate('Heslo změněno'));
+            $this->flashMessage($this->translator->translate('flash_passwordChanged'));
             $this->redirect('this');
         };
         return $form;
@@ -38,7 +39,7 @@ class MyAccountPresenter extends Presenter
         $form = $this->myAccountFormFactory->create();
         $form->onSuccess[] = function (Form $form, FormData $data): void {
             $this->myAccountFacade->edit($data);
-            $this->flashMessage($this->translator->translate('Údaje upraveny'));
+            $this->flashMessage($this->translator->translate('flash_updated'));
             $this->redirect('this');
         };
         return $form;

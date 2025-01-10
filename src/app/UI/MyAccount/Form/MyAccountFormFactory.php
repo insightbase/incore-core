@@ -22,16 +22,16 @@ class MyAccountFormFactory
     public function createChangePassword():Form
     {
         $form = $this->formFactory->create();
-        $password = $form->addPassword('password', $this->translator->translate('Nové heslo'))
+        $password = $form->addPassword('password', $this->translator->translate('input_newPassword'))
             ->setHtmlAttribute('autocomplete', 'new-password')
             ->setRequired();
-        $form->addPassword('password1', $this->translator->translate('Ověření nového hesla'))
+        $form->addPassword('password1', $this->translator->translate('input_newPasswordCheck'))
             ->setHtmlAttribute('autocomplete', 'new-password')
-            ->addRule($form::Equal, $this->translator->translate('Obě hesla se musí shodovat'), $password)
+            ->addRule($form::Equal, $this->translator->translate('error_bothPasswordsMustBeSame'), $password)
             ->setRequired()
             ->setOmitted()
         ;
-        $form->addSubmit('send', $this->translator->translate('Změnit heslo'));
+        $form->addSubmit('send', $this->translator->translate('submit_changePassword'));
         return $form;
     }
 
@@ -41,17 +41,17 @@ class MyAccountFormFactory
 
         $form = $this->formFactory->create();
 
-        $form->addText('firstname', $this->translator->translate('Jméno'))
+        $form->addText('firstname', $this->translator->translate('input_firstName'))
             ->setRequired();
-        $form->addText('lastname', $this->translator->translate('Příjmení'))
+        $form->addText('lastname', $this->translator->translate('input_lastName'))
             ->setRequired();
-        $form->addEmail('email', $this->translator->translate('Email'))
+        $form->addEmail('email', $this->translator->translate('input_email'))
             ->setRequired()
-            ->addRule([$this, 'validateEmail'], $this->translator->translate('Takový email už v systému existuje'));
+            ->addRule([$this, 'validateEmail'], $this->translator->translate('error_emailAlreadyExists'));
         ;
-        $form->addDropzone('avatar', $this->translator->translate('Avatar'))
+        $form->addDropzone('avatar', $this->translator->translate('input_avatar'))
             ->setNullable();
-        $form->addSubmit('send', $this->translator->translate('Upravit'));
+        $form->addSubmit('send', $this->translator->translate('input_update'));
 
         $form->setDefaults([
             'firstname' => $user->firstname,

@@ -42,10 +42,10 @@ class ImagePresenter extends Presenter
                 $file->move($this->parameterBag->uploadDir . '/' . $fileName);
                 $this->payload->file = $fileName;
             } else {
-                $this->payload->error = $this->translator->translate('Soubor se nepodařilo uložit');
+                $this->payload->error = $this->translator->translate('flash_fileSaveFailed');
             }
         } else {
-            $this->payload->error = $this->translator->translate('Interní chyba');
+            $this->payload->error = $this->translator->translate('flash_internalError');
         }
         $this->sendPayload();
     }

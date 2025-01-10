@@ -19,7 +19,7 @@ class SubMenuItem
         return $this->isPrimary;
     }
 
-    public function setIsPrimary(bool $isPrimary): self
+    public function setIsPrimary(bool $isPrimary = true): self
     {
         $this->isPrimary = $isPrimary;
         return $this;

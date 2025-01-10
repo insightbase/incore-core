@@ -11,6 +11,7 @@ class ParameterBag
         public string $previewDir,
         public string $previewWwwDir,
         public string $tempDir,
+        public string $appDir,
     )
     {
     }

@@ -2,10 +2,10 @@
 
 {layout $layoutFile}
 
-{block h1}{_'Můj účet'}{/block}
+{block h1}{_'my_account'}{/block}
 
 {block content}
     {embed basicForm, formEdit}{/embed}
-    <h2 class="text-xl font-semibold mb-4">{_'Změna hesla'}</h2>
+    <h2 class="text-xl font-semibold mb-4">{_'change_password'}</h2>
     {embed basicForm, formChangePassword}{/embed}
 {/block}

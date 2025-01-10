@@ -18,22 +18,22 @@ readonly class SignFormFactory
     public function createResetPassword():Form
     {
         $form = $this->formFactory->create();
-        $password = $form->addPassword('password', $this->translator->translate('Nové heslo'))
+        $password = $form->addPassword('password', $this->translator->translate('input_newPassword'))
             ->setRequired();
-        $form->addPassword('password1', $this->translator->translate('Potvrzení nového hesla'))
+        $form->addPassword('password1', $this->translator->translate('input_confimNewPassword'))
             ->setRequired()
-            ->addRule($form::Equal, $this->translator->translate('Obě hesla se musí shodovat'), $password)
+            ->addRule($form::Equal, $this->translator->translate('error_bothPasswordMusetBeSame'), $password)
         ;
-        $form->addSubmit('send', $this->translator->translate('Nastavit'));
+        $form->addSubmit('send', $this->translator->translate('submit_set'));
         return $form;
     }
 
     public function createForgotPassword():Form{
         $form = $this->formFactory->create();
 
-        $form->addText('email', $this->translator->translate('Email'))
+        $form->addText('email', $this->translator->translate('input_email'))
             ->setRequired();
-        $form->addSubmit('send', $this->translator->translate('Pokračovat'));
+        $form->addSubmit('send', $this->translator->translate('submit_continue'));
 
         return $form;
     }
@@ -42,12 +42,12 @@ readonly class SignFormFactory
     {
         $form = $this->formFactory->create();
 
-        $form->addText('email', $this->translator->translate('Email'))
+        $form->addText('email', $this->translator->translate('input_email'))
             ->setRequired();
-        $form->addPassword('password', $this->translator->translate('Heslo'))
+        $form->addPassword('password', $this->translator->translate('input_password'))
             ->setRequired();
-        $form->addCheckbox('rememberMe', $this->translator->translate('Zapamatovat si mě'));
-        $form->addSubmit('send', $this->translator->translate('Přihlásit se'));
+        $form->addCheckbox('rememberMe', $this->translator->translate('input_rememberMe'));
+        $form->addSubmit('send', $this->translator->translate('submit_logIn'));
 
         return $form;
     }

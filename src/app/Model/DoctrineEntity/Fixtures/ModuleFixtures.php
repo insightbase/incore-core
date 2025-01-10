@@ -24,5 +24,31 @@ class ModuleFixtures implements FixtureInterface
             $manager->persist($module);
             $manager->flush();
         }
+
+        $exist = $manager->getRepository(Module::class)
+            ->findOneBy(['system_name' => 'languages']);
+        if(!$exist){
+            $module = (new Module())
+                ->setSystemName('languages')
+                ->setName('Jazyky')
+                ->setPresenter('Language')
+                ->setIcon('ki-filled ki-flag')
+            ;
+            $manager->persist($module);
+            $manager->flush();
+        }
+
+        $exist = $manager->getRepository(Module::class)
+            ->findOneBy(['system_name' => 'translates']);
+        if(!$exist){
+            $module = (new Module())
+                ->setSystemName('translates')
+                ->setName('Překlady')
+                ->setPresenter('Translate')
+                ->setIcon('ki-filled ki-geolocation')
+            ;
+            $manager->persist($module);
+            $manager->flush();
+        }
     }
 }

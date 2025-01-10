@@ -1,0 +1,9 @@
+{templateType App\UI\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}{_'header_translateKey%key%', 'key' => $translate->key}{/block}
+
+{block content}
+    {embed basicForm, formTranslate}{/embed}
+{/block}
