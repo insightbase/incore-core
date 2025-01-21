@@ -30,6 +30,8 @@ readonly class FormFactory
             ->setRequired();
         $form->addText('locale', $this->translator->translate('input_locale'))
             ->setRequired();
+        $form->addText('url', $this->translator->translate('input_url'))
+            ->addRule($form::MaxLength, $this->translator->translate('input_url_max_length_%length%', 10), 10);
         $form->addDropzone('flag', $this->translator->translate('input_flag'))
             ->setNullable();
         return $form;

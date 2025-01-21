@@ -10,7 +10,10 @@ parameters:
 
 services:
     - App\Component\Translator\Translator
-    - App\Core\RouterFactory::createRouter
+
+    routerFactory: App\Core\RouterFactory
+    router: @routerFactory::createRouter()
+
     - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
 

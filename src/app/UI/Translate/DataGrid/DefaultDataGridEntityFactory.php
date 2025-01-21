@@ -3,6 +3,7 @@
 namespace App\UI\Translate\DataGrid;
 
 use App\Component\Datagrid\DefaultIconEnum;
+use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
@@ -33,6 +34,7 @@ readonly class DefaultDataGridEntityFactory
         foreach($this->languageModel->getToTranslate() as $language){
             $entity->addColumn((new ColumnEntity(':translate_language.value', $language->name . ' ( ' . $language->locale . ' )'))
                 ->setEnableSearchGlobal()
+                ->setTruncate(50)
                 ->setGetRowCallback(function(ActiveRow $row) use ($language):string{
                     $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($row, $language);
                     if($translateLanguage === null){
@@ -40,6 +42,29 @@ readonly class DefaultDataGridEntityFactory
                     }else{
                         return $translateLanguage->value;
                     }
+                })
+                ->setGetInlineEditIdCallback(function(ActiveRow $row) use ($language):string{
+                    return $row['id'] . '-' . $language->id;
+                })
+                ->setInlineEditCallback(function(string $id, string $value):ReturnInlineEditCallback{
+                    $id = explode('-', $id);
+                    $translateLanguage = $this->translateLanguageModel->getByTranslateIdAndLanguageId((int)$id[0], (int)$id[1]);
+                    if($translateLanguage){
+                        if($value === ''){
+                            $translateLanguage->delete();
+                        }else {
+                            $translateLanguage->update(['value' => $value]);
+                        }
+                    }else{
+                        if($value !== '') {
+                            $this->translateLanguageModel->insert([
+                                'translate_id' => $id[0],
+                                'language_id' => $id[1],
+                                'value' => $value
+                            ]);
+                        }
+                    }
+                    return new ReturnInlineEditCallback(redraw: false);
                 })
             );
         }

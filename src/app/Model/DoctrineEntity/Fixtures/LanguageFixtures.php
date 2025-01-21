@@ -16,6 +16,8 @@ class LanguageFixtures implements FixtureInterface
             $language = new Language();
             $language->setName('Čeština');
             $language->setLocale('cs-CZ');
+            $language->setIsDefault(true);
+            $language->setUrl('cs');
             $manager->persist($language);
             $manager->flush();
         }

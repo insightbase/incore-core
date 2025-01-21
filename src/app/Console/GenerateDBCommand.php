@@ -42,10 +42,12 @@ class GenerateDBCommand extends Command
         $services = $property->getValue($this->container);
 
         $classes = $fixtureFiles = [];
+        $doctrineEntityReflections = [];
         foreach(array_keys($services) as $class){
             $reflection = new \ReflectionClass($class);
             if($reflection->getAttributes(Table::class)){
                 $classes[] = $class;
+                $doctrineEntityReflections[] = $reflection;
             }
             if(array_key_exists(FixtureInterface::class, $reflection->getInterfaces())){
                 $fixtureFiles[] = $reflection->getFileName();
@@ -97,6 +99,7 @@ class GenerateDBCommand extends Command
         }
         $executor = new ORMExecutor($entityManager);
         $executor->execute($loader->getFixtures(), true);
+
         return self::SUCCESS;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model\DoctrineEntity;
+use Doctrine\DBAL\Driver\Mysqli\Initializer\Options;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -21,6 +22,15 @@ class Language implements Entity
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $flag = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $is_default = false;
+
+    #[ORM\Column(type: 'string', length: 10, unique: true)]
+    private string $url;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $active = true;
+
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -30,6 +40,18 @@ class Language implements Entity
     public function setLocale(string $locale): self
     {
         $this->locale = $locale;
+        return $this;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    public function setIsDefault(bool $is_default): self
+    {
+        $this->is_default = $is_default;
         return $this;
     }
 }

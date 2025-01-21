@@ -3,10 +3,12 @@
 namespace App\UI\Accessory\PresenterTrait;
 
 use App\Component\Image\ImageFacade;
+use App\Model\Language;
 use App\Model\Module;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Accessory\Submenu\SubmenuFactory;
 use App\UI\BaseTemplate;
+use Nette\Application\Attributes\Persistent;
 use Nette\Bridges\SecurityHttp\SessionStorage;
 use Nette\DI\Attributes\Inject;
 use Nette\Utils\FileSystem;
@@ -18,9 +20,11 @@ trait StandardTemplateTrait
 {
     #[Inject]
     public \App\Component\Translator\Translator $translator;
+    #[Persistent]
+    public string $lang;
 
-    public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade, Module $moduleModel): void{
-        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel): void {
+    public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade, Module $moduleModel, Language $languageModel): void{
+        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel): void {
             $this->template->setTranslator($this->translator);
             $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir . '/dist/version.txt'));
             $this->template->submenuFactory = $submenuFactory;
@@ -29,8 +33,16 @@ trait StandardTemplateTrait
             $this->template->basicModalFile = dirname(__FILE__) . '/../Modal/basic-modal.latte';
             $this->template->imageFacade = $imageFacade;
             $this->template->menuModules = $moduleModel->getToMenu();
+            $this->template->languages = $languages = $languageModel->getToTranslate();
+            foreach($languages as $language){
+                if($language->is_default){
+                    $this->template->defaultLanguage = $language;
+                    break;
+                }
+            }
         };
         $this->onStartup[] = function (): void {
+            $this->translator->setLang($this->lang);
             $storage = $this->getUser()->getStorage();
             if($storage instanceof SessionStorage) {
                 $storage->setNamespace('admin');

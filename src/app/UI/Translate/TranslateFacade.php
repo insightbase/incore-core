@@ -4,6 +4,7 @@ namespace App\UI\Translate;
 
 use App\Component\Translator\Extractor\LatteExtractor;
 use App\Component\Translator\Extraxtor\NetteTranslatorExtractor;
+use App\Component\Translator\Translator;
 use App\Model\Entity\TranslateEntity;
 use App\Model\Language;
 use App\Model\Module;
@@ -11,6 +12,8 @@ use App\Model\Translate;
 use App\Model\TranslateLanguage;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Translate\Form\FormTranslateData;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
 use Symfony\Component\Translation\Extractor\ChainExtractor;
 use Symfony\Component\Translation\MessageCatalogue;
@@ -25,6 +28,7 @@ readonly class TranslateFacade
         private ParameterBag $parameterBag,
         private Module $moduleModel,
         private Translate $translateModel,
+        private Storage $storage,
     )
     {
     }
@@ -36,6 +40,7 @@ readonly class TranslateFacade
      */
     public function translate(ActiveRow $translate, FormTranslateData $data):void
     {
+        $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
         foreach($this->languageModel->getToTranslate() as $language){
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
             if($translateLanguage){
@@ -53,6 +58,7 @@ readonly class TranslateFacade
                     ]);
                 }
             }
+            $cache->remove($language->id);
         }
     }
 

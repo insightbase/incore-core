@@ -31,14 +31,28 @@ readonly class TranslateLanguage implements Model
      * @return ?TranslateLanguageEntity
      */
     public function getByTranslateAndLanguage(ActiveRow $translate, ActiveRow $language): ?ActiveRow{
-        return $this->getTable()
-            ->where('translate_id', $translate->id)
-            ->where('language_id', $language->id)
-            ->fetch();
+        return $this->getByTranslateIdAndLanguageId($translate->id, $language->id);
     }
 
     public function insert(array $data):void
     {
         $this->getTable()->insert($data);
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @return Selection<TranslateLanguageEntity>
+     */
+    public function getByLanguage(ActiveRow $language):Selection
+    {
+        return $this->getTable()->where('language_id', $language->id);
+    }
+
+    public function getByTranslateIdAndLanguageId(int $translateId, int $languageId):?ActiveRow
+    {
+        return $this->getTable()
+            ->where('translate_id', $translateId)
+            ->where('language_id', $languageId)
+            ->fetch();
     }
 }
