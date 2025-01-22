@@ -12,6 +12,8 @@ class Form extends \Nette\Application\UI\Form
 {
     public const LANG_CHANGE_ATTRIBUTE = 'langChange';
 
+    private array $defaultTranslates = [];
+
     public function __construct(
         private readonly DropzoneInputFactory $dropzoneInputFactory,
         public readonly Language             $languageModel,
@@ -21,9 +23,50 @@ class Form extends \Nette\Application\UI\Form
         parent::__construct($parent, $name);
     }
 
+    /**
+     * @param LanguageEntity $language
+     * @return array
+     */
+    public function getTranslates(Nette\Database\Table\ActiveRow $language):array
+    {
+        return $this->getHttpData()['language'][$language->id];
+    }
+
+    public function parseStringToLinearArray(string $input):array {
+        $pattern = '/([^\[\]]+)|\[(\d+|[^\[\]]+)\]/'; // Rozdělí řetězec na části
+        preg_match_all($pattern, $input, $matches);
+
+        $result = [];
+        foreach ($matches[0] as $match) {
+            if (preg_match('/^\[(\d+|[^\[\]]+)\]$/', $match, $indexMatch)) {
+                $key = is_numeric($indexMatch[1]) ? (int)$indexMatch[1] : $indexMatch[1];
+            } else {
+                $key = $match;
+            }
+            $result[] = $key; // Přidá do výsledného pole
+        }
+
+        unset($result[count($result) - 1]);
+
+        return $result;
+    }
+
     public function addDropzone(string $name, string $label):DropzoneInput
     {
         return $this[$name] = ($this->dropzoneInputFactory->create($label));
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @param array $values
+     * @return self
+     */
+    public function setTranslates(Nette\Database\Table\ActiveRow $language, array $values):self{
+        if(!array_key_exists($language->id, $this->defaultTranslates)){
+            $this->defaultTranslates[$language->id] = [];
+        }
+        $this->defaultTranslates[$language->id] = $this->defaultTranslates[$language->id] + $values;
+        return $this;
     }
 
     protected function beforeRender(): void
@@ -39,8 +82,16 @@ class Form extends \Nette\Application\UI\Form
 
         $languageContainer = $this->addContainer('language');
         foreach($this->languageModel->getToTranslateNotDefault() as $language) {
-            $lang = $languageContainer->addContainer($language->id);
+            $languageContainer->addContainer($language->id);
             foreach($controlsToTranslate as $input) {
+                $lang = $languageContainer->getComponent($language->id);
+                if(!array_key_exists($language->id, $this->defaultTranslates)){
+                    $defaults = null;
+                }else {
+                    $defaults = $this->defaultTranslates[$language->id];
+                }
+                $originalName = ['language', $language->id];
+
                 if(!($input->getParent() instanceof Form)){
                     $route = [];
 
@@ -51,33 +102,34 @@ class Form extends \Nette\Application\UI\Form
                     }
                     $route = array_reverse($route);
                     foreach($route as $item){
-                        $lang = $lang->addContainer($item);
+                        $originalName[] = $item;
+                        if($defaults !== null && array_key_exists($item, $defaults)){
+                            $defaults = $defaults[$item];
+                        }else{
+                            $defaults = null;
+                        }
+
+                        if(array_key_exists($item, $lang->getComponents())){
+                            $lang = $lang->getComponent($item);
+                        }else {
+                            $lang = $lang->addContainer($item);
+                        }
                     }
                 }
 
+                $base = array_shift($originalName);
+                foreach ($originalName as $item) {
+                    $base .= "[$item]";
+                }
+
                 $lang->addText($input->getName())
+                    ->setNullable()
                     ->setHtmlAttribute('data-language-id', $language->id)
                     ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
+                    ->setDefaultValue($defaults !== null && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
+                    ->setHtmlAttribute('data-original-name', $base)
                 ;
             }
-        }
-    }
-
-    /**
-     * @param Nette\Forms\Controls\BaseControl $input
-     * @param Nette\Forms\Container $container
-     * @param LanguageEntity $language
-     * @return void
-     */
-    private function addInputTranslate(Nette\Forms\Controls\BaseControl $input, Nette\Forms\Container $container, Nette\Database\Table\ActiveRow $language):void{
-        if($input->getParent() instanceof Form){
-            $container->addText($input->getName())
-                ->setHtmlAttribute('data-language-id', $language->id)
-                ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
-            ;
-        }else{
-            $container = $container->addContainer($input->getParent()->getName());
-            $this->addInputTranslate($container);
         }
     }
 }
