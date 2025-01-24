@@ -2,13 +2,15 @@
 
 namespace App\Component\Mail;
 
+use App\Component\EncryptFacade;
 use App\Component\Mail\Exception\SystemNameNotFoundException;
 use App\Model\Email;
 use App\Model\EmailLog;
+use App\Model\Setting;
 use App\UI\Accessory\ParameterBag;
-use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 use Nette\Mail\SendException;
+use Nette\Mail\SmtpMailer;
 use Nette\Utils\DateTime;
 
 class Sender
@@ -25,11 +27,12 @@ class Sender
     private array $address = [];
 
     public function __construct(
-        private readonly string $systemName,
-        private readonly Email  $emailModel,
-        private readonly Mailer $mailer,
-        private readonly EmailLog $emailLogModel,
-        private readonly ParameterBag $parameterBag
+        private readonly string        $systemName,
+        private readonly Email         $emailModel,
+        private readonly EmailLog      $emailLogModel,
+        private readonly ParameterBag  $parameterBag,
+        private readonly Setting       $settingModel,
+        private readonly EncryptFacade $encryptFacade,
     )
     {
         $this->message = new Message();
@@ -60,6 +63,18 @@ class Sender
      */
     public function send():void
     {
+        $setting = $this->settingModel->getDefault();
+        if($setting === null || $setting->email === null || $setting->smtp_host === null || $setting->smtp_username === null || $setting->smtp_password === null){
+            throw new SendException('For send email you must set setting in Setting section');
+        }
+
+        $mailer = new SmtpMailer(
+            host: $setting->smtp_host,
+            username: $setting->smtp_username,
+            password: $this->encryptFacade->encrypt($setting->smtp_password),
+            encryption: 'ssl',
+        );
+
         $email = $this->emailModel->getBySystemName($this->systemName);
         if($email === null){
             throw (new SystemNameNotFoundException())->setSystemName($this->systemName);
@@ -74,7 +89,7 @@ class Sender
         $this->message->setHtmlBody($text);
 
         try {
-            $this->mailer->send($this->message);
+            $mailer->send($this->message);
             $this->log();
         } catch(SendException $e) {
             $this->log($e->getMessage());

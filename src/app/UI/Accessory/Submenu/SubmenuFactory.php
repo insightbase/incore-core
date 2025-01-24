@@ -15,9 +15,9 @@ class SubmenuFactory
     {
     }
 
-    public function addMenu(string $name, string $url):SubMenuItem
+    public function addMenu(string $name, string $action):SubMenuItem
     {
-        $subMenuItem = $this->subMenuItemFactory->create($name, $url);
+        $subMenuItem = $this->subMenuItemFactory->create($name, $action);
         $this->subMenus[] = $subMenuItem;
         return $subMenuItem;
     }

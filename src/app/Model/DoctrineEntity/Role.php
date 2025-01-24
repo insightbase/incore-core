@@ -19,6 +19,9 @@ class Role implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     private string $system_name;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $is_systemic = false;
+
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -28,6 +31,12 @@ class Role implements Entity
     public function setSystemName(string $system_name): self
     {
         $this->system_name = $system_name;
+        return $this;
+    }
+
+    public function setIsSystemic(bool $is_systemic): self
+    {
+        $this->is_systemic = $is_systemic;
         return $this;
     }
 }

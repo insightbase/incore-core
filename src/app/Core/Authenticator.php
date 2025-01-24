@@ -22,9 +22,10 @@ readonly class Authenticator implements \Nette\Security\Authenticator, IdentityH
 
     public function wakeupIdentity(IIdentity $identity): ?IIdentity
     {
-        $userArray = (array)$this->userModel->get($identity->getId());
+        $user = $this->userModel->get($identity->getId());
+        $userArray = $user->toArray();
         unset($userArray['password']);
-        return new SimpleIdentity($user->id, ['user'], $userArray);
+        return new SimpleIdentity($user->id, $user->ref('role', 'role_id')['system_name'], $userArray);
     }
 
     public function sleepIdentity(IIdentity $identity): IIdentity
@@ -43,6 +44,6 @@ readonly class Authenticator implements \Nette\Security\Authenticator, IdentityH
         }
         $userArray = $user->toArray();
         unset($userArray['password']);
-        return new SimpleIdentity($user->id, ['user'], $userArray);
+        return new SimpleIdentity($user->id, $user->role->system_name, $userArray);
     }
 }

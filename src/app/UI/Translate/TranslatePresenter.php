@@ -41,7 +41,7 @@ class TranslatePresenter extends Presenter
     #[NoReturn] public function actionSynchronize():void
     {
         $this->translateFacade->synchronize();
-        $this->flashMessage($this->translator->translate('flash_synchronizeComlete'));
+        $this->flashMessage($this->translator->translate('flash_synchronizeComplete'));
         $this->redirect('default');
     }
 

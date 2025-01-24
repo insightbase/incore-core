@@ -21,7 +21,6 @@ readonly class SignFacade
 {
     public function __construct(
         private User $userSecurity,
-        private Authenticator $authenticator,
         private \App\Model\User $userModel,
         private Passwords $passwords,
         private SenderFactory $senderFactory,
@@ -37,7 +36,6 @@ readonly class SignFacade
      */
     public function login(SignFormData $data):void
     {
-        $this->userSecurity->setAuthenticator($this->authenticator);
         if($data->rememberMe){
             $this->userSecurity->setExpiration('14 days');
         }

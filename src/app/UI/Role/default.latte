@@ -1,0 +1,16 @@
+{templateType App\UI\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}{_'header_role'}{/block}
+
+{block content}
+    {control grid}
+
+    {embed basicModal, 'new-role'}
+        {block title}{_'header_newRole'}{/block}
+        {block body}
+            {embed basicForm, formNew}{/embed}
+        {/block}
+    {/embed}
+{/block}

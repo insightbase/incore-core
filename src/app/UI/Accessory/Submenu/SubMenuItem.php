@@ -9,7 +9,7 @@ class SubMenuItem
 
     public function __construct(
         private string $name,
-        private string $url,
+        private string $action,
     )
     {
     }
@@ -36,17 +36,6 @@ class SubMenuItem
         return $this;
     }
 
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    public function setUrl(string $url): self
-    {
-        $this->url = $url;
-        return $this;
-    }
-
     public function getModalId(): ?string
     {
         return $this->modalId;
@@ -55,6 +44,17 @@ class SubMenuItem
     public function setModalId(?string $modalId): self
     {
         $this->modalId = $modalId;
+        return $this;
+    }
+
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    public function setAction(string $action): self
+    {
+        $this->action = $action;
         return $this;
     }
 }

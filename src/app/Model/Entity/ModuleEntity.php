@@ -10,8 +10,9 @@ use Nette\Database\Table\ActiveRow;
  * @property-read int $id
  * @property-read string $system_name
  * @property-read string $name
- * @property-read string $presenter
- * @property-read string $icon
+ * @property-read ?string $presenter
+ * @property-read ?string $icon
+ * @property-read ?ModuleEntity $parent
  */
 class ModuleEntity extends ActiveRow
 {

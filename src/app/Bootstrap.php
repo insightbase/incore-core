@@ -29,8 +29,9 @@ class Bootstrap
     {
         if(file_exists($this->rootDir . '/config/local.neon')){
             $this->configurator->setDebugMode(true);
+        }else{
+            $this->configurator->setDebugMode('inCORE@' . ($_SERVER['REMOTE_ADDR'] ?? php_uname('n')));
         }
-        //$this->configurator->setDebugMode('secret@23.75.345.200'); // enable for your remote IP
         $this->configurator->enableTracy($this->rootDir . '/log');
 
         $this->configurator->createRobotLoader()

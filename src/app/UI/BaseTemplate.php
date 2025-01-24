@@ -5,6 +5,7 @@ namespace App\UI;
 use App\Component\Image\ImageFacade;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\ModuleEntity;
+use App\Model\Module;
 use App\UI\Accessory\Submenu\SubmenuFactory;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
@@ -33,4 +34,9 @@ class BaseTemplate extends Template
      * @var LanguageEntity
      */
     public ActiveRow $defaultLanguage;
+    public Module $moduleModel;
+    /**
+     * @var ModuleEntity[]
+     */
+    public array $moduleTree;
 }

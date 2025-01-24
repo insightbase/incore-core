@@ -12,6 +12,7 @@ class ParameterBag
         public string $previewWwwDir,
         public string $tempDir,
         public string $appDir,
+        public string $encryptionKey,
     )
     {
     }

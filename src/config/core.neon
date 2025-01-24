@@ -7,6 +7,7 @@ parameters:
     uploadDir: %appDir%/../files
     previewWwwDir: '/images'
     previewDir: %appDir%/../www%previewWwwDir%
+    encryptionKey: 'LDN0RitjRxUdrhhuTXDVbo914sEcjmOy'
 
 services:
     - App\Component\Translator\Translator
@@ -14,7 +15,10 @@ services:
     routerFactory: App\Core\RouterFactory
     router: @routerFactory::createRouter()
 
-    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%)
+    authorizatorFactory: App\Core\AuthorizatorFactory
+    authorizator: @authorizatorFactory::create()
+
+    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
 
     - App\Component\Translator\Extractor\LatteExtractor

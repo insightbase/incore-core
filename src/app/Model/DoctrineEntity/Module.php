@@ -18,11 +18,15 @@ class Module implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $presenter;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $presenter = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $icon;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $icon;
+
+    #[ORM\ManyToOne(targetEntity: Module::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Module $parent = null;
 
     public function setSystemName(string $systemName):self{
         $this->system_name = $systemName;
@@ -41,6 +45,12 @@ class Module implements Entity
 
     public function setIcon(string $icon):self{
         $this->icon = $icon;
+        return $this;
+    }
+
+    public function setParent(?Module $parent): self
+    {
+        $this->parent = $parent;
         return $this;
     }
 }

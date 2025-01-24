@@ -24,5 +24,18 @@ class EmailFixtures implements FixtureInterface
             $manager->persist($email);
             $manager->flush();
         }
+
+        $exist = $manager->getRepository(Email::class)->findOneBy(['system_name' => SystemNameEnum::TestEmail->value]);
+        if(!$exist){
+            $email = (new Email())
+                ->setSystemName(SystemNameEnum::TestEmail->value)
+                ->setName('Testovací email')
+                ->setSubject('Testovací email')
+                ->setText('%message%')
+                ->setModifier('message')
+            ;
+            $manager->persist($email);
+            $manager->flush();
+        }
     }
 }
