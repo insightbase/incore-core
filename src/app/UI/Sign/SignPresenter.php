@@ -14,7 +14,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Security\AuthenticationException;
 
 /**
- * @property-read SignTemplate $template
+ * @property SignTemplate $template
  */
 class SignPresenter extends Presenter
 {
@@ -25,21 +25,12 @@ class SignPresenter extends Presenter
 
     public function __construct(
         private readonly SignFormFactory $signFormFactory,
-        private readonly SignFacade      $signFacade,
-    )
-    {
+        private readonly SignFacade $signFacade,
+    ) {
         parent::__construct();
     }
 
-    protected function startup():void
-    {
-        parent::startup();
-        if($this->getUser()->isLoggedIn() && $this->getAction() !== 'logout'){
-            $this->redirect('Home:default');
-        }
-    }
-
-    public function actionResetPassword(string $hash):void
+    public function actionResetPassword(string $hash): void
     {
         try {
             $this->signFacade->checkForgotPasswordHash($hash);
@@ -53,48 +44,59 @@ class SignPresenter extends Presenter
         $this->hash = $hash;
     }
 
-    public function actionCheckEmail(string $email):void
+    public function actionCheckEmail(string $email): void
     {
         $this->template->email = $email;
     }
 
-    #[NoReturn] public function actionLogout():void
+    #[NoReturn]
+    public function actionLogout(): void
     {
         $this->getUser()->logout();
         $this->flashMessage($this->translator->translate('flash_userLoggedOut'));
         $this->redirect('Sign:login');
     }
 
-    protected function createComponentFormLogin():Form
+    protected function startup(): void
+    {
+        parent::startup();
+        if ($this->getUser()->isLoggedIn() && 'logout' !== $this->getAction()) {
+            $this->redirect('Home:default');
+        }
+    }
+
+    protected function createComponentFormLogin(): Form
     {
         $form = $this->signFormFactory->create();
-        $form->onSuccess[] = function (Form $form, SignFormData $data):void{
+        $form->onSuccess[] = function (Form $form, SignFormData $data): void {
             try {
                 $this->signFacade->login($data);
-            }catch(AuthenticationException $e){
+            } catch (AuthenticationException $e) {
                 $this->flashMessage($e->getMessage(), 'error');
             }
             $this->restoreRequest($this->storeRequest);
             $this->redirect('Home:default');
         };
+
         return $form;
     }
 
-    protected function createComponentFormForgotPassword():Form
+    protected function createComponentFormForgotPassword(): Form
     {
         $form = $this->signFormFactory->createForgotPassword();
-        $form->onSuccess[] = function (Form $form, ForgotPasswordFormData $data):void{
+        $form->onSuccess[] = function (Form $form, ForgotPasswordFormData $data): void {
             $user = $this->signFacade->forgotPassword($data);
             $this->redirect('checkEmail', $user->email);
         };
+
         return $form;
     }
 
-    protected function createComponentFormResetPassword():Form
+    protected function createComponentFormResetPassword(): Form
     {
         $form = $this->signFormFactory->createResetPassword();
-        $form->onSuccess[] = function (Form $form, ResetPasswordFormData $data):void{
-            try{
+        $form->onSuccess[] = function (Form $form, ResetPasswordFormData $data): void {
+            try {
                 $this->signFacade->resetPassword($this->hash, $data);
             } catch (Exception\HashExpiredException $e) {
                 $this->flashMessage($this->translator->translate('flash_hasNotFound'), 'error');
@@ -105,6 +107,7 @@ class SignPresenter extends Presenter
             }
             $this->redirect('passwordChanged');
         };
+
         return $form;
     }
 }

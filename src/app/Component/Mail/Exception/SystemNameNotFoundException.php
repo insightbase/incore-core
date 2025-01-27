@@ -14,6 +14,7 @@ class SystemNameNotFoundException extends \Exception
     public function setSystemName(string $systemName): self
     {
         $this->systemName = $systemName;
+
         return $this;
     }
 }

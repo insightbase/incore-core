@@ -7,9 +7,7 @@ namespace App\Model\Entity;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * @property-read int $id
- * @property-read string $key
+ * @property int    $id
+ * @property string $key
  */
-class TranslateEntity extends ActiveRow
-{
-}
+class TranslateEntity extends ActiveRow {}

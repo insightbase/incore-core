@@ -14,17 +14,15 @@ final class RouterFactory
 
     public function __construct(
         private readonly Language $languageModel,
-    )
-    {
-    }
+    ) {}
 
     public function createRouter(): RouteList
     {
         $languages = $this->languageModel->getToTranslate();
         $default = null;
         $langs = [];
-        foreach($languages as $language){
-            if($language->is_default){
+        foreach ($languages as $language) {
+            if ($language->is_default) {
                 $default = $language;
             }
             $langs[] = $language->url;
@@ -33,7 +31,8 @@ final class RouterFactory
         $langPrefix = sprintf('[<lang=%s %s>/]', $default->url, implode('|', $langs));
 
         $router = new RouteList();
-        $router->addRoute($langPrefix . '<presenter>/<action>[/<id>]', 'Home:default');
+        $router->addRoute($langPrefix.'<presenter>/<action>[/<id>]', 'Home:default');
+
         return $router;
     }
 }

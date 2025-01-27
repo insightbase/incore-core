@@ -7,13 +7,11 @@ namespace App\Model\Entity;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * @property-read int $id
- * @property-read string $system_name
- * @property-read string $name
- * @property-read string $text
- * @property-read string $subject
- * @property-read ?string $modifier
+ * @property int     $id
+ * @property string  $system_name
+ * @property string  $name
+ * @property string  $text
+ * @property string  $subject
+ * @property ?string $modifier
  */
-class EmailEntity extends ActiveRow
-{
-}
+class EmailEntity extends ActiveRow {}

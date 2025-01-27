@@ -11,28 +11,31 @@ readonly class FormFactory
 {
     public function __construct(
         private \App\UI\Accessory\Form\FormFactory $formFactory,
-        private Translator                         $translator,
+        private Translator $translator,
         private Module $moduleModel,
-    )
-    {
-    }
+    ) {}
 
-    public function createEdit(ActiveRow $module):Form
+    public function createEdit(ActiveRow $module): Form
     {
         $form = $this->formFactory->create();
 
         $modules = $this->moduleModel->getNotParent()->fetchPairs('id', 'name');
 
         $form->addText('name', $this->translator->translate('input_name'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addText('system_name', $this->translator->translate('input_systemName'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addText('presenter', $this->translator->translate('input_presenter'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addText('icon', $this->translator->translate('input_icon'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addSelect('parent_id', $this->translator->translate('input_parent'), $modules)
-            ->setPrompt('prompt_selectModule');
+            ->setPrompt('prompt_selectModule')
+        ;
 
         $form->addSubmit('send', $this->translator->translate('input_update'));
 

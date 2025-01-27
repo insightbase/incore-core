@@ -7,17 +7,15 @@ namespace App\Model\Entity;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * @property-read int $id
- * @property-read string $email
- * @property-read ?string $email_sender
- * @property-read ?string $recaptcha_secret_key
- * @property-read ?string $recaptcha_site_key
- * @property-read ?string $favicon
- * @property-read ?string $shareimage
- * @property-read ?string $smtp_host
- * @property-read ?string $smtp_username
- * @property-read ?string $smtp_password
+ * @property int     $id
+ * @property string  $email
+ * @property ?string $email_sender
+ * @property ?string $recaptcha_secret_key
+ * @property ?string $recaptcha_site_key
+ * @property ?string $favicon
+ * @property ?string $shareimage
+ * @property ?string $smtp_host
+ * @property ?string $smtp_username
+ * @property ?string $smtp_password
  */
-class SettingEntity extends ActiveRow
-{
-}
+class SettingEntity extends ActiveRow {}

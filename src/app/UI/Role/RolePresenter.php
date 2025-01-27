@@ -31,98 +31,88 @@ class RolePresenter extends Presenter
      * @var ?RoleEntity
      */
     private ?ActiveRow $role;
+
     /**
      * @var ModuleEntity
      */
     private ActiveRow $module;
 
     public function __construct(
-        private readonly DataGridFactory      $dataGridFactory,
+        private readonly DataGridFactory $dataGridFactory,
         private readonly DefaultEntityFactory $defaultEntityFactory,
-        private readonly Role                 $roleModel,
-        private readonly SubmenuFactory       $submenuFactory,
-        private readonly FormFactory          $formFactory,
-        private readonly RoleFacade           $roleFacade,
-        private readonly Module               $moduleModel,
-        private readonly ModuleEntityFactory  $moduleEntityFactory,
-    )
-    {
+        private readonly Role $roleModel,
+        private readonly SubmenuFactory $submenuFactory,
+        private readonly FormFactory $formFactory,
+        private readonly RoleFacade $roleFacade,
+        private readonly Module $moduleModel,
+        private readonly ModuleEntityFactory $moduleEntityFactory,
+    ) {
         parent::__construct();
     }
 
-    protected function createComponentFormAuthorizationSet():Form
+    public function actionSet(int $id, int $roleId): void
     {
-        $form = $this->formFactory->createAuthorizationSet($this->role, $this->module);
-        $form->onSuccess[] = function(Form $form, AuthorizationSetData $data):void{
-            $this->roleFacade->setAuthorization($this->role, $this->module, $data);
-            $this->flashMessage($this->translator->translate('flash_roleAuthorizationSet'));
-            $this->redirect('authorization', $this->role->id);
-        };
-        return $form;
-    }
-
-    private function existModule(int $id):void{
-        $module = $this->moduleModel->get($id);
-        if($module === null){
-            $this->error($this->translator->translate('flash_moduleNotFound'));
-        }
-        $this->module = $module;
-    }
-
-    public function actionSet(int $id, int $roleId):void{
         $this->exist($roleId);
         $this->existModule($id);
     }
 
-    protected function createComponentGridModule():DataGrid
+    public function actionAuthorization(int $id): void
+    {
+        $this->exist($id);
+    }
+
+    public function actionEdit(int $id): void
+    {
+        $this->exist($id);
+    }
+
+    protected function createComponentFormAuthorizationSet(): Form
+    {
+        $form = $this->formFactory->createAuthorizationSet($this->role, $this->module);
+        $form->onSuccess[] = function (Form $form, AuthorizationSetData $data): void {
+            $this->roleFacade->setAuthorization($this->role, $this->module, $data);
+            $this->flashMessage($this->translator->translate('flash_roleAuthorizationSet'));
+            $this->redirect('authorization', $this->role->id);
+        };
+
+        return $form;
+    }
+
+    protected function createComponentGridModule(): DataGrid
     {
         return $this->dataGridFactory->create($this->moduleModel->getToGridAuthorizationSet($this->getUser()), $this->moduleEntityFactory->create($this->role));
     }
 
-    public function actionAuthorization(int $id):void{
-        $this->exist($id);
-    }
-
-    protected function createComponentFormEdit():Form
+    protected function createComponentFormEdit(): Form
     {
         $form = $this->formFactory->createEdit($this->role);
-        $form->onSuccess[] = function(Form $form, EditData $data):void{
+        $form->onSuccess[] = function (Form $form, EditData $data): void {
             try {
                 $this->roleFacade->update($this->role, $data);
                 $this->flashMessage($this->translator->translate('flash_roleCreated'));
                 $this->redirect('default');
-            }catch(SystematicRoleException $e){
+            } catch (SystematicRoleException $e) {
                 $this->flashMessage($this->translator->translate('flash_cannotUpdateSystematicRole'), 'error');
                 $this->redirect('default');
             }
         };
+
         return $form;
     }
 
-    private function exist(int $id):void{
-        $role = $this->roleModel->get($id);
-        if($role === null){
-            $this->error($this->translator->translate('flash_roleNotFound'));
-        }
-        $this->role = $role;
-    }
-
-    public function actionEdit(int $id):void{
-        $this->exist($id);
-    }
-
-    protected function createComponentFormNew():Form
+    protected function createComponentFormNew(): Form
     {
         $form = $this->formFactory->createNew();
-        $form->onSuccess[] = function(Form $form, NewData $data):void{
+        $form->onSuccess[] = function (Form $form, NewData $data): void {
             $this->roleFacade->create($data);
             $this->flashMessage($this->translator->translate('flash_roleCreated'));
             $this->redirect('default');
         };
+
         return $form;
     }
 
-    protected function startup():void
+    protected function startup(): void
     {
         parent::startup();
         $this->submenuFactory->addMenu($this->translator->translate('menu_newRole'), 'new')
@@ -131,8 +121,26 @@ class RolePresenter extends Presenter
         ;
     }
 
-    protected function createComponentGrid():DataGrid
+    protected function createComponentGrid(): DataGrid
     {
         return $this->dataGridFactory->create($this->roleModel->getToGrid(), $this->defaultEntityFactory->create());
+    }
+
+    private function existModule(int $id): void
+    {
+        $module = $this->moduleModel->get($id);
+        if (null === $module) {
+            $this->error($this->translator->translate('flash_moduleNotFound'));
+        }
+        $this->module = $module;
+    }
+
+    private function exist(int $id): void
+    {
+        $role = $this->roleModel->get($id);
+        if (null === $role) {
+            $this->error($this->translator->translate('flash_roleNotFound'));
+        }
+        $this->role = $role;
     }
 }

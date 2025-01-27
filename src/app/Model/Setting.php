@@ -11,9 +11,7 @@ readonly class Setting implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Selection<SettingEntity>
@@ -26,12 +24,12 @@ readonly class Setting implements Model
     /**
      * @return ?SettingEntity
      */
-    public function getDefault():?ActiveRow
+    public function getDefault(): ?ActiveRow
     {
         return $this->getTable()->fetch();
     }
 
-    public function insert(array $data):void
+    public function insert(array $data): void
     {
         $this->getTable()->insert($data);
     }

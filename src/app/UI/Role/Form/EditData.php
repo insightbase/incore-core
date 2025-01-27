@@ -2,7 +2,4 @@
 
 namespace App\UI\Role\Form;
 
-class EditData extends NewData
-{
-
-}
+class EditData extends NewData {}

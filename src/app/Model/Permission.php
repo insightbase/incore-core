@@ -13,9 +13,7 @@ readonly class Permission implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Selection<PermissionEntity>
@@ -26,43 +24,47 @@ readonly class Permission implements Model
     }
 
     /**
-     * @param RoleEntity $role
+     * @param RoleEntity   $role
      * @param ModuleEntity $module
+     *
      * @return Selection<PermissionEntity>
      */
-    public function getByRoleAndModule(ActiveRow $role, ActiveRow $module):Selection
+    public function getByRoleAndModule(ActiveRow $role, ActiveRow $module): Selection
     {
         return $this->getTable()->where('role_id', $role->id)
-            ->where('module_id', $module->id);
+            ->where('module_id', $module->id)
+        ;
     }
 
     /**
-     * @param RoleEntity $role
+     * @param RoleEntity   $role
      * @param ModuleEntity $module
-     * @param int $privilegeId
+     *
      * @return ?PermissionEntity>
      */
-    public function getByRoleAndModuleAndPrivilegeId(ActiveRow $role, ActiveRow $module, int $privilegeId):?ActiveRow
+    public function getByRoleAndModuleAndPrivilegeId(ActiveRow $role, ActiveRow $module, int $privilegeId): ?ActiveRow
     {
         return $this->getByRoleAndModule($role, $module)
             ->where('privilege_id', $privilegeId)
-            ->fetch();
+            ->fetch()
+        ;
     }
 
-    public function insert(array $data):void
+    public function insert(array $data): void
     {
         $this->getTable()->insert($data);
     }
 
     /**
-     * @param RoleEntity $role
+     * @param RoleEntity   $role
      * @param ModuleEntity $module
-     * @param array $privilegeIds
+     *
      * @return Selection<PermissionEntity>
      */
-    public function getByRoleAndModuleAndNotPrivilegesId(ActiveRow $role, ActiveRow $module, array $privilegeIds):Selection
+    public function getByRoleAndModuleAndNotPrivilegesId(ActiveRow $role, ActiveRow $module, array $privilegeIds): Selection
     {
         return $this->getByRoleAndModule($role, $module)
-            ->where('NOT privilege_id', $privilegeIds);
+            ->where('NOT privilege_id', $privilegeIds)
+        ;
     }
 }

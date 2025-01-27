@@ -11,14 +11,13 @@ class SubmenuFactory
 
     public function __construct(
         private readonly SubMenuItemFactory $subMenuItemFactory,
-    )
-    {
-    }
+    ) {}
 
-    public function addMenu(string $name, string $action):SubMenuItem
+    public function addMenu(string $name, string $action): SubMenuItem
     {
         $subMenuItem = $this->subMenuItemFactory->create($name, $action);
         $this->subMenus[] = $subMenuItem;
+
         return $subMenuItem;
     }
 

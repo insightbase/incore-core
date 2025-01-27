@@ -9,11 +9,10 @@ use Doctrine\Persistence\ObjectManager;
 
 class EmailFixtures implements FixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         $exist = $manager->getRepository(Email::class)->findOneBy(['system_name' => SystemNameEnum::ForgotPassword->value]);
-        if(!$exist){
+        if (!$exist) {
             $email = (new Email())
                 ->setSystemName(SystemNameEnum::ForgotPassword->value)
                 ->setName('Zapomenuté heslo')
@@ -26,7 +25,7 @@ class EmailFixtures implements FixtureInterface
         }
 
         $exist = $manager->getRepository(Email::class)->findOneBy(['system_name' => SystemNameEnum::TestEmail->value]);
-        if(!$exist){
+        if (!$exist) {
             $email = (new Email())
                 ->setSystemName(SystemNameEnum::TestEmail->value)
                 ->setName('Testovací email')

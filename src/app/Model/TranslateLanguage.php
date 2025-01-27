@@ -13,9 +13,7 @@ readonly class TranslateLanguage implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Selection<TranslateLanguageEntity>
@@ -27,32 +25,36 @@ readonly class TranslateLanguage implements Model
 
     /**
      * @param TranslateEntity $translate
-     * @param LanguageEntity $language
+     * @param LanguageEntity  $language
+     *
      * @return ?TranslateLanguageEntity
      */
-    public function getByTranslateAndLanguage(ActiveRow $translate, ActiveRow $language): ?ActiveRow{
+    public function getByTranslateAndLanguage(ActiveRow $translate, ActiveRow $language): ?ActiveRow
+    {
         return $this->getByTranslateIdAndLanguageId($translate->id, $language->id);
     }
 
-    public function insert(array $data):void
+    public function insert(array $data): void
     {
         $this->getTable()->insert($data);
     }
 
     /**
      * @param LanguageEntity $language
+     *
      * @return Selection<TranslateLanguageEntity>
      */
-    public function getByLanguage(ActiveRow $language):Selection
+    public function getByLanguage(ActiveRow $language): Selection
     {
         return $this->getTable()->where('language_id', $language->id);
     }
 
-    public function getByTranslateIdAndLanguageId(int $translateId, int $languageId):?ActiveRow
+    public function getByTranslateIdAndLanguageId(int $translateId, int $languageId): ?ActiveRow
     {
         return $this->getTable()
             ->where('translate_id', $translateId)
             ->where('language_id', $languageId)
-            ->fetch();
+            ->fetch()
+        ;
     }
 }

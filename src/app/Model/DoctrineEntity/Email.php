@@ -31,30 +31,35 @@ class Email implements Entity
     public function setSystemName(string $system_name): self
     {
         $this->system_name = $system_name;
+
         return $this;
     }
 
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
     public function setText(string $text): self
     {
         $this->text = $text;
+
         return $this;
     }
 
     public function setSubject(string $subject): self
     {
         $this->subject = $subject;
+
         return $this;
     }
 
     public function setModifier(?string $modifier): self
     {
         $this->modifier = $modifier;
+
         return $this;
     }
 }

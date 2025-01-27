@@ -38,47 +38,30 @@ class PhpStringTokenParser
                 ['\\', '\''],
                 substr($str, $bLength + 1, -1)
             );
-        } else {
-            return self::parseEscapeSequences(substr($str, $bLength + 1, -1), '"');
         }
+
+        return self::parseEscapeSequences(substr($str, $bLength + 1, -1), '"');
     }
 
     /**
      * Parses escape sequences in strings (all string types apart from single quoted).
      *
      * @param string      $str   String without quotes
-     * @param string|null $quote Quote type
+     * @param null|string $quote Quote type
      *
      * @return string String with escape sequences parsed
      */
-    public static function parseEscapeSequences(string $str, string $quote = null)
+    public static function parseEscapeSequences(string $str, ?string $quote = null)
     {
         if (null !== $quote) {
             $str = str_replace('\\'.$quote, $quote, $str);
         }
 
         return preg_replace_callback(
-            '~\\\\([\\\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3})~',
+            '~\\\([\\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3})~',
             [__CLASS__, 'parseCallback'],
             $str
         );
-    }
-
-    /**
-     * @param string[] $matches
-     * @return string
-     */
-    private static function parseCallback(array $matches): string
-    {
-        $str = $matches[1];
-
-        if (isset(self::$replacements[$str])) {
-            return self::$replacements[$str];
-        } elseif ('x' === $str[0] || 'X' === $str[0]) {
-            return \chr((int)hexdec($str));
-        } else {
-            return \chr((int)octdec($str));
-        }
     }
 
     /**
@@ -100,5 +83,22 @@ class PhpStringTokenParser
         }
 
         return self::parseEscapeSequences($str, null);
+    }
+
+    /**
+     * @param string[] $matches
+     */
+    private static function parseCallback(array $matches): string
+    {
+        $str = $matches[1];
+
+        if (isset(self::$replacements[$str])) {
+            return self::$replacements[$str];
+        }
+        if ('x' === $str[0] || 'X' === $str[0]) {
+            return \chr((int) hexdec($str));
+        }
+
+        return \chr((int) octdec($str));
     }
 }

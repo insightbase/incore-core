@@ -17,13 +17,11 @@ class ImagePresenter extends Presenter
     public function __construct(
         private ParameterBag $parameterBag,
         private ImageFacade $imageFacade,
-    )
-    {
-    }
+    ) {}
 
     public function actionPreview(string $file, ?int $width = null, ?int $height = null): void
     {
-        if(!file_exists($this->imageFacade->getPreviewName($file, $width, $height))) {
+        if (!file_exists($this->imageFacade->getPreviewName($file, $width, $height))) {
             $image = $this->imageFacade->generatePreview($file, $width, $height);
         } else {
             $image = Image::fromFile($this->imageFacade->getPreviewName($file, $width, $height));
@@ -32,14 +30,14 @@ class ImagePresenter extends Presenter
         $image->send();
     }
 
-    public function actionUpload():void
+    public function actionUpload(): void
     {
-        $file = ($this->getHttpRequest()->getFile('file'));
-        if($file instanceof FileUpload) {
+        $file = $this->getHttpRequest()->getFile('file');
+        if ($file instanceof FileUpload) {
             if ($file->isOk()) {
-                $fileName = time() . '_' . $file->getSanitizedName();
+                $fileName = time().'_'.$file->getSanitizedName();
                 FileSystem::createDir($this->parameterBag->uploadDir);
-                $file->move($this->parameterBag->uploadDir . '/' . $fileName);
+                $file->move($this->parameterBag->uploadDir.'/'.$fileName);
                 $this->payload->file = $fileName;
             } else {
                 $this->payload->error = $this->translator->translate('flash_fileSaveFailed');

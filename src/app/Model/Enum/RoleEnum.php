@@ -2,7 +2,7 @@
 
 namespace App\Model\Enum;
 
-enum RoleEnum:string
+enum RoleEnum: string
 {
     case SUPER_ADMIN = 'super_admin';
     case ADMIN = 'admin';

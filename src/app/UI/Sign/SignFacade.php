@@ -2,15 +2,15 @@
 
 namespace App\UI\Sign;
 
-use App\Component\Mail\Sender;
+use App\Component\Mail\Exception\SystemNameNotFoundException;
 use App\Component\Mail\SenderFactory;
 use App\Component\Mail\SystemNameEnum;
-use App\Core\Authenticator;
 use App\Model\Entity\UserEntity;
 use App\UI\Sign\Exception\HashExpiredException;
 use App\UI\Sign\Exception\UserNotFoundException;
 use App\UI\Sign\Form\SignFormData;
 use Nette\Application\LinkGenerator;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Database\Table\ActiveRow;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Passwords;
@@ -25,40 +25,36 @@ readonly class SignFacade
         private Passwords $passwords,
         private SenderFactory $senderFactory,
         private LinkGenerator $linkGenerator
-    )
-    {
-    }
+    ) {}
 
     /**
-     * @param SignFormData $data
-     * @return void
      * @throws AuthenticationException
      */
-    public function login(SignFormData $data):void
+    public function login(SignFormData $data): void
     {
-        if($data->rememberMe){
+        if ($data->rememberMe) {
             $this->userSecurity->setExpiration('14 days');
         }
         $this->userSecurity->login($data->email, $data->password);
     }
 
     /**
-     * @param Form\ForgotPasswordFormData $data
      * @return UserEntity
+     *
      * @throws UserNotFoundException
-     * @throws \App\Component\Mail\Exception\SystemNameNotFoundException
+     * @throws SystemNameNotFoundException
      * @throws \DateMalformedStringException
-     * @throws \Nette\Application\UI\InvalidLinkException
+     * @throws InvalidLinkException
      */
-    public function forgotPassword(Form\ForgotPasswordFormData $data):ActiveRow
+    public function forgotPassword(Form\ForgotPasswordFormData $data): ActiveRow
     {
         $user = $this->userModel->findByEmail($data->email);
-        if($user === null){
+        if (null === $user) {
             throw new UserNotFoundException();
         }
 
         $expire = (new DateTime())->modify('+1 hour');
-        $hash = $this->passwords->hash($user->id . 'generatePasswordHash' . $expire->getTimestamp());
+        $hash = $this->passwords->hash($user->id.'generatePasswordHash'.$expire->getTimestamp());
 
         $user->update([
             'forgot_password_hash' => $hash,
@@ -74,19 +70,19 @@ readonly class SignFacade
     }
 
     /**
-     * @param string $hash
      * @return UserEntity
+     *
      * @throws HashExpiredException
      * @throws UserNotFoundException
      */
-    public function checkForgotPasswordHash(string $hash):ActiveRow
+    public function checkForgotPasswordHash(string $hash): ActiveRow
     {
         $user = $this->userModel->findByHash($hash);
-        if($user === null){
+        if (null === $user) {
             throw new UserNotFoundException();
         }
 
-        if($user['forgot_password_expire'] < new DateTime()){
+        if ($user['forgot_password_expire'] < new DateTime()) {
             throw new HashExpiredException();
         }
 
@@ -94,13 +90,10 @@ readonly class SignFacade
     }
 
     /**
-     * @param string $hash
-     * @param Form\ResetPasswordFormData $data
-     * @return void
      * @throws HashExpiredException
      * @throws UserNotFoundException
      */
-    public function resetPassword(string $hash, Form\ResetPasswordFormData $data):void
+    public function resetPassword(string $hash, Form\ResetPasswordFormData $data): void
     {
         $user = $this->checkForgotPasswordHash($hash);
         $user->update([

@@ -25,7 +25,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $privilegeRepository = $manager->getRepository(Privilege::class);
 
         $default = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Default->value]);
-        if(!$default){
+        if (!$default) {
             $default = new Privilege();
             $default->setName('Default');
             $default->setSystemName(PrivilegeEnum::Default->value);
@@ -35,7 +35,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::DEFAULT, $default);
 
         $edit = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Edit->value]);
-        if(!$edit){
+        if (!$edit) {
             $edit = new Privilege();
             $edit->setName('Editace');
             $edit->setSystemName(PrivilegeEnum::Edit->value);
@@ -45,7 +45,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::EDIT, $edit);
 
         $new = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::New->value]);
-        if(!$new){
+        if (!$new) {
             $new = new Privilege();
             $new->setName('Vytvoření');
             $new->setSystemName(PrivilegeEnum::New->value);
@@ -55,7 +55,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::NEW, $new);
 
         $delete = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Delete->value]);
-        if(!$delete){
+        if (!$delete) {
             $delete = new Privilege();
             $delete->setName('Smazání');
             $delete->setSystemName(PrivilegeEnum::Delete->value);
@@ -65,7 +65,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::DELETE, $delete);
 
         $translate = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Translate->value]);
-        if(!$translate){
+        if (!$translate) {
             $translate = new Privilege();
             $translate->setName('Přeložit');
             $translate->setSystemName(PrivilegeEnum::Translate->value);
@@ -75,7 +75,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::TRANSLATE, $translate);
 
         $synchronize = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Synchronize->value]);
-        if(!$synchronize){
+        if (!$synchronize) {
             $synchronize = new Privilege();
             $synchronize->setName('Synchronizovat');
             $synchronize->setSystemName(PrivilegeEnum::Synchronize->value);
@@ -85,7 +85,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::SYNCHRONIZE, $synchronize);
 
         $authorization = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Authorization->value]);
-        if(!$authorization){
+        if (!$authorization) {
             $authorization = new Privilege();
             $authorization->setName('Oprávnění');
             $authorization->setSystemName(PrivilegeEnum::Authorization->value);
@@ -95,7 +95,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
         $this->addReference(self::AUTHORIZATION, $authorization);
 
         $set = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Set->value]);
-        if(!$set){
+        if (!$set) {
             $set = new Privilege();
             $set->setName('Nastavit');
             $set->setSystemName(PrivilegeEnum::Set->value);

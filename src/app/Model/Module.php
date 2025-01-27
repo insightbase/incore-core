@@ -6,14 +6,13 @@ use App\Model\Entity\ModuleEntity;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
+use Nette\Security\User;
 
 readonly class Module implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Selection<ModuleEntity>
@@ -25,15 +24,15 @@ readonly class Module implements Model
 
     /**
      * @param ?ModuleEntity $parent
+     *
      * @return Selection<ModuleEntity>
      */
-    public function getToMenu(?ActiveRow $parent = null):Selection
+    public function getToMenu(?ActiveRow $parent = null): Selection
     {
         return $this->getTable()->where('parent_id', $parent?->id);
     }
 
     /**
-     * @param string $systemName
      * @return ?ModuleEntity
      */
     public function getBySystemName(string $systemName): ?ActiveRow
@@ -42,7 +41,6 @@ readonly class Module implements Model
     }
 
     /**
-     * @param string $presenterName
      * @return ?ModuleEntity
      */
     public function getByPresenter(string $presenterName): ?ActiveRow
@@ -51,37 +49,36 @@ readonly class Module implements Model
     }
 
     /**
-     * @param string $presenterName
      * @return ModuleEntity[]
      */
     public function getTree(string $presenterName): array
     {
         $module = $this->getByPresenter($presenterName);
-        if($module === null){
+        if (null === $module) {
             return [];
         }
 
         $tree = [$module->id => $module];
-        while($module->parent !== null){
+        while (null !== $module->parent) {
             $module = $module->parent;
             $tree[$module->id] = $module;
         }
+
         return array_reverse($tree, true);
     }
 
     /**
      * @return Selection<ModuleEntity>
      */
-    public function getToGrid():Selection
+    public function getToGrid(): Selection
     {
         return $this->getTable();
     }
 
     /**
-     * @param int $id
      * @return ?ModuleEntity
      */
-    public function get(int $id):?ActiveRow
+    public function get(int $id): ?ActiveRow
     {
         return $this->getTable()->get($id);
     }
@@ -89,7 +86,7 @@ readonly class Module implements Model
     /**
      * @return Selection<ModuleEntity>
      */
-    public function getNotParent():Selection
+    public function getNotParent(): Selection
     {
         return $this->getTable()->where('parent_id', null);
     }
@@ -97,11 +94,11 @@ readonly class Module implements Model
     /**
      * @return Selection<ModuleEntity>
      */
-    public function getToGridAuthorizationSet(\Nette\Security\User $user):Selection
+    public function getToGridAuthorizationSet(User $user): Selection
     {
         $moduleIds = [];
-        foreach($this->getToGrid() as $module){
-            if($user->isAllowed($module->system_name, 'default')){
+        foreach ($this->getToGrid() as $module) {
+            if ($user->isAllowed($module->system_name, 'default')) {
                 $moduleIds[] = $module->id;
             }
         }

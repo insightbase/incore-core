@@ -13,10 +13,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserFixtures extends Fixture implements FixtureInterface, DependentFixtureInterface
 {
-    public function load(ObjectManager $manager): void{
+    public function load(ObjectManager $manager): void
+    {
         $users = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'users']);
-        if(!$users){
+            ->findOneBy(['system_name' => 'users'])
+        ;
+        if (!$users) {
             $module = (new Module())
                 ->setSystemName('users')
                 ->setName('Uživatelé a role')
@@ -27,8 +29,9 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
         }
 
         $usersUsers = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'users_users']);
-        if(!$usersUsers){
+            ->findOneBy(['system_name' => 'users_users'])
+        ;
+        if (!$usersUsers) {
             $usersUsers = (new Module())
                 ->setSystemName('users_users')
                 ->setName('Uživatelé')
@@ -45,8 +48,8 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
             $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
-        foreach($privileges as $privilege){
-            if(!$modulePrivilegeRepository->findOneBy(['module' => $usersUsers, 'privilege' => $privilege])){
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $usersUsers, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
                 $modulePrivilege->setModule($usersUsers);
                 $modulePrivilege->setPrivilege($privilege);
@@ -56,8 +59,9 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
         }
 
         $usersRole = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'users_role']);
-        if(!$usersRole){
+            ->findOneBy(['system_name' => 'users_role'])
+        ;
+        if (!$usersRole) {
             $usersRole = (new Module())
                 ->setSystemName('users_role')
                 ->setName('Role')
@@ -74,8 +78,8 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
             $this->getReference(PrivilegeFixtures::AUTHORIZATION, Privilege::class),
             $this->getReference(PrivilegeFixtures::SET, Privilege::class),
         ];
-        foreach($privileges as $privilege){
-            if(!$modulePrivilegeRepository->findOneBy(['module' => $usersRole, 'privilege' => $privilege])){
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $usersRole, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
                 $modulePrivilege->setModule($usersRole);
                 $modulePrivilege->setPrivilege($privilege);

@@ -5,7 +5,6 @@ namespace App\Component\Translator\Extractor;
 use App\Component\Translator\Extraxtor\PhpExtractor;
 use App\Component\Translator\Translator;
 use Latte\Engine;
-use Nette\Application\UI\ITemplateFactory;
 use Nette\Application\UI\TemplateFactory;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Utils\Finder;
@@ -14,11 +13,8 @@ use Symfony\Component\Translation\MessageCatalogue;
 
 final class LatteExtractor implements ExtractorInterface
 {
-    /** @var Engine */
     private Engine $latte;
-    /** @var PhpExtractor */
     private PhpExtractor $compiledLatteExtractor;
-
 
     public function __construct(TemplateFactory $templateFactory, Translator $translator)
     {
@@ -27,7 +23,7 @@ final class LatteExtractor implements ExtractorInterface
         $template->setTranslator($translator);
         $this->latte = $template->getLatte();
 
-        $this->compiledLatteExtractor = new class () extends PhpExtractor {
+        $this->compiledLatteExtractor = new class extends PhpExtractor {
             protected array $sequences = [
                 [
                     '$this',
@@ -67,15 +63,14 @@ final class LatteExtractor implements ExtractorInterface
         };
     }
 
-
-    public function extract(string|iterable $resource, MessageCatalogue $catalogue): void
+    public function extract(iterable|string $resource, MessageCatalogue $catalogue): void
     {
-        if(is_string($resource)) {
+        if (is_string($resource)) {
             foreach (Finder::findFiles('*.latte')->from($resource) as $file) {
                 $this->extractFile($file, $catalogue);
             }
         } else {
-            foreach($resource as $res) {
+            foreach ($resource as $res) {
                 foreach (Finder::findFiles('*.latte')->from($res) as $file) {
                     $this->extractFile($file, $catalogue);
                 }
@@ -83,6 +78,7 @@ final class LatteExtractor implements ExtractorInterface
         }
     }
 
+    public function setPrefix(string $prefix): void {}
 
     private function extractFile(\SplFileInfo $file, MessageCatalogue $catalogue): void
     {
@@ -91,9 +87,5 @@ final class LatteExtractor implements ExtractorInterface
         $this->latte->warmupCache($filePath);
 
         $this->compiledLatteExtractor->extract($compiledTemplateFile, $catalogue);
-    }
-
-    public function setPrefix(string $prefix): void
-    {
     }
 }

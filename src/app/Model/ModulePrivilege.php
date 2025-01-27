@@ -12,9 +12,7 @@ readonly class ModulePrivilege implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Selection<ModulePrivilegeEntity>
@@ -26,9 +24,10 @@ readonly class ModulePrivilege implements Model
 
     /**
      * @param ModuleEntity $module
+     *
      * @return Selection<ModulePrivilegeEntity>
      */
-    public function getByModule(ActiveRow $module):Selection
+    public function getByModule(ActiveRow $module): Selection
     {
         return $this->getTable()->where('module_id', $module->id);
     }

@@ -25,18 +25,21 @@ class Role implements Entity
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
     public function setSystemName(string $system_name): self
     {
         $this->system_name = $system_name;
+
         return $this;
     }
 
     public function setIsSystemic(bool $is_systemic): self
     {
         $this->is_systemic = $is_systemic;
+
         return $this;
     }
 }

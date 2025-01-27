@@ -14,46 +14,42 @@ readonly class LanguageFacade
     public function __construct(
         private Language $language,
         private Translator $translator,
-    )
+    ) {}
+
+    public function create(NewFormData $data): void
     {
+        $this->language->insert((array) $data);
     }
 
-    public function create(NewFormData $data):void
-    {
-        $this->language->insert((array)$data);
-    }
-
-    public function delete(ActiveRow $language):void
+    public function delete(ActiveRow $language): void
     {
         $language->delete();
     }
 
-    public function update(ActiveRow $language, Form\EditFormData $data):void
+    public function update(ActiveRow $language, Form\EditFormData $data): void
     {
-        $language->update((array)$data);
+        $language->update((array) $data);
     }
 
     /**
      * @param LanguageEntity $language
-     * @return void
      */
-    public function changeDefault(ActiveRow $language):void
+    public function changeDefault(ActiveRow $language): void
     {
-        $this->language->getExplorer()->transaction(function() use ($language){
+        $this->language->getExplorer()->transaction(function () use ($language) {
             $this->language->getTable()->update(['is_default' => false]);
             $language->update(['is_default' => true]);
         });
-
     }
 
     /**
      * @param LanguageEntity $language
-     * @return void
+     *
      * @throws DefaultLanguageCannotByDeactivateException
      */
-    public function changeActive(ActiveRow $language):void
+    public function changeActive(ActiveRow $language): void
     {
-        if($language->active && $language->is_default){
+        if ($language->active && $language->is_default) {
             throw new DefaultLanguageCannotByDeactivateException($this->translator->translate('flash_default_language_cannot_be_deactivate'));
         }
 

@@ -2,7 +2,4 @@
 
 namespace App\UI\Language\DataGrid\Exception;
 
-class DefaultLanguageRequiredException extends \Exception
-{
-
-}
+class DefaultLanguageRequiredException extends \Exception {}

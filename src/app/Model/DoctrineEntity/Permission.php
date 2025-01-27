@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model\DoctrineEntity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -27,18 +28,21 @@ class Permission implements Entity
     public function setRole(Role $role): self
     {
         $this->role = $role;
+
         return $this;
     }
 
     public function setModule(Module $module): self
     {
         $this->module = $module;
+
         return $this;
     }
 
     public function setPrivilege(Privilege $privilege): self
     {
         $this->privilege = $privilege;
+
         return $this;
     }
 }

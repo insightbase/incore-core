@@ -26,23 +26,23 @@ class SettingPresenter extends Presenter
     private ?ActiveRow $setting;
 
     public function __construct(
-        private readonly FormFactory    $formFactory,
-        private readonly SettingFacade  $settingFacade,
-        private readonly Setting        $settingModel,
+        private readonly FormFactory $formFactory,
+        private readonly SettingFacade $settingFacade,
+        private readonly Setting $settingModel,
         private readonly SubmenuFactory $submenuFactory,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
-    protected function createComponentFormTestEmail():Form{
+    protected function createComponentFormTestEmail(): Form
+    {
         $form = $this->formFactory->createTestEmail();
 
-        $form->onSuccess[] = function(Form $form, TestEmailFormData $data):void{
+        $form->onSuccess[] = function (Form $form, TestEmailFormData $data): void {
             try {
                 $this->settingFacade->testEmail($data);
                 $this->flashMessage($this->translator->translate('flash_email_sended'));
-            }catch(SendException $e){
+            } catch (SendException $e) {
                 $this->flashMessage($e->getMessage(), 'error');
             }
             $this->redirect('this');
@@ -51,10 +51,11 @@ class SettingPresenter extends Presenter
         return $form;
     }
 
-    protected function createComponentFormEdit():Form{
+    protected function createComponentFormEdit(): Form
+    {
         $form = $this->formFactory->createEdit($this->setting);
 
-        $form->onSuccess[] = function(Form $form, EditFormData $data):void{
+        $form->onSuccess[] = function (Form $form, EditFormData $data): void {
             $this->settingFacade->update($this->setting, $data);
             $this->flashMessage($this->translator->translate('flash_setting_updated'));
             $this->redirect('this');
@@ -63,11 +64,12 @@ class SettingPresenter extends Presenter
         return $form;
     }
 
-    protected function startup():void
+    protected function startup(): void
     {
         parent::startup();
         $this->submenuFactory->addMenu($this->translator->translate('menu_send_test_email'), 'testEmail')
-            ->setIsPrimary();
+            ->setIsPrimary()
+        ;
         $this->setting = $this->settingModel->getDefault();
     }
 }

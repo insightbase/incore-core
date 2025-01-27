@@ -13,7 +13,6 @@ final class LatteExtension extends Extension
         return [];
     }
 
-
     public function getFunctions(): array
     {
         return [];

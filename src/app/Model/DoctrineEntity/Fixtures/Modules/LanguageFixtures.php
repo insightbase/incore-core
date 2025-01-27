@@ -13,12 +13,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class LanguageFixtures extends Fixture implements FixtureInterface, DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         $exist = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'languages']);
-        if(!$exist){
+            ->findOneBy(['system_name' => 'languages'])
+        ;
+        if (!$exist) {
             $module = (new Module())
                 ->setSystemName('languages')
                 ->setName('Jazyky')
@@ -36,8 +36,8 @@ class LanguageFixtures extends Fixture implements FixtureInterface, DependentFix
             $this->getReference(PrivilegeFixtures::DELETE, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
-        foreach($privileges as $privilege){
-            if(!$modulePrivilegeRepository->findOneBy(['module' => $exist, 'privilege' => $privilege])){
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $exist, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
                 $modulePrivilege->setModule($exist);
                 $modulePrivilege->setPrivilege($privilege);

@@ -16,49 +16,33 @@ readonly class RoleFacade
     public function __construct(
         private Role $roleModel,
         private Permission $permissionModel,
-    )
+    ) {}
+
+    public function create(NewData $data): void
     {
+        $this->roleModel->insert((array) $data);
     }
 
     /**
      * @param RoleEntity $role
-     * @return void
+     *
      * @throws SystematicRoleException
      */
-    private function check(ActiveRow $role):void{
-        if($role->is_systemic){
-            throw new SystematicRoleException();
-        }
-    }
-
-    public function create(NewData $data):void
-    {
-        $this->roleModel->insert((array)$data);
-    }
-
-    /**
-     * @param RoleEntity $role
-     * @param EditData $data
-     * @return void
-     * @throws SystematicRoleException
-     */
-    public function update(ActiveRow $role, EditData $data):void
+    public function update(ActiveRow $role, EditData $data): void
     {
         $this->check($role);
-        $role->update((array)$data);
+        $role->update((array) $data);
     }
 
     /**
-     * @param RoleEntity $role
+     * @param RoleEntity   $role
      * @param ModuleEntity $module
-     * @param Form\AuthorizationSetData $data
-     * @return void
      */
-    public function setAuthorization(ActiveRow $role, ActiveRow $module, Form\AuthorizationSetData $data):void
+    public function setAuthorization(ActiveRow $role, ActiveRow $module, Form\AuthorizationSetData $data): void
     {
-        foreach($data->privileges as $privilegeId){
+        foreach ($data->privileges as $privilegeId) {
             $permission = $this->permissionModel->getByRoleAndModuleAndPrivilegeId($role, $module, $privilegeId);
-            if($permission === null){
+            if (null === $permission) {
                 $this->permissionModel->insert([
                     'role_id' => $role->id,
                     'module_id' => $module->id,
@@ -67,5 +51,17 @@ readonly class RoleFacade
             }
         }
         $this->permissionModel->getByRoleAndModuleAndNotPrivilegesId($role, $module, $data->privileges)->delete();
+    }
+
+    /**
+     * @param RoleEntity $role
+     *
+     * @throws SystematicRoleException
+     */
+    private function check(ActiveRow $role): void
+    {
+        if ($role->is_systemic) {
+            throw new SystematicRoleException();
+        }
     }
 }

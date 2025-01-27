@@ -11,9 +11,7 @@ readonly class Language implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Selection<LanguageEntity>
@@ -26,21 +24,20 @@ readonly class Language implements Model
     /**
      * @return Selection<LanguageEntity>
      */
-    public function getToGrid():Selection
+    public function getToGrid(): Selection
     {
         return $this->getTable();
     }
 
-    public function insert(array $data):void
+    public function insert(array $data): void
     {
         $this->getTable()->insert($data);
     }
 
     /**
-     * @param int $id
      * @return ?LanguageEntity
      */
-    public function get(int $id):?ActiveRow
+    public function get(int $id): ?ActiveRow
     {
         return $this->getTable()->get($id);
     }
@@ -48,7 +45,7 @@ readonly class Language implements Model
     /**
      * @return Selection<LanguageEntity>
      */
-    public function getToTranslate():Selection
+    public function getToTranslate(): Selection
     {
         return $this->getTable()->where('active', true);
     }
@@ -56,7 +53,7 @@ readonly class Language implements Model
     /**
      * @return Selection<LanguageEntity>
      */
-    public function getToTranslateNotDefault():Selection
+    public function getToTranslateNotDefault(): Selection
     {
         return $this->getToTranslate()->where('is_default', false);
     }
@@ -66,12 +63,12 @@ readonly class Language implements Model
         return $this->explorer;
     }
 
-    public function getByUrl(string $url):?ActiveRow
+    public function getByUrl(string $url): ?ActiveRow
     {
         return $this->getTable()->where('url', $url)->fetch();
     }
 
-    public function getDefault():?ActiveRow
+    public function getDefault(): ?ActiveRow
     {
         return $this->getTable()->where('is_default', true)->fetch();
     }

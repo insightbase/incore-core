@@ -11,21 +11,18 @@ readonly class User implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
-     * @param int $id
-     * @return UserEntity|null
+     * @return null|UserEntity
      */
-    public function get(int $id):?ActiveRow
+    public function get(int $id): ?ActiveRow
     {
         return $this->getTable()->get($id);
     }
 
     /**
-     * @return Selection<\App\Model\Entity\UserEntity>
+     * @return Selection<UserEntity>
      */
     public function getTable(): Selection
     {
@@ -33,32 +30,33 @@ readonly class User implements Model
     }
 
     /**
-     * @param string $email
-     * @return UserEntity|null
+     * @return null|UserEntity
      */
-    public function findByEmail(string $email, ?int $ignoreId = null):?ActiveRow
+    public function findByEmail(string $email, ?int $ignoreId = null): ?ActiveRow
     {
         $selection = $this->getTable()
-            ->where('email', $email);
-        if($ignoreId !== null){
+            ->where('email', $email)
+        ;
+        if (null !== $ignoreId) {
             $selection->where('id <> ?', $ignoreId);
         }
+
         return $selection->fetch();
     }
 
-    public function insert(array $data):void
+    public function insert(array $data): void
     {
         $this->getTable()->insert($data);
     }
 
     /**
-     * @param string $hash
      * @return ?UserEntity
      */
-    public function findByHash(string $hash):?ActiveRow
+    public function findByHash(string $hash): ?ActiveRow
     {
         return $this->getTable()
             ->where('forgot_password_hash', $hash)
-            ->fetch();
+            ->fetch()
+        ;
     }
 }

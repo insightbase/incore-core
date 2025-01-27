@@ -9,7 +9,5 @@ final class DbParameterBag
         public string $dbname,
         public string $user,
         public string $password,
-    )
-    {
-    }
+    ) {}
 }

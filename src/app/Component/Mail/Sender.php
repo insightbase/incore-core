@@ -21,32 +21,34 @@ class Sender
      * @var array<string, string>
      */
     private array $modifier = [];
+
     /**
      * @var string[]
      */
     private array $address = [];
 
     public function __construct(
-        private readonly string        $systemName,
-        private readonly Email         $emailModel,
-        private readonly EmailLog      $emailLogModel,
-        private readonly ParameterBag  $parameterBag,
-        private readonly Setting       $settingModel,
+        private readonly string $systemName,
+        private readonly Email $emailModel,
+        private readonly EmailLog $emailLogModel,
+        private readonly ParameterBag $parameterBag,
+        private readonly Setting $settingModel,
         private readonly EncryptFacade $encryptFacade,
-    )
-    {
+    ) {
         $this->message = new Message();
     }
 
     public function addAttachment(string $file): self
     {
         $this->message->addAttachment($file);
+
         return $this;
     }
 
     public function addModifier(string $modifier, string $text): self
     {
         $this->modifier[$modifier] = $text;
+
         return $this;
     }
 
@@ -54,17 +56,17 @@ class Sender
     {
         $this->message->addTo($email);
         $this->address[] = $email;
+
         return $this;
     }
 
     /**
-     * @return void
-     * @throws SystemNameNotFoundException|SendException
+     * @throws SendException|SystemNameNotFoundException
      */
-    public function send():void
+    public function send(): void
     {
         $setting = $this->settingModel->getDefault();
-        if($setting === null || $setting->email === null || $setting->smtp_host === null || $setting->smtp_username === null || $setting->smtp_password === null){
+        if (null === $setting || null === $setting->email || null === $setting->smtp_host || null === $setting->smtp_username || null === $setting->smtp_password) {
             throw new SendException('For send email you must set setting in Setting section');
         }
 
@@ -76,13 +78,13 @@ class Sender
         );
 
         $email = $this->emailModel->getBySystemName($this->systemName);
-        if($email === null){
+        if (null === $email) {
             throw (new SystemNameNotFoundException())->setSystemName($this->systemName);
         }
 
         $text = $email['text'];
-        foreach($this->modifier as $modifier => $value) {
-            $text = str_replace('%' . $modifier . '%', $value, $text);
+        foreach ($this->modifier as $modifier => $value) {
+            $text = str_replace('%'.$modifier.'%', $value, $text);
         }
 
         $this->message->setSubject($email['subject']);
@@ -91,9 +93,9 @@ class Sender
         try {
             $mailer->send($this->message);
             $this->log();
-        } catch(SendException $e) {
+        } catch (SendException $e) {
             $this->log($e->getMessage());
-            if(!$this->parameterBag->debugMode) {
+            if (!$this->parameterBag->debugMode) {
                 throw $e;
             }
         }
@@ -101,7 +103,7 @@ class Sender
 
     private function log(?string $error = null): void
     {
-        foreach($this->address as $address) {
+        foreach ($this->address as $address) {
             $this->emailLogModel->getTable()->insert([
                 'subject' => $this->message->getSubject(),
                 'created' => new DateTime(),

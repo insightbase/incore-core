@@ -7,13 +7,14 @@ use Nette\Bridges\SecurityHttp\SessionStorage;
 
 trait RequireLoggedUserTrait
 {
-    public function injectRequireLoggedUser(User $userModel): void{
-        $this->onStartup[] = function () use ($userModel) {
+    public function injectRequireLoggedUser(User $userModel): void
+    {
+        $this->onStartup[] = function () {
             $storage = $this->getUser()->getStorage();
-            if($storage instanceof SessionStorage) {
+            if ($storage instanceof SessionStorage) {
                 $storage->setNamespace('admin');
             }
-            if(!$this->getUser()->isLoggedIn()) {
+            if (!$this->getUser()->isLoggedIn()) {
                 $this->redirect('Sign:login', ['storeRequest' => $this->storeRequest()]);
             }
         };

@@ -13,27 +13,24 @@ readonly class FormFactory
 {
     public function __construct(
         private \App\UI\Accessory\Form\FormFactory $formFactory,
-        private Translator                         $translator,
+        private Translator $translator,
         private Language $languageModel,
         private TranslateLanguage $translateLanguageModel,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @param TranslateEntity $translate
-     * @return Form
      */
-    public function createTranslate(ActiveRow $translate):Form
+    public function createTranslate(ActiveRow $translate): Form
     {
         $form = $this->formFactory->create();
 
         $languageInput = $form->addContainer('language');
-        foreach($this->languageModel->getToTranslate() as $language) {
+        foreach ($this->languageModel->getToTranslate() as $language) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
-            $languageInput->addText($language->id, $language->name . ' ( ' . $language->locale . ' )')
+            $languageInput->addText($language->id, $language->name.' ( '.$language->locale.' )')
                 ->setNullable()
-                ->setDefaultValue($translateLanguage === null ? '' : $translateLanguage->value)
+                ->setDefaultValue(null === $translateLanguage ? '' : $translateLanguage->value)
             ;
         }
 

@@ -10,56 +10,65 @@ readonly class FormFactory
 {
     public function __construct(
         private \App\UI\Accessory\Form\FormFactory $formFactory,
-        private Translator                         $translator,
-    )
-    {
-    }
+        private Translator $translator,
+    ) {}
 
-    public function createTestEmail():Form
+    public function createTestEmail(): Form
     {
         $form = $this->formFactory->create();
 
         $form->addEmail('email', $this->translator->translate('input_receiver'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addTextArea('message', $this->translator->translate('input_message'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addSubmit('send', $this->translator->translate('send_send'));
 
         return $form;
     }
 
-    public function createEdit(?ActiveRow $setting):Form
+    public function createEdit(?ActiveRow $setting): Form
     {
         $form = $this->formFactory->create();
 
         $form->addGroup($this->translator->translate('field_general'));
         $form->addDropzone('favicon', $this->translator->translate('input_favicon'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addDropzone('shareimage', $this->translator->translate('input_shareimage'))
-            ->setNullable();
+            ->setNullable()
+        ;
 
         $form->addGroup($this->translator->translate('field_email'));
         $form->addEmail('email', $this->translator->translate('input_email'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addEmail('email_sender', $this->translator->translate('input_email_sender'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addText('smtp_host', $this->translator->translate('input_smtp_host'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addText('smtp_username', $this->translator->translate('input_smtp_username'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addPassword('smtp_password', $this->translator->translate('input_smtp_password'))
-            ->setNullable();
+            ->setNullable()
+        ;
 
         $form->addGroup($this->translator->translate('field_recaptcha'));
         $form->addText('recaptcha_secret_key', $this->translator->translate('input_recaptcha_secret_key'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addText('recaptcha_site_key', $this->translator->translate('input_recaptcha_site_key'))
-            ->setNullable();
+            ->setNullable()
+        ;
 
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));
 
-        if($setting !== null) {
+        if (null !== $setting) {
             $form->setDefaults($setting->toArray());
         }
 

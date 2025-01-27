@@ -18,9 +18,7 @@ final class Error5xxPresenter implements Nette\Application\IPresenter
 {
     public function __construct(
         private ILogger $logger,
-    ) {
-    }
-
+    ) {}
 
     public function run(Nette\Application\Request $request): Nette\Application\Response
     {
@@ -31,7 +29,7 @@ final class Error5xxPresenter implements Nette\Application\IPresenter
         // Display a generic error message to the user
         return new Responses\CallbackResponse(function (Http\IRequest $httpRequest, Http\IResponse $httpResponse): void {
             if (preg_match('#^text/html(?:;|$)#', (string) $httpResponse->getHeader('Content-Type'))) {
-                require __DIR__ . '/500.phtml';
+                require __DIR__.'/500.phtml';
             }
         });
     }

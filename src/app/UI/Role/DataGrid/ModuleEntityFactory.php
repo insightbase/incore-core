@@ -15,32 +15,32 @@ readonly class ModuleEntityFactory
 {
     public function __construct(
         private Translator $translator,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @param RoleEntity $role
-     * @return DataGridEntity
      */
-    public function create(ActiveRow $role):DataGridEntity
+    public function create(ActiveRow $role): DataGridEntity
     {
         $entity = new DataGridEntity();
 
-        $entity->addColumn((new ColumnEntity('name', $this->translator->translate('column_name')))
-            ->setEnableSearchGlobal()
+        $entity->addColumn(
+            (new ColumnEntity('name', $this->translator->translate('column_name')))
+                ->setEnableSearchGlobal()
         );
-        $entity->addColumn((new HasManyColumnEntity('name', $this->translator->translate('column_privileges')))
-            ->setRelation('permission')
-            ->setRef(['privilege'])
-            ->setGetRelationCallback(function(ActiveRow $activeRow) use ($role):Selection{
-                return $activeRow->related('permission')->where('role_id', $role->id);
-            })
+        $entity->addColumn(
+            (new HasManyColumnEntity('name', $this->translator->translate('column_privileges')))
+                ->setRelation('permission')
+                ->setRef(['privilege'])
+                ->setGetRelationCallback(function (ActiveRow $activeRow) use ($role): Selection {
+                    return $activeRow->related('permission')->where('role_id', $role->id);
+                })
         );
 
-        $entity->addMenu((new MenuEntity($this->translator->translate('Nastavit'), 'set'))
-            ->setIcon('ki-filled ki-key')
-            ->addParam('roleId', (string)$role->id)
+        $entity->addMenu(
+            (new MenuEntity($this->translator->translate('Nastavit'), 'set'))
+                ->setIcon('ki-filled ki-key')
+                ->addParam('roleId', (string) $role->id)
         );
 
         return $entity;

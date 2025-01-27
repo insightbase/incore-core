@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model\DoctrineEntity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -23,12 +24,14 @@ class ModulePrivilege implements Entity
     public function setModule(Module $module): self
     {
         $this->module = $module;
+
         return $this;
     }
 
     public function setPrivilege(Privilege $privilege): self
     {
         $this->privilege = $privilege;
+
         return $this;
     }
 }

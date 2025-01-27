@@ -16,12 +16,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class TranslateFixtures extends Fixture implements FixtureInterface, DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         $exist = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'translates']);
-        if(!$exist){
+            ->findOneBy(['system_name' => 'translates'])
+        ;
+        if (!$exist) {
             $module = (new Module())
                 ->setSystemName('translates')
                 ->setName('Překlady')
@@ -38,8 +38,8 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
             $this->getReference(PrivilegeFixtures::TRANSLATE, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
-        foreach($privileges as $privilege){
-            if(!$modulePrivilegeRepository->findOneBy(['module' => $exist, 'privilege' => $privilege])){
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $exist, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
                 $modulePrivilege->setModule($exist);
                 $modulePrivilege->setPrivilege($privilege);
@@ -54,8 +54,8 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
             $this->getReference(PrivilegeFixtures::TRANSLATE, Privilege::class),
         ];
         $permissionRepository = $manager->getRepository(Permission::class);
-        foreach($access as $privilege){
-            if(!$permissionRepository->findOneBy(['module' => $exist, 'privilege' => $privilege, 'role' => $role])){
+        foreach ($access as $privilege) {
+            if (!$permissionRepository->findOneBy(['module' => $exist, 'privilege' => $privilege, 'role' => $role])) {
                 $permission = new Permission();
                 $permission->setModule($exist);
                 $permission->setPrivilege($privilege);

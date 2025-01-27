@@ -2,7 +2,7 @@
 
 namespace App\Model\Enum;
 
-enum PrivilegeEnum:string
+enum PrivilegeEnum: string
 {
     case Set = 'set';
     case Authorization = 'authorization';

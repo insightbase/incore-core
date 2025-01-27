@@ -7,8 +7,8 @@ use Nette\Database\Table\ActiveRow;
 
 class ModuleFacade
 {
-    public function update(ActiveRow $module, EditData $data):void
+    public function update(ActiveRow $module, EditData $data): void
     {
-        $module->update((array)$data);
+        $module->update((array) $data);
     }
 }

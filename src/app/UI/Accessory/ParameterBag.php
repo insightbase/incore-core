@@ -13,7 +13,5 @@ class ParameterBag
         public string $tempDir,
         public string $appDir,
         public string $encryptionKey,
-    )
-    {
-    }
+    ) {}
 }

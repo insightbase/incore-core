@@ -10,42 +10,46 @@ readonly class SignFormFactory
 {
     public function __construct(
         private FormFactory $formFactory,
-        private Translator  $translator,
-    )
-    {
-    }
+        private Translator $translator,
+    ) {}
 
-    public function createResetPassword():Form
+    public function createResetPassword(): Form
     {
         $form = $this->formFactory->create();
         $password = $form->addPassword('password', $this->translator->translate('input_newPassword'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addPassword('password1', $this->translator->translate('input_confimNewPassword'))
             ->setRequired()
             ->addRule($form::Equal, $this->translator->translate('error_bothPasswordMusetBeSame'), $password)
         ;
         $form->addSubmit('send', $this->translator->translate('submit_set'));
+
         return $form;
     }
 
-    public function createForgotPassword():Form{
+    public function createForgotPassword(): Form
+    {
         $form = $this->formFactory->create();
 
         $form->addText('email', $this->translator->translate('input_email'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addSubmit('send', $this->translator->translate('submit_continue'));
 
         return $form;
     }
 
-    public function create():Form
+    public function create(): Form
     {
         $form = $this->formFactory->create();
 
         $form->addText('email', $this->translator->translate('input_email'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addPassword('password', $this->translator->translate('input_password'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addCheckbox('rememberMe', $this->translator->translate('input_rememberMe'));
         $form->addSubmit('send', $this->translator->translate('submit_logIn'));
 

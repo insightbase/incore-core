@@ -22,19 +22,23 @@ class BaseTemplate extends Template
     public string $basicFormFile;
     public string $basicModalFile;
     public ImageFacade $imageFacade;
+
     /**
      * @var Selection<ModuleEntity>
      */
     public Selection $menuModules;
+
     /**
      * @var Selection<LanguageEntity>
      */
     public Selection $languages;
+
     /**
      * @var LanguageEntity
      */
     public ActiveRow $defaultLanguage;
     public Module $moduleModel;
+
     /**
      * @var ModuleEntity[]
      */

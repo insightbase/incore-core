@@ -17,13 +17,12 @@ class MyAccountPresenter extends Presenter
 
     public function __construct(
         private readonly MyAccountFormFactory $myAccountFormFactory,
-        private readonly MyAccountFacade      $myAccountFacade,
-    )
-    {
+        private readonly MyAccountFacade $myAccountFacade,
+    ) {
         parent::__construct();
     }
 
-    protected function createComponentFormChangePassword():Form
+    protected function createComponentFormChangePassword(): Form
     {
         $form = $this->myAccountFormFactory->createChangePassword();
         $form->onSuccess[] = function (Form $form, MyAccountChangePasswordData $data): void {
@@ -31,10 +30,11 @@ class MyAccountPresenter extends Presenter
             $this->flashMessage($this->translator->translate('flash_passwordChanged'));
             $this->redirect('this');
         };
+
         return $form;
     }
 
-    protected function createComponentFormEdit():Form
+    protected function createComponentFormEdit(): Form
     {
         $form = $this->myAccountFormFactory->create();
         $form->onSuccess[] = function (Form $form, FormData $data): void {
@@ -42,6 +42,7 @@ class MyAccountPresenter extends Presenter
             $this->flashMessage($this->translator->translate('flash_updated'));
             $this->redirect('this');
         };
+
         return $form;
     }
 }

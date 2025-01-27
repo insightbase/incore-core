@@ -10,9 +10,7 @@ class SubMenuItem
     public function __construct(
         private string $name,
         private string $action,
-    )
-    {
-    }
+    ) {}
 
     public function isPrimary(): bool
     {
@@ -22,6 +20,7 @@ class SubMenuItem
     public function setIsPrimary(bool $isPrimary = true): self
     {
         $this->isPrimary = $isPrimary;
+
         return $this;
     }
 
@@ -33,6 +32,7 @@ class SubMenuItem
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -44,6 +44,7 @@ class SubMenuItem
     public function setModalId(?string $modalId): self
     {
         $this->modalId = $modalId;
+
         return $this;
     }
 
@@ -55,6 +56,7 @@ class SubMenuItem
     public function setAction(string $action): self
     {
         $this->action = $action;
+
         return $this;
     }
 }

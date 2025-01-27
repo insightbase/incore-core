@@ -7,11 +7,9 @@ namespace App\Model\Entity;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * @property-read int $id
- * @property-read string $name
- * @property-read string $system_name
- * @property-read bool $is_systemic
+ * @property int    $id
+ * @property string $name
+ * @property string $system_name
+ * @property bool   $is_systemic
  */
-class RoleEntity extends ActiveRow
-{
-}
+class RoleEntity extends ActiveRow {}

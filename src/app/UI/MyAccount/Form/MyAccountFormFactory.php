@@ -15,16 +15,15 @@ class MyAccountFormFactory
         private Translator $translator,
         private User $userModel,
         private \Nette\Security\User $userSecurity,
-    )
-    {
-    }
+    ) {}
 
-    public function createChangePassword():Form
+    public function createChangePassword(): Form
     {
         $form = $this->formFactory->create();
         $password = $form->addPassword('password', $this->translator->translate('input_newPassword'))
             ->setHtmlAttribute('autocomplete', 'new-password')
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addPassword('password1', $this->translator->translate('input_newPasswordCheck'))
             ->setHtmlAttribute('autocomplete', 'new-password')
             ->addRule($form::Equal, $this->translator->translate('error_bothPasswordsMustBeSame'), $password)
@@ -32,25 +31,30 @@ class MyAccountFormFactory
             ->setOmitted()
         ;
         $form->addSubmit('send', $this->translator->translate('submit_changePassword'));
+
         return $form;
     }
 
-    public function create():Form
+    public function create(): Form
     {
         $user = $this->userModel->get($this->userSecurity->getId());
 
         $form = $this->formFactory->create();
 
         $form->addText('firstname', $this->translator->translate('input_firstName'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addText('lastname', $this->translator->translate('input_lastName'))
-            ->setRequired();
+            ->setRequired()
+        ;
         $form->addEmail('email', $this->translator->translate('input_email'))
             ->setRequired()
-            ->addRule([$this, 'validateEmail'], $this->translator->translate('error_emailAlreadyExists'));
+            ->addRule([$this, 'validateEmail'], $this->translator->translate('error_emailAlreadyExists'))
         ;
+
         $form->addDropzone('avatar', $this->translator->translate('input_avatar'))
-            ->setNullable();
+            ->setNullable()
+        ;
         $form->addSubmit('send', $this->translator->translate('input_update'));
 
         $form->setDefaults([
@@ -63,9 +67,10 @@ class MyAccountFormFactory
         return $form;
     }
 
-    public function validateEmail(BaseControl $input):bool
+    public function validateEmail(BaseControl $input): bool
     {
         $user = $this->userModel->findByEmail($input->getValue(), $this->userSecurity->getId());
-        return $user === null;
+
+        return null === $user;
     }
 }

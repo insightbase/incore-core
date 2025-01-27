@@ -2,7 +2,4 @@
 
 namespace App\Model\DoctrineEntity;
 
-interface Entity
-{
-
-}
+interface Entity {}

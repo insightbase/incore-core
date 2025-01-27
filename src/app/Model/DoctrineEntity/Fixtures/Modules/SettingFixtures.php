@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\DoctrineEntity\Fixtures\Modules;;
+namespace App\Model\DoctrineEntity\Fixtures\Modules;
 
 use App\Model\DoctrineEntity\Fixtures\PrivilegeFixtures;
 use App\Model\DoctrineEntity\Module;
@@ -16,8 +16,9 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
     public function load(ObjectManager $manager): void
     {
         $setting = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'setting']);
-        if(!$setting){
+            ->findOneBy(['system_name' => 'setting'])
+        ;
+        if (!$setting) {
             $setting = (new Module())
                 ->setSystemName('setting')
                 ->setName('Nastavení')
@@ -28,8 +29,9 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
         }
 
         $settingSetting = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'setting_setting']);
-        if(!$settingSetting){
+            ->findOneBy(['system_name' => 'setting_setting'])
+        ;
+        if (!$settingSetting) {
             $module = (new Module())
                 ->setSystemName('setting_setting')
                 ->setName('Obecné')
@@ -44,8 +46,8 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
             $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
-        foreach($privileges as $privilege){
-            if(!$modulePrivilegeRepository->findOneBy(['module' => $settingSetting, 'privilege' => $privilege])){
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $settingSetting, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
                 $modulePrivilege->setModule($settingSetting);
                 $modulePrivilege->setPrivilege($privilege);
@@ -55,8 +57,9 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
         }
 
         $settingModule = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'setting_module']);
-        if(!$settingModule){
+            ->findOneBy(['system_name' => 'setting_module'])
+        ;
+        if (!$settingModule) {
             $module = (new Module())
                 ->setSystemName('setting_module')
                 ->setName('Moduly')
@@ -72,8 +75,8 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
             $this->getReference(PrivilegeFixtures::EDIT, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
-        foreach($privileges as $privilege){
-            if(!$modulePrivilegeRepository->findOneBy(['module' => $settingModule, 'privilege' => $privilege])){
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $settingModule, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
                 $modulePrivilege->setModule($settingModule);
                 $modulePrivilege->setPrivilege($privilege);

@@ -11,8 +11,9 @@ class LanguageFixtures implements FixtureInterface
     public function load(ObjectManager $manager): void
     {
         $exist = $manager->getRepository(Language::class)
-            ->findOneBy(['locale' => 'cs-CZ']);
-        if(!$exist){
+            ->findOneBy(['locale' => 'cs-CZ'])
+        ;
+        if (!$exist) {
             $language = new Language();
             $language->setName('Čeština');
             $language->setLocale('cs-CZ');

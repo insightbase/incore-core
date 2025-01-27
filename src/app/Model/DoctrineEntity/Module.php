@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model\DoctrineEntity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -28,29 +29,38 @@ class Module implements Entity
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Module $parent = null;
 
-    public function setSystemName(string $systemName):self{
+    public function setSystemName(string $systemName): self
+    {
         $this->system_name = $systemName;
+
         return $this;
     }
 
-    public function setName(string $name):self{
+    public function setName(string $name): self
+    {
         $this->name = $name;
+
         return $this;
     }
 
-    public function setPresenter(string $presenter):self{
+    public function setPresenter(string $presenter): self
+    {
         $this->presenter = $presenter;
+
         return $this;
     }
 
-    public function setIcon(string $icon):self{
+    public function setIcon(string $icon): self
+    {
         $this->icon = $icon;
+
         return $this;
     }
 
     public function setParent(?Module $parent): self
     {
         $this->parent = $parent;
+
         return $this;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\Entity\EmailEntity;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
@@ -10,20 +11,18 @@ readonly class Email implements Model
 {
     public function __construct(
         private Explorer $explorer,
-    )
-    {
-    }
+    ) {}
 
     /**
-     * @return ?\App\Model\Entity\EmailEntity
+     * @return ?EmailEntity
      */
-    public function getBySystemName(string $systemName):?ActiveRow
+    public function getBySystemName(string $systemName): ?ActiveRow
     {
         return $this->getTable()->where('system_name', $systemName)->fetch();
     }
 
     /**
-     * @return Selection<\App\Model\Entity\EmailEntity>
+     * @return Selection<EmailEntity>
      */
     public function getTable(): Selection
     {

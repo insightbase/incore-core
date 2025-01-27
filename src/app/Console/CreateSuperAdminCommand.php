@@ -16,15 +16,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateSuperAdminCommand extends Command
 {
     public function __construct(
-        private readonly User      $userModel,
-        private readonly Role      $roleModel,
+        private readonly User $userModel,
+        private readonly Role $roleModel,
         private readonly Passwords $passwords,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
-    protected function configure():void
+    protected function configure(): void
     {
         $this->addArgument('firstname', InputArgument::REQUIRED, "User's firstname");
         $this->addArgument('lastname', InputArgument::REQUIRED, "User's lastname");
@@ -35,7 +34,7 @@ class CreateSuperAdminCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $role = $this->roleModel->findBySystemName(RoleEnum::SUPER_ADMIN->value);
-        if($role === null) {
+        if (null === $role) {
             $output->writeln(sprintf('<error>Role "%s" not found in database</error>', RoleEnum::SUPER_ADMIN->value));
         }
 

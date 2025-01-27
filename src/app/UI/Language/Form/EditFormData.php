@@ -2,7 +2,4 @@
 
 namespace App\UI\Language\Form;
 
-class EditFormData extends NewFormData
-{
-
-}
+class EditFormData extends NewFormData {}
