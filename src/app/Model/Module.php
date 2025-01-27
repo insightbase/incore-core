@@ -93,4 +93,19 @@ readonly class Module implements Model
     {
         return $this->getTable()->where('parent_id', null);
     }
+
+    /**
+     * @return Selection<ModuleEntity>
+     */
+    public function getToGridAuthorizationSet(\Nette\Security\User $user):Selection
+    {
+        $moduleIds = [];
+        foreach($this->getToGrid() as $module){
+            if($user->isAllowed($module->system_name, 'default')){
+                $moduleIds[] = $module->id;
+            }
+        }
+
+        return $this->getTable()->where('id', $moduleIds);
+    }
 }

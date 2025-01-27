@@ -35,7 +35,7 @@ readonly class DefaultDataGridEntityFactory
             $entity->addColumn((new ColumnEntity(':translate_language.value', $language->name . ' ( ' . $language->locale . ' )'))
                 ->setEnableSearchGlobal()
                 ->setTruncate(50)
-                ->setGetRowCallback(function(ActiveRow $row) use ($language):string{
+                ->setGetColumnCallback(function(ActiveRow $row) use ($language):string{
                     $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($row, $language);
                     if($translateLanguage === null){
                         return '';

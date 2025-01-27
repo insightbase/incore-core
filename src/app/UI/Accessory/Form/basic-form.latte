@@ -50,7 +50,7 @@
         {continueIf array_key_exists('name', $control->attrs) && str_starts_with($control->attrs['name'], 'language[')}
         {php $input->setHtmlAttribute('data-language-id', $defaultLanguage->id)}
 
-        {if $input->getOption(type) === 'checkbox'}
+        {if $input instanceof Nette\Forms\Controls\Checkbox}
             {label $input:, class:"form-label max-w-32"/}
         {else}
             {label $input, class:"form-label max-w-32"/}
@@ -59,7 +59,7 @@
         {if $input->hasErrors()}
             {php $class .= ' border-danger'}
         {/if}
-        {if $input->getOption(type) === 'checkbox'}
+        {if $input instanceof Nette\Forms\Controls\Checkbox}
             {php $class .= ' checkbox'}
         {/if}
         {if $input->getOption(type) === 'select'}
@@ -68,8 +68,12 @@
         <div class="flex flex-col w-full gap-1" n:tag-if="!$repeater">
             {if $input instanceof App\UI\Accessory\Form\Controls\DropzoneInput}
                 {$input->getControl()}
+            {elseif $input instanceof Nette\Forms\Controls\CheckboxList}
+                {foreach $input->items as $key => $label}
+                    {label $input->getName():$key}{input $input->getName():$key, class: 'checkbox'} {$label}{/label}
+                {/foreach}
             {else}
-                {if $input->getOption(type) === 'checkbox'}
+                {if $input instanceof Nette\Forms\Controls\Checkbox}
                     {input $input:, class:$class}
                 {else}
                     {input $input, class:$class}

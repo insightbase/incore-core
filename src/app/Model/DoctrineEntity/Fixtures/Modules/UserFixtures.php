@@ -71,6 +71,8 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
             $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
             $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
             $this->getReference(PrivilegeFixtures::DELETE, Privilege::class),
+            $this->getReference(PrivilegeFixtures::AUTHORIZATION, Privilege::class),
+            $this->getReference(PrivilegeFixtures::SET, Privilege::class),
         ];
         foreach($privileges as $privilege){
             if(!$modulePrivilegeRepository->findOneBy(['module' => $usersRole, 'privilege' => $privilege])){

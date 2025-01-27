@@ -4,14 +4,18 @@ namespace App\UI\Role;
 
 use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\DataGridFactory;
+use App\Model\Entity\ModuleEntity;
 use App\Model\Entity\RoleEntity;
+use App\Model\Module;
 use App\Model\Role;
 use App\UI\Accessory\Form\Form;
 use App\UI\Accessory\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Submenu\SubmenuFactory;
 use App\UI\Role\DataGrid\DefaultEntityFactory;
+use App\UI\Role\DataGrid\ModuleEntityFactory;
 use App\UI\Role\Exception\SystematicRoleException;
+use App\UI\Role\Form\AuthorizationSetData;
 use App\UI\Role\Form\EditData;
 use App\UI\Role\Form\FormFactory;
 use App\UI\Role\Form\NewData;
@@ -27,6 +31,10 @@ class RolePresenter extends Presenter
      * @var ?RoleEntity
      */
     private ?ActiveRow $role;
+    /**
+     * @var ModuleEntity
+     */
+    private ActiveRow $module;
 
     public function __construct(
         private readonly DataGridFactory      $dataGridFactory,
@@ -34,10 +42,45 @@ class RolePresenter extends Presenter
         private readonly Role                 $roleModel,
         private readonly SubmenuFactory       $submenuFactory,
         private readonly FormFactory          $formFactory,
-        private readonly RoleFactory          $roleFactory,
+        private readonly RoleFacade           $roleFacade,
+        private readonly Module               $moduleModel,
+        private readonly ModuleEntityFactory  $moduleEntityFactory,
     )
     {
         parent::__construct();
+    }
+
+    protected function createComponentFormAuthorizationSet():Form
+    {
+        $form = $this->formFactory->createAuthorizationSet($this->role, $this->module);
+        $form->onSuccess[] = function(Form $form, AuthorizationSetData $data):void{
+            $this->roleFacade->setAuthorization($this->role, $this->module, $data);
+            $this->flashMessage($this->translator->translate('flash_roleAuthorizationSet'));
+            $this->redirect('authorization', $this->role->id);
+        };
+        return $form;
+    }
+
+    private function existModule(int $id):void{
+        $module = $this->moduleModel->get($id);
+        if($module === null){
+            $this->error($this->translator->translate('flash_moduleNotFound'));
+        }
+        $this->module = $module;
+    }
+
+    public function actionSet(int $id, int $roleId):void{
+        $this->exist($roleId);
+        $this->existModule($id);
+    }
+
+    protected function createComponentGridModule():DataGrid
+    {
+        return $this->dataGridFactory->create($this->moduleModel->getToGridAuthorizationSet($this->getUser()), $this->moduleEntityFactory->create($this->role));
+    }
+
+    public function actionAuthorization(int $id):void{
+        $this->exist($id);
     }
 
     protected function createComponentFormEdit():Form
@@ -45,7 +88,7 @@ class RolePresenter extends Presenter
         $form = $this->formFactory->createEdit($this->role);
         $form->onSuccess[] = function(Form $form, EditData $data):void{
             try {
-                $this->roleFactory->update($this->role, $data);
+                $this->roleFacade->update($this->role, $data);
                 $this->flashMessage($this->translator->translate('flash_roleCreated'));
                 $this->redirect('default');
             }catch(SystematicRoleException $e){
@@ -72,7 +115,7 @@ class RolePresenter extends Presenter
     {
         $form = $this->formFactory->createNew();
         $form->onSuccess[] = function(Form $form, NewData $data):void{
-            $this->roleFactory->create($data);
+            $this->roleFacade->create($data);
             $this->flashMessage($this->translator->translate('flash_roleCreated'));
             $this->redirect('default');
         };
