@@ -4,5 +4,5 @@ namespace App\UI\Translate\Form;
 
 class FormTranslateData
 {
-    public array $language;
+    public array $languageInput;
 }

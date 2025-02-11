@@ -7,12 +7,14 @@ namespace App\Model\Entity;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * @property int     $id
- * @property string  $name
- * @property string  $locale
- * @property ?string $flag
- * @property bool    $is_default
- * @property string  $url
- * @property bool    $active
+ * @property-read int $id
+ * @property-read string $name
+ * @property-read string $locale
+ * @property-read ?string $flag
+ * @property-read bool $is_default
+ * @property-read string $url
+ * @property-read bool $active
  */
-class LanguageEntity extends ActiveRow {}
+class LanguageEntity extends ActiveRow
+{
+}

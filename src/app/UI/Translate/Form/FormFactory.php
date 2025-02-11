@@ -25,7 +25,7 @@ readonly class FormFactory
     {
         $form = $this->formFactory->create();
 
-        $languageInput = $form->addContainer('language');
+        $languageInput = $form->addContainer('languageInput');
         foreach ($this->languageModel->getToTranslate() as $language) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
             $languageInput->addText($language->id, $language->name.' ( '.$language->locale.' )')

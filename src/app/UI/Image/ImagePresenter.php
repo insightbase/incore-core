@@ -15,9 +15,11 @@ class ImagePresenter extends Presenter
     use RequireLoggedUserTrait;
 
     public function __construct(
-        private ParameterBag $parameterBag,
-        private ImageFacade $imageFacade,
-    ) {}
+        private readonly ParameterBag $parameterBag,
+        private readonly ImageFacade  $imageFacade,
+    ) {
+        parent::__construct();
+    }
 
     public function actionPreview(string $file, ?int $width = null, ?int $height = null): void
     {

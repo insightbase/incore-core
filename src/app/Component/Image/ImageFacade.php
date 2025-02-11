@@ -5,6 +5,7 @@ namespace App\Component\Image;
 use App\UI\Accessory\ParameterBag;
 use Nette\Application\LinkGenerator;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Html;
 use Nette\Utils\Image;
 use Nette\Utils\ImageColor;
 

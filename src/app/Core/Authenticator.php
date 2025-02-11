@@ -44,6 +44,6 @@ readonly class Authenticator implements \Nette\Security\Authenticator, IdentityH
         $userArray = $user->toArray();
         unset($userArray['password']);
 
-        return new SimpleIdentity($user->id, $user->role->system_name, $userArray);
+        return new SimpleIdentity($user->id, $user->ref('role', 'role_id')['system_name'], $userArray);
     }
 }

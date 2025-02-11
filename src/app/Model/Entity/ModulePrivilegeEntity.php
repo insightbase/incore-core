@@ -7,8 +7,10 @@ namespace App\Model\Entity;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * @property int             $id
- * @property ModuleEntity    $module
- * @property PrivilegeEntity $privilege
+ * @property-read int $id
+ * @property-read ModuleEntity $module
+ * @property-read PrivilegeEntity $privilege
  */
-class ModulePrivilegeEntity extends ActiveRow {}
+class ModulePrivilegeEntity extends ActiveRow
+{
+}

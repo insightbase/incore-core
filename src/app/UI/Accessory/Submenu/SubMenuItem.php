@@ -6,6 +6,7 @@ class SubMenuItem
 {
     private bool $isPrimary = false;
     private ?string $modalId = null;
+    private array $params;
 
     public function __construct(
         private string $name,
@@ -58,5 +59,16 @@ class SubMenuItem
         $this->action = $action;
 
         return $this;
+    }
+
+    public function addParam(string $param, string $value):self
+    {
+        $this->params[$param] = $value;
+        return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 }

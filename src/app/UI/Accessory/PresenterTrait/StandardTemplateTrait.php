@@ -2,11 +2,14 @@
 
 namespace App\UI\Accessory\PresenterTrait;
 
+use App\Component\Image\ImageControlFactory;
 use App\Component\Image\ImageFacade;
 use App\Component\Translator\Translator;
 use App\Core\Authenticator;
 use App\Model\Language;
 use App\Model\Module;
+use App\Model\Setting;
+use App\UI\Accessory\MainMenu\MainMenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Accessory\Submenu\SubmenuFactory;
 use App\UI\BaseTemplate;
@@ -24,10 +27,21 @@ trait StandardTemplateTrait
     public Translator $translator;
     #[Persistent]
     public string $lang;
+    #[Inject]
+    public MainMenuFactory $mainMenuFactory;
+    #[Inject]
+    public ImageControlFactory $imageControlFactory;
 
-    public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade, Module $moduleModel, Language $languageModel, Authenticator $authenticator): void
+    protected function createComponentImage():ImageControlFactory
     {
-        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel): void {
+        return $this->imageControlFactory;
+    }
+
+    public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade,
+                                           Module $moduleModel, Language $languageModel, Authenticator $authenticator, Setting $settingModel
+    ): void
+    {
+        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel): void {
             $this->template->setTranslator($this->translator);
             $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir.'/dist/version.txt'));
             $this->template->submenuFactory = $submenuFactory;
@@ -39,6 +53,8 @@ trait StandardTemplateTrait
             $this->template->moduleModel = $moduleModel;
             $this->template->languages = $languages = $languageModel->getToTranslate();
             $this->template->moduleTree = $moduleModel->getTree($this->getName());
+            $this->template->mainMenuFactory = $this->mainMenuFactory;
+            $this->template->setting = $settingModel->getDefault();
             foreach ($languages as $language) {
                 if ($language->is_default) {
                     $this->template->defaultLanguage = $language;

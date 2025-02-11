@@ -1,0 +1,7 @@
+{templateType App\Component\Image\ImageTemplate}
+
+{if $svg !== null}
+    {$svg|noescape}
+{else}
+    <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" />
+{/if}

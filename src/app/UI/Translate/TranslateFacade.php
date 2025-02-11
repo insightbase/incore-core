@@ -41,15 +41,15 @@ readonly class TranslateFacade
         foreach ($this->languageModel->getToTranslate() as $language) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
             if ($translateLanguage) {
-                if (null === $data->language[$language->id]) {
+                if (null === $data->languageInput[$language->id]) {
                     $translateLanguage->delete();
                 } else {
-                    $translateLanguage->update(['value' => $data->language[$language->id]]);
+                    $translateLanguage->update(['value' => $data->languageInput[$language->id]]);
                 }
             } else {
-                if (null !== $data->language[$language->id]) {
+                if (null !== $data->languageInput[$language->id]) {
                     $this->translateLanguageModel->insert([
-                        'value' => $data->language[$language->id],
+                        'value' => $data->languageInput[$language->id],
                         'translate_id' => $translate->id,
                         'language_id' => $language->id,
                     ]);

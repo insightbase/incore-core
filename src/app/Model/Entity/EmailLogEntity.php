@@ -8,11 +8,13 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
 
 /**
- * @property int      $id
- * @property string   $subject
- * @property DateTime $created
- * @property string   $text
- * @property string   $address
- * @property ?string  $error
+ * @property-read int $id
+ * @property-read string $subject
+ * @property-read DateTime $created
+ * @property-read string $text
+ * @property-read string $address
+ * @property-read ?string $error
  */
-class EmailLogEntity extends ActiveRow {}
+class EmailLogEntity extends ActiveRow
+{
+}

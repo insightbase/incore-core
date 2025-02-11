@@ -8,15 +8,17 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
 
 /**
- * @property int        $id
- * @property string     $firstname
- * @property string     $lastname
- * @property string     $email
- * @property string     $password
- * @property RoleEntity $role
- * @property ?DateTime  $last_login
- * @property ?string    $forgot_password_hash
- * @property ?DateTime  $forgot_password_expire
- * @property ?string    $avatar
+ * @property-read int $id
+ * @property-read string $firstname
+ * @property-read string $lastname
+ * @property-read string $email
+ * @property-read string $password
+ * @property-read RoleEntity $role
+ * @property-read ?DateTime $last_login
+ * @property-read ?string $forgot_password_hash
+ * @property-read ?DateTime $forgot_password_expire
+ * @property-read ?string $avatar
  */
-class UserEntity extends ActiveRow {}
+class UserEntity extends ActiveRow
+{
+}

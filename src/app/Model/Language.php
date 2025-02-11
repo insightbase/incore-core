@@ -3,15 +3,22 @@
 namespace App\Model;
 
 use App\Model\Entity\LanguageEntity;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
 readonly class Language implements Model
 {
+    private Cache $cache;
+
     public function __construct(
         private Explorer $explorer,
-    ) {}
+        private Storage $storage,
+    ) {
+        $this->cache = new Cache($this->storage, 'language');
+    }
 
     /**
      * @return Selection<LanguageEntity>

@@ -39,4 +39,16 @@ class Setting implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     private ?string $smtp_password = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    private ?string $logo = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    private ?string $logo_small = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    private ?string $logo_dark = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    private ?string $logo_dark_small = null;
 }

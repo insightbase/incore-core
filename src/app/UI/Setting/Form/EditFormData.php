@@ -5,6 +5,10 @@ namespace App\UI\Setting\Form;
 class EditFormData
 {
     public ?string $favicon;
+    public ?string $logo;
+    public ?string $logo_dark;
+    public ?string $logo_small;
+    public ?string $logo_dark_small;
     public ?string $shareimage;
     public ?string $email;
     public ?string $email_sender;

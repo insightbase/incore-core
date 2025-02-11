@@ -18,7 +18,6 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
     public const SYNCHRONIZE = 'privilege-synchronize';
     public const AUTHORIZATION = 'privilege-authorization';
     public const SET = 'privilege-set';
-    public const OWNER = 'privilege-owner';
 
     public function load(ObjectManager $manager): void
     {

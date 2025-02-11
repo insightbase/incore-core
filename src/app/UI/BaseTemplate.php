@@ -5,7 +5,9 @@ namespace App\UI;
 use App\Component\Image\ImageFacade;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\ModuleEntity;
+use App\Model\Entity\SettingEntity;
 use App\Model\Module;
+use App\UI\Accessory\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Submenu\SubmenuFactory;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
@@ -43,4 +45,9 @@ class BaseTemplate extends Template
      * @var ModuleEntity[]
      */
     public array $moduleTree;
+    public MainMenuFactory $mainMenuFactory;
+    /**
+     * @var SettingEntity
+     */
+    public ActiveRow $setting;
 }

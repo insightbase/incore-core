@@ -33,6 +33,18 @@ readonly class FormFactory
         $form = $this->formFactory->create();
 
         $form->addGroup($this->translator->translate('field_general'));
+        $form->addDropzone('logo', $this->translator->translate('input_logo'))
+            ->setNullable()
+        ;
+        $form->addDropzone('logo_small', $this->translator->translate('input_logo_small'))
+            ->setNullable()
+        ;
+        $form->addDropzone('logo_dark', $this->translator->translate('input_logo_dark'))
+            ->setNullable()
+        ;
+        $form->addDropzone('logo_dark_small', $this->translator->translate('input_logo_dark_small'))
+            ->setNullable()
+        ;
         $form->addDropzone('favicon', $this->translator->translate('input_favicon'))
             ->setNullable()
         ;
