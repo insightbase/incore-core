@@ -1,9 +1,4 @@
 parameters:
-    database:
-        host: 'incore-mysql-1'
-        dbname: 'incore'
-        user: root
-        password: Osm604155351
     uploadDir: %appDir%/../files
     previewWwwDir: '/images'
     previewDir: %appDir%/../www%previewWwwDir%
