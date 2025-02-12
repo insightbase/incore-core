@@ -13,7 +13,7 @@ class DropzoneInput extends TextInput
 {
     public function __construct(
         private readonly Nette\Application\LinkGenerator $linkGenerator,
-        private ImageControlFactory                      $imageControlFactory,
+        private readonly ImageControlFactory             $imageControlFactory,
         null|string|\Stringable                          $label = null,
         ?int                                             $maxLength = null
     ) {
