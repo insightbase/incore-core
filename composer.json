@@ -31,8 +31,8 @@
         "doctrine/orm": "^3.3",
         "symfony/cache": "^7.2",
         "doctrine/doctrine-fixtures-bundle": "^4.0",
-        "incore/users": "^0.0.1",
-        "incore/datagrid": "^0.0.1"
+        "incore/users": "^0",
+        "incore/datagrid": "^0"
     },
     "repositories": [
         {
