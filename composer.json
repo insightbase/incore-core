@@ -30,6 +30,18 @@
         "contributte/console": "^0.10.1",
         "doctrine/orm": "^3.3",
         "symfony/cache": "^7.2",
-        "doctrine/doctrine-fixtures-bundle": "^4.0"
-    }
+        "doctrine/doctrine-fixtures-bundle": "^4.0",
+        "incore/users": "^0.0.1",
+        "incore/datagrid": "^0.0.1"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/insightbase/incore-users"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/insightbase/incore-datagrid"
+        }
+    ]
 }
