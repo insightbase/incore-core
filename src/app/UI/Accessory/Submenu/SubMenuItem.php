@@ -6,7 +6,7 @@ class SubMenuItem
 {
     private bool $isPrimary = false;
     private ?string $modalId = null;
-    private array $params;
+    private array $params = [];
 
     public function __construct(
         private string $name,
