@@ -47,7 +47,7 @@ class BaseTemplate extends Template
     public array $moduleTree;
     public MainMenuFactory $mainMenuFactory;
     /**
-     * @var SettingEntity
+     * @var ?SettingEntity
      */
-    public ActiveRow $setting;
+    public ?ActiveRow $setting;
 }
