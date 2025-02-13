@@ -69,14 +69,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 		<div class="sidebar dark:bg-coal-600 bg-light border-e border-e-gray-200 dark:border-e-coal-100 fixed top-0 bottom-0 z-20 hidden lg:flex flex-col items-stretch shrink-0" data-drawer="true" data-drawer-class="drawer drawer-start top-0 bottom-0" data-drawer-enable="true|lg:false" id="sidebar">
 			<div class="sidebar-header hidden lg:flex items-center relative justify-between px-3 lg:px-6 shrink-0" id="sidebar_header">
 				<a class="dark:hidden" n:href="Home:default">
-					{if $setting->logo !== null}
+					{if $setting?->logo !== null}
 						<span class="default-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo, 136, 22}
 						</span>
 					{else}
 						<img class="default-logo min-h-[22px] max-w-none" src="/dist/admin/assets/media/app/default-logo.svg"/>
 					{/if}
-					{if $setting->logo_small !== null}
+					{if $setting?->logo_small !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo_small, 24, 22}
 						</span>
@@ -85,22 +85,22 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 					{/if}
 				</a>
 				<a class="hidden dark:block" n:href="Home:default">
-					{if $setting->logo_dark !== null}
+					{if $setting?->logo_dark !== null}
 						<span class="default-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo_dark, 136, 22}
 						</span>
-					{elseif $setting->logo !== null}
+					{elseif $setting?->logo !== null}
 						<span class="default-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo, 136, 22}
 						</span>
 					{else}
 						<img class="default-logo min-h-[22px] max-w-none" src="/dist/admin/assets/media/app/default-logo-dark.svg"/>
 					{/if}
-					{if $setting->logo_dark_small !== null}
+					{if $setting?->logo_dark_small !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo_dark_small, 24, 22}
 						</span>
-					{elseif $setting->logo_small !== null}
+					{elseif $setting?->logo_small !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo_small, 24, 22}
 						</span>
