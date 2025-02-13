@@ -15,10 +15,10 @@ class LanguageFixtures extends Fixture implements FixtureInterface, DependentFix
 {
     public function load(ObjectManager $manager): void
     {
-        $exist = $manager->getRepository(Module::class)
+        $module = $manager->getRepository(Module::class)
             ->findOneBy(['system_name' => 'languages'])
         ;
-        if (!$exist) {
+        if (!$module) {
             $module = (new Module())
                 ->setSystemName('languages')
                 ->setName('Jazyky')
@@ -37,9 +37,9 @@ class LanguageFixtures extends Fixture implements FixtureInterface, DependentFix
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {
-            if (!$modulePrivilegeRepository->findOneBy(['module' => $exist, 'privilege' => $privilege])) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $module, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
-                $modulePrivilege->setModule($exist);
+                $modulePrivilege->setModule($module);
                 $modulePrivilege->setPrivilege($privilege);
                 $manager->persist($modulePrivilege);
                 $manager->flush();

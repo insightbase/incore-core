@@ -18,10 +18,10 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
 {
     public function load(ObjectManager $manager): void
     {
-        $exist = $manager->getRepository(Module::class)
+        $module = $manager->getRepository(Module::class)
             ->findOneBy(['system_name' => 'translates'])
         ;
-        if (!$exist) {
+        if (!$module) {
             $module = (new Module())
                 ->setSystemName('translates')
                 ->setName('Překlady')
@@ -39,9 +39,9 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {
-            if (!$modulePrivilegeRepository->findOneBy(['module' => $exist, 'privilege' => $privilege])) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $module, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
-                $modulePrivilege->setModule($exist);
+                $modulePrivilege->setModule($module);
                 $modulePrivilege->setPrivilege($privilege);
                 $manager->persist($modulePrivilege);
                 $manager->flush();
@@ -55,9 +55,9 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
         ];
         $permissionRepository = $manager->getRepository(Permission::class);
         foreach ($access as $privilege) {
-            if (!$permissionRepository->findOneBy(['module' => $exist, 'privilege' => $privilege, 'role' => $role])) {
+            if (!$permissionRepository->findOneBy(['module' => $module, 'privilege' => $privilege, 'role' => $role])) {
                 $permission = new Permission();
-                $permission->setModule($exist);
+                $permission->setModule($module);
                 $permission->setPrivilege($privilege);
                 $permission->setRole($role);
                 $manager->persist($permission);
