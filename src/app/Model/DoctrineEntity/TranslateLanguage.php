@@ -23,4 +23,22 @@ class TranslateLanguage implements Entity
     #[ORM\ManyToOne(targetEntity: Translate::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Translate $translate;
+
+    public function setValue(string $value): self
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    public function setLanguage(Language $language): self
+    {
+        $this->language = $language;
+        return $this;
+    }
+
+    public function setTranslate(Translate $translate): self
+    {
+        $this->translate = $translate;
+        return $this;
+    }
 }

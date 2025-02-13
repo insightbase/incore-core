@@ -1,0 +1,231 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Model\DoctrineEntity\Fixtures;
+
+use App\Model\DoctrineEntity\Language;
+use App\Model\DoctrineEntity\Translate;
+use App\Model\DoctrineEntity\TranslateLanguage;
+
+class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implements \Doctrine\Common\DataFixtures\FixtureInterface, \Doctrine\Common\DataFixtures\DependentFixtureInterface
+{
+	private array $translates = [
+		'my_account' => 'Můj účet',
+		'languages' => 'Jazyky',
+		'new_language' => 'Nový jazyk',
+		'edit_language' => 'Upravit jazyk',
+		'change_password' => 'Změna hesla',
+		'changePassword_checkEmail' => 'Zadejte email',
+		'changePassword_clickOnLinkInEmail' => 'Klikněte na odkaz, který Vám byl poslán emailem',
+		'changePassword_forSetNewPassword' => 'Pro nastavení nového hesla',
+		'changePassword_notReceived' => 'Pokud email nepřišel',
+		'changePassword_sendAgain' => 'Poslat znovu',
+		'forgotPasword_input_email' => 'Email',
+		'forgotPasword_input_emailForReset' => 'Email pro resetování hesla',
+		'header_login' => 'Přihlášení',
+		'login_forgotPassword' => 'Zapomenuté heslo',
+		'changePassword_changed' => 'Heslo změněno',
+		'changePassword_done' => 'Hotovo - heslo bylo změněno',
+		'changePassword_safety' => 'Myslíme na Vaši bezpečnost',
+		'changePassword_linkToLogin' => 'Přihlásit se',
+		'header_resetPassword' => 'Reset hesla',
+		'resetPassword_newPassword' => 'Nové heslo',
+		'header_translates' => 'Překlady',
+		'header_translateKey%key%' => 'Překlad klíče %key%',
+		'flash_userNotFound' => 'Uživatel nebyl nalezen',
+		'flash_badPassword' => 'Špatné heslo',
+		'flash_fileSaveFailed' => 'Soubor se nepodařilo uložit',
+		'flash_internalError' => 'Vnitřní chyba, kontaktujte administrátora',
+		'id' => 'ID',
+		'column_name' => 'Jméno',
+		'column_locale' => 'Locale',
+		'menu_edit' => 'Upravit',
+		'menu_delete' => 'Smazat',
+		'submit_create' => 'Vytvořit',
+		'input_name' => 'Jméno',
+		'input_locale' => 'Locale',
+		'input_flag' => 'Vlajka',
+		'submit_edit' => 'Upravit',
+		'flash_languageNotFound' => 'Jazyk nebyl nalezen',
+		'flash_languageDeleted' => 'Jazyk byl smazán',
+		'menu_newLanguage' => 'Nový jazyk',
+		'flash_languageUpdated' => 'Jazyk upraven',
+		'flash_languageCreated' => 'Jazyk vytvořen',
+		'input_newPassword' => 'Nové heslo',
+		'input_newPasswordCheck' => 'Nové heslo (kontrola)',
+		'error_bothPasswordsMustBeSame' => 'Obě hesla musí být stejná',
+		'submit_changePassword' => 'Změnit heslo',
+		'input_firstName' => 'Jméno',
+		'input_lastName' => 'Příjmení',
+		'input_email' => 'Email',
+		'error_emailAlreadyExists' => 'Takový email už existuje',
+		'input_avatar' => 'Avatar',
+		'input_update' => 'Upravit',
+		'flash_passwordChanged' => 'Heslo změněno',
+		'flash_updated' => 'Upraveno',
+		'input_confimNewPassword' => 'Potvrzení nového hesla',
+		'error_bothPasswordMusetBeSame' => 'Obě hesla musí být stejná',
+		'submit_set' => 'Nastavit',
+		'submit_continue' => 'Pokračovat',
+		'input_password' => 'Heslo',
+		'input_rememberMe' => 'Zapamatovat si mě',
+		'submit_logIn' => 'Přihlásit se',
+		'flash_hasNotFound' => 'Hash nebyl nalezen',
+		'flash_linkNotValid' => 'Odkaz je neplatný',
+		'flash_userLoggedOut' => 'Uživatel odhlášen',
+		'column_key' => 'Klíč',
+		'menu_translate' => 'Přeložit',
+		'submit_translate' => 'Přeložit',
+		'menu_synchronize' => 'Synchronizovat',
+		'flash_translateSet' => 'Překlad nastaven',
+		'flash_keyNotFound' => 'Takový klíč nebyl nalezen',
+		'paginator_show %perPage% from %count%' => 'Zobrazuji %perPage% z %count%',
+		'button_export' => 'Export',
+		'input_search' => 'Hledat',
+		'%itemFrom%-%itemTo% z %count%' => null,
+		'flash_badLink' => 'Špatný odkaz',
+		'header_contactForms' => 'Formuláře',
+		'header_newForm' => 'Nový formulář',
+		'header_formEdit' => 'Editace formuláře',
+		'header_formRecords %name%' => 'Záznamy formuláře %name%',
+		'header_newUser' => 'Nový uživatel',
+		'inputType_text' => 'Text',
+		'inputType_checkbox' => 'Checkbox',
+		'inputType_textArea' => 'TextArea',
+		'inputType_email' => 'Email',
+		'inputType_select' => 'Select',
+		'flash_formNotFound' => 'Formulář nebyl nalezen',
+		'flash_formUpdated' => 'Formulář upraven',
+		'flash_formCreated' => 'Formulář vytvořen',
+		'menu_newForm' => 'Nový ',
+		'column_countNotSolved' => 'Nevyřešených',
+		'menu_records' => 'Záznamy',
+		'menu_update' => 'Upravit',
+		'column_dateSend' => 'Datum odeslání',
+		'column_solved' => 'Vyřešeno',
+		'input_type' => 'Typ',
+		'input_required' => 'Povinný',
+		'input_showInGrid' => 'Zobrazovat ve výpisu',
+		'button_addItem' => 'Přidat',
+		'input_label' => 'Label',
+		'button_addNewRow' => 'Přidat nový',
+		'header_users' => 'Uživatelé',
+		'Editace uživatele' => null,
+		'column_firstname' => 'Jméno',
+		'column_lastname' => 'Příjmení',
+		'column_email' => 'Email',
+		'input_firstname' => 'Jméno',
+		'input_lastname' => 'Příjmení',
+		'submit_update' => 'Upravit',
+		'menu_newUser' => 'Nový',
+		'flash_userUpdated' => 'Uživatel upraven',
+		'flash_userCreated' => 'Uživatel vytvořen',
+		'column_is_default' => 'Výchozí',
+		'flash_default_language_required' => 'Musí být nastaven výchozí jazyk',
+		'column_url' => 'URL',
+		'column_is_active' => 'Aktivní',
+		'input_url' => 'URL',
+		'input_url_max_length_%length%' => 'Maximální délka je %length%',
+		'flash_default_language_cannot_be_deactivate' => 'Výchozí jazyk nemůže být deaktivován',
+		'header_modules' => null,
+		'header_editModule' => null,
+		'header_roleAuthorization' => null,
+		'header_role' => null,
+		'header_newRole' => null,
+		'header_roleEdit' => null,
+		'header_roleAuthorizationSet' => null,
+		'header_setting' => null,
+		'header_setting_test_email' => null,
+		'column_presenter' => null,
+		'input_systemName' => null,
+		'input_presenter' => null,
+		'input_icon' => null,
+		'input_parent' => null,
+		'flash_moduleNotFound' => null,
+		'flash_module_updated' => null,
+		'menu_authorization' => null,
+		'column_privileges' => null,
+		'Nastavit' => null,
+		'input_privileges' => null,
+		'send_update' => null,
+		'send_create' => null,
+		'input_system_name' => null,
+		'flash_roleAuthorizationSet' => null,
+		'flash_roleCreated' => null,
+		'flash_cannotUpdateSystematicRole' => null,
+		'menu_newRole' => null,
+		'flash_roleNotFound' => null,
+		'input_receiver' => null,
+		'input_message' => null,
+		'send_send' => null,
+		'field_general' => null,
+		'input_favicon' => null,
+		'input_shareimage' => null,
+		'field_email' => null,
+		'input_email_sender' => null,
+		'input_smtp_host' => null,
+		'input_smtp_username' => null,
+		'input_smtp_password' => null,
+		'field_recaptcha' => null,
+		'input_recaptcha_secret_key' => null,
+		'input_recaptcha_site_key' => null,
+		'flash_email_sended' => null,
+		'flash_setting_updated' => null,
+		'menu_send_test_email' => null,
+		'flash_synchronizeComplete' => null,
+		'flash_FormDeleted' => null,
+		'header_enumerationEdit' => null,
+		'header_enumerationEditItem' => null,
+		'header_newItemForm' => null,
+		'header_enumerationNew' => null,
+		'header_enumeration' => null,
+		'inputType_image' => null,
+		'menu_new' => null,
+		'column_id' => null,
+		'flash_enumerationItemValueUpdated' => null,
+		'flash_enumerationItemDeleted' => null,
+		'flash_enumerationItemCreated' => null,
+		'menu_newItem' => null,
+		'flash_enumerationUpdated' => null,
+		'flash_enumerationNotFound' => null,
+		'flash_enumerationDeleted' => null,
+		'flash_enumerationCreated' => null,
+		'flash_enumerationItemNotFound' => null,
+		'input_logo' => null,
+		'input_logo_small' => null,
+		'input_logo_dark' => null,
+		'input_logo_dark_small' => null,
+	];
+
+
+	public function load(\Doctrine\Persistence\ObjectManager $manager): void
+	{
+		$language = $this->getReference(LanguageFixtures::LANG_CS, Language::class);
+		        foreach($this->translates as $key => $value){
+		            $exist = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
+		            if($exist === null){
+		                $translate = new Translate();
+		                $translate->setKey($key);
+		                $manager->persist($translate);
+
+		                if($value !== null){
+		                    $translateLanguage = new TranslateLanguage();
+		                    $translateLanguage->setLanguage($language);
+		                    $translateLanguage->setTranslate($translate);
+		                    $translateLanguage->setValue($value);
+		                    $manager->persist($translateLanguage);
+		                }
+		            }
+		        }
+		        $manager->flush();
+	}
+
+
+	public function getDependencies(): array
+	{
+		return [
+		    LanguageFixtures::class,
+		];
+	}
+}

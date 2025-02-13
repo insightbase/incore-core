@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Component\Translator\Translator;
 use App\Core\DbParameterBag;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -13,6 +14,8 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\DI\Container;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +27,8 @@ class GenerateDBCommand extends Command
 {
     public function __construct(
         private readonly DbParameterBag $dbParameterBag,
-        private readonly Container $container,
+        private readonly Container      $container,
+        private readonly Storage        $storage,
     ) {
         parent::__construct();
     }
@@ -97,6 +101,10 @@ class GenerateDBCommand extends Command
         }
         $executor = new ORMExecutor($entityManager);
         $executor->execute($loader->getFixtures(), true);
+
+        $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
+        $cache->clean([$cache::All => true]);
+
 
         return self::SUCCESS;
     }

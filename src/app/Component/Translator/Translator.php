@@ -11,7 +11,7 @@ use Nette\Database\Table\ActiveRow;
 
 class Translator implements \Nette\Localization\Translator
 {
-    public const CACHE_NAMESPACE = 'translator';
+    public const string CACHE_NAMESPACE = 'translator';
     private Cache $cache;
 
     /**

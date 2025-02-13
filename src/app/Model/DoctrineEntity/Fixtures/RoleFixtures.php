@@ -23,6 +23,7 @@ class RoleFixtures extends Fixture implements FixtureInterface
                 ->setIsSystemic(true)
             ;
             $manager->persist($role);
+            $manager->flush();
         }
 
         $admin = $manager->getRepository(Role::class)->findOneBy(['system_name' => RoleEnum::ADMIN->value]);

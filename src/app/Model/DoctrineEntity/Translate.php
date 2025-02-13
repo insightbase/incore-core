@@ -13,6 +13,12 @@ class Translate implements Entity
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: '`key`', type: 'string', length: 255)]
     private string $key;
+
+    public function setKey(string $key): self
+    {
+        $this->key = $key;
+        return $this;
+    }
 }

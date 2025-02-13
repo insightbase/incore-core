@@ -57,4 +57,12 @@ readonly class Translate implements Model
     {
         return $this->getTable()->where('NOT key', $keys);
     }
+
+    /**
+     * @return Selection<TranslateEntity>
+     */
+    public function getAll():Selection
+    {
+        return $this->getTable();
+    }
 }
