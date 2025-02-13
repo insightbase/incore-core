@@ -25,7 +25,7 @@ class User implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     private string $password;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: Role::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Role $role;
 
