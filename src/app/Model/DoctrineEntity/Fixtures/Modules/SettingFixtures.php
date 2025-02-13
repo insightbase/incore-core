@@ -32,13 +32,13 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
             ->findOneBy(['system_name' => 'setting_setting'])
         ;
         if (!$settingSetting) {
-            $module = (new Module())
+            $settingSetting = (new Module())
                 ->setSystemName('setting_setting')
                 ->setName('Obecné')
                 ->setPresenter('Setting')
                 ->setParent($setting)
             ;
-            $manager->persist($module);
+            $manager->persist($settingSetting);
             $manager->flush();
         }
 
@@ -60,13 +60,13 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
             ->findOneBy(['system_name' => 'setting_module'])
         ;
         if (!$settingModule) {
-            $module = (new Module())
+            $settingModule = (new Module())
                 ->setSystemName('setting_module')
                 ->setName('Moduly')
                 ->setPresenter('Module')
                 ->setParent($setting)
             ;
-            $manager->persist($module);
+            $manager->persist($settingModule);
             $manager->flush();
         }
 
