@@ -19,12 +19,12 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
             ->findOneBy(['system_name' => 'users'])
         ;
         if (!$users) {
-            $module = (new Module())
+            $users = (new Module())
                 ->setSystemName('users')
                 ->setName('Uživatelé a role')
                 ->setIcon('ki-filled ki-users text-lg')
             ;
-            $manager->persist($module);
+            $manager->persist($users);
             $manager->flush();
         }
 
