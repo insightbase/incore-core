@@ -67,7 +67,11 @@ trait StandardTemplateTrait
     {
         $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel): void {
             $this->template->setTranslator($this->translator);
-            $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir.'/incore/version.txt'));
+            if(file_exists($parameterBag->wwwDir.'/incore/version.txt')) {
+                $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir . '/incore/version.txt'));
+            }else{
+                $this->template->webpackVersion = md5(time());
+            }
             $this->template->submenuFactory = $submenuFactory;
             $this->template->layoutFile = dirname(__FILE__).'/../../../Admin/@layout.latte';
             $this->template->basicFormFile = dirname(__FILE__).'/../Form/basic-form.latte';
