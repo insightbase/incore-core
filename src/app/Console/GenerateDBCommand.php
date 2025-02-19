@@ -4,7 +4,7 @@ namespace App\Console;
 
 use App\Component\Translator\Translator;
 use App\Core\DbParameterBag;
-use App\Service\GenerateEntitiesFacade;
+use App\Service\Admin\GenerateEntitiesFacade;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;

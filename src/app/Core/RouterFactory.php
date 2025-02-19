@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-use App\Model\Language;
+use App\Model\Admin\Language;
 use Nette;
 use Nette\Application\Routers\RouteList;
 
@@ -31,7 +31,15 @@ final class RouterFactory
         $langPrefix = sprintf('[<lang=%s %s>/]', $default->url, implode('|', $langs));
 
         $router = new RouteList();
-        $router->addRoute($langPrefix.'<presenter>/<action>[/<id>]', 'Home:default');
+
+        $router
+            ->withModule('Admin')
+                ->addRoute($langPrefix.'admin/<presenter>/<action>[/<id>]', 'Home:default')
+            ->end()
+            ->withModule('Front')
+            ->addRoute($langPrefix.'<presenter>/<action>[/<id>]', 'Home:default')
+            ->end()
+        ;
 
         return $router;
     }

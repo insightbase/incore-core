@@ -11,7 +11,7 @@ services:
     routerFactory: App\Core\RouterFactory
     router: @routerFactory::createRouter()
 
-    authorizatorFactory: App\Core\AuthorizatorFactory
+    authorizatorFactory: App\Core\Admin\AuthorizatorFactory
     authorizator: @authorizatorFactory::create()
 
     - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%)
@@ -21,7 +21,7 @@ services:
     - App\Component\Translator\Extraxtor\NetteTranslatorExtractor
 
     -
-        create: App\Core\Authenticator
+        create: App\Core\Admin\Authenticator
         autowired: self
 
 search:

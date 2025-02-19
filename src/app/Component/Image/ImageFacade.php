@@ -18,10 +18,10 @@ use Nette\Utils\ImageColor;
 readonly class ImageFacade
 {
     public function __construct(
-        private ParameterBag $parameterBag,
-        private \App\Model\Image $imageModel,
-        private Container $container,
-        private Explorer $explorer,
+        private ParameterBag           $parameterBag,
+        private \App\Model\Admin\Image $imageModel,
+        private Container              $container,
+        private Explorer               $explorer,
     ) {}
 
     /**

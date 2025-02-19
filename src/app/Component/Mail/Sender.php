@@ -4,9 +4,9 @@ namespace App\Component\Mail;
 
 use App\Component\EncryptFacade;
 use App\Component\Mail\Exception\SystemNameNotFoundException;
-use App\Model\Email;
-use App\Model\EmailLog;
-use App\Model\Setting;
+use App\Model\Admin\Email;
+use App\Model\Admin\EmailLog;
+use App\Model\Admin\Setting;
 use App\UI\Accessory\ParameterBag;
 use Nette\Mail\Message;
 use Nette\Mail\SendException;

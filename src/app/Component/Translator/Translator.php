@@ -2,9 +2,9 @@
 
 namespace App\Component\Translator;
 
+use App\Model\Admin\Language;
+use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
-use App\Model\Language;
-use App\Model\TranslateLanguage;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;

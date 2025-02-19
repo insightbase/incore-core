@@ -3,13 +3,13 @@
 namespace App\Component\Image\Form;
 
 use App\Component\Translator\Translator;
-use App\UI\Accessory\Form\Form;
+use App\UI\Accessory\Admin\Form\Form;
 
 readonly class FormFactory
 {
     public function __construct(
-        private \App\UI\Accessory\Form\FormFactory $formFactory,
-        private Translator                         $translator,
+        private \App\UI\Accessory\Admin\Form\FormFactory $formFactory,
+        private Translator                               $translator,
     )
     {
     }

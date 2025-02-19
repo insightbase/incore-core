@@ -3,18 +3,14 @@
 namespace App\Component\Image;
 
 use App\Component\Translator\Translator;
-use App\Model\Image;
-use App\UI\Accessory\Form\Form;
+use App\Model\Admin\Image;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
-use Latte\Essential\TranslatorExtension;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Control;
-use Nette\Bridges\ApplicationLatte\LatteFactory;
 use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Html;
-use Nette\Utils\Strings;
 
 /**
  * @property ImageTemplate $template

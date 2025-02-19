@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Service\GenerateEntitiesFacade;
+use App\Service\Admin\GenerateEntitiesFacade;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\Utils\DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;

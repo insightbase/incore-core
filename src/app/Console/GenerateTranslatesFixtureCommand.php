@@ -2,11 +2,10 @@
 
 namespace App\Console;
 
-use App\Component\Translator\Translator;
+use App\Model\Admin\Language;
+use App\Model\Admin\Translate;
+use App\Model\Admin\TranslateLanguage;
 use App\Model\DoctrineEntity\Fixtures\LanguageFixtures;
-use App\Model\Language;
-use App\Model\Translate;
-use App\Model\TranslateLanguage;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;

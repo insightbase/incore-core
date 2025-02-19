@@ -2,8 +2,6 @@
 
 namespace App\Component\Image;
 
-use App\Model\Entity\ImageEntity;
-use App\UI\Accessory\Form\Form;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Utils\Image;
 
