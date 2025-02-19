@@ -1,5 +1,5 @@
 {define basicForm, $form}
-    <form n:name=$form class="flex flex-col gap-6 max-w-2xl">
+    <form n:name=$form n:class="'flex flex-col gap-6 max-w-2xl', $form->sendByAjax ? 'ajax'">
         <div>
             <ul class="errors" n:ifcontent>
                 <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>

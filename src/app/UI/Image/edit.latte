@@ -1,0 +1,10 @@
+{templateType App\UI\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}{_'header_edit_image'}{/block}
+
+{block content}
+    {control image, $imageEntity->id, 100, 100}
+    {embed basicForm, formEdit}{/embed}
+{/block}

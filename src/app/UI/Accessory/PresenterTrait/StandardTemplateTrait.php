@@ -2,13 +2,19 @@
 
 namespace App\UI\Accessory\PresenterTrait;
 
+use App\Component\Image\Exception\ImageNotFoundException;
+use App\Component\Image\Form\EditFormData;
+use App\Component\Image\Form\FormFactory;
+use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
 use App\Component\Image\ImageFacade;
 use App\Component\Translator\Translator;
 use App\Core\Authenticator;
+use App\Core\Enum\DefaultSnippetsEnum;
 use App\Model\Language;
 use App\Model\Module;
 use App\Model\Setting;
+use App\UI\Accessory\Form\Form;
 use App\UI\Accessory\MainMenu\MainMenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Accessory\Submenu\SubmenuFactory;
@@ -31,10 +37,28 @@ trait StandardTemplateTrait
     public MainMenuFactory $mainMenuFactory;
     #[Inject]
     public ImageControlFactory $imageControlFactory;
+    #[Inject]
+    public FormFactory $formFactoryEditImage;
+    #[Inject]
+    public ImageFacade $imageFacade;
 
-    protected function createComponentImage():ImageControlFactory
+    protected function createComponentEditImageForm():Form{
+        $form = $this->formFactoryEditImage->create();
+        $form->onSuccess[] = function(Form $form, EditFormData $data):void{
+            try {
+                $this->imageFacade->edit($data);
+                $this->flashMessage($this->translator->translate('flash_imageUpdated'));
+            }catch (ImageNotFoundException $e){
+                $this->flashMessage($this->translator->translate('flash_imageNotFound'), 'error');
+            }
+            $this->redrawControl(DefaultSnippetsEnum::Flashes->value);
+        };
+        return $form;
+    }
+
+    protected function createComponentImage():ImageControl
     {
-        return $this->imageControlFactory;
+        return $this->imageControlFactory->create();
     }
 
     public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade,
@@ -43,7 +67,7 @@ trait StandardTemplateTrait
     {
         $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel): void {
             $this->template->setTranslator($this->translator);
-            $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir.'/dist/version.txt'));
+            $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir.'/incore/version.txt'));
             $this->template->submenuFactory = $submenuFactory;
             $this->template->layoutFile = dirname(__FILE__).'/../../@layout.latte';
             $this->template->basicFormFile = dirname(__FILE__).'/../Form/basic-form.latte';
@@ -69,6 +93,7 @@ trait StandardTemplateTrait
             if ($storage instanceof SessionStorage) {
                 $storage->setNamespace('admin');
             }
+            $this->template->editedImage = null;
             $this->getUser()->setAuthenticator($authenticator);
         };
     }

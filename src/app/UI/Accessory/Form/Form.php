@@ -10,9 +10,14 @@ use Nette;
 
 class Form extends Nette\Application\UI\Form
 {
-    public const LANG_CHANGE_ATTRIBUTE = 'langChange';
+    public const string LANG_CHANGE_ATTRIBUTE = 'langChange';
 
     private array $defaultTranslates = [];
+    public bool $sendByAjax = false {
+        get {
+            return $this->sendByAjax;
+        }
+    }
 
     public function __construct(
         private readonly DropzoneInputFactory $dropzoneInputFactory,
@@ -53,7 +58,7 @@ class Form extends Nette\Application\UI\Form
 
     public function addDropzone(string $name, string $label): DropzoneInput
     {
-        return $this[$name] = $this->dropzoneInputFactory->create($label);
+        return $this[$name] = $this->dropzoneInputFactory->create($label)->addRule($this::Integer);
     }
 
     /**
@@ -66,6 +71,12 @@ class Form extends Nette\Application\UI\Form
         }
         $this->defaultTranslates[$language->id] = $this->defaultTranslates[$language->id] + $values;
 
+        return $this;
+    }
+
+    public function sendByAjax(bool $sendByAjax = true):self
+    {
+        $this->sendByAjax = $sendByAjax;
         return $this;
     }
 

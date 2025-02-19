@@ -4,6 +4,8 @@ namespace App\Console;
 
 use App\Component\Translator\Translator;
 use App\Core\DbParameterBag;
+use App\Service\GenerateEntitiesFacade;
+use App\UI\Accessory\ParameterBag;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
@@ -26,9 +28,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateDBCommand extends Command
 {
     public function __construct(
-        private readonly DbParameterBag $dbParameterBag,
-        private readonly Container      $container,
-        private readonly Storage        $storage,
+        private readonly DbParameterBag         $dbParameterBag,
+        private readonly Container              $container,
+        private readonly Storage                $storage,
+        private readonly GenerateEntitiesFacade $generateEntitiesFacade,
+        private readonly ParameterBag           $parameterBag,
     ) {
         parent::__construct();
     }
@@ -105,6 +109,9 @@ class GenerateDBCommand extends Command
         $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
         $cache->clean([$cache::All => true]);
 
+        if($this->parameterBag->autoGenerateEntities) {
+            $this->generateEntitiesFacade->generate($output);
+        }
 
         return self::SUCCESS;
     }

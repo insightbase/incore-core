@@ -2,59 +2,138 @@
 
 namespace App\Component\Image;
 
+use App\Component\Image\Exception\ImageNotFoundException;
+use App\Component\Image\Form\EditFormData;
+use App\Model\Entity\ImageEntity;
 use App\UI\Accessory\ParameterBag;
-use Nette\Application\LinkGenerator;
+use Doctrine\ORM\Mapping\Table;
+use Nette\Database\Explorer;
+use Nette\Database\Table\ActiveRow;
+use Nette\DI\Container;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Html;
+use Nette\Utils\Finder;
 use Nette\Utils\Image;
 use Nette\Utils\ImageColor;
 
-class ImageFacade
+readonly class ImageFacade
 {
     public function __construct(
         private ParameterBag $parameterBag,
-        private LinkGenerator $linkGenerator,
+        private \App\Model\Image $imageModel,
+        private Container $container,
+        private Explorer $explorer,
     ) {}
 
-    public function getPreviewName(string $fileName, ?int $width = null, ?int $height = null): string
+    /**
+     * @return array<int, ImageEntity>
+     */
+    public function getUsedImages():array
     {
-        $fileName = explode('_', $fileName);
-        $newFileName = $fileName[0];
-        unset($fileName[0]);
-        $newFileName .= '_'.(null === $width ? 'null' : $width).'_'.(null === $height ? 'null' : $height).'_'.implode($fileName);
+        $images = [];
 
-        return $newFileName;
-    }
-
-    public function preview(string $fileName, ?int $width = null, ?int $height = null): string
-    {
-        $previewFile = $this->parameterBag->previewDir.'/'.$this->getPreviewName($fileName, null === $width ? 0 : $width, null === $height ? 0 : $height);
-        if (file_exists($previewFile)) {
-            return $this->parameterBag->previewWwwDir.'/'.$this->getPreviewName($fileName, null === $width ? 0 : $width, null === $height ? 0 : $height);
+        $reflection = new \ReflectionClass($this->container);
+        $property = $reflection->getProperty('wiring');
+        $property->setAccessible(true);
+        $services = $property->getValue($this->container);
+        foreach (array_keys($services) as $class) {
+            $reflection = new \ReflectionClass($class);
+            if ($reflection->getAttributes(Table::class)) {
+                foreach ($reflection->getProperties() as $property) {
+                    if (str_contains($property->getType()->getName(), 'DoctrineEntity')) {
+                        if($property->getType()->getName() === \App\Model\DoctrineEntity\Image::class){
+                            foreach($reflection->getAttributes() as $attribute){
+                                if($attribute->getName() === Table::class){
+                                    $table = $attribute->getArguments()['name'];
+                                    $model = $this->explorer->table($table)->where($property->getName() . '_id IS NOT NULL');
+                                    foreach($model as $row){
+                                        $images[$row[$property->getName() . '_id']] = $row->ref('image', $property->getName() . '_id');
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        return $this->linkGenerator->link('Image:preview', ['file' => $fileName, 'width' => $width, 'height' => $height]);
+        return $images;
     }
 
-    public function generatePreview(string $fileName, ?int $width = null, ?int $height = null): Image
-    {
-        if (!file_exists($this->parameterBag->uploadDir.'/'.$fileName)) {
-            throw new Exception('File "'.$this->parameterBag->uploadDir.'/'.$fileName.'" not found');
+    /**
+     * @param EditFormData $data
+     * @return void
+     * @throws ImageNotFoundException
+     */
+    public function edit(EditFormData $data):void{
+        $image = $this->imageModel->get($data->image_id);
+        if($image === null){
+            throw new ImageNotFoundException();
         }
-        $image = Image::fromFile($this->parameterBag->uploadDir.'/'.$fileName);
+        $updateData = (array)$data;
+        unset($updateData['image_id']);
+        $image->update($updateData);
+    }
+
+    /**
+     * @param ImageEntity $image
+     * @param int|null $width
+     * @param int|null $height
+     * @return string
+     */
+    public function getPreviewName(ActiveRow $image, ?int $width = null, ?int $height = null): string
+    {
+        return (null === $width ? 'null' : $width).'_'.(null === $height ? 'null' : $height).'_'.$image->saved_name;
+    }
+
+    /**
+     * @param ImageEntity $image
+     * @param int|null $width
+     * @param int|null $height
+     * @return Image
+     * @throws \Nette\Utils\ImageException
+     * @throws \Nette\Utils\UnknownImageFileException
+     */
+    public function generatePreview(ActiveRow $image, ?int $width = null, ?int $height = null): Image
+    {
+        if (!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)) {
+            throw new \Exception('File "'.$this->parameterBag->uploadDir.'/'.$image->saved_name.'" not found');
+        }
+        $imageNette = Image::fromFile($this->parameterBag->uploadDir.'/'.$image->saved_name);
         if (null === $width && null === $height) {
-            $image->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($fileName, $width, $height));
+            $imageNette->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height));
 
-            return $image;
+            return $imageNette;
         }
-        $image->resize($width, $height, $image::ShrinkOnly);
-        $image->sharpen();
-        $image->saveAlpha(true);
+        $imageNette->resize($width, $height, $imageNette::ShrinkOnly);
+        $imageNette->sharpen();
+        $imageNette->saveAlpha(true);
         $container = Image::fromBlank($width, $height, ImageColor::rgb(255, 255, 255));
-        $container->place($image, '50%', '50%');
+        $container->place($imageNette, '50%', '50%');
         FileSystem::createDir($this->parameterBag->previewDir);
-        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($fileName, $width, $height));
+        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height));
 
         return $container;
+    }
+
+    public function deleteUnused():void
+    {
+        $used = $this->getUsedImages();
+        foreach($this->imageModel->getTable() as $image){
+            if(!array_key_exists($image->id, $used)){
+                $image->delete();
+            }
+        }
+
+        $usedHashes = [];
+        foreach($used as $image){
+            $usedHashes[] = $image->saved_name;
+        }
+
+        foreach(Finder::findFiles('*.*')->in($this->parameterBag->uploadDir) as $file){
+            if(!in_array($file->getFilename(), $usedHashes)){
+                FileSystem::delete($file);
+            }
+        }
     }
 }

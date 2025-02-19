@@ -19,8 +19,9 @@ class Language implements Entity
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $locale;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $flag = null;
+    #[ORM\ManyToOne(targetEntity: Image::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Image $flag = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $is_default = false;

@@ -1,7 +1,12 @@
 {templateType App\Component\Image\ImageTemplate}
 
-{if $svg !== null}
-    {$svg|noescape}
-{else}
-    <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" />
-{/if}
+<div class="imageContainer" n:tag-if="$showSetting">
+    {if $svg !== null}
+        {$svg|noescape}
+    {else}
+        <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" n:class="$class !== null ? $class" />
+    {/if}
+    {if $showSetting}
+        <a class="imageUpdate ajax" n:href="updateEditImageForm!, $fileId" data-modal-toggle="#image-update" data-naja-history="off"><i class="ki-filled ki-setting-2"></i></a>
+    {/if}
+</div>

@@ -6,6 +6,6 @@ class NewFormData
 {
     public string $name;
     public string $locale;
-    public ?string $flag;
+    public ?int $flag_id;
     public string $url;
 }

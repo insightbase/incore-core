@@ -4,12 +4,12 @@ namespace App\UI\Setting\Form;
 
 class EditFormData
 {
-    public ?string $favicon;
-    public ?string $logo;
-    public ?string $logo_dark;
-    public ?string $logo_small;
-    public ?string $logo_dark_small;
-    public ?string $shareimage;
+    public ?int $favicon_id;
+    public ?int $logo_id;
+    public ?int $logo_dark_id;
+    public ?int $logo_small_id;
+    public ?int $logo_dark_small_id;
+    public ?int $shareimage_id;
     public ?string $email;
     public ?string $email_sender;
     public ?string $smtp_host;
@@ -17,4 +17,5 @@ class EditFormData
     public ?string $smtp_password;
     public ?string $recaptcha_secret_key;
     public ?string $recaptcha_site_key;
+    public ?int $max_image_resolution;
 }

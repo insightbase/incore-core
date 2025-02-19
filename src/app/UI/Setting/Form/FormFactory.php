@@ -33,22 +33,22 @@ readonly class FormFactory
         $form = $this->formFactory->create();
 
         $form->addGroup($this->translator->translate('field_general'));
-        $form->addDropzone('logo', $this->translator->translate('input_logo'))
+        $form->addDropzone('logo_id', $this->translator->translate('input_logo'))
             ->setNullable()
         ;
-        $form->addDropzone('logo_small', $this->translator->translate('input_logo_small'))
+        $form->addDropzone('logo_small_id', $this->translator->translate('input_logo_small'))
             ->setNullable()
         ;
-        $form->addDropzone('logo_dark', $this->translator->translate('input_logo_dark'))
+        $form->addDropzone('logo_dark_id', $this->translator->translate('input_logo_dark'))
             ->setNullable()
         ;
-        $form->addDropzone('logo_dark_small', $this->translator->translate('input_logo_dark_small'))
+        $form->addDropzone('logo_dark_small_id', $this->translator->translate('input_logo_dark_small'))
             ->setNullable()
         ;
-        $form->addDropzone('favicon', $this->translator->translate('input_favicon'))
+        $form->addDropzone('favicon_id', $this->translator->translate('input_favicon'))
             ->setNullable()
         ;
-        $form->addDropzone('shareimage', $this->translator->translate('input_shareimage'))
+        $form->addDropzone('shareimage_id', $this->translator->translate('input_shareimage'))
             ->setNullable()
         ;
 
@@ -76,6 +76,10 @@ readonly class FormFactory
         $form->addText('recaptcha_site_key', $this->translator->translate('input_recaptcha_site_key'))
             ->setNullable()
         ;
+
+        $form->addGroup($this->translator->translate('field_images'));
+        $form->addInteger('max_image_resolution', $this->translator->translate('input_maxImageResolution'))
+            ->setNullable();
 
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));

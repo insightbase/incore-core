@@ -3,6 +3,7 @@
 namespace App\UI;
 
 use App\Component\Image\ImageFacade;
+use App\Model\Entity\ImageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\ModuleEntity;
 use App\Model\Entity\SettingEntity;
@@ -50,4 +51,8 @@ class BaseTemplate extends Template
      * @var ?SettingEntity
      */
     public ?ActiveRow $setting;
+    /**
+     * @var ?ImageEntity
+     */
+    public ?ActiveRow $editedImage = null;
 }

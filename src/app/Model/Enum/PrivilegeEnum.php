@@ -12,4 +12,5 @@ enum PrivilegeEnum: string
     case New = 'new';
     case Edit = 'edit';
     case Default = 'default';
+    case DeleteUnused = 'deleteUnused';
 }

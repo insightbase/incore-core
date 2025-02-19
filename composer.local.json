@@ -1,0 +1,48 @@
+{
+  "version": "0.0.1",
+  "name": "incore/core",
+  "description": "Main classes for inCore system",
+  "autoload": {
+    "classmap": ["src/"]
+  },
+  "authors": [
+    {
+      "name": "insight base s.r.o.",
+      "email": "info@insightbase.cz"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">= 8.4",
+    "nette/application": "^3.2.3",
+    "nette/bootstrap": "^3.2",
+    "nette/caching": "^3.2",
+    "nette/database": "^3.2",
+    "nette/di": "^3.2",
+    "nette/forms": "^3.2",
+    "nette/http": "^3.3",
+    "nette/mail": "^4.0",
+    "nette/robot-loader": "^4.0",
+    "nette/security": "^3.2",
+    "nette/utils": "^4.0",
+    "latte/latte": "^3.0",
+    "tracy/tracy": "^2.10",
+    "contributte/console": "^0.10.1",
+    "doctrine/orm": "^3.3",
+    "symfony/cache": "^7.2",
+    "doctrine/doctrine-fixtures-bundle": "^4.0",
+    "incore/users": "@dev",
+    "incore/datagrid": "@dev"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../incore-datagrid"
+    },
+    {
+      "type": "path",
+      "url": "../incore-users"
+    }
+  ]
+}

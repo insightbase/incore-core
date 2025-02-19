@@ -13,6 +13,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $presenter
  * @property-read ?string $icon
  * @property-read ?ModuleEntity $parent
+ * @property-read ?int $parent_id
  */
 class ModuleEntity extends ActiveRow
 {

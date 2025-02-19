@@ -8,7 +8,7 @@ use App\UI\Accessory\Form\Form;
 use App\UI\Accessory\Form\FormFactory;
 use Nette\Forms\Controls\BaseControl;
 
-class MyAccountFormFactory
+readonly class MyAccountFormFactory
 {
     public function __construct(
         private FormFactory $formFactory,
@@ -52,7 +52,7 @@ class MyAccountFormFactory
             ->addRule([$this, 'validateEmail'], $this->translator->translate('error_emailAlreadyExists'))
         ;
 
-        $form->addDropzone('avatar', $this->translator->translate('input_avatar'))
+        $form->addDropzone('avatar_id', $this->translator->translate('input_avatar'))
             ->setNullable()
         ;
         $form->addSubmit('send', $this->translator->translate('input_update'));
@@ -61,7 +61,7 @@ class MyAccountFormFactory
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
             'email' => $user->email,
-            'avatar' => $user->avatar,
+            'avatar_id' => $user->avatar_id,
         ]);
 
         return $form;

@@ -7,7 +7,7 @@ use App\UI\MyAccount\Form\FormData;
 use App\UI\MyAccount\Form\MyAccountChangePasswordData;
 use Nette\Security\Passwords;
 
-class MyAccountFacade
+readonly class MyAccountFacade
 {
     public function __construct(
         private User $userModel,
@@ -15,7 +15,7 @@ class MyAccountFacade
         private Passwords $passwords,
     ) {}
 
-    public function chnagePassword(MyAccountChangePasswordData $data): void
+    public function changePassword(MyAccountChangePasswordData $data): void
     {
         $user = $this->userModel->get($this->userSecurity->getId());
         $user->update(['password' => $this->passwords->hash($data->password)]);

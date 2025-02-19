@@ -3,6 +3,7 @@ parameters:
     previewWwwDir: '/images'
     previewDir: %appDir%/../www%previewWwwDir%
     encryptionKey: 'LDN0RitjRxUdrhhuTXDVbo914sEcjmOy'
+    autoGenerateEntities: false
 
 services:
     - App\Component\Translator\Translator
@@ -13,7 +14,7 @@ services:
     authorizatorFactory: App\Core\AuthorizatorFactory
     authorizator: @authorizatorFactory::create()
 
-    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%)
+    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
 
     - App\Component\Translator\Extractor\LatteExtractor

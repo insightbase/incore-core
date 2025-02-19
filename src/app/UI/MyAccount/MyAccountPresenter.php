@@ -26,7 +26,7 @@ class MyAccountPresenter extends Presenter
     {
         $form = $this->myAccountFormFactory->createChangePassword();
         $form->onSuccess[] = function (Form $form, MyAccountChangePasswordData $data): void {
-            $this->myAccountFacade->chnagePassword($data);
+            $this->myAccountFacade->changePassword($data);
             $this->flashMessage($this->translator->translate('flash_passwordChanged'));
             $this->redirect('this');
         };

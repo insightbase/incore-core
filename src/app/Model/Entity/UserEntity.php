@@ -14,10 +14,12 @@ use Nette\Utils\DateTime;
  * @property-read string $email
  * @property-read string $password
  * @property-read RoleEntity $role
+ * @property-read int $role_id
  * @property-read ?DateTime $last_login
  * @property-read ?string $forgot_password_hash
  * @property-read ?DateTime $forgot_password_expire
- * @property-read ?string $avatar
+ * @property-read ?ImageEntity $avatar
+ * @property-read ?int $avatar_id
  */
 class UserEntity extends ActiveRow
 {

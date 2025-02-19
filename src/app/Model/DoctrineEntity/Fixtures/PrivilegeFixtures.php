@@ -18,6 +18,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
     public const SYNCHRONIZE = 'privilege-synchronize';
     public const AUTHORIZATION = 'privilege-authorization';
     public const SET = 'privilege-set';
+    public const DELETE_UNUSED = 'privilege-delete-unused';
 
     public function load(ObjectManager $manager): void
     {
@@ -102,5 +103,15 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
             $manager->flush();
         }
         $this->addReference(self::SET, $set);
+
+        $deleteUnused = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::DeleteUnused->value]);
+        if (!$deleteUnused) {
+            $deleteUnused = new Privilege();
+            $deleteUnused->setName('Smazat nepoužívané');
+            $deleteUnused->setSystemName(PrivilegeEnum::DeleteUnused->value);
+            $manager->persist($deleteUnused);
+            $manager->flush();
+        }
+        $this->addReference(self::DELETE_UNUSED, $deleteUnused);
     }
 }

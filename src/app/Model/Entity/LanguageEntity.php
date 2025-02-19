@@ -10,7 +10,8 @@ use Nette\Database\Table\ActiveRow;
  * @property-read int $id
  * @property-read string $name
  * @property-read string $locale
- * @property-read ?string $flag
+ * @property-read ?ImageEntity $flag
+ * @property-read ?int $flag_id
  * @property-read bool $is_default
  * @property-read string $url
  * @property-read bool $active

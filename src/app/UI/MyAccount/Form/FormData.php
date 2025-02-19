@@ -7,5 +7,5 @@ class FormData
     public string $firstname;
     public string $lastname;
     public string $email;
-    public ?string $avatar;
+    public ?int $avatar_id;
 }

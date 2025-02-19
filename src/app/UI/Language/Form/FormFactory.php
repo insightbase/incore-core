@@ -3,6 +3,7 @@
 namespace App\UI\Language\Form;
 
 use App\Component\Translator\Translator;
+use App\Model\Entity\LanguageEntity;
 use App\UI\Accessory\Form\Form;
 use Nette\Database\Table\ActiveRow;
 
@@ -21,6 +22,10 @@ readonly class FormFactory
         return $form;
     }
 
+    /**
+     * @param LanguageEntity $language
+     * @return Form
+     */
     public function createEdit(ActiveRow $language): Form
     {
         $form = $this->createBase();
@@ -44,7 +49,7 @@ readonly class FormFactory
         $form->addText('url', $this->translator->translate('input_url'))
             ->addRule($form::MaxLength, $this->translator->translate('input_url_max_length_%length%', 10), 10)
         ;
-        $form->addDropzone('flag', $this->translator->translate('input_flag'))
+        $form->addDropzone('flag_id', $this->translator->translate('input_flag'))
             ->setNullable()
         ;
 

@@ -9,8 +9,11 @@ use Nette\Database\Table\ActiveRow;
 /**
  * @property-read int $id
  * @property-read RoleEntity $role
+ * @property-read int $role_id
  * @property-read ModuleEntity $module
+ * @property-read int $module_id
  * @property-read PrivilegeEntity $privilege
+ * @property-read int $privilege_id
  */
 class PermissionEntity extends ActiveRow
 {
