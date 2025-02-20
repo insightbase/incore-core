@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class RoleFixtures extends Fixture implements FixtureInterface
 {
-    public const ADMIN = 'role-admin';
+    public const string ADMIN = 'role-admin';
 
     public function load(ObjectManager $manager): void
     {

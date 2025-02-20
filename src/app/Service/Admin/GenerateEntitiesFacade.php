@@ -62,7 +62,7 @@ readonly class GenerateEntitiesFacade
                 $class->setExtends(ActiveRow::class);
 
                 foreach ($reflection->getProperties() as $property) {
-                    $class->addComment(sprintf('@property-read %s $%s', ($property->getType()->allowsNull() ? '?' : '') . $this->getType($property->getType()->getName(), $namespace), $this->getPropertyName($property)));
+                    $class->addComment(sprintf('@property-read %s $%s', ($property->getType()->allowsNull() ? '?' : '') . $this->getType($property->getType(), $namespace), $this->getPropertyName($property)));
 
                     if (str_contains($property->getType()->getName(), 'DoctrineEntity')) {
                         $class->addComment(sprintf('@property-read %s $%s', ($property->getType()->allowsNull() ? '?' : '') . 'int', $this->getPropertyName($property) . '_id'));
@@ -74,20 +74,24 @@ readonly class GenerateEntitiesFacade
         }
     }
 
-    public function getType(string $type, PhpNamespace $nameSpace): string
+    public function getType(\ReflectionNamedType $type, PhpNamespace $nameSpace): string
     {
-        if ('DateTimeImmutable' === $type) {
+        $typeName = $type->getName();
+        if ('DateTimeImmutable' === $typeName) {
             $nameSpace->addUse(DateTime::class);
 
             return 'DateTime';
         }
-        if (str_contains($type, 'DoctrineEntity')) {
-            $namespace = explode('\\', $type);
+        if (str_contains($typeName, 'DoctrineEntity')) {
+            $namespace = explode('\\', $typeName);
 
             return $namespace[count($namespace) - 1].'Entity';
         }
+        if(enum_exists($typeName)){
+            return 'string';
+        }
 
-        return $type;
+        return $typeName;
     }
 
     private function getPropertyName(\ReflectionProperty $property): string

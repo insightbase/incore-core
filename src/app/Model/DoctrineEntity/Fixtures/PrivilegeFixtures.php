@@ -10,15 +10,15 @@ use Doctrine\Persistence\ObjectManager;
 
 class PrivilegeFixtures extends Fixture implements FixtureInterface
 {
-    public const DEFAULT = 'privilege-default';
-    public const EDIT = 'privilege-edit';
-    public const NEW = 'privilege-new';
-    public const DELETE = 'privilege-delete';
-    public const TRANSLATE = 'privilege-translate';
-    public const SYNCHRONIZE = 'privilege-synchronize';
-    public const AUTHORIZATION = 'privilege-authorization';
-    public const SET = 'privilege-set';
-    public const DELETE_UNUSED = 'privilege-delete-unused';
+    public const string DEFAULT = 'privilege-default';
+    public const string EDIT = 'privilege-edit';
+    public const string NEW = 'privilege-new';
+    public const string DELETE = 'privilege-delete';
+    public const string TRANSLATE = 'privilege-translate';
+    public const string SYNCHRONIZE = 'privilege-synchronize';
+    public const string AUTHORIZATION = 'privilege-authorization';
+    public const string SET = 'privilege-set';
+    public const string DELETE_UNUSED = 'privilege-delete-unused';
 
     public function load(ObjectManager $manager): void
     {
