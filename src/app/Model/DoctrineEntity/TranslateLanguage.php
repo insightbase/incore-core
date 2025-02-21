@@ -13,7 +13,7 @@ class TranslateLanguage implements Entity
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'text')]
     private string $value;
 
     #[ORM\ManyToOne(targetEntity: Language::class)]

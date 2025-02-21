@@ -65,7 +65,7 @@ readonly class DefaultDataGridEntityFactory
                             }
                         }
 
-                        return new ReturnInlineEditCallback(redraw: false);
+                        return new ReturnInlineEditCallback(redraw: true);
                     })
             );
         }
