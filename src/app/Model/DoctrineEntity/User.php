@@ -19,7 +19,7 @@ class User implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     private string $lastname;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $email;
 
     #[ORM\Column(type: 'string', length: 255)]

@@ -58,4 +58,12 @@ readonly class Role implements Model
     {
         return $this->getTable()->get($id);
     }
+
+    /**
+     * @return Selection<RoleEntity>
+     */
+    public function getToSelect():Selection
+    {
+        return $this->getTable();
+    }
 }
