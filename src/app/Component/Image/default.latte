@@ -4,7 +4,11 @@
     {if $svg !== null}
         {$svg|noescape}
     {else}
-        <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" n:class="$class !== null ? $class" />
+        {if $image !== null}
+            <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" n:class="$class !== null ? $class" />
+        {else}
+            <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class" />
+        {/if}
     {/if}
     {if $showSetting}
         <a class="imageUpdate ajax" href="{$control->getPresenter()->link('updateEditImageForm!', ['imageId' => $fileId])}" data-modal-toggle="#image-update" data-naja-history="off"><i class="ki-filled ki-setting-2"></i></a>

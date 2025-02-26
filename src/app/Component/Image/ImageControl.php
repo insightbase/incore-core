@@ -46,7 +46,12 @@ class ImageControl extends Control
             $ret['image'] = null;
         }else{
             $ret['svg'] = null;
-            $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height);
+            $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
+            if(file_exists($this->parameterBag->previewDir . '/' . $previewName)){
+                $ret['imageFile'] = '/images/' . $previewName;
+            }else {
+                $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height);
+            }
         }
         $ret['width'] = $width;
         $ret['height'] = $height;
