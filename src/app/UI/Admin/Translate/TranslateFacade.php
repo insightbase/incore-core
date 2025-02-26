@@ -81,6 +81,14 @@ readonly class TranslateFacade
             }
             $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
         }
+        foreach (Finder::findDirectories('*')->in($this->parameterBag->appDir) as $incoreModule) {
+            $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
+            $moduleName = 'front';
+            if (!array_key_exists($moduleName, $extractorKeys)) {
+                $extractorKeys[$moduleName] = new MessageCatalogue('cs');
+            }
+            $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
+        }
 
         $this->updateTranslates($extractorKeys);
     }
