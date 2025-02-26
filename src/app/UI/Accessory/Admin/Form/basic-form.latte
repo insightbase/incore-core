@@ -13,7 +13,7 @@
                             <div class="form-group" data-repeater="{$group->getOption('repeater')}">
                                 <div class="fieldset-container space-y-4">
                                     <fieldset class="fieldset bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 relative mt-4">
-                                        <div class="grid grid-cols-2 gap-4">
+                                        <div class="grid grid-cols-{count($group->getControls())} gap-4">
                                             {embed controls, $group->getControls(), true}{/embed}
                                         </div>
                                     </fieldset>

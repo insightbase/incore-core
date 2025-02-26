@@ -81,4 +81,12 @@ class Translator implements \Nette\Localization\Translator
             return $messages;
         });
     }
+
+    /**
+     * @return LanguageEntity
+     */
+    public function getLanguage():ActiveRow
+    {
+        return $this->language;
+    }
 }
