@@ -70,14 +70,14 @@ class GenerateTranslatesFixtureCommand extends Command
                 $translate = new Translate();
                 $translate->setKey($key);
                 $manager->persist($translate);
+            }
         
-                if($value !== null){
-                    $translateLanguage = new TranslateLanguage();
-                    $translateLanguage->setLanguage($language);
-                    $translateLanguage->setTranslate($translate);
-                    $translateLanguage->setValue($value);
-                    $manager->persist($translateLanguage);
-                }
+            if($value !== null){
+                $translateLanguage = new TranslateLanguage();
+                $translateLanguage->setLanguage($language);
+                $translateLanguage->setTranslate($translate);
+                $translateLanguage->setValue($value);
+                $manager->persist($translateLanguage);
             }
         }
         $manager->flush();

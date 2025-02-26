@@ -20,7 +20,7 @@ class Language implements Entity
     private string $locale;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $flag = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]

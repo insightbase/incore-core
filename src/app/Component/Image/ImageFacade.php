@@ -12,6 +12,7 @@ use Nette\Database\Table\ActiveRow;
 use Nette\DI\Container;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Nette\Utils\Html;
 use Nette\Utils\Image;
 use Nette\Utils\ImageColor;
 

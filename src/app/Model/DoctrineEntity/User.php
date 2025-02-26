@@ -39,6 +39,6 @@ class User implements Entity
     private ?\DateTimeImmutable $forgot_password_expire = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $avatar = null;
 }

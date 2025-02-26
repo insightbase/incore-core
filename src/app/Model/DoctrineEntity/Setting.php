@@ -26,11 +26,11 @@ class Setting implements Entity
     private ?string $recaptcha_site_key = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $favicon = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $shareimage = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
@@ -43,19 +43,19 @@ class Setting implements Entity
     private ?string $smtp_password = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $logo = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $logo_small = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $logo_dark = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $logo_dark_small = null;
 
     #[ORM\Column(nullable: true, options: ['default' => null])]
