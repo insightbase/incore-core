@@ -16,10 +16,10 @@ class EditorJsRenderer
     public function render(string $json):Html
     {
         $jsonDecode = Json::decode($json, true);
-        $html = Html::el('script');
+        $html = Html::el();
         foreach($jsonDecode['blocks'] as $block){
             switch ($block['type']){
-                case 'paragraph': $html->addHtml(Html::el('p')->setText($block['data']['text'])); break;
+                case 'paragraph': $html->addHtml(Html::el('p')->setHtml($block['data']['text'])); break;
                 default: throw new \Exception(sprintf('Block %s not supported', $block['type']));
             }
         }
