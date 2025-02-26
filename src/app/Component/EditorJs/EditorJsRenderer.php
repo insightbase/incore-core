@@ -30,6 +30,7 @@ class EditorJsRenderer
                     $this->addListItems($mainTag, $htmlUl, $block['data']['items']);
                     $html->addHtml($htmlUl);
                 })(); break;
+                case 'customHTML': $html->addHtml(Html::el()->setHtml($block['data']['html'])); break;
                 default: throw new \Exception(sprintf('Block %s not supported', $block['type']));
             }
         }
