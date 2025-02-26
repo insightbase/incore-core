@@ -16,4 +16,5 @@ class ImageTemplate extends Template
     public string $basicModalFile;
     public string $basicFormFile;
     public bool $showSetting;
+    public ImageControl $control;
 }

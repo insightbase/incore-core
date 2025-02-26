@@ -11,6 +11,7 @@ use App\Component\Image\ImageFacade;
 use App\Component\Translator\Translator;
 use App\Core\Admin\Authenticator;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;
+use App\Model\Admin\Image;
 use App\Model\Admin\Language;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
@@ -19,7 +20,9 @@ use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\BaseTemplate;
+use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
+use Nette\Application\Attributes\Requires;
 use Nette\Bridges\SecurityHttp\SessionStorage;
 use Nette\DI\Attributes\Inject;
 use Nette\Utils\FileSystem;
@@ -41,6 +44,26 @@ trait StandardTemplateTrait
     public FormFactory $formFactoryEditImage;
     #[Inject]
     public ImageFacade $imageFacade;
+    #[Inject]
+    public Image $imageModel;
+
+    #[Requires(ajax: true)]
+    #[NoReturn] public function handleUpdateEditImageForm(int $id):void
+    {
+        $image = $this->imageModel->get($id);
+        if($image === null){
+            $this->error($this->translator->translate('flash_imageNotFound'));
+        }
+        $this->presenter->getTemplate()->editedImage = $image;
+        $this->getPresenter()->getComponent('editImageForm')->setDefaults([
+            'alt' => $image->alt,
+            'name' => $image->name,
+            'description' => $image->description,
+            'author' => $image->author,
+            'image_id' => $image->id,
+        ]);
+        $this->getPresenter()->redrawControl('editImageForm');
+    }
 
     protected function createComponentEditImageForm():Form{
         $form = $this->formFactoryEditImage->create();

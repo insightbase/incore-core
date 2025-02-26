@@ -33,7 +33,6 @@ class ImagePresenter extends Presenter
 
     public function __construct(
         private readonly ParameterBag                 $parameterBag,
-        private readonly \App\Model\Admin\Image       $imageModel,
         private readonly DataGridFactory              $dataGridFactory,
         private readonly DefaultDataGridEntityFactory $defaultDataGridEntityFactory,
         private readonly FormFactory                  $formFactory,

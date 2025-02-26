@@ -53,6 +53,7 @@ class ImageControl extends Control
         $ret['class'] = $class;
         $ret['fileId'] = $fileId;
         $ret['showSetting'] = $showSetting;
+        $ret['control'] = $this;
         return $ret;
     }
 
@@ -66,23 +67,5 @@ class ImageControl extends Control
     {
         $this->template->setTranslator($this->translator);
         return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
-    }
-
-    #[Requires(ajax: true)]
-    #[NoReturn] public function handleUpdateEditImageForm(int $id):void
-    {
-        $image = $this->imageModel->get($id);
-        if($image === null){
-            $this->error($this->translator->translate('flash_imageNotFound'));
-        }
-        $this->presenter->getTemplate()->editedImage = $image;
-        $this->getPresenter()->getComponent('editImageForm')->setDefaults([
-            'alt' => $image->alt,
-            'name' => $image->name,
-            'description' => $image->description,
-            'author' => $image->author,
-            'image_id' => $image->id,
-        ]);
-        $this->getPresenter()->redrawControl('editImageForm');
     }
 }
