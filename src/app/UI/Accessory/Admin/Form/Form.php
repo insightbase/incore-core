@@ -6,6 +6,8 @@ use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Accessory\Admin\Form\Controls\DropzoneInput;
 use App\UI\Accessory\Admin\Form\Controls\DropzoneInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\EditorJsInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\EditorJsInput;
 use Nette;
 
 class Form extends Nette\Application\UI\Form
@@ -21,9 +23,10 @@ class Form extends Nette\Application\UI\Form
 
     public function __construct(
         private readonly DropzoneInputFactory $dropzoneInputFactory,
-        public readonly Language $languageModel,
-        ?Nette\ComponentModel\IContainer $parent = null,
-        ?string $name = null
+        private readonly EditorJsInputFactory $editorJsInputFactory,
+        public readonly Language              $languageModel,
+        ?Nette\ComponentModel\IContainer      $parent = null,
+        ?string                               $name = null
     ) {
         parent::__construct($parent, $name);
     }
@@ -59,6 +62,13 @@ class Form extends Nette\Application\UI\Form
     public function addDropzone(string $name, string $label): DropzoneInput
     {
         return $this[$name] = $this->dropzoneInputFactory->create($label)->addRule($this::Integer);
+    }
+
+    public function addEditorJs(string $name, string $label): EditorJsInput
+    {
+        $input = $this->editorJsInputFactory->create($label);
+        $input->getControlPrototype()->class('editorJsText');
+        return $this[$name] = $input;
     }
 
     /**
