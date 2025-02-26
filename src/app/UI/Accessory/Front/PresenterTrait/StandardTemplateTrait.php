@@ -1,6 +1,8 @@
 <?php
 namespace App\UI\Accessory\Front\PresenterTrait;
 
+use App\Component\Image\ImageControl;
+use App\Component\Image\ImageControlFactory;
 use App\Component\Translator\Translator;
 use Nette\Application\Attributes\Persistent;
 use Nette\Bridges\SecurityHttp\SessionStorage;
@@ -15,6 +17,13 @@ trait StandardTemplateTrait
     public Translator $translator;
     #[Persistent]
     public string $lang;
+    #[Inject]
+    public ImageControlFactory $imageControlFactory;
+
+    protected function createComponentImage():ImageControl
+    {
+        return $this->imageControlFactory->create();
+    }
 
     public function injectStandardTemplate():void{
         $this->onRender[] = function ():void{
