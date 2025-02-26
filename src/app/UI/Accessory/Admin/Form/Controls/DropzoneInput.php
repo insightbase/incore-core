@@ -3,6 +3,7 @@
 namespace App\UI\Accessory\Admin\Form\Controls;
 
 use App\Component\Image\ImageControlFactory;
+use App\Model\Admin\Image;
 use Nette;
 use Nette\Forms\Controls\TextInput;
 use Nette\Utils\Html;
@@ -11,7 +12,8 @@ class DropzoneInput extends TextInput
 {
     public function __construct(
         private readonly Nette\Application\LinkGenerator $linkGenerator,
-        private readonly ImageControlFactory                        $imageControlFactory,
+        private readonly ImageControlFactory             $imageControlFactory,
+        private readonly Image                           $imageModel,
         null|string|\Stringable                          $label = null,
         ?int                                             $maxLength = null
     ) {
@@ -23,9 +25,11 @@ class DropzoneInput extends TextInput
         $image = Html::el();
         if ($this->getValue()) {
             $imageControl = $this->imageControlFactory->create()->setParent($this->getForm()->getPresenter());
-            $image = Html::el('div')->class('dz-preview dz-file-preview')
-                ->addHtml(Html::el('div')->class('dz-image')->addHtml($imageControl->renderToString($this->getValue(), 100, 100)))
-            ;
+            $imageRow = $this->imageModel->get($this->getValue());
+            if($imageRow !== null) {
+                $image = Html::el('div')->class('dz-preview dz-file-preview')
+                    ->addHtml(Html::el('div')->class('dz-image')->addHtml($imageControl->renderToString($this->getValue(), 100, 100)));
+            }
         }
 
         $container = Html::el();

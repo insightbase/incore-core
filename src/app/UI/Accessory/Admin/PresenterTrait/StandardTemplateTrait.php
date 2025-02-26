@@ -48,9 +48,9 @@ trait StandardTemplateTrait
     public Image $imageModel;
 
     #[Requires(ajax: true)]
-    #[NoReturn] public function handleUpdateEditImageForm(int $id):void
+    #[NoReturn] public function handleUpdateEditImageForm(int $imageId):void
     {
-        $image = $this->imageModel->get($id);
+        $image = $this->imageModel->get($imageId);
         if($image === null){
             $this->error($this->translator->translate('flash_imageNotFound'));
         }
