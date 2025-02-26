@@ -4,10 +4,14 @@
     {if $svg !== null}
         {$svg|noescape}
     {else}
+        {var string $attributes = ''}
+        {foreach $htmlAttributes as $key => $value}
+            {var string $attributes = $attributes . ' ' . $key . '="' . $value . '"'}
+        {/foreach}
         {if $image !== null}
-            <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" n:class="$class !== null ? $class" />
+            <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes} />
         {else}
-            <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class" />
+            <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes} />
         {/if}
     {/if}
     {if $showSetting}

@@ -26,7 +26,7 @@ class ImageControl extends Control
     {
     }
 
-    private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false):array{
+    private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):array{
         $image = $this->imageModel->get($fileId);
         $file = $image->saved_name;
 
@@ -59,13 +59,14 @@ class ImageControl extends Control
         $ret['fileId'] = $fileId;
         $ret['showSetting'] = $showSetting;
         $ret['control'] = $this;
+        $ret['htmlAttributes'] = $htmlAttributes;
         return $ret;
     }
 
-    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false):void
+    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):void
     {
         $this->template->setTranslator($this->translator);
-        $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
+        $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes));
     }
 
     public function renderToString(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = true):string
