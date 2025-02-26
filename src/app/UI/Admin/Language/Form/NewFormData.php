@@ -8,4 +8,5 @@ class NewFormData
     public string $locale;
     public ?int $flag_id;
     public string $url;
+    public ?string $host = null;
 }

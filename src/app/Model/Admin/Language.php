@@ -80,4 +80,13 @@ readonly class Language implements Model
     {
         return $this->getTable()->where('is_default', true)->fetch();
     }
+
+    /**
+     * @param string|null $host
+     * @return ?LanguageEntity
+     */
+    public function getByHost(?string $host):?ActiveRow
+    {
+        return $this->getTable()->where('host', $host)->fetch();
+    }
 }

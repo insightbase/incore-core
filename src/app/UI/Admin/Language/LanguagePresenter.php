@@ -5,6 +5,7 @@ namespace App\UI\Admin\Language;
 use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\DataGridFactory;
 use App\Model\Admin\Language;
+use App\Model\DoctrineEntity\LanguageSetting;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
@@ -12,6 +13,7 @@ use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Admin\Language\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Admin\Language\Form\EditFormData;
 use App\UI\Admin\Language\Form\FormFactory;
+use App\UI\Admin\Language\Form\LanguageSettingFormData;
 use App\UI\Admin\Language\Form\NewFormData;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\UI\Presenter;
@@ -25,12 +27,14 @@ class LanguagePresenter extends Presenter
     private ActiveRow $language;
 
     public function __construct(
-        private readonly DefaultDataGridEntityFactory $defaultDataGridEntityFactory,
-        private readonly FormFactory $formFactory,
-        private readonly DataGridFactory $dataGridFactory,
-        private readonly Language $languageModel,
-        private readonly SubmenuFactory $submenuFactory,
-        private readonly LanguageFacade $languageFacade,
+        private readonly DefaultDataGridEntityFactory     $defaultDataGridEntityFactory,
+        private readonly FormFactory                      $formFactory,
+        private readonly DataGridFactory                  $dataGridFactory,
+        private readonly Language                         $languageModel,
+        private readonly SubmenuFactory                   $submenuFactory,
+        private readonly LanguageFacade                   $languageFacade,
+        private readonly \App\Model\Admin\LanguageSetting $languageSettingModel,
+        private readonly LanguageSettingFacade            $languageSettingFacade,
     ) {
         parent::__construct();
     }
@@ -49,8 +53,19 @@ class LanguagePresenter extends Presenter
         $this->redirect('default');
     }
 
+    protected function createComponentFormSetting():Form{
+        $form = $this->formFactory->createSetting($this->languageSettingModel->getSetting());
+        $form->onSuccess[] = function(Form $form, LanguageSettingFormData $data):void{
+            $this->languageSettingFacade->update($this->languageSettingModel->getSetting(), $data);
+            $this->flashMessage($this->translator->translate('flash_languageSettingUpdated'));
+            $this->redirect('this');
+        };
+        return $form;
+    }
+
     public function actionDefault(): void
     {
+        $this->submenuFactory->addMenu($this->translator->translate('menu_setting'), 'setting');
         $this->submenuFactory->addMenu($this->translator->translate('menu_newLanguage'), 'new')
             ->setIsPrimary()
             ->setModalId('formNew')
