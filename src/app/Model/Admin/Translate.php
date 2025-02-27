@@ -25,9 +25,9 @@ readonly class Translate implements Model
     /**
      * @return Selection<TranslateEntity>
      */
-    public function getToGrid(): Selection
+    public function getToGrid(string $source): Selection
     {
-        return $this->getTable();
+        return $this->getTable()->where('source', $source);
     }
 
     public function insert(array $data): void
@@ -54,9 +54,16 @@ readonly class Translate implements Model
     /**
      * @return Selection<TranslateEntity>
      */
-    public function getNotKeys(array $keys): Selection
+    public function getNotKeys(array $keys, string $source): Selection
     {
-        return $this->getTable()->where('NOT key', $keys);
+        if(empty($keys)){
+            return $this->getTable()
+                ->where('source', $source);
+        }else {
+            return $this->getTable()
+                ->where('NOT key', $keys)
+                ->where('source', $source);
+        }
     }
 
     /**

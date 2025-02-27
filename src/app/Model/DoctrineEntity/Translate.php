@@ -16,6 +16,9 @@ class Translate implements Entity
     #[ORM\Column(name: '`key`', type: 'string', length: 255)]
     private string $key;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $source;
+
     public function setKey(string $key): self
     {
         $this->key = $key;

@@ -81,6 +81,9 @@ readonly class TranslateFacade
             }
             $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
         }
+        $this->updateTranslates($extractorKeys, 'admin');
+        $extractorKeys = [];
+
         foreach (Finder::findDirectories('*')->in($this->parameterBag->appDir) as $incoreModule) {
             $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
             $moduleName = 'front';
@@ -90,22 +93,24 @@ readonly class TranslateFacade
             $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
         }
 
-        $this->updateTranslates($extractorKeys);
+        $this->updateTranslates($extractorKeys, 'front');
     }
 
     /**
      * @param array<string, MessageCatalogue> $extractorKeys
      */
-    private function updateTranslates(array $extractorKeys): void
+    private function updateTranslates(array $extractorKeys, string $source): void
     {
         $dataInsert = [];
 
         $allKeys = [];
 
         foreach ($extractorKeys as $module => $keys) {
-            foreach ($keys->getMetadata() as $key => $data) {
-                if (!in_array($key, $allKeys)) {
-                    $allKeys[] = $key;
+            if($keys->getMetadata() !== null) {
+                foreach ($keys->getMetadata() as $key => $data) {
+                    if (!in_array($key, $allKeys)) {
+                        $allKeys[] = $key;
+                    }
                 }
             }
         }
@@ -115,13 +120,16 @@ readonly class TranslateFacade
             if (null === $translate) {
                 $dataInsert[] = [
                     'key' => $key,
+                    'source' => $source,
                 ];
+            }else{
+                $translate->update(['source' => $source]);
             }
         }
 
         if (!empty($dataInsert)) {
             $this->translateModel->insert($dataInsert);
         }
-        $this->translateModel->getNotKeys($allKeys)->delete();
+        $this->translateModel->getNotKeys($allKeys, $source)->delete();
     }
 }

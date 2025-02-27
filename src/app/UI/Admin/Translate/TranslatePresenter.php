@@ -14,6 +14,7 @@ use App\UI\Admin\Translate\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Admin\Translate\Form\FormFactory;
 use App\UI\Admin\Translate\Form\FormTranslateData;
 use JetBrains\PhpStorm\NoReturn;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 
@@ -26,6 +27,8 @@ class TranslatePresenter extends Presenter
      * @var ?TranslateEntity
      */
     private ?ActiveRow $translate;
+    #[Persistent]
+    public string $source = 'front';
 
     public function __construct(
         private readonly DataGridFactory $dataGridFactory,
@@ -38,19 +41,23 @@ class TranslatePresenter extends Presenter
         parent::__construct();
     }
 
+    protected function startup():void
+    {
+        parent::startup();
+
+        $this->submenuFactory->addMenu($this->translator->translate('menu_front'), 'default')->addParam('source', 'front');
+        $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')->addParam('source', 'admin');
+        $this->submenuFactory->addMenu($this->translator->translate('menu_synchronize'), 'synchronize')
+            ->setIsPrimary()
+        ;
+    }
+
     #[NoReturn]
     public function actionSynchronize(): void
     {
         $this->translateFacade->synchronize();
         $this->flashMessage($this->translator->translate('flash_synchronizeComplete'));
         $this->redirect('default');
-    }
-
-    public function actionDefault(): void
-    {
-        $this->submenuFactory->addMenu($this->translator->translate('menu_synchronize'), 'synchronize')
-            ->setIsPrimary()
-        ;
     }
 
     public function actionTranslate(int $id): void
@@ -73,7 +80,7 @@ class TranslatePresenter extends Presenter
 
     protected function createComponentGrid(): DataGrid
     {
-        return $this->dataGridFactory->create($this->translateModel->getToGrid(), $this->defaultDataGridEntityFactory->create());
+        return $this->dataGridFactory->create($this->translateModel->getToGrid($this->source), $this->defaultDataGridEntityFactory->create());
     }
 
     private function exist(int $id): void
