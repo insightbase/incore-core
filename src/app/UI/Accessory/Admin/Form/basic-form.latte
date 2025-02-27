@@ -62,6 +62,9 @@
         {if $input instanceof Nette\Forms\Controls\Checkbox}
             {php $class .= ' checkbox'}
         {/if}
+        {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJsInput}
+            {php $class .= ' text editorJsText'}
+        {/if}
         {if $input->getOption(type) === 'select'}
             {php $class .= ' select'}
         {/if}

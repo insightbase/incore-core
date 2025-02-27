@@ -143,13 +143,23 @@ class Form extends Nette\Application\UI\Form
                     $base .= "[{$item}]";
                 }
 
-                $lang->addText($input->getName())
-                    ->setNullable()
-                    ->setHtmlAttribute('data-language-id', $language->id)
-                    ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
-                    ->setDefaultValue(null !== $defaults && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
-                    ->setHtmlAttribute('data-original-name', $base)
-                ;
+                if($input instanceof EditorJsInput){
+                    $input1 = $this->editorJsInputFactory->create(null);
+                    $input1->getControlPrototype()->class('editorJsText');
+                    $input1->setNullable()
+                        ->setHtmlAttribute('data-language-id', $language->id)
+                        ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
+                        ->setDefaultValue(null !== $defaults && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
+                        ->setHtmlAttribute('data-original-name', $base);
+                    $lang[$input->getName()] = $input1;
+                }else {
+                    $lang->addText($input->getName())
+                        ->setNullable()
+                        ->setHtmlAttribute('data-language-id', $language->id)
+                        ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
+                        ->setDefaultValue(null !== $defaults && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
+                        ->setHtmlAttribute('data-original-name', $base);
+                }
             }
         }
     }
