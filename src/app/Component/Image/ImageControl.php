@@ -26,6 +26,16 @@ class ImageControl extends Control
     {
     }
 
+    public function getPreviewFile(int $fileId, int $width, int $height):string
+    {
+        $image = $this->imageModel->get($fileId);
+        $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
+        if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
+            $this->imageFacade->generatePreview($image, $width, $height)->save($this->parameterBag->previewDir . '/' . $previewName);
+        }
+        return '/images/' . $previewName;
+    }
+
     private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):array{
         $image = $this->imageModel->get($fileId);
         $file = $image->saved_name;
