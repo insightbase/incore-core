@@ -1,1 +1,5 @@
+{var string $attributes = ''}
+{foreach $htmlAttributes as $key => $value}
+    {var string $attributes = $attributes . ' ' . $key . '="' . $value . '"'}
+{/foreach}
 <img src="{$imageFile}" n:class="$class !== null ? $class"{$attributes|noescape} />
