@@ -51,7 +51,7 @@ class Translator implements \Nette\Localization\Translator
         try{
             $json = Json::decode($translated, true);
             if(array_key_exists('time', $json)){
-                $translated = $this->editorJsRenderer->render($json);
+                $translated = $this->editorJsRenderer->render($translated);
             }
         }catch(JsonException $e){
 
