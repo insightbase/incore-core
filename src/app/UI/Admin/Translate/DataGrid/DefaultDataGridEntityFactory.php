@@ -34,14 +34,13 @@ readonly class DefaultDataGridEntityFactory
             $entity->addColumn(
                 (new ColumnEntity(':translate_language.value', $language->name.' ( '.$language->locale.' )'))
                     ->setEnableSearchGlobal()
-                    ->setTruncate(50)
                     ->setGetColumnCallback(function (ActiveRow $row) use ($language): string {
                         $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($row, $language);
                         if (null === $translateLanguage) {
                             return '';
                         }
 
-                        return strip_tags($translateLanguage->value);
+                        return $translateLanguage->value;
                     })
                     ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
                         return $row['id'].'-'.$language->id;
