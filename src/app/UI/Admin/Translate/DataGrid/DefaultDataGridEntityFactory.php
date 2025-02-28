@@ -41,7 +41,7 @@ readonly class DefaultDataGridEntityFactory
                             return '';
                         }
 
-                        return $translateLanguage->value;
+                        return strip_tags($translateLanguage->value);
                     })
                     ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
                         return $row['id'].'-'.$language->id;
