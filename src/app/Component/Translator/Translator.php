@@ -2,12 +2,15 @@
 
 namespace App\Component\Translator;
 
+use App\Component\EditorJs\EditorJsRendererFactory;
 use App\Model\Admin\Language;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 class Translator implements \Nette\Localization\Translator
 {
@@ -23,13 +26,16 @@ class Translator implements \Nette\Localization\Translator
      * @var LanguageEntity
      */
     private ActiveRow $language;
+    private \App\Component\EditorJs\EditorJsRenderer $editorJsRenderer;
 
     public function __construct(
-        private readonly Storage $storage,
-        private readonly Language $languageModel,
-        private readonly TranslateLanguage $translateLanguageModel,
+        private readonly Storage                 $storage,
+        private readonly Language                $languageModel,
+        private readonly TranslateLanguage       $translateLanguageModel,
+        private readonly EditorJsRendererFactory $editorJsRendererFactory,
     ) {
         $this->cache = new Cache($this->storage, self::CACHE_NAMESPACE);
+        $this->editorJsRenderer = $this->editorJsRendererFactory->create();
     }
 
     /**
@@ -40,6 +46,15 @@ class Translator implements \Nette\Localization\Translator
         $translated = $this->getTranslate($message);
         if (null === $translated) {
             $translated = $message;
+        }
+
+        try{
+            $json = Json::decode($translated, true);
+            if(array_key_exists('time', $json)){
+                $translated = $this->editorJsRenderer->render($json);
+            }
+        }catch(JsonException $e){
+
         }
 
         foreach ($parameters as $key => $value) {
