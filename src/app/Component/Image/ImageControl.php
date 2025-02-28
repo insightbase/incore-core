@@ -26,6 +26,15 @@ class ImageControl extends Control
     {
     }
 
+    public function getOriginal(int $fileId):string{
+        $image = $this->imageModel->get($fileId);
+        $previewName = 'orig_' . $this->imageFacade->getPreviewName($image, 0, 0);
+        if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
+            FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
+        }
+        return '/images/' . $previewName;
+    }
+
     public function getPreviewFile(int $fileId, int $width, int $height):string
     {
         $image = $this->imageModel->get($fileId);
