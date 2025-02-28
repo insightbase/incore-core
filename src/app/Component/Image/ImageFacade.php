@@ -112,7 +112,7 @@ readonly class ImageFacade
         $container = Image::fromBlank($width, $height, ImageColor::rgb(255, 255, 255));
         $container->place($imageNette, '50%', '50%');
         FileSystem::createDir($this->parameterBag->previewDir);
-        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height));
+        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height), 100);
 
         return $container;
     }
