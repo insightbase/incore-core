@@ -82,6 +82,16 @@ class ImageControl extends Control
         return $ret;
     }
 
+    public function renderOriginal(int $fileId, ?string $class = null, array $htmlAttributes = []):void
+    {
+        $this->template->setTranslator($this->translator);
+        $this->template->render(dirname(__FILE__) . '/original.latte', [
+            'class' => $class,
+            'htmlAttributes' => $htmlAttributes,
+            'imageFile' => $this->getOriginal($fileId),
+        ]);
+    }
+
     public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):void
     {
         $this->template->setTranslator($this->translator);
