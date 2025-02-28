@@ -152,9 +152,9 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 											<span n:if="$user->isAllowed($module->system_name, $mainMenuItem->getAction())" class="menu-link border border-transparent items-center grow menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg gap-[14px] ps-[10px] pe-[10px] py-[8px]">
 												<span class="menu-bullet flex w-[6px] -start-[3px] rtl:start-0 relative before:absolute before:top-0 before:size-[6px] before:rounded-full rtl:before:translate-x-1/2 before:-translate-y-1/2 menu-item-active:before:bg-primary menu-item-hover:before:bg-primary">
 												</span>
-												<span class="menu-title text-2sm font-normal text-gray-800 menu-item-active:text-primary menu-item-active:font-semibold menu-link-hover:!text-primary">
-													<a n:href="$module->presenter . ':' . $mainMenuItem->getAction(), ...$mainMenuItem->getParams()">{$mainMenuItem->getTitle()}</a>
-												</span>
+												<a n:href="$module->presenter . ':' . $mainMenuItem->getAction(), ...$mainMenuItem->getParams()" class="menu-title text-2sm font-normal text-gray-800 menu-item-active:text-primary menu-item-active:font-semibold menu-link-hover:!text-primary">
+													<span>{$mainMenuItem->getTitle()}</span>
+												</a>
 												<div class="menu" data-menu="true" n:if="count($mainMenuItem->getSubs()) > 0">
 													<div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
 														<button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">
