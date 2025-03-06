@@ -21,7 +21,7 @@
                     {input email, class: 'input', placeholder: 'email@email.com'}
                 </div>
                 <div class="flex flex-col gap-1">
-                    <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center justify-between gap-1" n:if="$setting?->smtp_host !== null">
                         {label password, class: 'form-label font-normal text-gray-900' /}
                         <a class="text-2sm link shrink-0"
                            n:href="forgotPassword">
