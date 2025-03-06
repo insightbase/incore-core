@@ -4,4 +4,4 @@ build
 docker-compose.yml
 composer.local.json
 src/package-lock.json
-src/node_modulesc
+src/node_modules
