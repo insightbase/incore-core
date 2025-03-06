@@ -106,7 +106,7 @@ readonly class ImageFacade
     public function generatePreview(ActiveRow $image, ?int $width = null, ?int $height = null): Image
     {
         if (!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)) {
-            throw new \Exception('File "'.$this->parameterBag->uploadDir.'/'.$image->saved_name.'" not found');
+            throw new ImageNotFoundException('File "'.$this->parameterBag->uploadDir.'/'.$image->saved_name.'" not found');
         }
         $imageNette = Image::fromFile($this->parameterBag->uploadDir.'/'.$image->saved_name);
         if (null === $width && null === $height) {

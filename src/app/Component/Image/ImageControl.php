@@ -2,6 +2,7 @@
 
 namespace App\Component\Image;
 
+use App\Component\Image\Exception\ImageNotFoundException;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Image;
 use App\UI\Accessory\ParameterBag;
@@ -103,7 +104,7 @@ class ImageControl extends Control
         $this->template->setTranslator($this->translator);
         try {
             $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes));
-        } catch (\Exception $e) {
+        } catch (ImageNotFoundException $e) {
 
         }
     }
@@ -113,7 +114,7 @@ class ImageControl extends Control
         $this->template->setTranslator($this->translator);
         try {
             return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
-        } catch (\Exception $e) {
+        } catch (ImageNotFoundException $e) {
             return '';
         }
     }
