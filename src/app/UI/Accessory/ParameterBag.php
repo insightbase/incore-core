@@ -6,6 +6,7 @@ class ParameterBag
 {
     public function __construct(
         public string $wwwDir,
+        public string $rootDir,
         public bool $debugMode,
         public string $uploadDir,
         public string $previewDir,

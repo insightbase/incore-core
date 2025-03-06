@@ -1,0 +1,12 @@
+div.imageContainer {
+    position: relative;
+    a.imageUpdate {
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
+}
+.editorJsText{
+    display: none !important;
+}
