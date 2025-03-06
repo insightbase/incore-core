@@ -84,7 +84,14 @@ readonly class ImageFacade
      */
     public function getPreviewName(ActiveRow $image, ?int $width = null, ?int $height = null): string
     {
-        return (null === $width ? 'null' : $width).'_'.(null === $height ? 'null' : $height).'_'.$image->saved_name;
+        if($width === null && $height === null){
+            return 'null_null_' . $image->saved_name;
+        }else {
+            $name = explode('.', $image->saved_name);
+            unset($name[count($name) - 1]);
+            $name = implode('.', $name) . '.webp';
+            return (null === $width ? 'null' : $width) . '_' . (null === $height ? 'null' : $height) . '_' . $name;
+        }
     }
 
     /**
@@ -108,8 +115,11 @@ readonly class ImageFacade
         }
         $imageNette->resize($width, $height, $imageNette::ShrinkOnly);
         $imageNette->sharpen();
+        $imageNette->alphaBlending(false);
         $imageNette->saveAlpha(true);
-        $container = Image::fromBlank($width, $height, ImageColor::rgb(255, 255, 255));
+        $container = Image::fromBlank($width, $height, ImageColor::rgb(255, 255, 255, 0));
+        $container->alphaBlending(false);
+        $container->saveAlpha(true);
         $container->place($imageNette, '50%', '50%');
         FileSystem::createDir($this->parameterBag->previewDir);
         $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height), 100);

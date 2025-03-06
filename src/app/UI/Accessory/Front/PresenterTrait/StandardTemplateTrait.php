@@ -3,9 +3,13 @@ namespace App\UI\Accessory\Front\PresenterTrait;
 
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
+use App\Component\PerformanceControl\PerformanceControl;
+use App\Component\PerformanceControl\PerformanceControlFactory;
 use App\Component\Translator\Translator;
+use App\Model\Admin\Setting;
 use Nette\Application\Attributes\Persistent;
 use Nette\Bridges\SecurityHttp\SessionStorage;
+use Nette\Database\Table\ActiveRow;
 use Nette\DI\Attributes\Inject;
 
 /**
@@ -19,17 +23,28 @@ trait StandardTemplateTrait
     public string $lang;
     #[Inject]
     public ImageControlFactory $imageControlFactory;
+    protected ?ActiveRow $setting;
+    #[Inject]
+    public PerformanceControlFactory $performanceControlFactory;
+
+    protected function createComponentPerformance(): PerformanceControl
+    {
+        return $this->performanceControlFactory->create();
+    }
 
     protected function createComponentImage():ImageControl
     {
         return $this->imageControlFactory->create();
     }
 
-    public function injectStandardTemplate():void{
+    public function injectStandardTemplate(Setting $settingModel):void{
         $this->onRender[] = function ():void{
             $this->template->setTranslator($this->translator);
+            $this->template->setting = $this->setting;
+            $this->template->imageControl = $this->imageControlFactory->create();
         };
-        $this->onStartup[] = function ():void{
+        $this->onStartup[] = function () use ($settingModel):void{
+            $this->setting = $settingModel->getDefault();
             $this->translator->setLang($this->lang);
             $storage = $this->getUser()->getStorage();
             if ($storage instanceof SessionStorage) {

@@ -13,7 +13,7 @@ class Translate implements Entity
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(name: '`key`', type: 'string', length: 255)]
+    #[ORM\Column(name: '`key`', type: 'text', length: 255)]
     private string $key;
 
     #[ORM\Column(type: 'string', length: 255)]

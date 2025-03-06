@@ -7,6 +7,7 @@ use App\Model\Admin\Image;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Requires;
+use Nette\Application\LinkGenerator;
 use Nette\Application\UI\Control;
 use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
@@ -28,7 +29,7 @@ class ImageControl extends Control
 
     public function getOriginal(int $fileId):string{
         $image = $this->imageModel->get($fileId);
-        $previewName = 'orig_' . $this->imageFacade->getPreviewName($image, 0, 0);
+        $previewName = 'orig_' . $this->imageFacade->getPreviewName($image);
         if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
             FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
         }
@@ -66,11 +67,10 @@ class ImageControl extends Control
         }else{
             $ret['svg'] = null;
             $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
-            if(file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-                $ret['imageFile'] = '/images/' . $previewName;
-            }else {
+            if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
                 $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height);
             }
+            $ret['imageFile'] = '/images/' . $previewName;
         }
         $ret['width'] = $width;
         $ret['height'] = $height;

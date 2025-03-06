@@ -6,11 +6,15 @@ use App\Component\Datagrid\DefaultIconEnum;
 use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
+use App\Component\Datagrid\Entity\FilterEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
+use App\Component\Datagrid\Enum\FilterTypeEnum;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
+use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use Nette\Database\Table\ActiveRow;
+use Nette\Database\Table\Selection;
 
 readonly class DefaultDataGridEntityFactory
 {
@@ -72,6 +76,15 @@ readonly class DefaultDataGridEntityFactory
         $entity->addMenu(
             (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
                 ->setIcon(DefaultIconEnum::Edit->value)
+        );
+
+        $entity->addFilter(
+            (new FilterEntity($this->translator->translate('filter_onlyNotTranslated'), FilterTypeEnum::Checkbox))
+                ->setOnChangeCallback(function(Selection $model, string $value):void{
+                    if($value !== '' && $value !== 'false'){
+                        $model->where('translate.id NOT IN ?', $this->translateLanguageModel->getTable()->select('translate.id'));
+                    }
+                })
         );
 
         return $entity;

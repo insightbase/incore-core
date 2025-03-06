@@ -9,7 +9,7 @@
             {var string $attributes = $attributes . ' ' . $key . '="' . $value . '"'}
         {/foreach}
         {if $image !== null}
-            <img src="{(string)$image|dataStream}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes|noescape} />
+            <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes|noescape} />
         {else}
             <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes|noescape} />
         {/if}
