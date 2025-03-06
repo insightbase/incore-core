@@ -46,9 +46,12 @@ class TranslatePresenter extends Presenter
         parent::startup();
 
         $this->submenuFactory->addMenu($this->translator->translate('menu_front'), 'default')->addParam('source', 'front');
-        $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')->addParam('source', 'admin');
+        $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')
+            ->addParam('source', 'admin')
+            ->setShowInDropdown()
+        ;
         $this->submenuFactory->addMenu($this->translator->translate('menu_synchronize'), 'synchronize')
-            ->setIsPrimary()
+            ->setShowInDropdown()
         ;
     }
 

@@ -7,6 +7,7 @@ class SubMenuItem
     private bool $isPrimary = false;
     private ?string $modalId = null;
     private array $params = [];
+    private bool $showInDropdown = false;
 
     public function __construct(
         private string $name,
@@ -70,5 +71,16 @@ class SubMenuItem
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    public function isShowInDropdown(): bool
+    {
+        return $this->showInDropdown;
+    }
+
+    public function setShowInDropdown(bool $showInDropdown = true): self
+    {
+        $this->showInDropdown = $showInDropdown;
+        return $this;
     }
 }

@@ -25,6 +25,7 @@ use Nette\Application\Attributes\Persistent;
 use Nette\Application\Attributes\Requires;
 use Nette\Bridges\SecurityHttp\SessionStorage;
 use Nette\DI\Attributes\Inject;
+use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 
 /**
@@ -103,9 +104,17 @@ trait StandardTemplateTrait
             $this->template->menuModules = $moduleModel->getToMenu();
             $this->template->moduleModel = $moduleModel;
             $this->template->languages = $languages = $languageModel->getToTranslate();
-            $this->template->moduleTree = $moduleModel->getTree($this->getName());
+            $this->template->moduleTree = $moduleTree = $moduleModel->getTree($this->getName());
             $this->template->mainMenuFactory = $this->mainMenuFactory;
             $this->template->setting = $settingModel->getDefault();
+            $showSubmenuDropdown = false;
+            foreach($submenuFactory->getSubMenus() as $subMenuItem){
+                if($subMenuItem->isShowInDropdown() && $this->user->isAllowed(Arrays::last($moduleTree)->system_name, $subMenuItem->getAction())){
+                    $showSubmenuDropdown = true;
+                    break;
+                }
+            }
+            $this->template->showSubmenuDropdown = $showSubmenuDropdown;
             foreach ($languages as $language) {
                 if ($language->is_default) {
                     $this->template->defaultLanguage = $language;
