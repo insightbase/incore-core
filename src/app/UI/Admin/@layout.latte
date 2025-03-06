@@ -24,6 +24,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<link href="/dist/admin/assets/media/app/favicon.ico" rel="shortcut icon"/>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 	<link href="/dist/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+	<script src="/dist/admin.bundle.js"></script>
 
 	<title>{ifset title}{include title|stripHtml} | {/ifset}inCore</title>
 </head>
@@ -354,7 +355,6 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- End of Page -->
 <!-- Scripts -->
 {block scripts}
-	<script src="/dist/admin.bundle.js"></script>
 	<script src="/incore/admin.bundle.js?v={$webpackVersion}"></script>
 {/block}
 <!-- End of Scripts -->
