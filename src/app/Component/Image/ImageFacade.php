@@ -101,6 +101,7 @@ readonly class ImageFacade
      * @return Image
      * @throws \Nette\Utils\ImageException
      * @throws \Nette\Utils\UnknownImageFileException
+     * @throws \Exception
      */
     public function generatePreview(ActiveRow $image, ?int $width = null, ?int $height = null): Image
     {

@@ -12,6 +12,8 @@ use Nette\Application\UI\Control;
 use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Html;
+use Nette\Utils\ImageException;
+use Nette\Utils\UnknownImageFileException;
 
 /**
  * @property ImageTemplate $template
@@ -46,6 +48,10 @@ class ImageControl extends Control
         return '/images/' . $previewName;
     }
 
+    /**
+     * @throws ImageException
+     * @throws UnknownImageFileException
+     */
     private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):array{
         $image = $this->imageModel->get($fileId);
         $file = $image->saved_name;
@@ -95,12 +101,20 @@ class ImageControl extends Control
     public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):void
     {
         $this->template->setTranslator($this->translator);
-        $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes));
+        try {
+            $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes));
+        } catch (\Exception $e) {
+
+        }
     }
 
     public function renderToString(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = true):string
     {
         $this->template->setTranslator($this->translator);
-        return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
+        try {
+            return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 }
