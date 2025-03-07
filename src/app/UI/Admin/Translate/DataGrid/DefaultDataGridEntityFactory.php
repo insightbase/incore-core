@@ -13,6 +13,8 @@ use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
@@ -22,11 +24,13 @@ readonly class DefaultDataGridEntityFactory
         private Translator $translator,
         private Language $languageModel,
         private TranslateLanguage $translateLanguageModel,
+        private Storage $storage,
     ) {}
 
     public function create(): DataGridEntity
     {
         $entity = new DataGridEntity();
+        $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
 
         $entity
             ->addColumn(
@@ -49,7 +53,7 @@ readonly class DefaultDataGridEntityFactory
                     ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
                         return $row['id'].'-'.$language->id;
                     })
-                    ->setInlineEditCallback(function (string $id, string $value): ReturnInlineEditCallback {
+                    ->setInlineEditCallback(function (string $id, string $value) use ($cache): ReturnInlineEditCallback {
                         $id = explode('-', $id);
                         $translateLanguage = $this->translateLanguageModel->getByTranslateIdAndLanguageId((int) $id[0], (int) $id[1]);
                         if ($translateLanguage) {
@@ -67,6 +71,7 @@ readonly class DefaultDataGridEntityFactory
                                 ]);
                             }
                         }
+                        $cache->remove((int) $id[1]);
 
                         return new ReturnInlineEditCallback(redraw: true);
                     })
