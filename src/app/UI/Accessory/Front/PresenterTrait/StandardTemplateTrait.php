@@ -39,7 +39,7 @@ trait StandardTemplateTrait
             $this->translator->setLang($this->lang);
             $storage = $this->getUser()->getStorage();
             if ($storage instanceof SessionStorage) {
-                $storage->setNamespace('admin');
+                $storage->setNamespace('front');
             }
         };
     }
