@@ -13390,7 +13390,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `div.imageContainer {
 }
 .editorJsText{
     display: none !important;
-}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}"],"sourceRoot":""}]);
+}
+.dropzoneContainer input{
+    display: none !important;
+}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,wBAAwB;AAC5B","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n.dropzoneContainer input{\r\n    display: none !important;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
