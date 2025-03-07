@@ -3,8 +3,6 @@ namespace App\UI\Accessory\Front\PresenterTrait;
 
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
-use App\Component\PerformanceControl\PerformanceControl;
-use App\Component\PerformanceControl\PerformanceControlFactory;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Setting;
 use Nette\Application\Attributes\Persistent;
@@ -24,13 +22,6 @@ trait StandardTemplateTrait
     #[Inject]
     public ImageControlFactory $imageControlFactory;
     protected ?ActiveRow $setting;
-    #[Inject]
-    public PerformanceControlFactory $performanceControlFactory;
-
-    protected function createComponentPerformance(): PerformanceControl
-    {
-        return $this->performanceControlFactory->create();
-    }
 
     protected function createComponentImage():ImageControl
     {
