@@ -24,9 +24,9 @@ class SyncAssetsCommand extends Command
         $wwwDir = $this->parameterBag->rootDir . '/www';
         $assetsDir = dirname(__FILE__) . '/../../assets';
 
-        $output->writeln('<info>Dist...</info>');
-        FileSystem::delete($wwwDir . '/dist');
-        FileSystem::copy($assetsDir . '/dist', $wwwDir . '/dist');
+        $output->writeln('<info>Metronic...</info>');
+        FileSystem::delete($wwwDir . '/metronic');
+        FileSystem::copy($assetsDir . '/metronic', $wwwDir . '/metronic');
         $output->writeln('<info>inCORE...</info>');
         FileSystem::delete($wwwDir . '/incore');
         FileSystem::copy($assetsDir . '/incore', $wwwDir . '/incore');
