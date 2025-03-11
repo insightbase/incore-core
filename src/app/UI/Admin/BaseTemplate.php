@@ -56,4 +56,5 @@ class BaseTemplate extends Template
      */
     public ?ActiveRow $editedImage = null;
     public bool $showSubmenuDropdown;
+    public string $metronicDir;
 }

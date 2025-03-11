@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncAssetsCommand extends Command
 {
     public function __construct(
-        private ParameterBag $parameterBag,
+        private readonly ParameterBag $parameterBag,
     )
     {
         parent::__construct();
@@ -25,8 +25,8 @@ class SyncAssetsCommand extends Command
         $assetsDir = dirname(__FILE__) . '/../../assets';
 
         $output->writeln('<info>Metronic...</info>');
-        FileSystem::delete($wwwDir . '/metronic');
-        FileSystem::copy($assetsDir . '/metronic', $wwwDir . '/metronic');
+        FileSystem::delete($wwwDir . '/' . $this->parameterBag->metronicDir);
+        FileSystem::copy($assetsDir . '/metronic', $wwwDir . '/' . $this->parameterBag->metronicDir);
         $output->writeln('<info>inCORE...</info>');
         FileSystem::delete($wwwDir . '/incore');
         FileSystem::copy($assetsDir . '/incore', $wwwDir . '/incore');

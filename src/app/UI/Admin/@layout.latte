@@ -18,17 +18,17 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<meta charset="utf-8"/>
 	<meta content="follow, index" name="robots"/>
 	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-	<link href="/metronic/admin/assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-	<link href="/metronic/admin/assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
-	<link href="/metronic/admin/assets/media/app/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
-	<link href="/metronic/admin/assets/media/app/favicon.ico" rel="shortcut icon"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/favicon.ico" rel="shortcut icon"/>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-	<link href="/metronic/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
-	<script src="/metronic/js/core.bundle.js"></script>
-	<link href="/metronic/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
-	<script src="/metronic/js/widgets/general.js"></script>
-	<script src="/metronic/js/layouts/demo1.js"></script>
-	<link href="/metronic/css/styles.css" rel="stylesheet"/>
+	<link href="/{$metronicDir}/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+	<script src="/{$metronicDir}/js/core.bundle.js"></script>
+	<link href="/{$metronicDir}/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+	<script src="/{$metronicDir}/js/widgets/general.js"></script>
+	<script src="/{$metronicDir}/js/layouts/demo1.js"></script>
+	<link href="/{$metronicDir}/css/styles.css" rel="stylesheet"/>
 
 	<title>{ifset title}{include title|stripHtml} | {/ifset}inCore</title>
 </head>
@@ -58,11 +58,11 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- Page -->
 <style n:if="$presenter->isLinkCurrent('Sign:*')">
 	.page-bg {
-		background-image: url('/metronic/admin/assets/media/images/2600x1200/bg-10.png');
+		background-image: url('/{$metronicDir}/admin/assets/media/images/2600x1200/bg-10.png');
 	}
 
 	.dark .page-bg {
-		background-image: url('/metronic/admin/assets/media/images/2600x1200/bg-10-dark.png');
+		background-image: url('/{$metronicDir}/admin/assets/media/images/2600x1200/bg-10-dark.png');
 	}
 </style>
 {if $presenter->isLinkCurrent('Sign:*')}
@@ -79,14 +79,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							{control image, $setting->logo_id, 136, 22}
 						</span>
 					{else}
-						<img class="default-logo min-h-[22px] max-w-none" src="/metronic/admin/assets/media/app/default-logo.svg"/>
+						<img class="default-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/default-logo.svg"/>
 					{/if}
 					{if $setting?->logo_small_id !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo_small_id, 24, 22}
 						</span>
 					{else}
-						<img class="small-logo min-h-[22px] max-w-none" src="/metronic/admin/assets/media/app/mini-logo.svg"/>
+						<img class="small-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/mini-logo.svg"/>
 					{/if}
 				</a>
 				<a class="hidden dark:block" n:href="Home:default">
@@ -99,7 +99,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							{control image, $setting->logo_id, 136, 22}
 						</span>
 					{else}
-						<img class="default-logo min-h-[22px] max-w-none" src="/metronic/admin/assets/media/app/default-logo-dark.svg"/>
+						<img class="default-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/default-logo-dark.svg"/>
 					{/if}
 					{if $setting?->logo_dark_small_id !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
@@ -110,7 +110,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							{control image, $setting->logo_small_id, 24, 22}
 						</span>
 					{else}
-						<img class="small-logo min-h-[22px] max-w-none" src="/metronic/admin/assets/media/app/mini-logo.svg"/>
+						<img class="small-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/mini-logo.svg"/>
 					{/if}
 				</a>
 				<button class="btn btn-icon btn-icon-md size-[30px] rounded-lg border border-gray-200 dark:border-gray-300 bg-light text-gray-500 hover:text-gray-700 toggle absolute start-full top-2/4 -translate-x-2/4 -translate-y-2/4 rtl:translate-x-2/4" data-toggle="body" data-toggle-class="sidebar-collapse" id="sidebar_toggle">
@@ -201,7 +201,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 					<!-- Mobile Logo -->
 					<div class="flex gap-1 lg:hidden items-center -ms-1">
 						<a class="shrink-0" href="#">
-							<img class="max-h-[25px] w-full" src="/metronic/admin/assets/media/app/mini-logo.svg"/>
+							<img class="max-h-[25px] w-full" src="/{$metronicDir}/admin/assets/media/app/mini-logo.svg"/>
 						</a>
 						<div class="flex items-center">
 							<button class="btn btn-icon btn-light btn-clear btn-sm" data-drawer-toggle="#sidebar">
@@ -226,7 +226,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							<div class="menu-item" data-menu-item-offset="20px, 10px" data-menu-item-offset-rtl="-20px, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
 								<div class="menu-toggle btn btn-icon rounded-full">
 									{if $user->getIdentity()->getData()['avatar_id'] === null}
-										<img alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/metronic/admin/assets/media/avatars/300-2.png" />
+										<img alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/{$metronicDir}/admin/assets/media/avatars/300-2.png" />
 									{else}
 										{control image, $user->getIdentity()->getData()['avatar_id'], 32, 32, 'size-9 rounded-full border-2 border-success shrink-0'}
 									{/if}
@@ -235,7 +235,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 									<div class="flex items-center justify-between px-5 py-1.5 gap-1.5">
 										<div class="flex items-center gap-2">
 											{if $user->getIdentity()->getData()['avatar_id'] === null}
-												<img alt="" class="size-9 rounded-full border-2 border-success" src="/metronic/admin/assets/media/avatars/300-2.png" />
+												<img alt="" class="size-9 rounded-full border-2 border-success" src="/{$metronicDir}/admin/assets/media/avatars/300-2.png" />
 											{else}
 												{control image, $user->getIdentity()->getData()['avatar_id'], 32, 32, 'size-9 rounded-full border-2 border-success'}
 											{/if}

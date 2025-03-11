@@ -110,6 +110,7 @@ trait StandardTemplateTrait
             $this->template->moduleTree = $moduleTree = $moduleModel->getTree($this->getName());
             $this->template->mainMenuFactory = $this->mainMenuFactory;
             $this->template->setting = $settingModel->getDefault();
+            $this->template->metronicDir = $parameterBag->metronicDir;
             $showSubmenuDropdown = false;
             foreach($submenuFactory->getSubMenus() as $subMenuItem){
                 if($subMenuItem->isShowInDropdown() && $this->user->isAllowed(Arrays::last($moduleTree)->system_name, $subMenuItem->getAction())){
