@@ -10,10 +10,10 @@ class LanguageSetting
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $type;
+    public string $type;
 
     public function setType(string $type): void
     {

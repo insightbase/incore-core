@@ -11,13 +11,13 @@ class Translate implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(name: '`key`', type: 'text', length: 255)]
-    private string $key;
+    public string $key;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $source;
+    public string $source;
 
     public function setKey(string $key): self
     {

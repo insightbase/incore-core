@@ -45,6 +45,10 @@ readonly class User implements Model
         return $selection->fetch();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
     public function insert(array $data): void
     {
         $this->getTable()->insert($data);

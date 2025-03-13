@@ -17088,6 +17088,9 @@ naja__WEBPACK_IMPORTED_MODULE_0__["default"].addEventListener('start', (event) =
         });
     }
 });
+naja__WEBPACK_IMPORTED_MODULE_0__["default"].redirectHandler.addEventListener('redirect', (event) => {
+    event.detail.setHardRedirect(true);
+});
 naja__WEBPACK_IMPORTED_MODULE_0__["default"].addEventListener('success', (event) => {
     initDatagrid();
     initFlashes();

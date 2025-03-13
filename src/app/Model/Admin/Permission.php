@@ -51,6 +51,10 @@ readonly class Permission implements Model
         ;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
     public function insert(array $data): void
     {
         $this->getTable()->insert($data);

@@ -29,6 +29,9 @@ naja.addEventListener('start', (event) => {
         });
     }
 });
+naja.redirectHandler.addEventListener('redirect', (event) => {
+    event.detail.setHardRedirect(true);
+});
 naja.addEventListener('success', (event) => {
     initDatagrid();
     initFlashes();

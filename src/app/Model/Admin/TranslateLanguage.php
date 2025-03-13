@@ -35,6 +35,10 @@ readonly class TranslateLanguage implements Model
         return $this->getByTranslateIdAndLanguageId($translate->id, $language->id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
     public function insert(array $data): void
     {
         $this->getTable()->insert($data);
