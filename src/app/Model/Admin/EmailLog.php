@@ -7,10 +7,10 @@ use App\Model\Model;
 use Nette\Database\Explorer;
 use Nette\Database\Table\Selection;
 
-class EmailLog implements Model
+readonly class EmailLog implements Model
 {
     public function __construct(
-        private readonly Explorer $explorer,
+        private Explorer $explorer,
     ) {}
 
     /**

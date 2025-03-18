@@ -1,0 +1,23 @@
+{templateType App\UI\Admin\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}{_'header_favicons'}{/block}
+
+{block content}
+    {control grid}
+
+    {embed basicModal, 'formNew'}
+        {block title}{_'new_favicon'}{/block}
+        {block body}
+            {embed basicForm, formNew}{/embed}
+        {/block}
+    {/embed}
+    {embed basicModal, 'formImport'}
+        {block title}{_'new_import'}{/block}
+        {block body}
+            <p>{_'favicon_import_help'}</p>
+            {embed basicForm, formImport}{/embed}
+        {/block}
+    {/embed}
+{/block}

@@ -12,8 +12,6 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $email_sender
  * @property-read ?string $recaptcha_secret_key
  * @property-read ?string $recaptcha_site_key
- * @property-read ?ImageEntity $favicon
- * @property-read ?int $favicon_id
  * @property-read ?ImageEntity $shareimage
  * @property-read ?int $shareimage_id
  * @property-read ?string $smtp_host

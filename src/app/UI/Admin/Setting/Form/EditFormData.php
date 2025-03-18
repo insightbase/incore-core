@@ -4,7 +4,6 @@ namespace App\UI\Admin\Setting\Form;
 
 class EditFormData
 {
-    public ?int $favicon_id;
     public ?int $logo_id;
     public ?int $logo_dark_id;
     public ?int $logo_small_id;

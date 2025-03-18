@@ -43,6 +43,10 @@ class Translator implements \Nette\Localization\Translator
      */
     public function translate(string|\Stringable $message, ...$parameters): string|\Stringable
     {
+        if (count($parameters) === 1 && is_array($parameters[0])) {
+            $parameters = $parameters[0]; // Získáme první argument (asociativní pole)
+        }
+
         $translated = $this->getTranslate($message);
         if (null === $translated) {
             $translated = $message;

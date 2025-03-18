@@ -61,7 +61,7 @@ class Form extends Nette\Application\UI\Form
 
     public function addDropzone(string $name, string $label): DropzoneInput
     {
-        return $this[$name] = $this->dropzoneInputFactory->create($label)->addRule($this::Integer);
+        return $this[$name] = $this->dropzoneInputFactory->create($label);
     }
 
     public function addEditorJs(string $name, string $label): EditorJsInput

@@ -97,7 +97,7 @@ class ImagePresenter extends Presenter
 
                 $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
 
-                $image = $this->imageModel->create([
+                $image = $this->imageModel->insert([
                     'original_name' => $file->getUntrustedName(),
                     'saved_name' => $fileName,
                 ]);

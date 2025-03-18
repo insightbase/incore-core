@@ -8,11 +8,7 @@
         {foreach $htmlAttributes as $key => $value}
             {var string $attributes = $attributes . ' ' . $key . '="' . $value . '"'}
         {/foreach}
-        {if $image !== null}
-            <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes|noescape} />
-        {else}
-            <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes|noescape} />
-        {/if}
+        <img src="{$imageFile}" width="{$width}" height="{$height}" n:class="$class !== null ? $class"{$attributes|noescape} />
     {/if}
     {if $showSetting}
         <a class="imageUpdate ajax" href="{$control->getPresenter()->link('updateEditImageForm!', ['imageId' => $fileId])}" data-modal-toggle="#image-update" data-naja-history="off"><i class="ki-filled ki-setting-2"></i></a>

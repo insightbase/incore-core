@@ -1,6 +1,8 @@
 <?php
 namespace App\UI\Accessory\Front\PresenterTrait;
 
+use App\Component\Front\FaviconControl\FaviconControl;
+use App\Component\Front\FaviconControl\FaviconControlFactory;
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
 use App\Component\Translator\Translator;
@@ -22,10 +24,16 @@ trait StandardTemplateTrait
     #[Inject]
     public ImageControlFactory $imageControlFactory;
     protected ?ActiveRow $setting;
+    #[Inject]
+    public FaviconControlFactory $faviconControlFactory;
 
     protected function createComponentImage():ImageControl
     {
         return $this->imageControlFactory->create();
+    }
+
+    protected function createComponentFavicon():FaviconControl{
+        return $this->faviconControlFactory->create();
     }
 
     public function injectStandardTemplate(Setting $settingModel):void{

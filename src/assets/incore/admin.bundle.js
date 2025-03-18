@@ -17272,15 +17272,28 @@ function inlineEdit(event){
 // netteForms.initOnLoad();
 
 function initDropzone(){
-    Array.from(document.getElementsByClassName('dropzone')).forEach((element) => {
+    let uploadedFileIds = {};
+    Array.from(document.getElementsByClassName('dropzone')).forEach((element, index) => {
         if(!element.dropzone) {
+            let dzKey = `dropzone-${index}`;
+            uploadedFileIds[dzKey] = [];
+
             let dropzone = new dropzone__WEBPACK_IMPORTED_MODULE_1__["default"](element, {
                 url: element.getAttribute('data-upload-url'),
-                maxFiles: 1,
+                maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
             });
             dropzone.on('success', (file, response) => {
-                element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
+                if(element.getAttribute('data-multiple') == null) {
+                    element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
+                }else{
+                    uploadedFileIds[dzKey].push(response.imageId);
+                }
+            });
+            dropzone.on('queuecomplete', (file, response) => {
+                if(element.getAttribute('data-multiple') != null) {
+                    element.parentElement.getElementsByTagName('input')[0].value = uploadedFileIds[dzKey].join(';');
+                }
             });
         }
     });

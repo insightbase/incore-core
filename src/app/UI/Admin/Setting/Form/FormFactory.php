@@ -45,9 +45,6 @@ readonly class FormFactory
         $form->addDropzone('logo_dark_small_id', $this->translator->translate('input_logo_dark_small'))
             ->setNullable()
         ;
-        $form->addDropzone('favicon_id', $this->translator->translate('input_favicon'))
-            ->setNullable()
-        ;
         $form->addDropzone('shareimage_id', $this->translator->translate('input_shareimage'))
             ->setNullable()
         ;

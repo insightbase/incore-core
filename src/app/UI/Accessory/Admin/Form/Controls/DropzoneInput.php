@@ -11,6 +11,15 @@ use Nette\Utils\Html;
 
 class DropzoneInput extends TextInput
 {
+    public bool $multiple = false {
+        get {
+            return $this->multiple;
+        }
+        set {
+            $this->multiple = $value;
+        }
+    }
+
     public function __construct(
         private readonly Nette\Application\LinkGenerator $linkGenerator,
         private readonly ImageControlFactory             $imageControlFactory,
@@ -19,6 +28,21 @@ class DropzoneInput extends TextInput
         ?int                                             $maxLength = null
     ) {
         parent::__construct($label, $maxLength);
+    }
+
+    /**
+     * @return null|int|int[]
+     */
+    public function getValue(): null|int|array
+    {
+        if(parent::getValue() === '' || parent::getValue() === null){
+            return null;
+        }
+        if($this->multiple){
+            return explode(';', parent::getValue());
+        }else{
+            return (int)parent::getValue();
+        }
     }
 
     public function getControlDropzone(?string $class, TextInput $input): Html
@@ -45,6 +69,7 @@ class DropzoneInput extends TextInput
             ->setAttribute('data-upload-url', $this->linkGenerator->link('Admin:Image:upload'))
             ->addHtml(Html::el('div')->class('ms-4')->addHtml($image))
         ;
+        $dropzone->setAttribute('data-multiple', $this->multiple);
 
         $container->addHtml($input->getControl()->style('display: none'));
         $container->addHtml($dropzone);
