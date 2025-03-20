@@ -6,7 +6,7 @@
             {form formLogin, class: 'card-body flex flex-col gap-5 p-10'}
                 <div>
                     {if $setting?->logo_id === null}
-                        <img alt="Metronic" class="block h-8 mx-auto" src="/dist/admin/assets/media/brand-logos/logo.svg"/>
+                        <img alt="Metronic" class="block h-8 mx-auto" src="/{$metronicDir}/admin/assets/media/brand-logos/logo.svg"/>
                     {else}
                         {control image, $setting?->logo_id, 24, 24, 'block h-8 mx-auto'}
                     {/if}
