@@ -4,6 +4,8 @@ namespace App\Component\Image;
 
 use App\Component\Image\Exception\ImageNotFoundException;
 use App\Component\Image\Form\EditFormData;
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Model\Entity\ImageEntity;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\ORM\Mapping\Table;
@@ -23,6 +25,7 @@ readonly class ImageFacade
         private \App\Model\Admin\Image $imageModel,
         private Container              $container,
         private Explorer               $explorer,
+        private LogFacade $logFacade,
     ) {}
 
     /**
@@ -74,6 +77,7 @@ readonly class ImageFacade
         $updateData = (array)$data;
         unset($updateData['image_id']);
         $image->update($updateData);
+        $this->logFacade->create(LogActionEnum::Updated, 'image', $image->id);
     }
 
     /**
@@ -147,5 +151,7 @@ readonly class ImageFacade
                 FileSystem::delete($file);
             }
         }
+
+        $this->logFacade->create(LogActionEnum::DeletedUnused, 'image');
     }
 }

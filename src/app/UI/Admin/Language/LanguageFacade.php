@@ -2,6 +2,8 @@
 
 namespace App\UI\Admin\Language;
 
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
@@ -14,21 +16,35 @@ readonly class LanguageFacade
     public function __construct(
         private Language $language,
         private Translator $translator,
+        private LogFacade $logFacade,
     ) {}
 
     public function create(NewFormData $data): void
     {
-        $this->language->insert((array) $data);
+        $language = $this->language->insert((array) $data);
+        $this->logFacade->create(LogActionEnum::Created, 'language', $language->id);
     }
 
+    /**
+     * @param LanguageEntity $language
+     * @return void
+     */
     public function delete(ActiveRow $language): void
     {
+        $id = $language->id;
         $language->delete();
+        $this->logFacade->create(LogActionEnum::Deleted, 'language', $id);
     }
 
+    /**
+     * @param LanguageEntity $language
+     * @param Form\EditFormData $data
+     * @return void
+     */
     public function update(ActiveRow $language, \App\UI\Admin\Language\Form\EditFormData $data): void
     {
         $language->update((array) $data);
+        $this->logFacade->create(LogActionEnum::Updated, 'language', $language->id);
     }
 
     /**
@@ -39,6 +55,7 @@ readonly class LanguageFacade
         $this->language->getExplorer()->transaction(function () use ($language) {
             $this->language->getTable()->update(['is_default' => false]);
             $language->update(['is_default' => true]);
+            $this->logFacade->create(LogActionEnum::ChangeDefault, 'language', $language->id);
         });
     }
 
@@ -54,5 +71,6 @@ readonly class LanguageFacade
         }
 
         $language->update(['active' => !$language->active]);
+        $this->logFacade->create(LogActionEnum::ChangeActive, 'language', $language->id);
     }
 }

@@ -207,6 +207,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
             if($translate === null) {
                 $translate = new Translate();
                 $translate->setKey($key);
+                $translate->setSource('admin');
                 $manager->persist($translate);
             }
             if($value !== null){

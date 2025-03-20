@@ -24,4 +24,10 @@ class Translate implements Entity
         $this->key = $key;
         return $this;
     }
+
+    public function setSource(string $source): self
+    {
+        $this->source = $source;
+        return $this;
+    }
 }

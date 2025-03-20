@@ -2,6 +2,8 @@
 
 namespace App\UI\Admin\Favicon;
 
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Favicon;
 use App\Model\Admin\Image;
@@ -19,6 +21,7 @@ readonly class FaviconFacade
         private Image $imageModel,
         private Translator $translator,
         private Storage $storage,
+        private LogFacade $logFacade,
     )
     {
     }
@@ -29,7 +32,8 @@ readonly class FaviconFacade
 
     public function create(FormNewData $data):void
     {
-        $this->faviconModel->insert((array)$data);
+        $favicon = $this->faviconModel->insert((array)$data);
+        $this->logFacade->create(LogActionEnum::Created, 'favicon', $favicon->id);
         $this->cleanCache();
     }
 
@@ -41,6 +45,7 @@ readonly class FaviconFacade
     public function update(ActiveRow $favicon, Form\FormEditData $data):void
     {
         $favicon->update((array)$data);
+        $this->logFacade->create(LogActionEnum::Updated, 'favicon', $favicon->id);
         $this->cleanCache();
     }
 
@@ -109,6 +114,7 @@ readonly class FaviconFacade
             }
         }
         $this->cleanCache();
+        $this->logFacade->create(LogActionEnum::Imported, 'favicon');
 
         if(!empty($notFoundFiles)){
             throw new NotFoundFilesException($this->translator->translate('flash_filesNotFound%files%', ['files' => implode(', ', $notFoundFiles)]));

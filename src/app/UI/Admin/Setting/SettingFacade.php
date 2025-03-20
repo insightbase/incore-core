@@ -3,6 +3,8 @@
 namespace App\UI\Admin\Setting;
 
 use App\Component\EncryptFacade;
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Component\Mail\Exception\SystemNameNotFoundException;
 use App\Component\Mail\SenderFactory;
 use App\Component\Mail\SystemNameEnum;
@@ -17,6 +19,7 @@ readonly class SettingFacade
         private Setting $settingModel,
         private SenderFactory $senderFactory,
         private EncryptFacade $encryptFacade,
+        private LogFacade $logFacade,
     ) {}
 
     /**
@@ -32,9 +35,11 @@ readonly class SettingFacade
         }
 
         if (null === $setting) {
-            $this->settingModel->insert($updateData);
+            $setting = $this->settingModel->insert($updateData);
+            $this->logFacade->create(LogActionEnum::Created, 'setting', $setting->id);
         } else {
             $setting->update($updateData);
+            $this->logFacade->create(LogActionEnum::Updated, 'setting', $setting->id);
         }
     }
 
@@ -48,5 +53,6 @@ readonly class SettingFacade
         $sender->addTo($data->email);
         $sender->addModifier('message', $data->message);
         $sender->send();
+        $this->logFacade->create(LogActionEnum::TestEmail, 'setting');
     }
 }

@@ -4,15 +4,21 @@
 
 {block content}
 <!-- begin: grid -->
-<div class="grid lg:grid-cols-3 gap-y-5 lg:gap-7.5 items-stretch">
+<div class="">
+    <div class="lg:col-span-1">
     <p>Vítejte v administraci webu. Pokračujte výběrem položky z levého menu.</p>
+    </div>
+    <div class="lg:col-span-1">
+        <h3>{_'dasboard_lastChanges'}</h3>
+    {control gridLog}
+    </div>
 {*    <div class="lg:col-span-1">*}
 {*        <div class="grid grid-cols-2 gap-5 lg:gap-7.5 h-full items-stretch">*}
 {*            <style>*}
-{*                .channel-stats-bg {*}
+{*                .channel-stats-bg }*}
 {*                    background-image: url('/metronic/admin/assets/media/images/2600x1600/bg-3.png');*}
 {*                }*}
-{*                .dark .channel-stats-bg {*}
+{*                .dark .channel-stats-bg }*}
 {*                    background-image: url('/metronic/admin/assets/media/images/2600x1600/bg-3-dark.png');*}
 {*                }*}
 {*            </style>*}
@@ -65,10 +71,10 @@
 {*    </div>*}
 {*    <div class="lg:col-span-2">*}
 {*        <style>*}
-{*            .entry-callout-bg {*}
+{*            .entry-callout-bg }*}
 {*                background-image: url('/metronic/admin/assets/media/images/2600x1600/2.png');*}
 {*            }*}
-{*            .dark .entry-callout-bg {*}
+{*            .dark .entry-callout-bg }*}
 {*                background-image: url('/metronic/admin/assets/media/images/2600x1600/2-dark.png');*}
 {*            }*}
 {*        </style>*}
