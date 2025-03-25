@@ -213,8 +213,34 @@ function inlineEdit(event){
 // netteForms.initOnLoad();
 
 function initDropzone(){
+    let uploadedImageIds = {};
+    Array.from(document.getElementsByClassName('dropzoneImage')).forEach((element, index) => {
+        if(!element.dropzone) {
+            let dzKey = `dropzone-${index}`;
+            uploadedImageIds[dzKey] = [];
+
+            let dropzone = new Dropzone(element, {
+                url: element.getAttribute('data-upload-url'),
+                maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
+                addRemoveLinks: true,
+            });
+            dropzone.on('success', (file, response) => {
+                if(element.getAttribute('data-multiple') == null) {
+                    element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
+                }else{
+                    uploadedImageIds[dzKey].push(response.imageId);
+                }
+            });
+            dropzone.on('queuecomplete', (file, response) => {
+                if(element.getAttribute('data-multiple') != null) {
+                    element.parentElement.getElementsByTagName('input')[0].value = uploadedImageIds[dzKey].join(';');
+                }
+            });
+        }
+    });
+
     let uploadedFileIds = {};
-    Array.from(document.getElementsByClassName('dropzone')).forEach((element, index) => {
+    Array.from(document.getElementsByClassName('dropzoneFile')).forEach((element, index) => {
         if(!element.dropzone) {
             let dzKey = `dropzone-${index}`;
             uploadedFileIds[dzKey] = [];
@@ -226,9 +252,9 @@ function initDropzone(){
             });
             dropzone.on('success', (file, response) => {
                 if(element.getAttribute('data-multiple') == null) {
-                    element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
+                    element.parentElement.getElementsByTagName('input')[0].value = Number(response.fileId);
                 }else{
-                    uploadedFileIds[dzKey].push(response.imageId);
+                    uploadedFileIds[dzKey].push(response.fileId);
                 }
             });
             dropzone.on('queuecomplete', (file, response) => {

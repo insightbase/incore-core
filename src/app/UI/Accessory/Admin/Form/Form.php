@@ -4,10 +4,13 @@ namespace App\UI\Accessory\Admin\Form;
 
 use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
-use App\UI\Accessory\Admin\Form\Controls\DropzoneInput;
-use App\UI\Accessory\Admin\Form\Controls\DropzoneInputFactory;
-use App\UI\Accessory\Admin\Form\Controls\EditorJsInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJsInput;
+use App\UI\Accessory\Admin\Form\Controls\EditorJsInputFactory;
 use Nette;
 
 class Form extends Nette\Application\UI\Form
@@ -22,11 +25,12 @@ class Form extends Nette\Application\UI\Form
     }
 
     public function __construct(
-        private readonly DropzoneInputFactory $dropzoneInputFactory,
-        private readonly EditorJsInputFactory $editorJsInputFactory,
-        public readonly Language              $languageModel,
-        ?Nette\ComponentModel\IContainer      $parent = null,
-        ?string                               $name = null
+        private readonly DropzoneImageInputFactory $dropzoneInputFactory,
+        private readonly EditorJsInputFactory      $editorJsInputFactory,
+        public readonly Language                   $languageModel,
+        private readonly DropzoneFileInputFactory  $dropzoneFileInputFactory,
+        ?Nette\ComponentModel\IContainer           $parent = null,
+        ?string                                    $name = null
     ) {
         parent::__construct($parent, $name);
     }
@@ -59,9 +63,14 @@ class Form extends Nette\Application\UI\Form
         return $result;
     }
 
-    public function addDropzone(string $name, string $label): DropzoneInput
+    public function addDropzoneImage(DropzoneImageLocationEnum $locationEnum, string $name, string $label): DropzoneImageInput
     {
-        return $this[$name] = $this->dropzoneInputFactory->create($label);
+        return $this[$name] = $this->dropzoneInputFactory->create($locationEnum, $label);
+    }
+
+    public function addDropzoneFile(string $name, string $label): DropzoneFileInput
+    {
+        return $this[$name] = $this->dropzoneFileInputFactory->create($label);
     }
 
     public function addEditorJs(string $name, string $label): EditorJsInput

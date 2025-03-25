@@ -2,6 +2,7 @@
 
 namespace App\UI\Front;
 
+use App\Component\File\FileControl;
 use App\Component\Image\ImageControl;
 use App\Model\Entity\SettingEntity;
 use Nette\Application\UI\Presenter;
@@ -15,4 +16,5 @@ class BaseTemplate extends Template
      */
     public ?ActiveRow $setting;
     public ImageControl $imageControl;
+    public FileControl $fileControl;
 }

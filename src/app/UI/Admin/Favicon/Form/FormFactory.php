@@ -4,6 +4,7 @@ namespace App\UI\Admin\Favicon\Form;
 
 use App\Component\Translator\Translator;
 use App\Model\Entity\FaviconEntity;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
 
@@ -22,7 +23,7 @@ readonly class FormFactory
 
         $form->addTextArea('html', $this->translator->translate('input_html'))
             ->setRequired();
-        $dropzone = $form->addDropzone('files', $this->translator->translate('input_files'))
+        $dropzone = $form->addDropzoneImage(DropzoneImageLocationEnum::Favicon, 'files', $this->translator->translate('input_files'))
         ;
         $dropzone->multiple = true;
         $form->addSubmit('send', $this->translator->translate('input_import'));
@@ -81,7 +82,7 @@ readonly class FormFactory
         $form->addText('content', $this->translator->translate('input_content'))
             ->setNullable();
 
-        $form->addDropzone('image_id', $this->translator->translate('input_image'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::Favicon, 'image_id', $this->translator->translate('input_image'))
             ->setNullable();
 
         $form->addSelect('image_to_attribute', $this->translator->translate('input_imageToAttribute'), [

@@ -30,4 +30,8 @@ class Image implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $author = null;
+
+    #[ORM\ManyToOne(targetEntity: ImageLocation::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    public ?ImageLocation $image_location = null;
 }

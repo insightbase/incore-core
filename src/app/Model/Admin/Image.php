@@ -47,7 +47,7 @@ readonly class Image implements Model
      */
     public function getToGrid():Selection
     {
-        return $this->getTable();
+        return $this->getTable()->where('image_location.show_in_grid', true);
     }
 
     /**

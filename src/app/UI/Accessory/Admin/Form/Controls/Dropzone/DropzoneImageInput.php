@@ -1,15 +1,16 @@
 <?php
 
-namespace App\UI\Accessory\Admin\Form\Controls;
+namespace App\UI\Accessory\Admin\Form\Controls\Dropzone;
 
 use App\Component\Image\ImageControlFactory;
 use App\Model\Admin\Image;
+use App\Model\Admin\ImageLocation;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette;
 use Nette\Forms\Controls\TextInput;
 use Nette\Utils\Html;
 
-class DropzoneInput extends TextInput
+class DropzoneImageInput extends TextInput
 {
     public bool $multiple = false {
         get {
@@ -24,6 +25,8 @@ class DropzoneInput extends TextInput
         private readonly Nette\Application\LinkGenerator $linkGenerator,
         private readonly ImageControlFactory             $imageControlFactory,
         private readonly Image                           $imageModel,
+        private readonly DropzoneImageLocationEnum       $locationEnum,
+        private readonly ImageLocation                   $imageLocationModel,
         null|string|\Stringable                          $label = null,
         ?int                                             $maxLength = null
     ) {
@@ -64,9 +67,10 @@ class DropzoneInput extends TextInput
             $container->setAttribute(Form::LANG_CHANGE_ATTRIBUTE, true);
             $container->setAttribute('data-language-id', $input->getControl()->getAttribute('data-language-id'));
         }
+        $imageLocation = $this->imageLocationModel->getByLocation($this->locationEnum);
         $dropzone = Html::el('div')
-            ->setClass('dropzone')
-            ->setAttribute('data-upload-url', $this->linkGenerator->link('Admin:Image:upload'))
+            ->setClass('dropzone dropzoneImage')
+            ->setAttribute('data-upload-url', $this->linkGenerator->link('Admin:Image:upload', ['locationId' => $imageLocation->id]))
             ->addHtml(Html::el('div')->class('ms-4')->addHtml($image))
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
