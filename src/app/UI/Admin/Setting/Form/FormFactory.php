@@ -79,6 +79,12 @@ readonly class FormFactory
         $form->addInteger('max_image_resolution', $this->translator->translate('input_maxImageResolution'))
             ->setNullable();
 
+        $form->addGroup($this->translator->translate('field_google_analytics'));
+        $form->addDropzoneFile('google_service_account_id', $this->translator->translate('input_settingGoogleServiceAccount'))
+            ->setNullable();
+        $form->addText('ga_service_id', $this->translator->translate('input_settingGoogleAnalyticsServiceId'))
+            ->setNullable();
+
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));
 

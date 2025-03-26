@@ -25,6 +25,9 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?int $logo_dark_id
  * @property-read ?ImageEntity $logo_dark_small
  * @property-read ?int $logo_dark_small_id
+ * @property-read ?FileEntity $google_service_account
+ * @property-read ?int $google_service_account_id
+ * @property-read ?string $ga_service_id
  * @property-read ?int $max_image_resolution
  */
 class SettingEntity extends ActiveRow
