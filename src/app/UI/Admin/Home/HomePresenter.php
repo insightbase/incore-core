@@ -17,6 +17,7 @@ use Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
+use Google\Analytics\Data\V1beta\Row;
 use Google\Analytics\Data\V1beta\RunReportRequest;
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use Nette;
@@ -84,9 +85,12 @@ final class HomePresenter extends Nette\Application\UI\Presenter
                 $data[$date->format('Y-m-d')] = new GaGraphItem(clone $date, 0);
                 $date->modify('+1 day');
             }
+            $data[$date->format('Y-m-d')] = new GaGraphItem(clone $date, 0);
 
+            /** @var Row $row */
             foreach ($rows as $row) {
-                $data[$row->getDimensions()[0]] = $row->getMetrics()[0]->getValue();
+                $googleDate = Nette\Utils\DateTime::createFromFormat('Ymd', $row->getDimensionValues()[0]->getValue());
+                $data[$googleDate->format('Y-m-d')]->count = (int)$row->getMetricValues()[0]->getValue();
             }
             $this->template->dataAccessGraph = $data;
         }
