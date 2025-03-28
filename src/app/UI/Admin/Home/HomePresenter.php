@@ -47,8 +47,8 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 
     public function actionDefault():void
     {
-        $serviceAccount = $this->settingModel->getDefault()->google_service_account;
-        $gaServiceId = $this->settingModel->getDefault()->ga_service_id;
+        $serviceAccount = $this->settingModel->getDefault()?->google_service_account;
+        $gaServiceId = $this->settingModel->getDefault()?->ga_service_id;
 
         if($serviceAccount === null || $gaServiceId === null){
             $this->template->notConfigured = true;
