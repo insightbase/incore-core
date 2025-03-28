@@ -11256,6 +11256,330 @@ class Aa {
 
 /***/ }),
 
+/***/ "./node_modules/@editorjs/header/dist/header.mjs":
+/*!*******************************************************!*\
+  !*** ./node_modules/@editorjs/header/dist/header.mjs ***!
+  \*******************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ v)
+/* harmony export */ });
+(function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode(".ce-header{padding:.6em 0 3px;margin:0;line-height:1.25em;outline:none}.ce-header p,.ce-header div{padding:0!important;margin:0!important}")),document.head.appendChild(e)}}catch(n){console.error("vite-plugin-css-injected-by-js",n)}})();
+const a = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M19 17V10.2135C19 10.1287 18.9011 10.0824 18.836 10.1367L16 12.5"/></svg>', l = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 11C16 10 19 9.5 19 12C19 13.9771 16.0684 13.9997 16.0012 16.8981C15.9999 16.9533 16.0448 17 16.1 17L19.3 17"/></svg>', o = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 11C16 10.5 16.8323 10 17.6 10C18.3677 10 19.5 10.311 19.5 11.5C19.5 12.5315 18.7474 12.9022 18.548 12.9823C18.5378 12.9864 18.5395 13.0047 18.5503 13.0063C18.8115 13.0456 20 13.3065 20 14.8C20 16 19.5 17 17.8 17C17.8 17 16 17 16 16.3"/></svg>', h = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M18 10L15.2834 14.8511C15.246 14.9178 15.294 15 15.3704 15C16.8489 15 18.7561 15 20.2 15M19 17C19 15.7187 19 14.8813 19 13.6"/></svg>', d = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 15.9C16 15.9 16.3768 17 17.8 17C19.5 17 20 15.6199 20 14.7C20 12.7323 17.6745 12.0486 16.1635 12.9894C16.094 13.0327 16 12.9846 16 12.9027V10.1C16 10.0448 16.0448 10 16.1 10H19.8"/></svg>', u = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 7L6 12M6 17L6 12M6 12L12 12M12 7V12M12 17L12 12"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M19.5 10C16.5 10.5 16 13.3285 16 15M16 15V15C16 16.1046 16.8954 17 18 17H18.3246C19.3251 17 20.3191 16.3492 20.2522 15.3509C20.0612 12.4958 16 12.6611 16 15Z"/></svg>', g = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 7L9 12M9 17V12M9 12L15 12M15 7V12M15 17L15 12"/></svg>';
+/**
+ * Header block for the Editor.js.
+ *
+ * @author CodeX (team@ifmo.su)
+ * @copyright CodeX 2018
+ * @license MIT
+ * @version 2.0.0
+ */
+class v {
+  constructor({ data: e, config: t, api: s, readOnly: r }) {
+    this.api = s, this.readOnly = r, this._settings = t, this._data = this.normalizeData(e), this._element = this.getTag();
+  }
+  /**
+   * Styles
+   */
+  get _CSS() {
+    return {
+      block: this.api.styles.block,
+      wrapper: "ce-header"
+    };
+  }
+  /**
+   * Check if data is valid
+   * 
+   * @param {any} data - data to check
+   * @returns {data is HeaderData}
+   * @private
+   */
+  isHeaderData(e) {
+    return e.text !== void 0;
+  }
+  /**
+   * Normalize input data
+   *
+   * @param {HeaderData} data - saved data to process
+   *
+   * @returns {HeaderData}
+   * @private
+   */
+  normalizeData(e) {
+    const t = { text: "", level: this.defaultLevel.number };
+    return this.isHeaderData(e) && (t.text = e.text || "", e.level !== void 0 && !isNaN(parseInt(e.level.toString())) && (t.level = parseInt(e.level.toString()))), t;
+  }
+  /**
+   * Return Tool's view
+   *
+   * @returns {HTMLHeadingElement}
+   * @public
+   */
+  render() {
+    return this._element;
+  }
+  /**
+   * Returns header block tunes config
+   *
+   * @returns {Array}
+   */
+  renderSettings() {
+    return this.levels.map((e) => ({
+      icon: e.svg,
+      label: this.api.i18n.t(`Heading ${e.number}`),
+      onActivate: () => this.setLevel(e.number),
+      closeOnActivate: !0,
+      isActive: this.currentLevel.number === e.number,
+      render: () => document.createElement("div")
+    }));
+  }
+  /**
+   * Callback for Block's settings buttons
+   *
+   * @param {number} level - level to set
+   */
+  setLevel(e) {
+    this.data = {
+      level: e,
+      text: this.data.text
+    };
+  }
+  /**
+   * Method that specified how to merge two Text blocks.
+   * Called by Editor.js by backspace at the beginning of the Block
+   *
+   * @param {HeaderData} data - saved data to merger with current block
+   * @public
+   */
+  merge(e) {
+    this._element.insertAdjacentHTML("beforeend", e.text);
+  }
+  /**
+   * Validate Text block data:
+   * - check for emptiness
+   *
+   * @param {HeaderData} blockData — data received after saving
+   * @returns {boolean} false if saved data is not correct, otherwise true
+   * @public
+   */
+  validate(e) {
+    return e.text.trim() !== "";
+  }
+  /**
+   * Extract Tool's data from the view
+   *
+   * @param {HTMLHeadingElement} toolsContent - Text tools rendered view
+   * @returns {HeaderData} - saved data
+   * @public
+   */
+  save(e) {
+    return {
+      text: e.innerHTML,
+      level: this.currentLevel.number
+    };
+  }
+  /**
+   * Allow Header to be converted to/from other blocks
+   */
+  static get conversionConfig() {
+    return {
+      export: "text",
+      // use 'text' property for other blocks
+      import: "text"
+      // fill 'text' property from other block's export string
+    };
+  }
+  /**
+   * Sanitizer Rules
+   */
+  static get sanitize() {
+    return {
+      level: !1,
+      text: {}
+    };
+  }
+  /**
+   * Returns true to notify core that read-only is supported
+   *
+   * @returns {boolean}
+   */
+  static get isReadOnlySupported() {
+    return !0;
+  }
+  /**
+   * Get current Tools`s data
+   *
+   * @returns {HeaderData} Current data
+   * @private
+   */
+  get data() {
+    return this._data.text = this._element.innerHTML, this._data.level = this.currentLevel.number, this._data;
+  }
+  /**
+   * Store data in plugin:
+   * - at the this._data property
+   * - at the HTML
+   *
+   * @param {HeaderData} data — data to set
+   * @private
+   */
+  set data(e) {
+    if (this._data = this.normalizeData(e), e.level !== void 0 && this._element.parentNode) {
+      const t = this.getTag();
+      t.innerHTML = this._element.innerHTML, this._element.parentNode.replaceChild(t, this._element), this._element = t;
+    }
+    e.text !== void 0 && (this._element.innerHTML = this._data.text || "");
+  }
+  /**
+   * Get tag for target level
+   * By default returns second-leveled header
+   *
+   * @returns {HTMLElement}
+   */
+  getTag() {
+    const e = document.createElement(this.currentLevel.tag);
+    return e.innerHTML = this._data.text || "", e.classList.add(this._CSS.wrapper), e.contentEditable = this.readOnly ? "false" : "true", e.dataset.placeholder = this.api.i18n.t(this._settings.placeholder || ""), e;
+  }
+  /**
+   * Get current level
+   *
+   * @returns {level}
+   */
+  get currentLevel() {
+    let e = this.levels.find((t) => t.number === this._data.level);
+    return e || (e = this.defaultLevel), e;
+  }
+  /**
+   * Return default level
+   *
+   * @returns {level}
+   */
+  get defaultLevel() {
+    if (this._settings.defaultLevel) {
+      const e = this.levels.find((t) => t.number === this._settings.defaultLevel);
+      if (e)
+        return e;
+      console.warn("(ง'̀-'́)ง Heading Tool: the default level specified was not found in available levels");
+    }
+    return this.levels[1];
+  }
+  /**
+   * @typedef {object} level
+   * @property {number} number - level number
+   * @property {string} tag - tag corresponds with level number
+   * @property {string} svg - icon
+   */
+  /**
+   * Available header levels
+   *
+   * @returns {level[]}
+   */
+  get levels() {
+    const e = [
+      {
+        number: 1,
+        tag: "H1",
+        svg: a
+      },
+      {
+        number: 2,
+        tag: "H2",
+        svg: l
+      },
+      {
+        number: 3,
+        tag: "H3",
+        svg: o
+      },
+      {
+        number: 4,
+        tag: "H4",
+        svg: h
+      },
+      {
+        number: 5,
+        tag: "H5",
+        svg: d
+      },
+      {
+        number: 6,
+        tag: "H6",
+        svg: u
+      }
+    ];
+    return this._settings.levels ? e.filter(
+      (t) => this._settings.levels.includes(t.number)
+    ) : e;
+  }
+  /**
+   * Handle H1-H6 tags on paste to substitute it with header Tool
+   *
+   * @param {PasteEvent} event - event with pasted content
+   */
+  onPaste(e) {
+    const t = e.detail;
+    if ("data" in t) {
+      const s = t.data;
+      let r = this.defaultLevel.number;
+      switch (s.tagName) {
+        case "H1":
+          r = 1;
+          break;
+        case "H2":
+          r = 2;
+          break;
+        case "H3":
+          r = 3;
+          break;
+        case "H4":
+          r = 4;
+          break;
+        case "H5":
+          r = 5;
+          break;
+        case "H6":
+          r = 6;
+          break;
+      }
+      this._settings.levels && (r = this._settings.levels.reduce((n, i) => Math.abs(i - r) < Math.abs(n - r) ? i : n)), this.data = {
+        level: r,
+        text: s.innerHTML
+      };
+    }
+  }
+  /**
+   * Used by Editor.js paste handling API.
+   * Provides configuration to handle H1-H6 tags.
+   *
+   * @returns {{handler: (function(HTMLElement): {text: string}), tags: string[]}}
+   */
+  static get pasteConfig() {
+    return {
+      tags: ["H1", "H2", "H3", "H4", "H5", "H6"]
+    };
+  }
+  /**
+   * Get Tool toolbox settings
+   * icon - Tool icon's SVG
+   * title - title to show in toolbox
+   *
+   * @returns {{icon: string, title: string}}
+   */
+  static get toolbox() {
+    return {
+      icon: g,
+      title: "Heading"
+    };
+  }
+}
+
+
+
+/***/ }),
+
 /***/ "./node_modules/@editorjs/list/dist/editorjs-list.mjs":
 /*!************************************************************!*\
   !*** ./node_modules/@editorjs/list/dist/editorjs-list.mjs ***!
@@ -13359,6 +13683,1374 @@ class G {
 
 /***/ }),
 
+/***/ "./node_modules/@editorjs/paragraph/dist/paragraph.mjs":
+/*!*************************************************************!*\
+  !*** ./node_modules/@editorjs/paragraph/dist/paragraph.mjs ***!
+  \*************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ n)
+/* harmony export */ });
+(function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode(".ce-paragraph{line-height:1.6em;outline:none}.ce-block:only-of-type .ce-paragraph[data-placeholder-active]:empty:before,.ce-block:only-of-type .ce-paragraph[data-placeholder-active][data-empty=true]:before{content:attr(data-placeholder-active)}.ce-paragraph p:first-of-type{margin-top:0}.ce-paragraph p:last-of-type{margin-bottom:0}")),document.head.appendChild(e)}}catch(a){console.error("vite-plugin-css-injected-by-js",a)}})();
+const a = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 9V7.2C8 7.08954 8.08954 7 8.2 7L12 7M16 9V7.2C16 7.08954 15.9105 7 15.8 7L12 7M12 7L12 17M12 17H10M12 17H14"/></svg>';
+function l(r) {
+  const t = document.createElement("div");
+  t.innerHTML = r.trim();
+  const e = document.createDocumentFragment();
+  return e.append(...Array.from(t.childNodes)), e;
+}
+/**
+ * Base Paragraph Block for the Editor.js.
+ * Represents a regular text block
+ *
+ * @author CodeX (team@codex.so)
+ * @copyright CodeX 2018
+ * @license The MIT License (MIT)
+ */
+class n {
+  /**
+   * Default placeholder for Paragraph Tool
+   *
+   * @returns {string}
+   * @class
+   */
+  static get DEFAULT_PLACEHOLDER() {
+    return "";
+  }
+  /**
+   * Render plugin`s main Element and fill it with saved data
+   *
+   * @param {object} params - constructor params
+   * @param {ParagraphData} params.data - previously saved data
+   * @param {ParagraphConfig} params.config - user config for Tool
+   * @param {object} params.api - editor.js api
+   * @param {boolean} readOnly - read only mode flag
+   */
+  constructor({ data: t, config: e, api: i, readOnly: s }) {
+    this.api = i, this.readOnly = s, this._CSS = {
+      block: this.api.styles.block,
+      wrapper: "ce-paragraph"
+    }, this.readOnly || (this.onKeyUp = this.onKeyUp.bind(this)), this._placeholder = e.placeholder ? e.placeholder : n.DEFAULT_PLACEHOLDER, this._data = t ?? {}, this._element = null, this._preserveBlank = e.preserveBlank ?? !1;
+  }
+  /**
+   * Check if text content is empty and set empty string to inner html.
+   * We need this because some browsers (e.g. Safari) insert <br> into empty contenteditanle elements
+   *
+   * @param {KeyboardEvent} e - key up event
+   */
+  onKeyUp(t) {
+    if (t.code !== "Backspace" && t.code !== "Delete" || !this._element)
+      return;
+    const { textContent: e } = this._element;
+    e === "" && (this._element.innerHTML = "");
+  }
+  /**
+   * Create Tool's view
+   *
+   * @returns {HTMLDivElement}
+   * @private
+   */
+  drawView() {
+    const t = document.createElement("DIV");
+    return t.classList.add(this._CSS.wrapper, this._CSS.block), t.contentEditable = "false", t.dataset.placeholderActive = this.api.i18n.t(this._placeholder), this._data.text && (t.innerHTML = this._data.text), this.readOnly || (t.contentEditable = "true", t.addEventListener("keyup", this.onKeyUp)), t;
+  }
+  /**
+   * Return Tool's view
+   *
+   * @returns {HTMLDivElement}
+   */
+  render() {
+    return this._element = this.drawView(), this._element;
+  }
+  /**
+   * Method that specified how to merge two Text blocks.
+   * Called by Editor.js by backspace at the beginning of the Block
+   *
+   * @param {ParagraphData} data
+   * @public
+   */
+  merge(t) {
+    if (!this._element)
+      return;
+    this._data.text += t.text;
+    const e = l(t.text);
+    this._element.appendChild(e), this._element.normalize();
+  }
+  /**
+   * Validate Paragraph block data:
+   * - check for emptiness
+   *
+   * @param {ParagraphData} savedData — data received after saving
+   * @returns {boolean} false if saved data is not correct, otherwise true
+   * @public
+   */
+  validate(t) {
+    return !(t.text.trim() === "" && !this._preserveBlank);
+  }
+  /**
+   * Extract Tool's data from the view
+   *
+   * @param {HTMLDivElement} toolsContent - Paragraph tools rendered view
+   * @returns {ParagraphData} - saved data
+   * @public
+   */
+  save(t) {
+    return {
+      text: t.innerHTML
+    };
+  }
+  /**
+   * On paste callback fired from Editor.
+   *
+   * @param {HTMLPasteEvent} event - event with pasted data
+   */
+  onPaste(t) {
+    const e = {
+      text: t.detail.data.innerHTML
+    };
+    this._data = e, window.requestAnimationFrame(() => {
+      this._element && (this._element.innerHTML = this._data.text || "");
+    });
+  }
+  /**
+   * Enable Conversion Toolbar. Paragraph can be converted to/from other tools
+   * @returns {ConversionConfig}
+   */
+  static get conversionConfig() {
+    return {
+      export: "text",
+      // to convert Paragraph to other block, use 'text' property of saved data
+      import: "text"
+      // to covert other block's exported string to Paragraph, fill 'text' property of tool data
+    };
+  }
+  /**
+   * Sanitizer rules
+   * @returns {SanitizerConfig} - Edtior.js sanitizer config
+   */
+  static get sanitize() {
+    return {
+      text: {
+        br: !0
+      }
+    };
+  }
+  /**
+   * Returns true to notify the core that read-only mode is supported
+   *
+   * @returns {boolean}
+   */
+  static get isReadOnlySupported() {
+    return !0;
+  }
+  /**
+   * Used by Editor paste handling API.
+   * Provides configuration to handle P tags.
+   *
+   * @returns {PasteConfig} - Paragraph Paste Setting
+   */
+  static get pasteConfig() {
+    return {
+      tags: ["P"]
+    };
+  }
+  /**
+   * Icon and title for displaying at the Toolbox
+   *
+   * @returns {ToolboxConfig} - Paragraph Toolbox Setting
+   */
+  static get toolbox() {
+    return {
+      icon: a,
+      title: "Text"
+    };
+  }
+}
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@editorjs/raw/dist/raw.mjs":
+/*!*************************************************!*\
+  !*** ./node_modules/@editorjs/raw/dist/raw.mjs ***!
+  \*************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ s)
+/* harmony export */ });
+(function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode(".ce-rawtool__textarea{min-height:200px;resize:vertical;border-radius:8px;border:0;background-color:#1e2128;font-family:Menlo,Monaco,Consolas,Courier New,monospace;font-size:12px;line-height:1.6;letter-spacing:-.2px;color:#a1a7b6;overscroll-behavior:contain}")),document.head.appendChild(e)}}catch(o){console.error("vite-plugin-css-injected-by-js",o)}})();
+const a = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.6954 5C17.912 5 18.8468 6.07716 18.6755 7.28165L17.426 16.0659C17.3183 16.8229 16.7885 17.4522 16.061 17.6873L12.6151 18.8012C12.2152 18.9304 11.7848 18.9304 11.3849 18.8012L7.93898 17.6873C7.21148 17.4522 6.6817 16.8229 6.57403 16.0659L5.32454 7.28165C5.15322 6.07716 6.088 5 7.30461 5H16.6954Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8.4H9L9.42857 11.7939H14.5714L14.3571 13.2788L14.1429 14.7636L12 15.4L9.85714 14.7636L9.77143 14.3394"/></svg>';
+/**
+ * Raw HTML Tool for CodeX Editor
+ *
+ * @author CodeX (team@codex.so)
+ * @copyright CodeX 2018
+ * @license The MIT License (MIT)
+ */
+class s {
+  /**
+   * Notify core that read-only mode is supported
+   *
+   * @returns {boolean}
+   */
+  static get isReadOnlySupported() {
+    return !0;
+  }
+  /**
+   * Should this tool be displayed at the Editor's Toolbox
+   *
+   * @returns {boolean}
+   * @public
+   */
+  static get displayInToolbox() {
+    return !0;
+  }
+  /**
+   * Allow to press Enter inside the RawTool textarea
+   *
+   * @returns {boolean}
+   * @public
+   */
+  static get enableLineBreaks() {
+    return !0;
+  }
+  /**
+   * Get Tool toolbox settings
+   * icon - Tool icon's SVG
+   * title - title to show in toolbox
+   *
+   * @returns {{icon: string, title: string}}
+   */
+  static get toolbox() {
+    return {
+      icon: a,
+      title: "Raw HTML"
+    };
+  }
+  /**
+   * @typedef {object} RawData — plugin saved data
+   * @param {string} html - previously saved HTML code
+   * @property
+   */
+  /**
+   * Render plugin`s main Element and fill it with saved data
+   *
+   * @param {RawData} data — previously saved HTML data
+   * @param {object} config - user config for Tool
+   * @param {object} api - CodeX Editor API
+   * @param {boolean} readOnly - read-only mode flag
+   */
+  constructor({ data: t, config: e, api: r, readOnly: i }) {
+    this.api = r, this.readOnly = i, this.placeholder = r.i18n.t(e.placeholder || s.DEFAULT_PLACEHOLDER), this.CSS = {
+      baseClass: this.api.styles.block,
+      input: this.api.styles.input,
+      wrapper: "ce-rawtool",
+      textarea: "ce-rawtool__textarea"
+    }, this.data = {
+      html: t.html || ""
+    }, this.textarea = null, this.resizeDebounce = null;
+  }
+  /**
+   * Return Tool's view
+   *
+   * @returns {HTMLDivElement} this.element - RawTool's wrapper
+   * @public
+   */
+  render() {
+    const t = document.createElement("div"), e = 100;
+    return this.textarea = document.createElement("textarea"), t.classList.add(this.CSS.baseClass, this.CSS.wrapper), this.textarea.classList.add(this.CSS.textarea, this.CSS.input), this.textarea.textContent = this.data.html, this.textarea.placeholder = this.placeholder, this.readOnly ? this.textarea.disabled = !0 : this.textarea.addEventListener("input", () => {
+      this.onInput();
+    }), t.appendChild(this.textarea), setTimeout(() => {
+      this.resize();
+    }, e), t;
+  }
+  /**
+   * Extract Tool's data from the view
+   *
+   * @param {HTMLDivElement} rawToolsWrapper - RawTool's wrapper, containing textarea with raw HTML code
+   * @returns {RawData} - raw HTML code
+   * @public
+   */
+  save(t) {
+    return {
+      html: t.querySelector("textarea").value
+    };
+  }
+  /**
+   * Default placeholder for RawTool's textarea
+   *
+   * @public
+   * @returns {string}
+   */
+  static get DEFAULT_PLACEHOLDER() {
+    return "Enter HTML code";
+  }
+  /**
+   * Automatic sanitize config
+   */
+  static get sanitize() {
+    return {
+      html: !0
+      // Allow HTML tags
+    };
+  }
+  /**
+   * Textarea change event
+   *
+   * @returns {void}
+   */
+  onInput() {
+    this.resizeDebounce && clearTimeout(this.resizeDebounce), this.resizeDebounce = setTimeout(() => {
+      this.resize();
+    }, 200);
+  }
+  /**
+   * Resize textarea to fit whole height
+   *
+   * @returns {void}
+   */
+  resize() {
+    this.textarea.style.height = "auto", this.textarea.style.height = this.textarea.scrollHeight + "px";
+  }
+}
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@editorjs/table/dist/table.mjs":
+/*!*****************************************************!*\
+  !*** ./node_modules/@editorjs/table/dist/table.mjs ***!
+  \*****************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ F)
+/* harmony export */ });
+(function(){var r;"use strict";try{if(typeof document<"u"){var o=document.createElement("style");o.nonce=(r=document.head.querySelector("meta[property=csp-nonce]"))==null?void 0:r.content,o.appendChild(document.createTextNode('.tc-wrap{--color-background:#f9f9fb;--color-text-secondary:#7b7e89;--color-border:#e8e8eb;--cell-size:34px;--toolbox-icon-size:18px;--toolbox-padding:6px;--toolbox-aiming-field-size:calc(var(--toolbox-icon-size) + var(--toolbox-padding)*2);border-left:0;position:relative;height:100%;width:100%;margin-top:var(--toolbox-icon-size);box-sizing:border-box;display:grid;grid-template-columns:calc(100% - var(--cell-size)) var(--cell-size);z-index:0}.tc-wrap--readonly{grid-template-columns:100% var(--cell-size)}.tc-wrap svg{vertical-align:top}@media print{.tc-wrap{border-left-color:var(--color-border);border-left-style:solid;border-left-width:1px;grid-template-columns:100% var(--cell-size)}}@media print{.tc-wrap .tc-row:after{display:none}}.tc-table{position:relative;width:100%;height:100%;display:grid;font-size:14px;border-top:1px solid var(--color-border);line-height:1.4}.tc-table:after{width:calc(var(--cell-size));height:100%;left:calc(var(--cell-size)*-1);top:0}.tc-table:after,.tc-table:before{position:absolute;content:""}.tc-table:before{width:100%;height:var(--toolbox-aiming-field-size);top:calc(var(--toolbox-aiming-field-size)*-1);left:0}.tc-table--heading .tc-row:first-child{font-weight:600;border-bottom:2px solid var(--color-border)}.tc-table--heading .tc-row:first-child [contenteditable]:empty:before{content:attr(heading);color:var(--color-text-secondary)}.tc-table--heading .tc-row:first-child:after{bottom:-2px;border-bottom:2px solid var(--color-border)}.tc-add-column,.tc-add-row{display:flex;color:var(--color-text-secondary)}@media print{.tc-add{display:none}}.tc-add-column{padding:4px 0;justify-content:center;border-top:1px solid var(--color-border)}.tc-add-column--disabled{visibility:hidden}@media print{.tc-add-column{display:none}}.tc-add-row{height:var(--cell-size);align-items:center;padding-left:4px;position:relative}.tc-add-row--disabled{display:none}.tc-add-row:before{content:"";position:absolute;right:calc(var(--cell-size)*-1);width:var(--cell-size);height:100%}@media print{.tc-add-row{display:none}}.tc-add-column,.tc-add-row{transition:0s;cursor:pointer;will-change:background-color}.tc-add-column:hover,.tc-add-row:hover{transition:background-color .1s ease;background-color:var(--color-background)}.tc-add-row{margin-top:1px}.tc-add-row:hover:before{transition:.1s;background-color:var(--color-background)}.tc-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(10px,1fr));position:relative;border-bottom:1px solid var(--color-border)}.tc-row:after{content:"";pointer-events:none;position:absolute;width:var(--cell-size);height:100%;bottom:-1px;right:calc(var(--cell-size)*-1);border-bottom:1px solid var(--color-border)}.tc-row--selected{background:var(--color-background)}.tc-row--selected:after{background:var(--color-background)}.tc-cell{border-right:1px solid var(--color-border);padding:6px 12px;overflow:hidden;outline:none;line-break:normal}.tc-cell--selected{background:var(--color-background)}.tc-wrap--readonly .tc-row:after{display:none}.tc-toolbox{--toolbox-padding:6px;--popover-margin:30px;--toggler-click-zone-size:30px;--toggler-dots-color:#7b7e89;--toggler-dots-color-hovered:#1d202b;position:absolute;cursor:pointer;z-index:1;opacity:0;transition:opacity .1s;will-change:left,opacity}.tc-toolbox--column{top:calc(var(--toggler-click-zone-size)*-1);transform:translate(calc(var(--toggler-click-zone-size)*-1/2));will-change:left,opacity}.tc-toolbox--row{left:calc(var(--popover-margin)*-1);transform:translateY(calc(var(--toggler-click-zone-size)*-1/2));margin-top:-1px;will-change:top,opacity}.tc-toolbox--showed{opacity:1}.tc-toolbox .tc-popover{position:absolute;top:0;left:var(--popover-margin)}.tc-toolbox__toggler{display:flex;align-items:center;justify-content:center;width:var(--toggler-click-zone-size);height:var(--toggler-click-zone-size);color:var(--toggler-dots-color);opacity:0;transition:opacity .15s ease;will-change:opacity}.tc-toolbox__toggler:hover{color:var(--toggler-dots-color-hovered)}.tc-toolbox__toggler svg{fill:currentColor}.tc-wrap:hover .tc-toolbox__toggler{opacity:1}.tc-settings .cdx-settings-button{width:50%;margin:0}.tc-popover{--color-border:#eaeaea;--color-background:#fff;--color-background-hover:rgba(232,232,235,.49);--color-background-confirm:#e24a4a;--color-background-confirm-hover:#d54040;--color-text-confirm:#fff;background:var(--color-background);border:1px solid var(--color-border);box-shadow:0 3px 15px -3px #0d142121;border-radius:6px;padding:6px;display:none;will-change:opacity,transform}.tc-popover--opened{display:block;animation:menuShowing .1s cubic-bezier(.215,.61,.355,1) forwards}.tc-popover__item{display:flex;align-items:center;padding:2px 14px 2px 2px;border-radius:5px;cursor:pointer;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;user-select:none}.tc-popover__item:hover{background:var(--color-background-hover)}.tc-popover__item:not(:last-of-type){margin-bottom:2px}.tc-popover__item-icon{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;background:var(--color-background);border-radius:5px;border:1px solid var(--color-border);margin-right:8px}.tc-popover__item-label{line-height:22px;font-size:14px;font-weight:500}.tc-popover__item--confirm{background:var(--color-background-confirm);color:var(--color-text-confirm)}.tc-popover__item--confirm:hover{background-color:var(--color-background-confirm-hover)}.tc-popover__item--confirm .tc-popover__item-icon{background:var(--color-background-confirm);border-color:#0000001a}.tc-popover__item--confirm .tc-popover__item-icon svg{transition:transform .2s ease-in;transform:rotate(90deg) scale(1.2)}.tc-popover__item--hidden{display:none}@keyframes menuShowing{0%{opacity:0;transform:translateY(-8px) scale(.9)}70%{opacity:1;transform:translateY(2px)}to{transform:translateY(0)}}')),document.head.appendChild(o)}}catch(e){console.error("vite-plugin-css-injected-by-js",e)}})();
+function c(d, t, e = {}) {
+  const o = document.createElement(d);
+  Array.isArray(t) ? o.classList.add(...t) : t && o.classList.add(t);
+  for (const i in e)
+    Object.prototype.hasOwnProperty.call(e, i) && (o[i] = e[i]);
+  return o;
+}
+function f(d) {
+  const t = d.getBoundingClientRect();
+  return {
+    y1: Math.floor(t.top + window.pageYOffset),
+    x1: Math.floor(t.left + window.pageXOffset),
+    x2: Math.floor(t.right + window.pageXOffset),
+    y2: Math.floor(t.bottom + window.pageYOffset)
+  };
+}
+function g(d, t) {
+  const e = f(d), o = f(t);
+  return {
+    fromTopBorder: o.y1 - e.y1,
+    fromLeftBorder: o.x1 - e.x1,
+    fromRightBorder: e.x2 - o.x2,
+    fromBottomBorder: e.y2 - o.y2
+  };
+}
+function k(d, t) {
+  const e = d.getBoundingClientRect(), { width: o, height: i, x: n, y: r } = e, { clientX: h, clientY: l } = t;
+  return {
+    width: o,
+    height: i,
+    x: h - n,
+    y: l - r
+  };
+}
+function m(d, t) {
+  return t.parentNode.insertBefore(d, t);
+}
+function C(d, t = !0) {
+  const e = document.createRange(), o = window.getSelection();
+  e.selectNodeContents(d), e.collapse(t), o.removeAllRanges(), o.addRange(e);
+}
+class a {
+  /**
+   * @param {object} options - constructor options
+   * @param {PopoverItem[]} options.items - constructor options
+   */
+  constructor({ items: t }) {
+    this.items = t, this.wrapper = void 0, this.itemEls = [];
+  }
+  /**
+   * Set of CSS classnames used in popover
+   *
+   * @returns {object}
+   */
+  static get CSS() {
+    return {
+      popover: "tc-popover",
+      popoverOpened: "tc-popover--opened",
+      item: "tc-popover__item",
+      itemHidden: "tc-popover__item--hidden",
+      itemConfirmState: "tc-popover__item--confirm",
+      itemIcon: "tc-popover__item-icon",
+      itemLabel: "tc-popover__item-label"
+    };
+  }
+  /**
+   * Returns the popover element
+   *
+   * @returns {Element}
+   */
+  render() {
+    return this.wrapper = c("div", a.CSS.popover), this.items.forEach((t, e) => {
+      const o = c("div", a.CSS.item), i = c("div", a.CSS.itemIcon, {
+        innerHTML: t.icon
+      }), n = c("div", a.CSS.itemLabel, {
+        textContent: t.label
+      });
+      o.dataset.index = e, o.appendChild(i), o.appendChild(n), this.wrapper.appendChild(o), this.itemEls.push(o);
+    }), this.wrapper.addEventListener("click", (t) => {
+      this.popoverClicked(t);
+    }), this.wrapper;
+  }
+  /**
+   * Popover wrapper click listener
+   * Used to delegate clicks in items
+   *
+   * @returns {void}
+   */
+  popoverClicked(t) {
+    const e = t.target.closest(`.${a.CSS.item}`);
+    if (!e)
+      return;
+    const o = e.dataset.index, i = this.items[o];
+    if (i.confirmationRequired && !this.hasConfirmationState(e)) {
+      this.setConfirmationState(e);
+      return;
+    }
+    i.onClick();
+  }
+  /**
+   * Enable the confirmation state on passed item
+   *
+   * @returns {void}
+   */
+  setConfirmationState(t) {
+    t.classList.add(a.CSS.itemConfirmState);
+  }
+  /**
+   * Disable the confirmation state on passed item
+   *
+   * @returns {void}
+   */
+  clearConfirmationState(t) {
+    t.classList.remove(a.CSS.itemConfirmState);
+  }
+  /**
+   * Check if passed item has the confirmation state
+   *
+   * @returns {boolean}
+   */
+  hasConfirmationState(t) {
+    return t.classList.contains(a.CSS.itemConfirmState);
+  }
+  /**
+   * Return an opening state
+   *
+   * @returns {boolean}
+   */
+  get opened() {
+    return this.wrapper.classList.contains(a.CSS.popoverOpened);
+  }
+  /**
+   * Opens the popover
+   *
+   * @returns {void}
+   */
+  open() {
+    this.items.forEach((t, e) => {
+      typeof t.hideIf == "function" && this.itemEls[e].classList.toggle(a.CSS.itemHidden, t.hideIf());
+    }), this.wrapper.classList.add(a.CSS.popoverOpened);
+  }
+  /**
+   * Closes the popover
+   *
+   * @returns {void}
+   */
+  close() {
+    this.wrapper.classList.remove(a.CSS.popoverOpened), this.itemEls.forEach((t) => {
+      this.clearConfirmationState(t);
+    });
+  }
+}
+const R = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 9L10 12M10 12L7 15M10 12H4"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9L14 12M14 12L17 15M14 12H20"/></svg>', b = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 8L12 12M12 12L16 16M12 12L16 8M12 12L8 16"/></svg>', x = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.8833 9.16666L18.2167 12.5M18.2167 12.5L14.8833 15.8333M18.2167 12.5H10.05C9.16594 12.5 8.31809 12.1488 7.69297 11.5237C7.06785 10.8986 6.71666 10.0507 6.71666 9.16666"/></svg>', S = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.9167 14.9167L11.5833 18.25M11.5833 18.25L8.25 14.9167M11.5833 18.25L11.5833 10.0833C11.5833 9.19928 11.9345 8.35143 12.5596 7.72631C13.1848 7.10119 14.0326 6.75 14.9167 6.75"/></svg>', y = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.13333 14.9167L12.4667 18.25M12.4667 18.25L15.8 14.9167M12.4667 18.25L12.4667 10.0833C12.4667 9.19928 12.1155 8.35143 11.4904 7.72631C10.8652 7.10119 10.0174 6.75 9.13333 6.75"/></svg>', L = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.8833 15.8333L18.2167 12.5M18.2167 12.5L14.8833 9.16667M18.2167 12.5L10.05 12.5C9.16595 12.5 8.31811 12.8512 7.69299 13.4763C7.06787 14.1014 6.71667 14.9493 6.71667 15.8333"/></svg>', M = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.41 9.66H9.4"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 9.66H14.59"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.31 14.36H9.3"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M14.6 14.36H14.59"/></svg>', v = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 7V12M12 17V12M17 12H12M12 12H7"/></svg>', O = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9L20 12L17 15"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 12H20"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 9L4 12L7 15"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12H10"/></svg>', T = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M5 10H19"/><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/></svg>', H = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M10 5V18.5"/><path stroke="currentColor" stroke-width="2" d="M14 5V18.5"/><path stroke="currentColor" stroke-width="2" d="M5 10H19"/><path stroke="currentColor" stroke-width="2" d="M5 14H19"/><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/></svg>', A = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2" d="M10 5V18.5"/><path stroke="currentColor" stroke-width="2" d="M5 10H19"/><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/></svg>';
+class w {
+  /**
+   * Creates toolbox buttons and toolbox menus
+   *
+   * @param {Object} config
+   * @param {any} config.api - Editor.js api
+   * @param {PopoverItem[]} config.items - Editor.js api
+   * @param {function} config.onOpen - callback fired when the Popover is opening
+   * @param {function} config.onClose - callback fired when the Popover is closing
+   * @param {string} config.cssModifier - the modifier for the Toolbox. Allows to add some specific styles.
+   */
+  constructor({ api: t, items: e, onOpen: o, onClose: i, cssModifier: n = "" }) {
+    this.api = t, this.items = e, this.onOpen = o, this.onClose = i, this.cssModifier = n, this.popover = null, this.wrapper = this.createToolbox();
+  }
+  /**
+   * Style classes
+   */
+  static get CSS() {
+    return {
+      toolbox: "tc-toolbox",
+      toolboxShowed: "tc-toolbox--showed",
+      toggler: "tc-toolbox__toggler"
+    };
+  }
+  /**
+   * Returns rendered Toolbox element
+   */
+  get element() {
+    return this.wrapper;
+  }
+  /**
+   * Creating a toolbox to open menu for a manipulating columns
+   *
+   * @returns {Element}
+   */
+  createToolbox() {
+    const t = c("div", [
+      w.CSS.toolbox,
+      this.cssModifier ? `${w.CSS.toolbox}--${this.cssModifier}` : ""
+    ]);
+    t.dataset.mutationFree = "true";
+    const e = this.createPopover(), o = this.createToggler();
+    return t.appendChild(o), t.appendChild(e), t;
+  }
+  /**
+   * Creates the Toggler
+   *
+   * @returns {Element}
+   */
+  createToggler() {
+    const t = c("div", w.CSS.toggler, {
+      innerHTML: M
+    });
+    return t.addEventListener("click", () => {
+      this.togglerClicked();
+    }), t;
+  }
+  /**
+   * Creates the Popover instance and render it
+   *
+   * @returns {Element}
+   */
+  createPopover() {
+    return this.popover = new a({
+      items: this.items
+    }), this.popover.render();
+  }
+  /**
+   * Toggler click handler. Opens/Closes the popover
+   *
+   * @returns {void}
+   */
+  togglerClicked() {
+    this.popover.opened ? (this.popover.close(), this.onClose()) : (this.popover.open(), this.onOpen());
+  }
+  /**
+   * Shows the Toolbox
+   *
+   * @param {function} computePositionMethod - method that returns the position coordinate
+   * @returns {void}
+   */
+  show(t) {
+    const e = t();
+    Object.entries(e).forEach(([o, i]) => {
+      this.wrapper.style[o] = i;
+    }), this.wrapper.classList.add(w.CSS.toolboxShowed);
+  }
+  /**
+   * Hides the Toolbox
+   *
+   * @returns {void}
+   */
+  hide() {
+    this.popover.close(), this.wrapper.classList.remove(w.CSS.toolboxShowed);
+  }
+}
+function B(d, t) {
+  let e = 0;
+  return function(...o) {
+    const i = (/* @__PURE__ */ new Date()).getTime();
+    if (!(i - e < d))
+      return e = i, t(...o);
+  };
+}
+const s = {
+  wrapper: "tc-wrap",
+  wrapperReadOnly: "tc-wrap--readonly",
+  table: "tc-table",
+  row: "tc-row",
+  withHeadings: "tc-table--heading",
+  rowSelected: "tc-row--selected",
+  cell: "tc-cell",
+  cellSelected: "tc-cell--selected",
+  addRow: "tc-add-row",
+  addRowDisabled: "tc-add-row--disabled",
+  addColumn: "tc-add-column",
+  addColumnDisabled: "tc-add-column--disabled"
+};
+class E {
+  /**
+   * Creates
+   *
+   * @constructor
+   * @param {boolean} readOnly - read-only mode flag
+   * @param {object} api - Editor.js API
+   * @param {TableData} data - Editor.js API
+   * @param {TableConfig} config - Editor.js API
+   */
+  constructor(t, e, o, i) {
+    this.readOnly = t, this.api = e, this.data = o, this.config = i, this.wrapper = null, this.table = null, this.toolboxColumn = this.createColumnToolbox(), this.toolboxRow = this.createRowToolbox(), this.createTableWrapper(), this.hoveredRow = 0, this.hoveredColumn = 0, this.selectedRow = 0, this.selectedColumn = 0, this.tunes = {
+      withHeadings: !1
+    }, this.resize(), this.fill(), this.focusedCell = {
+      row: 0,
+      column: 0
+    }, this.documentClicked = (n) => {
+      const r = n.target.closest(`.${s.table}`) !== null, h = n.target.closest(`.${s.wrapper}`) === null;
+      (r || h) && this.hideToolboxes();
+      const u = n.target.closest(`.${s.addRow}`), p = n.target.closest(`.${s.addColumn}`);
+      u && u.parentNode === this.wrapper ? (this.addRow(void 0, !0), this.hideToolboxes()) : p && p.parentNode === this.wrapper && (this.addColumn(void 0, !0), this.hideToolboxes());
+    }, this.readOnly || this.bindEvents();
+  }
+  /**
+   * Returns the rendered table wrapper
+   *
+   * @returns {Element}
+   */
+  getWrapper() {
+    return this.wrapper;
+  }
+  /**
+   * Hangs the necessary handlers to events
+   */
+  bindEvents() {
+    document.addEventListener("click", this.documentClicked), this.table.addEventListener("mousemove", B(150, (t) => this.onMouseMoveInTable(t)), { passive: !0 }), this.table.onkeypress = (t) => this.onKeyPressListener(t), this.table.addEventListener("keydown", (t) => this.onKeyDownListener(t)), this.table.addEventListener("focusin", (t) => this.focusInTableListener(t));
+  }
+  /**
+   * Configures and creates the toolbox for manipulating with columns
+   *
+   * @returns {Toolbox}
+   */
+  createColumnToolbox() {
+    return new w({
+      api: this.api,
+      cssModifier: "column",
+      items: [
+        {
+          label: this.api.i18n.t("Add column to left"),
+          icon: S,
+          hideIf: () => this.numberOfColumns === this.config.maxcols,
+          onClick: () => {
+            this.addColumn(this.selectedColumn, !0), this.hideToolboxes();
+          }
+        },
+        {
+          label: this.api.i18n.t("Add column to right"),
+          icon: y,
+          hideIf: () => this.numberOfColumns === this.config.maxcols,
+          onClick: () => {
+            this.addColumn(this.selectedColumn + 1, !0), this.hideToolboxes();
+          }
+        },
+        {
+          label: this.api.i18n.t("Delete column"),
+          icon: b,
+          hideIf: () => this.numberOfColumns === 1,
+          confirmationRequired: !0,
+          onClick: () => {
+            this.deleteColumn(this.selectedColumn), this.hideToolboxes();
+          }
+        }
+      ],
+      onOpen: () => {
+        this.selectColumn(this.hoveredColumn), this.hideRowToolbox();
+      },
+      onClose: () => {
+        this.unselectColumn();
+      }
+    });
+  }
+  /**
+   * Configures and creates the toolbox for manipulating with rows
+   *
+   * @returns {Toolbox}
+   */
+  createRowToolbox() {
+    return new w({
+      api: this.api,
+      cssModifier: "row",
+      items: [
+        {
+          label: this.api.i18n.t("Add row above"),
+          icon: L,
+          hideIf: () => this.numberOfRows === this.config.maxrows,
+          onClick: () => {
+            this.addRow(this.selectedRow, !0), this.hideToolboxes();
+          }
+        },
+        {
+          label: this.api.i18n.t("Add row below"),
+          icon: x,
+          hideIf: () => this.numberOfRows === this.config.maxrows,
+          onClick: () => {
+            this.addRow(this.selectedRow + 1, !0), this.hideToolboxes();
+          }
+        },
+        {
+          label: this.api.i18n.t("Delete row"),
+          icon: b,
+          hideIf: () => this.numberOfRows === 1,
+          confirmationRequired: !0,
+          onClick: () => {
+            this.deleteRow(this.selectedRow), this.hideToolboxes();
+          }
+        }
+      ],
+      onOpen: () => {
+        this.selectRow(this.hoveredRow), this.hideColumnToolbox();
+      },
+      onClose: () => {
+        this.unselectRow();
+      }
+    });
+  }
+  /**
+   * When you press enter it moves the cursor down to the next row
+   * or creates it if the click occurred on the last one
+   */
+  moveCursorToNextRow() {
+    this.focusedCell.row !== this.numberOfRows ? (this.focusedCell.row += 1, this.focusCell(this.focusedCell)) : (this.addRow(), this.focusedCell.row += 1, this.focusCell(this.focusedCell), this.updateToolboxesPosition(0, 0));
+  }
+  /**
+   * Get table cell by row and col index
+   *
+   * @param {number} row - cell row coordinate
+   * @param {number} column - cell column coordinate
+   * @returns {HTMLElement}
+   */
+  getCell(t, e) {
+    return this.table.querySelectorAll(`.${s.row}:nth-child(${t}) .${s.cell}`)[e - 1];
+  }
+  /**
+   * Get table row by index
+   *
+   * @param {number} row - row coordinate
+   * @returns {HTMLElement}
+   */
+  getRow(t) {
+    return this.table.querySelector(`.${s.row}:nth-child(${t})`);
+  }
+  /**
+   * The parent of the cell which is the row
+   *
+   * @param {HTMLElement} cell - cell element
+   * @returns {HTMLElement}
+   */
+  getRowByCell(t) {
+    return t.parentElement;
+  }
+  /**
+   * Ger row's first cell
+   *
+   * @param {Element} row - row to find its first cell
+   * @returns {Element}
+   */
+  getRowFirstCell(t) {
+    return t.querySelector(`.${s.cell}:first-child`);
+  }
+  /**
+   * Set the sell's content by row and column numbers
+   *
+   * @param {number} row - cell row coordinate
+   * @param {number} column - cell column coordinate
+   * @param {string} content - cell HTML content
+   */
+  setCellContent(t, e, o) {
+    const i = this.getCell(t, e);
+    i.innerHTML = o;
+  }
+  /**
+   * Add column in table on index place
+   * Add cells in each row
+   *
+   * @param {number} columnIndex - number in the array of columns, where new column to insert, -1 if insert at the end
+   * @param {boolean} [setFocus] - pass true to focus the first cell
+   */
+  addColumn(t = -1, e = !1) {
+    var n;
+    let o = this.numberOfColumns;
+    if (this.config && this.config.maxcols && this.numberOfColumns >= this.config.maxcols)
+      return;
+    for (let r = 1; r <= this.numberOfRows; r++) {
+      let h;
+      const l = this.createCell();
+      if (t > 0 && t <= o ? (h = this.getCell(r, t), m(l, h)) : h = this.getRow(r).appendChild(l), r === 1) {
+        const u = this.getCell(r, t > 0 ? t : o + 1);
+        u && e && C(u);
+      }
+    }
+    const i = this.wrapper.querySelector(`.${s.addColumn}`);
+    (n = this.config) != null && n.maxcols && this.numberOfColumns > this.config.maxcols - 1 && i && i.classList.add(s.addColumnDisabled), this.addHeadingAttrToFirstRow();
+  }
+  /**
+   * Add row in table on index place
+   *
+   * @param {number} index - number in the array of rows, where new column to insert, -1 if insert at the end
+   * @param {boolean} [setFocus] - pass true to focus the inserted row
+   * @returns {HTMLElement} row
+   */
+  addRow(t = -1, e = !1) {
+    let o, i = c("div", s.row);
+    this.tunes.withHeadings && this.removeHeadingAttrFromFirstRow();
+    let n = this.numberOfColumns;
+    if (this.config && this.config.maxrows && this.numberOfRows >= this.config.maxrows && h)
+      return;
+    if (t > 0 && t <= this.numberOfRows) {
+      let l = this.getRow(t);
+      o = m(i, l);
+    } else
+      o = this.table.appendChild(i);
+    this.fillRow(o, n), this.tunes.withHeadings && this.addHeadingAttrToFirstRow();
+    const r = this.getRowFirstCell(o);
+    r && e && C(r);
+    const h = this.wrapper.querySelector(`.${s.addRow}`);
+    return this.config && this.config.maxrows && this.numberOfRows >= this.config.maxrows && h && h.classList.add(s.addRowDisabled), o;
+  }
+  /**
+   * Delete a column by index
+   *
+   * @param {number} index
+   */
+  deleteColumn(t) {
+    for (let o = 1; o <= this.numberOfRows; o++) {
+      const i = this.getCell(o, t);
+      if (!i)
+        return;
+      i.remove();
+    }
+    const e = this.wrapper.querySelector(`.${s.addColumn}`);
+    e && e.classList.remove(s.addColumnDisabled);
+  }
+  /**
+   * Delete a row by index
+   *
+   * @param {number} index
+   */
+  deleteRow(t) {
+    this.getRow(t).remove();
+    const e = this.wrapper.querySelector(`.${s.addRow}`);
+    e && e.classList.remove(s.addRowDisabled), this.addHeadingAttrToFirstRow();
+  }
+  /**
+   * Create a wrapper containing a table, toolboxes
+   * and buttons for adding rows and columns
+   *
+   * @returns {HTMLElement} wrapper - where all buttons for a table and the table itself will be
+   */
+  createTableWrapper() {
+    if (this.wrapper = c("div", s.wrapper), this.table = c("div", s.table), this.readOnly && this.wrapper.classList.add(s.wrapperReadOnly), this.wrapper.appendChild(this.toolboxRow.element), this.wrapper.appendChild(this.toolboxColumn.element), this.wrapper.appendChild(this.table), !this.readOnly) {
+      const t = c("div", s.addColumn, {
+        innerHTML: v
+      }), e = c("div", s.addRow, {
+        innerHTML: v
+      });
+      this.wrapper.appendChild(t), this.wrapper.appendChild(e);
+    }
+  }
+  /**
+   * Returns the size of the table based on initial data or config "size" property
+   *
+   * @return {{rows: number, cols: number}} - number of cols and rows
+   */
+  computeInitialSize() {
+    const t = this.data && this.data.content, e = Array.isArray(t), o = e ? t.length : !1, i = e ? t.length : void 0, n = o ? t[0].length : void 0, r = Number.parseInt(this.config && this.config.rows), h = Number.parseInt(this.config && this.config.cols), l = !isNaN(r) && r > 0 ? r : void 0, u = !isNaN(h) && h > 0 ? h : void 0;
+    return {
+      rows: i || l || 2,
+      cols: n || u || 2
+    };
+  }
+  /**
+   * Resize table to match config size or transmitted data size
+   *
+   * @return {{rows: number, cols: number}} - number of cols and rows
+   */
+  resize() {
+    const { rows: t, cols: e } = this.computeInitialSize();
+    for (let o = 0; o < t; o++)
+      this.addRow();
+    for (let o = 0; o < e; o++)
+      this.addColumn();
+  }
+  /**
+   * Fills the table with data passed to the constructor
+   *
+   * @returns {void}
+   */
+  fill() {
+    const t = this.data;
+    if (t && t.content)
+      for (let e = 0; e < t.content.length; e++)
+        for (let o = 0; o < t.content[e].length; o++)
+          this.setCellContent(e + 1, o + 1, t.content[e][o]);
+  }
+  /**
+   * Fills a row with cells
+   *
+   * @param {HTMLElement} row - row to fill
+   * @param {number} numberOfColumns - how many cells should be in a row
+   */
+  fillRow(t, e) {
+    for (let o = 1; o <= e; o++) {
+      const i = this.createCell();
+      t.appendChild(i);
+    }
+  }
+  /**
+   * Creating a cell element
+   *
+   * @return {Element}
+   */
+  createCell() {
+    return c("div", s.cell, {
+      contentEditable: !this.readOnly
+    });
+  }
+  /**
+   * Get number of rows in the table
+   */
+  get numberOfRows() {
+    return this.table.childElementCount;
+  }
+  /**
+   * Get number of columns in the table
+   */
+  get numberOfColumns() {
+    return this.numberOfRows ? this.table.querySelectorAll(`.${s.row}:first-child .${s.cell}`).length : 0;
+  }
+  /**
+   * Is the column toolbox menu displayed or not
+   *
+   * @returns {boolean}
+   */
+  get isColumnMenuShowing() {
+    return this.selectedColumn !== 0;
+  }
+  /**
+   * Is the row toolbox menu displayed or not
+   *
+   * @returns {boolean}
+   */
+  get isRowMenuShowing() {
+    return this.selectedRow !== 0;
+  }
+  /**
+   * Recalculate position of toolbox icons
+   *
+   * @param {Event} event - mouse move event
+   */
+  onMouseMoveInTable(t) {
+    const { row: e, column: o } = this.getHoveredCell(t);
+    this.hoveredColumn = o, this.hoveredRow = e, this.updateToolboxesPosition();
+  }
+  /**
+   * Prevents default Enter behaviors
+   * Adds Shift+Enter processing
+   *
+   * @param {KeyboardEvent} event - keypress event
+   */
+  onKeyPressListener(t) {
+    if (t.key === "Enter") {
+      if (t.shiftKey)
+        return !0;
+      this.moveCursorToNextRow();
+    }
+    return t.key !== "Enter";
+  }
+  /**
+   * Prevents tab keydown event from bubbling
+   * so that it only works inside the table
+   *
+   * @param {KeyboardEvent} event - keydown event
+   */
+  onKeyDownListener(t) {
+    t.key === "Tab" && t.stopPropagation();
+  }
+  /**
+   * Set the coordinates of the cell that the focus has moved to
+   *
+   * @param {FocusEvent} event - focusin event
+   */
+  focusInTableListener(t) {
+    const e = t.target, o = this.getRowByCell(e);
+    this.focusedCell = {
+      row: Array.from(this.table.querySelectorAll(`.${s.row}`)).indexOf(o) + 1,
+      column: Array.from(o.querySelectorAll(`.${s.cell}`)).indexOf(e) + 1
+    };
+  }
+  /**
+   * Unselect row/column
+   * Close toolbox menu
+   * Hide toolboxes
+   *
+   * @returns {void}
+   */
+  hideToolboxes() {
+    this.hideRowToolbox(), this.hideColumnToolbox(), this.updateToolboxesPosition();
+  }
+  /**
+   * Unselect row, close toolbox
+   *
+   * @returns {void}
+   */
+  hideRowToolbox() {
+    this.unselectRow(), this.toolboxRow.hide();
+  }
+  /**
+   * Unselect column, close toolbox
+   *
+   * @returns {void}
+   */
+  hideColumnToolbox() {
+    this.unselectColumn(), this.toolboxColumn.hide();
+  }
+  /**
+   * Set the cursor focus to the focused cell
+   *
+   * @returns {void}
+   */
+  focusCell() {
+    this.focusedCellElem.focus();
+  }
+  /**
+   * Get current focused element
+   *
+   * @returns {HTMLElement} - focused cell
+   */
+  get focusedCellElem() {
+    const { row: t, column: e } = this.focusedCell;
+    return this.getCell(t, e);
+  }
+  /**
+   * Update toolboxes position
+   *
+   * @param {number} row - hovered row
+   * @param {number} column - hovered column
+   */
+  updateToolboxesPosition(t = this.hoveredRow, e = this.hoveredColumn) {
+    this.isColumnMenuShowing || e > 0 && e <= this.numberOfColumns && this.toolboxColumn.show(() => ({
+      left: `calc((100% - var(--cell-size)) / (${this.numberOfColumns} * 2) * (1 + (${e} - 1) * 2))`
+    })), this.isRowMenuShowing || t > 0 && t <= this.numberOfRows && this.toolboxRow.show(() => {
+      const o = this.getRow(t), { fromTopBorder: i } = g(this.table, o), { height: n } = o.getBoundingClientRect();
+      return {
+        top: `${Math.ceil(i + n / 2)}px`
+      };
+    });
+  }
+  /**
+   * Makes the first row headings
+   *
+   * @param {boolean} withHeadings - use headings row or not
+   */
+  setHeadingsSetting(t) {
+    this.tunes.withHeadings = t, t ? (this.table.classList.add(s.withHeadings), this.addHeadingAttrToFirstRow()) : (this.table.classList.remove(s.withHeadings), this.removeHeadingAttrFromFirstRow());
+  }
+  /**
+   * Adds an attribute for displaying the placeholder in the cell
+   */
+  addHeadingAttrToFirstRow() {
+    for (let t = 1; t <= this.numberOfColumns; t++) {
+      let e = this.getCell(1, t);
+      e && e.setAttribute("heading", this.api.i18n.t("Heading"));
+    }
+  }
+  /**
+   * Removes an attribute for displaying the placeholder in the cell
+   */
+  removeHeadingAttrFromFirstRow() {
+    for (let t = 1; t <= this.numberOfColumns; t++) {
+      let e = this.getCell(1, t);
+      e && e.removeAttribute("heading");
+    }
+  }
+  /**
+   * Add effect of a selected row
+   *
+   * @param {number} index
+   */
+  selectRow(t) {
+    const e = this.getRow(t);
+    e && (this.selectedRow = t, e.classList.add(s.rowSelected));
+  }
+  /**
+   * Remove effect of a selected row
+   */
+  unselectRow() {
+    if (this.selectedRow <= 0)
+      return;
+    const t = this.table.querySelector(`.${s.rowSelected}`);
+    t && t.classList.remove(s.rowSelected), this.selectedRow = 0;
+  }
+  /**
+   * Add effect of a selected column
+   *
+   * @param {number} index
+   */
+  selectColumn(t) {
+    for (let e = 1; e <= this.numberOfRows; e++) {
+      const o = this.getCell(e, t);
+      o && o.classList.add(s.cellSelected);
+    }
+    this.selectedColumn = t;
+  }
+  /**
+   * Remove effect of a selected column
+   */
+  unselectColumn() {
+    if (this.selectedColumn <= 0)
+      return;
+    let t = this.table.querySelectorAll(`.${s.cellSelected}`);
+    Array.from(t).forEach((e) => {
+      e.classList.remove(s.cellSelected);
+    }), this.selectedColumn = 0;
+  }
+  /**
+   * Calculates the row and column that the cursor is currently hovering over
+   * The search was optimized from O(n) to O (log n) via bin search to reduce the number of calculations
+   *
+   * @param {Event} event - mousemove event
+   * @returns hovered cell coordinates as an integer row and column
+   */
+  getHoveredCell(t) {
+    let e = this.hoveredRow, o = this.hoveredColumn;
+    const { width: i, height: n, x: r, y: h } = k(this.table, t);
+    return r >= 0 && (o = this.binSearch(
+      this.numberOfColumns,
+      (l) => this.getCell(1, l),
+      ({ fromLeftBorder: l }) => r < l,
+      ({ fromRightBorder: l }) => r > i - l
+    )), h >= 0 && (e = this.binSearch(
+      this.numberOfRows,
+      (l) => this.getCell(l, 1),
+      ({ fromTopBorder: l }) => h < l,
+      ({ fromBottomBorder: l }) => h > n - l
+    )), {
+      row: e || this.hoveredRow,
+      column: o || this.hoveredColumn
+    };
+  }
+  /**
+   * Looks for the index of the cell the mouse is hovering over.
+   * Cells can be represented as ordered intervals with left and
+   * right (upper and lower for rows) borders inside the table, if the mouse enters it, then this is our index
+   *
+   * @param {number} numberOfCells - upper bound of binary search
+   * @param {function} getCell - function to take the currently viewed cell
+   * @param {function} beforeTheLeftBorder - determines the cursor position, to the left of the cell or not
+   * @param {function} afterTheRightBorder - determines the cursor position, to the right of the cell or not
+   * @returns {number}
+   */
+  binSearch(t, e, o, i) {
+    let n = 0, r = t + 1, h = 0, l;
+    for (; n < r - 1 && h < 10; ) {
+      l = Math.ceil((n + r) / 2);
+      const u = e(l), p = g(this.table, u);
+      if (o(p))
+        r = l;
+      else if (i(p))
+        n = l;
+      else
+        break;
+      h++;
+    }
+    return l;
+  }
+  /**
+   * Collects data from cells into a two-dimensional array
+   *
+   * @returns {string[][]}
+   */
+  getData() {
+    const t = [];
+    for (let e = 1; e <= this.numberOfRows; e++) {
+      const o = this.table.querySelector(`.${s.row}:nth-child(${e})`), i = Array.from(o.querySelectorAll(`.${s.cell}`));
+      i.every((r) => !r.textContent.trim()) || t.push(i.map((r) => r.innerHTML));
+    }
+    return t;
+  }
+  /**
+   * Remove listeners on the document
+   */
+  destroy() {
+    document.removeEventListener("click", this.documentClicked);
+  }
+}
+class F {
+  /**
+   * Notify core that read-only mode is supported
+   *
+   * @returns {boolean}
+   */
+  static get isReadOnlySupported() {
+    return !0;
+  }
+  /**
+   * Allow to press Enter inside the CodeTool textarea
+   *
+   * @returns {boolean}
+   * @public
+   */
+  static get enableLineBreaks() {
+    return !0;
+  }
+  /**
+   * Render plugin`s main Element and fill it with saved data
+   *
+   * @param {TableConstructor} init
+   */
+  constructor({ data: t, config: e, api: o, readOnly: i, block: n }) {
+    this.api = o, this.readOnly = i, this.config = e, this.data = {
+      withHeadings: this.getConfig("withHeadings", !1, t),
+      stretched: this.getConfig("stretched", !1, t),
+      content: t && t.content ? t.content : []
+    }, this.table = null, this.block = n;
+  }
+  /**
+   * Get Tool toolbox settings
+   * icon - Tool icon's SVG
+   * title - title to show in toolbox
+   *
+   * @returns {{icon: string, title: string}}
+   */
+  static get toolbox() {
+    return {
+      icon: A,
+      title: "Table"
+    };
+  }
+  /**
+   * Return Tool's view
+   *
+   * @returns {HTMLDivElement}
+   */
+  render() {
+    return this.table = new E(this.readOnly, this.api, this.data, this.config), this.container = c("div", this.api.styles.block), this.container.appendChild(this.table.getWrapper()), this.table.setHeadingsSetting(this.data.withHeadings), this.container;
+  }
+  /**
+   * Returns plugin settings
+   *
+   * @returns {Array}
+   */
+  renderSettings() {
+    return [
+      {
+        label: this.api.i18n.t("With headings"),
+        icon: T,
+        isActive: this.data.withHeadings,
+        closeOnActivate: !0,
+        toggle: !0,
+        onActivate: () => {
+          this.data.withHeadings = !0, this.table.setHeadingsSetting(this.data.withHeadings);
+        }
+      },
+      {
+        label: this.api.i18n.t("Without headings"),
+        icon: H,
+        isActive: !this.data.withHeadings,
+        closeOnActivate: !0,
+        toggle: !0,
+        onActivate: () => {
+          this.data.withHeadings = !1, this.table.setHeadingsSetting(this.data.withHeadings);
+        }
+      },
+      {
+        label: this.data.stretched ? this.api.i18n.t("Collapse") : this.api.i18n.t("Stretch"),
+        icon: this.data.stretched ? R : O,
+        closeOnActivate: !0,
+        toggle: !0,
+        onActivate: () => {
+          this.data.stretched = !this.data.stretched, this.block.stretched = this.data.stretched;
+        }
+      }
+    ];
+  }
+  /**
+   * Extract table data from the view
+   *
+   * @returns {TableData} - saved data
+   */
+  save() {
+    const t = this.table.getData();
+    return {
+      withHeadings: this.data.withHeadings,
+      stretched: this.data.stretched,
+      content: t
+    };
+  }
+  /**
+   * Plugin destroyer
+   *
+   * @returns {void}
+   */
+  destroy() {
+    this.table.destroy();
+  }
+  /**
+   * A helper to get config value.
+   *
+   * @param {string} configName - the key to get from the config.
+   * @param {any} defaultValue - default value if config doesn't have passed key
+   * @param {object} savedData - previously saved data. If passed, the key will be got from there, otherwise from the config
+   * @returns {any} - config value.
+   */
+  getConfig(t, e = void 0, o = void 0) {
+    const i = this.data || o;
+    return i ? i[t] ? i[t] : e : this.config && this.config[t] ? this.config[t] : e;
+  }
+  /**
+   * Table onPaste configuration
+   *
+   * @public
+   */
+  static get pasteConfig() {
+    return { tags: ["TABLE", "TR", "TH", "TD"] };
+  }
+  /**
+   * On paste callback that is fired from Editor
+   *
+   * @param {PasteEvent} event - event with pasted data
+   */
+  onPaste(t) {
+    const e = t.detail.data, o = e.querySelector(":scope > thead, tr:first-of-type th"), n = Array.from(e.querySelectorAll("tr")).map((r) => Array.from(r.querySelectorAll("th, td")).map((l) => l.innerHTML));
+    this.data = {
+      withHeadings: o !== null,
+      content: n
+    }, this.table.wrapper && this.table.wrapper.replaceWith(this.render());
+  }
+}
+
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./assets/admin/app.css":
 /*!********************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./assets/admin/app.css ***!
@@ -13393,7 +15085,11 @@ ___CSS_LOADER_EXPORT___.push([module.id, `div.imageContainer {
 }
 .dropzoneContainer input{
     display: none !important;
-}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,wBAAwB;AAC5B","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n.dropzoneContainer input{\r\n    display: none !important;\r\n}"],"sourceRoot":""}]);
+}
+.editorJsText{
+    font-family: sans-serif;
+    border: 1px solid black;
+}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,uBAAuB;IACvB,uBAAuB;AAC3B","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n.dropzoneContainer input{\r\n    display: none !important;\r\n}\r\n.editorJsText{\r\n    font-family: sans-serif;\r\n    border: 1px solid black;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -17052,11 +18748,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var naja__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! naja */ "./node_modules/naja/dist/Naja.esm.js");
 /* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dropzone */ "./node_modules/dropzone/dist/dropzone.mjs");
 /* harmony import */ var _editorjs_editorjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @editorjs/editorjs */ "./node_modules/@editorjs/editorjs/dist/editorjs.mjs");
-/* harmony import */ var _editorjs_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @editorjs/list */ "./node_modules/@editorjs/list/dist/editorjs-list.mjs");
-/* harmony import */ var dropzone_dist_dropzone_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! dropzone/dist/dropzone.css */ "./node_modules/dropzone/dist/dropzone.css");
-/* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./form */ "./assets/admin/form.js");
-/* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_form__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _app_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./app.css */ "./assets/admin/app.css");
+/* harmony import */ var _editorjs_raw__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @editorjs/raw */ "./node_modules/@editorjs/raw/dist/raw.mjs");
+/* harmony import */ var _editorjs_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @editorjs/list */ "./node_modules/@editorjs/list/dist/editorjs-list.mjs");
+/* harmony import */ var _editorjs_paragraph__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @editorjs/paragraph */ "./node_modules/@editorjs/paragraph/dist/paragraph.mjs");
+/* harmony import */ var _editorjs_header__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @editorjs/header */ "./node_modules/@editorjs/header/dist/header.mjs");
+/* harmony import */ var _editorjs_table__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @editorjs/table */ "./node_modules/@editorjs/table/dist/table.mjs");
+/* harmony import */ var dropzone_dist_dropzone_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! dropzone/dist/dropzone.css */ "./node_modules/dropzone/dist/dropzone.css");
+/* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./form */ "./assets/admin/form.js");
+/* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_form__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _app_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./app.css */ "./assets/admin/app.css");
+
+
+
+
+
 
 
 
@@ -17199,11 +18904,28 @@ Array.from(document.getElementsByClassName('editorJsText')).forEach((element) =>
         holder: editorDiv,
         data: data,
         tools: {
-            list: {
-                class: _editorjs_list__WEBPACK_IMPORTED_MODULE_3__["default"],
-                inlineToolbar: true, // povolí panel pro úpravy přímo v seznamu
+            raw: _editorjs_raw__WEBPACK_IMPORTED_MODULE_3__["default"],
+            paragraph: {
+                class: _editorjs_paragraph__WEBPACK_IMPORTED_MODULE_5__["default"],
+                config: {
+                    placeholder: 'Add paragraph',
+                    preserveBlank: true,
+                }
             },
-            customHTML: CustomHTML,
+            list: {
+                class: _editorjs_list__WEBPACK_IMPORTED_MODULE_4__["default"],
+                inlineToolbar: true,
+            },
+            header: {
+                class: _editorjs_header__WEBPACK_IMPORTED_MODULE_6__["default"],
+                inlineToolbar : true,
+                config: {
+                    placeholder: 'Add list',
+                    levels: [2, 3, 4],
+                    defaultLevel: 2
+                }
+            },
+            table: _editorjs_table__WEBPACK_IMPORTED_MODULE_7__["default"]
         }
     });
     editorDiv.setAttribute('data-editor-id', id);

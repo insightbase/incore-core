@@ -13,3 +13,7 @@ div.imageContainer {
 .dropzoneContainer input{
     display: none !important;
 }
+.editorJsText{
+    font-family: sans-serif;
+    border: 1px solid black;
+}

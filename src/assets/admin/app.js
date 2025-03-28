@@ -1,6 +1,11 @@
 import naja from 'naja';
 import Dropzone from "dropzone";
 import EditorJS from '@editorjs/editorjs';
+import EditorJsRaw from '@editorjs/raw';
+import EditorJsList from '@editorjs/list';
+import EditorJsParagraph from '@editorjs/paragraph';
+import EditorJsHeader from '@editorjs/header';
+import EditorJsTable from '@editorjs/table';
 import List from '@editorjs/list';
 // import './../../frontend/assets/js/core.bundle';
 // import './../../frontend/assets/css/styles.css';
@@ -140,11 +145,28 @@ Array.from(document.getElementsByClassName('editorJsText')).forEach((element) =>
         holder: editorDiv,
         data: data,
         tools: {
-            list: {
-                class: List,
-                inlineToolbar: true, // povolí panel pro úpravy přímo v seznamu
+            raw: EditorJsRaw,
+            paragraph: {
+                class: EditorJsParagraph,
+                config: {
+                    placeholder: 'Add paragraph',
+                    preserveBlank: true,
+                }
             },
-            customHTML: CustomHTML,
+            list: {
+                class: EditorJsList,
+                inlineToolbar: true,
+            },
+            header: {
+                class: EditorJsHeader,
+                inlineToolbar : true,
+                config: {
+                    placeholder: 'Add list',
+                    levels: [2, 3, 4],
+                    defaultLevel: 2
+                }
+            },
+            table: EditorJsTable
         }
     });
     editorDiv.setAttribute('data-editor-id', id);
