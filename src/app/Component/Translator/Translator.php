@@ -49,8 +49,8 @@ class Translator implements \Nette\Localization\Translator
         }
 
         try{
-            $json = Json::decode($translated, true);
-            if(array_key_exists('time', $json)){
+            $json = Json::decode((string)$translated, true);
+            if(is_array($json) && array_key_exists('time', $json)){
                 $translated = $this->editorJsRenderer->render($translated);
             }
         }catch(JsonException $e){
