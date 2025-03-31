@@ -17,3 +17,15 @@ div.imageContainer {
     font-family: sans-serif;
     border: 1px solid black;
 }
+.dropzone{
+    height: auto !important;
+    min-height: auto !important;
+    border: 1px dashed var(--tw-gray-300) !important;
+}
+
+.dropzone .dz-message {
+    color: var(--tw-primary);
+}
+#snippet-grid-dataGrid{
+    overflow-x: scroll;
+}
