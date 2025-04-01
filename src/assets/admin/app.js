@@ -76,16 +76,9 @@ function initDatagrid() {
     Array.from(document.getElementsByClassName('inlineEditOpenModal')).forEach((element) => {
         element.addEventListener('click', function(){
             let td = element.parentElement;
-            console.log(element.getAttribute('data-modal-toggle'));
             let modalEl = document.getElementById('datagrid-inline-edit');
-            let urlRefresh = td.getAttribute('data-inline-edit-url-refresh').replace('xxxx', modalEl.getElementsByClassName('textarea')[0].value);
-            naja.makeRequest('GET', urlRefresh, {}, {history: false, notShowLoader: true});
-
-            modalEl.getElementsByClassName('textarea')[0].value = td.getAttribute('data-value');
-            modalEl.getElementsByClassName('dataGrid-inline-submit')[0].addEventListener('click', function(){
-                let url = td.getAttribute('data-inline-edit-url').replace('xxxx', modalEl.getElementsByClassName('textarea')[0].value);
-                naja.makeRequest('GET', url, {}, {history: false, notShowLoader: true});
-            });
+            let urlRefresh = td.getAttribute('data-inline-edit-url-refresh');
+            naja.makeRequest('GET', urlRefresh, {}, {history: false});
         });
     });
 

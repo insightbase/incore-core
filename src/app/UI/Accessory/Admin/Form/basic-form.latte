@@ -65,6 +65,9 @@
         {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJsInput}
             {php $class .= ' text editorJsText'}
         {/if}
+        {if $input instanceof Nette\Forms\Controls\TextArea}
+            {php $class .= ' textarea'}
+        {/if}
         {if $input->getOption(type) === 'select'}
             {php $class .= ' select'}
         {/if}

@@ -15089,7 +15089,19 @@ ___CSS_LOADER_EXPORT___.push([module.id, `div.imageContainer {
 .editorJsText{
     font-family: sans-serif;
     border: 1px solid black;
-}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,uBAAuB;IACvB,uBAAuB;AAC3B","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n.dropzoneContainer input{\r\n    display: none !important;\r\n}\r\n.editorJsText{\r\n    font-family: sans-serif;\r\n    border: 1px solid black;\r\n}"],"sourceRoot":""}]);
+}
+.dropzone{
+    height: auto !important;
+    min-height: auto !important;
+    border: 1px dashed var(--tw-gray-300) !important;
+}
+
+.dropzone .dz-message {
+    color: var(--tw-primary);
+}
+#snippet-grid-dataGrid{
+    overflow-x: scroll;
+}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,uBAAuB;IACvB,uBAAuB;AAC3B;AACA;IACI,uBAAuB;IACvB,2BAA2B;IAC3B,gDAAgD;AACpD;;AAEA;IACI,wBAAwB;AAC5B;AACA;IACI,kBAAkB;AACtB","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n.dropzoneContainer input{\r\n    display: none !important;\r\n}\r\n.editorJsText{\r\n    font-family: sans-serif;\r\n    border: 1px solid black;\r\n}\r\n.dropzone{\r\n    height: auto !important;\r\n    min-height: auto !important;\r\n    border: 1px dashed var(--tw-gray-300) !important;\r\n}\r\n\r\n.dropzone .dz-message {\r\n    color: var(--tw-primary);\r\n}\r\n#snippet-grid-dataGrid{\r\n    overflow-x: scroll;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -18835,16 +18847,9 @@ function initDatagrid() {
     Array.from(document.getElementsByClassName('inlineEditOpenModal')).forEach((element) => {
         element.addEventListener('click', function(){
             let td = element.parentElement;
-            console.log(element.getAttribute('data-modal-toggle'));
             let modalEl = document.getElementById('datagrid-inline-edit');
-            let urlRefresh = td.getAttribute('data-inline-edit-url-refresh').replace('xxxx', modalEl.getElementsByClassName('textarea')[0].value);
-            naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', urlRefresh, {}, {history: false, notShowLoader: true});
-
-            modalEl.getElementsByClassName('textarea')[0].value = td.getAttribute('data-value');
-            modalEl.getElementsByClassName('dataGrid-inline-submit')[0].addEventListener('click', function(){
-                let url = td.getAttribute('data-inline-edit-url').replace('xxxx', modalEl.getElementsByClassName('textarea')[0].value);
-                naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', url, {}, {history: false, notShowLoader: true});
-            });
+            let urlRefresh = td.getAttribute('data-inline-edit-url-refresh');
+            naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', urlRefresh, {}, {history: false});
         });
     });
 
