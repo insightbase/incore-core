@@ -308,8 +308,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 	{
 		$language = $this->getReference(LanguageFixtures::LANG_CS, Language::class);
 		        foreach($this->translates as $key => $value){
-		            $exist = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
-		            if($exist === null){
+		            $translate = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
+		            if($translate === null){
 		                $translate = new Translate();
 		                $translate->setKey($key);
 		                $manager->persist($translate);
