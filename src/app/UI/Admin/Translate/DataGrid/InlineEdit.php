@@ -42,14 +42,14 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
         return function(array $values):void{
             $translate = $this->translateModel->get($values['id']);
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $this->language);
-            if ($translateLanguage) {
+            if ($translateLanguage !== null) {
                 if ('' === $values['value'] || $values['value'] === null) {
                     $translateLanguage->delete();
                 } else {
                     $translateLanguage->update(['value' => $values['value']]);
                 }
             } else {
-                if ('' === $values['value'] || $values['value'] === null) {
+                if ('' !== $values['value'] && $values['value'] !== null) {
                     $this->translateLanguageModel->insert([
                         'translate_id' => $translate->id,
                         'language_id' => $this->language->id,

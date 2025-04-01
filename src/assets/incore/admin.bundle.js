@@ -18847,7 +18847,6 @@ function initDatagrid() {
     Array.from(document.getElementsByClassName('inlineEditOpenModal')).forEach((element) => {
         element.addEventListener('click', function(){
             let td = element.parentElement;
-            let modalEl = document.getElementById('datagrid-inline-edit');
             let urlRefresh = td.getAttribute('data-inline-edit-url-refresh');
             naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', urlRefresh, {}, {history: false});
         });
