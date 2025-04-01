@@ -10,6 +10,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read int $id
  * @property-read string $key
  * @property-read string $source
+ * @property-read string $type
  */
 class TranslateEntity extends ActiveRow
 {

@@ -2,6 +2,7 @@
 
 namespace App\Model\DoctrineEntity;
 
+use App\Model\Enum\TranslateTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -18,6 +19,9 @@ class Translate implements Entity
 
     #[ORM\Column(type: 'string', length: 255)]
     public string $source;
+
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => TranslateTypeEnum::Text->value])]
+    public string $type = TranslateTypeEnum::Text->value;
 
     public function setKey(string $key): self
     {

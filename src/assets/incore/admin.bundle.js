@@ -18835,7 +18835,11 @@ function initDatagrid() {
     Array.from(document.getElementsByClassName('inlineEditOpenModal')).forEach((element) => {
         element.addEventListener('click', function(){
             let td = element.parentElement;
+            console.log(element.getAttribute('data-modal-toggle'));
             let modalEl = document.getElementById('datagrid-inline-edit');
+            let urlRefresh = td.getAttribute('data-inline-edit-url-refresh').replace('xxxx', modalEl.getElementsByClassName('textarea')[0].value);
+            naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', urlRefresh, {}, {history: false, notShowLoader: true});
+
             modalEl.getElementsByClassName('textarea')[0].value = td.getAttribute('data-value');
             modalEl.getElementsByClassName('dataGrid-inline-submit')[0].addEventListener('click', function(){
                 let url = td.getAttribute('data-inline-edit-url').replace('xxxx', modalEl.getElementsByClassName('textarea')[0].value);
@@ -18857,31 +18861,6 @@ function initDatagrid() {
     });
 }
 initDatagrid();
-
-class CustomHTML {
-    static get toolbox() {
-        return {
-            title: 'HTML',
-            icon: '<svg></svg>',
-        };
-    }
-
-    constructor({ data }) {
-        this.data = data || { html: '' };
-    }
-
-    render() {
-        this.textarea = document.createElement('textarea');
-        this.textarea.value = this.data.html;
-        return this.textarea;
-    }
-
-    save() {
-        return {
-            html: this.textarea.value,
-        };
-    }
-}
 
 const editors = {};
 function generateUniqueId() {
