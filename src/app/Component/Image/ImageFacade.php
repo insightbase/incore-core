@@ -86,7 +86,7 @@ readonly class ImageFacade
      * @param int|null $height
      * @return string
      */
-    public function getPreviewName(ImageDto $image, ?int $width = null, ?int $height = null): string
+    public function getPreviewName(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly): string
     {
         if($width === null && $height === null){
             return 'null_null_' . $image->saved_name;
@@ -94,7 +94,7 @@ readonly class ImageFacade
             $name = explode('.', $image->saved_name);
             unset($name[count($name) - 1]);
             $name = implode('.', $name) . '.webp';
-            return (null === $width ? 'null' : $width) . '_' . (null === $height ? 'null' : $height) . '_' . $name;
+            return (null === $width ? 'null' : $width) . '_' . (null === $height ? 'null' : $height) . '_' . (string)$type . '_' .$name;
         }
     }
 
@@ -107,18 +107,18 @@ readonly class ImageFacade
      * @throws \Nette\Utils\UnknownImageFileException
      * @throws \Exception
      */
-    public function generatePreview(ImageDto $image, ?int $width = null, ?int $height = null): ?Image
+    public function generatePreview(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly): ?Image
     {
         if (!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)) {
             return null;
         }
         $imageNette = Image::fromFile($this->parameterBag->uploadDir.'/'.$image->saved_name);
         if (null === $width && null === $height) {
-            $imageNette->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height));
+            $imageNette->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height, $type));
 
             return $imageNette;
         }
-        $imageNette->resize($width, $height, $imageNette::ShrinkOnly);
+        $imageNette->resize($width, $height, $type);
         $imageNette->sharpen();
         $imageNette->alphaBlending(false);
         $imageNette->saveAlpha(true);

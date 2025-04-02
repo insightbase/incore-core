@@ -80,7 +80,7 @@ class ImageControl extends Control
      * @throws ImageException
      * @throws UnknownImageFileException|ImageNotFoundException
      */
-    private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):array{
+    private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = [], int $type = \Nette\Utils\Image::ShrinkOnly):array{
         $image = $this->getImage($fileId);
         if($image === null){
             throw new ImageNotFoundException();
@@ -105,7 +105,7 @@ class ImageControl extends Control
             $ret['svg'] = null;
             $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
             if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-                $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height);
+                $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height, $type);
             }
             $ret['imageFile'] = '/images/' . $previewName;
         }
@@ -129,11 +129,11 @@ class ImageControl extends Control
         ]);
     }
 
-    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):void
+    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = [], int $type = \Nette\Utils\Image::ShrinkOnly):void
     {
         $this->template->setTranslator($this->translator);
         try {
-            $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes));
+            $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes, $type));
         } catch (ImageNotFoundException|UnknownImageFileException $e) {
 
         }
