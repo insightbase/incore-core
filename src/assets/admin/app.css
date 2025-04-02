@@ -110,9 +110,10 @@ html.dark .dropzone .dz-preview.dz-image-preview {
     color: var(--tw-primary);
 }
 
-#snippet-grid-dataGrid{
-    overflow-x: scroll;
+#snippet-grid-dataGrid {
+    overflow-x: auto !important;
 }
+
 .dz-preview {
     z-index: 0 !important;
     padding: .5rem;
@@ -216,6 +217,3 @@ textarea {
     padding-block: 1.5rem !important;
 }
 
-#snippet-grid-dataGrid {
-    overflow-x: auto !important;
-}
