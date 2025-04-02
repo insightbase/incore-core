@@ -58,6 +58,9 @@ class ImageControl extends Control
         }
         $previewName = 'orig_' . $this->imageFacade->getPreviewName($image);
         if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
+            if(!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)){
+                return '';
+            }
             FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
         }
         return '/images/' . $previewName;
