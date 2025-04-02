@@ -29,3 +29,59 @@ div.imageContainer {
 #snippet-grid-dataGrid{
     overflow-x: scroll;
 }
+
+.form-control {
+    display: flex;
+    gap: .5rem;
+    flex-direction: column;
+}
+
+
+.form-control input[type=checkbox] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    border-radius: .375rem;
+}
+
+.form-control .max-w-32 {
+    max-width: unset !important;
+}
+
+.formLanguageSelect {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    line-height: 1;
+    border-radius: .375rem;
+    padding-block: .25rem;
+    gap: .375rem;
+    border: 1px solid transparent;
+    font-weight: 500;
+    font-size: .8125rem;
+    outline: none;
+    color: var(--tw-primary);
+}
+
+.formLanguageSelect option {
+    color: #000000;
+}
+
+.formLanguageSelect:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--tw-primary-rgb, 0, 123, 255), 0.25);
+}
+
+.formLanguageSelect:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
