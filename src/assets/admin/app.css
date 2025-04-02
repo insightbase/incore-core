@@ -22,7 +22,7 @@ div.imageContainer {
     border: 2px dashed var(--tw-gray-300) !important;
     border-radius: 8px !important;
     background-color: #f9fafb !important;
-    transition: all 0.3s ease !important;
+    transition: none !important;
     display: flex !important;
     align-items: center !important;
     padding: 20px !important;
@@ -36,6 +36,7 @@ div.imageContainer {
     border-color: var(--tw-primary) !important;
     background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.05) !important;
 }
+
 
 .dropzoneContainer input {
     display: none !important;
@@ -58,6 +59,20 @@ div.imageContainer {
     background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.1) !important;
 }
 
+
+html.dark .dropzone {
+    background-color: var(--tw-light-active) !important;
+    border: 2px dashed var(--tw-gray-300) !important;
+}
+
+html.dark .dz-button {
+    color: var(--tw-gray-700) !important;
+}
+
+html.dark .dropzone .dz-preview.dz-image-preview {
+    background-color: var(--tw-light-active) !important;
+    border: 1px solid var(--tw-gray-300) !important;
+}
 
 .dropzone {
     max-width: 534px !important;
@@ -100,6 +115,8 @@ div.imageContainer {
 }
 .dz-preview {
     z-index: 0 !important;
+    padding: .5rem;
+    border-radius: 20px;
 }
 
 .form-control {
