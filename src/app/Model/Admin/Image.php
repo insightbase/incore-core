@@ -37,7 +37,7 @@ readonly class Image implements Model
      * @param array $data
      * @return ImageEntity
      */
-    public function create(array $data):ActiveRow
+    public function insert(array $data):ActiveRow
     {
         return $this->getTable()->insert($data);
     }
@@ -47,6 +47,23 @@ readonly class Image implements Model
      */
     public function getToGrid():Selection
     {
-        return $this->getTable();
+        return $this->getTable()->where('image_location.show_in_grid', true);
+    }
+
+    /**
+     * @return Selection<ImageEntity>
+     */
+    public function getByIds(array $ids): Selection
+    {
+        return $this->getTable()->where('id IN (?)', $ids);
+    }
+
+    /**
+     * @param string $originalName
+     * @return ?ImageEntity
+     */
+    public function getByOriginalName(string $originalName):?ActiveRow
+    {
+        return $this->getTable()->where('original_name', $originalName)->fetch();
     }
 }

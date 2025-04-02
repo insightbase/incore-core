@@ -30,8 +30,12 @@ readonly class Setting implements Model
         return $this->getTable()->fetch();
     }
 
-    public function insert(array $data): void
+    /**
+     * @param array<string, mixed> $data
+     * @return SettingEntity
+     */
+    public function insert(array $data): ActiveRow
     {
-        $this->getTable()->insert($data);
+        return $this->getTable()->insert($data);
     }
 }

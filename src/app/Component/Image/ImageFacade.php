@@ -4,6 +4,8 @@ namespace App\Component\Image;
 
 use App\Component\Image\Exception\ImageNotFoundException;
 use App\Component\Image\Form\EditFormData;
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Model\Entity\ImageEntity;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\ORM\Mapping\Table;
@@ -23,6 +25,7 @@ readonly class ImageFacade
         private \App\Model\Admin\Image $imageModel,
         private Container              $container,
         private Explorer               $explorer,
+        private LogFacade $logFacade,
     ) {}
 
     /**
@@ -74,42 +77,54 @@ readonly class ImageFacade
         $updateData = (array)$data;
         unset($updateData['image_id']);
         $image->update($updateData);
+        $this->logFacade->create(LogActionEnum::Updated, 'image', $image->id);
     }
 
     /**
-     * @param ImageEntity $image
+     * @param ImageDto $image
      * @param int|null $width
      * @param int|null $height
      * @return string
      */
-    public function getPreviewName(ActiveRow $image, ?int $width = null, ?int $height = null): string
+    public function getPreviewName(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly): string
     {
-        return (null === $width ? 'null' : $width).'_'.(null === $height ? 'null' : $height).'_'.$image->saved_name;
+        if($width === null && $height === null){
+            return 'null_null_' . $image->saved_name;
+        }else {
+            $name = explode('.', $image->saved_name);
+            unset($name[count($name) - 1]);
+            $name = implode('.', $name) . '.webp';
+            return (null === $width ? 'null' : $width) . '_' . (null === $height ? 'null' : $height) . '_' . (string)$type . '_' .$name;
+        }
     }
 
     /**
-     * @param ImageEntity $image
+     * @param ImageDto $image
      * @param int|null $width
      * @param int|null $height
-     * @return Image
+     * @return ?Image
      * @throws \Nette\Utils\ImageException
      * @throws \Nette\Utils\UnknownImageFileException
+     * @throws \Exception
      */
-    public function generatePreview(ActiveRow $image, ?int $width = null, ?int $height = null): Image
+    public function generatePreview(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly): ?Image
     {
         if (!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)) {
-            throw new \Exception('File "'.$this->parameterBag->uploadDir.'/'.$image->saved_name.'" not found');
+            return null;
         }
         $imageNette = Image::fromFile($this->parameterBag->uploadDir.'/'.$image->saved_name);
         if (null === $width && null === $height) {
-            $imageNette->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height));
+            $imageNette->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height, $type));
 
             return $imageNette;
         }
-        $imageNette->resize($width, $height, $imageNette::ShrinkOnly);
+        $imageNette->resize($width, $height, $type);
         $imageNette->sharpen();
+        $imageNette->alphaBlending(false);
         $imageNette->saveAlpha(true);
-        $container = Image::fromBlank($width, $height, ImageColor::rgb(255, 255, 255));
+        $container = Image::fromBlank($width, $height, ImageColor::rgb(255, 255, 255, 0));
+        $container->alphaBlending(false);
+        $container->saveAlpha(true);
         $container->place($imageNette, '50%', '50%');
         FileSystem::createDir($this->parameterBag->previewDir);
         $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height), 100);
@@ -136,5 +151,7 @@ readonly class ImageFacade
                 FileSystem::delete($file);
             }
         }
+
+        $this->logFacade->create(LogActionEnum::DeletedUnused, 'image');
     }
 }

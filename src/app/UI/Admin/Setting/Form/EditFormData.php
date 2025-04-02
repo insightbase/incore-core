@@ -4,7 +4,6 @@ namespace App\UI\Admin\Setting\Form;
 
 class EditFormData
 {
-    public ?int $favicon_id;
     public ?int $logo_id;
     public ?int $logo_dark_id;
     public ?int $logo_small_id;
@@ -18,4 +17,6 @@ class EditFormData
     public ?string $recaptcha_secret_key;
     public ?string $recaptcha_site_key;
     public ?int $max_image_resolution;
+    public ?int $google_service_account_id;
+    public ?string $ga_service_id;
 }

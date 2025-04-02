@@ -11,29 +11,29 @@ class Language implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $name;
+    public string $name;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $locale;
+    public string $locale;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $host = null;
+    public ?string $host = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $flag = null;
+    public ?Image $flag = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $is_default = false;
+    public bool $is_default = false;
 
     #[ORM\Column(type: 'string', length: 10, unique: true)]
-    private string $url;
+    public string $url;
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
-    private bool $active = true;
+    public bool $active = true;
 
     public function setName(string $name): self
     {

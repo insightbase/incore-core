@@ -2,6 +2,8 @@
 
 namespace App\UI\Admin\Role;
 
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Model\Admin\Permission;
 use App\Model\Admin\Role;
 use App\Model\Entity\ModuleEntity;
@@ -16,11 +18,13 @@ readonly class RoleFacade
     public function __construct(
         private Role $roleModel,
         private Permission $permissionModel,
+        private LogFacade $logFacade,
     ) {}
 
     public function create(NewData $data): void
     {
-        $this->roleModel->insert((array) $data);
+        $role = $this->roleModel->insert((array) $data);
+        $this->logFacade->create(LogActionEnum::Created, 'role', $role->id);
     }
 
     /**
@@ -32,6 +36,7 @@ readonly class RoleFacade
     {
         $this->check($role);
         $role->update((array) $data);
+        $this->logFacade->create(LogActionEnum::Updated, 'role', $role->id);
     }
 
     /**
@@ -51,6 +56,7 @@ readonly class RoleFacade
             }
         }
         $this->permissionModel->getByRoleAndModuleAndNotPrivilegesId($role, $module, $data->privileges)->delete();
+        $this->logFacade->create(LogActionEnum::SetAuthorization, 'role', $role->id);
     }
 
     /**

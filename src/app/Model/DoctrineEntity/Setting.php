@@ -11,53 +11,56 @@ class Setting implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(type: 'string', length: 255, options: ['default' => 'info@email.cz'])]
-    private string $email;
+    public string $email;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $email_sender = null;
+    public ?string $email_sender = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $recaptcha_secret_key = null;
+    public ?string $recaptcha_secret_key = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $recaptcha_site_key = null;
+    public ?string $recaptcha_site_key = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $favicon = null;
-
-    #[ORM\ManyToOne(targetEntity: Image::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $shareimage = null;
+    public ?Image $shareimage = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $smtp_host = null;
+    public ?string $smtp_host = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $smtp_username = null;
+    public ?string $smtp_username = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $smtp_password = null;
+    public ?string $smtp_password = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $logo = null;
+    public ?Image $logo = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $logo_small = null;
+    public ?Image $logo_small = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $logo_dark = null;
+    public ?Image $logo_dark = null;
 
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Image $logo_dark_small = null;
+    public ?Image $logo_dark_small = null;
+
+    #[ORM\ManyToOne(targetEntity: File::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    public ?File $google_service_account = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $ga_service_id = null;
 
     #[ORM\Column(nullable: true, options: ['default' => null])]
-    private ?int $max_image_resolution = null;
+    public ?int $max_image_resolution = null;
 }

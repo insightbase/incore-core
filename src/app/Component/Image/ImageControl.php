@@ -2,15 +2,21 @@
 
 namespace App\Component\Image;
 
+use App\Component\Image\Exception\ImageNotFoundException;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Image;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Requires;
+use Nette\Application\LinkGenerator;
 use Nette\Application\UI\Control;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Html;
+use Nette\Utils\ImageException;
+use Nette\Utils\UnknownImageFileException;
 
 /**
  * @property ImageTemplate $template
@@ -22,14 +28,39 @@ class ImageControl extends Control
         private readonly ParameterBag $parameterBag,
         private readonly Image        $imageModel,
         private readonly Translator   $translator,
+        private readonly Storage      $storage,
     )
     {
     }
 
+    protected function getImage(int $id):?ImageDto{
+        $cache = new Cache($this->storage, 'image');
+        $image = $cache->load('id_' . $id, function() use ($id):?string{
+            $image = $this->imageModel->get($id);
+            if($image === null){
+                return null;
+            }
+            return json_encode(new ImageDto(
+                saved_name: $image->saved_name,
+            ));
+        });
+        if($image === null){
+            return null;
+        }else{
+            return ImageDto::fromJson($image);
+        }
+    }
+
     public function getOriginal(int $fileId):string{
-        $image = $this->imageModel->get($fileId);
-        $previewName = 'orig_' . $this->imageFacade->getPreviewName($image, 0, 0);
+        $image = $this->getImage($fileId);
+        if($image === null){
+            return '';
+        }
+        $previewName = 'orig_' . $this->imageFacade->getPreviewName($image);
         if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
+            if(!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)){
+                return '';
+            }
             FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
         }
         return '/images/' . $previewName;
@@ -37,16 +68,23 @@ class ImageControl extends Control
 
     public function getPreviewFile(int $fileId, int $width, int $height):string
     {
-        $image = $this->imageModel->get($fileId);
+        $image = $this->getImage($fileId);
         $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
         if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-            $this->imageFacade->generatePreview($image, $width, $height)->save($this->parameterBag->previewDir . '/' . $previewName);
+            $this->imageFacade->generatePreview($image, $width, $height)?->save($this->parameterBag->previewDir . '/' . $previewName);
         }
         return '/images/' . $previewName;
     }
 
-    private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):array{
-        $image = $this->imageModel->get($fileId);
+    /**
+     * @throws ImageException
+     * @throws UnknownImageFileException|ImageNotFoundException
+     */
+    private function getParams(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = [], int $type = \Nette\Utils\Image::ShrinkOnly):array{
+        $image = $this->getImage($fileId);
+        if($image === null){
+            throw new ImageNotFoundException();
+        }
         $file = $image->saved_name;
 
         $suffix = Arrays::last(explode('.', $file));
@@ -66,11 +104,10 @@ class ImageControl extends Control
         }else{
             $ret['svg'] = null;
             $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
-            if(file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-                $ret['imageFile'] = '/images/' . $previewName;
-            }else {
-                $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height);
+            if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
+                $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height, $type);
             }
+            $ret['imageFile'] = '/images/' . $previewName;
         }
         $ret['width'] = $width;
         $ret['height'] = $height;
@@ -92,15 +129,23 @@ class ImageControl extends Control
         ]);
     }
 
-    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = []):void
+    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = [], int $type = \Nette\Utils\Image::ShrinkOnly):void
     {
         $this->template->setTranslator($this->translator);
-        $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes));
+        try {
+            $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes, $type));
+        } catch (ImageNotFoundException|UnknownImageFileException $e) {
+
+        }
     }
 
     public function renderToString(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = true):string
     {
         $this->template->setTranslator($this->translator);
-        return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
+        try {
+            return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
+        } catch (ImageNotFoundException|UnknownImageFileException $e) {
+            return '';
+        }
     }
 }

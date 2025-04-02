@@ -88,7 +88,7 @@ class ImagePresenter extends Presenter
         return $this->dataGridFactory->create($this->imageModel->getToGrid(), $this->defaultDataGridEntityFactory->create());
     }
 
-    #[NoReturn] public function actionUpload(): void
+    #[NoReturn] public function actionUpload(int $locationId): void
     {
         $file = $this->getHttpRequest()->getFile('file');
         if ($file instanceof FileUpload) {
@@ -97,9 +97,10 @@ class ImagePresenter extends Presenter
 
                 $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
 
-                $image = $this->imageModel->create([
+                $image = $this->imageModel->insert([
                     'original_name' => $file->getUntrustedName(),
                     'saved_name' => $fileName,
+                    'image_location_id' => $locationId,
                 ]);
 
                 FileSystem::createDir($this->parameterBag->uploadDir);

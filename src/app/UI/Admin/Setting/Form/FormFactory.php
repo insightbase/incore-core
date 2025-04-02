@@ -3,6 +3,7 @@
 namespace App\UI\Admin\Setting\Form;
 
 use App\Component\Translator\Translator;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
 
@@ -33,22 +34,19 @@ readonly class FormFactory
         $form = $this->formFactory->create();
 
         $form->addGroup($this->translator->translate('field_general'));
-        $form->addDropzone('logo_id', $this->translator->translate('input_logo'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::SettingLogo, 'logo_id', $this->translator->translate('input_logo'))
             ->setNullable()
         ;
-        $form->addDropzone('logo_small_id', $this->translator->translate('input_logo_small'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::SettingLogo, 'logo_small_id', $this->translator->translate('input_logo_small'))
             ->setNullable()
         ;
-        $form->addDropzone('logo_dark_id', $this->translator->translate('input_logo_dark'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::SettingLogo, 'logo_dark_id', $this->translator->translate('input_logo_dark'))
             ->setNullable()
         ;
-        $form->addDropzone('logo_dark_small_id', $this->translator->translate('input_logo_dark_small'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::SettingLogo, 'logo_dark_small_id', $this->translator->translate('input_logo_dark_small'))
             ->setNullable()
         ;
-        $form->addDropzone('favicon_id', $this->translator->translate('input_favicon'))
-            ->setNullable()
-        ;
-        $form->addDropzone('shareimage_id', $this->translator->translate('input_shareimage'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::SettingShareImage, 'shareimage_id', $this->translator->translate('input_shareimage'))
             ->setNullable()
         ;
 
@@ -79,6 +77,12 @@ readonly class FormFactory
 
         $form->addGroup($this->translator->translate('field_images'));
         $form->addInteger('max_image_resolution', $this->translator->translate('input_maxImageResolution'))
+            ->setNullable();
+
+        $form->addGroup($this->translator->translate('field_googleAnalytics'));
+        $form->addDropzoneFile('google_service_account_id', $this->translator->translate('input_settingGoogleServiceAccount'))
+            ->setNullable();
+        $form->addText('ga_service_id', $this->translator->translate('input_settingGoogleAnalyticsServiceId'))
             ->setNullable();
 
         $form->addGroup();

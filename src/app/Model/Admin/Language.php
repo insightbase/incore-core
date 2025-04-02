@@ -37,9 +37,13 @@ readonly class Language implements Model
         return $this->getTable();
     }
 
-    public function insert(array $data): void
+    /**
+     * @param array<string, mixed> $data
+     * @return LanguageEntity
+     */
+    public function insert(array $data): ActiveRow
     {
-        $this->getTable()->insert($data);
+        return $this->getTable()->insert($data);
     }
 
     /**

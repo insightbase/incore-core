@@ -2,6 +2,7 @@
 
 namespace App\UI\Accessory\Admin\PresenterTrait;
 
+use App\Component\File\FileControlFactory;
 use App\Component\Image\Exception\ImageNotFoundException;
 use App\Component\Image\Form\EditFormData;
 use App\Component\Image\Form\FormFactory;
@@ -10,6 +11,7 @@ use App\Component\Image\ImageControlFactory;
 use App\Component\Image\ImageFacade;
 use App\Component\Translator\Translator;
 use App\Core\Admin\Authenticator;
+use App\Core\Admin\AuthorizatorFactory;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;
 use App\Model\Admin\Image;
 use App\Model\Admin\Language;
@@ -20,11 +22,14 @@ use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\BaseTemplate;
+use Doctrine\ORM\Mapping\InverseJoinColumn;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\Attributes\Requires;
 use Nette\Bridges\SecurityHttp\SessionStorage;
 use Nette\DI\Attributes\Inject;
+use Nette\Security\Authorizator;
+use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 
 /**
@@ -85,7 +90,8 @@ trait StandardTemplateTrait
     }
 
     public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade,
-                                           Module $moduleModel, Language $languageModel, Authenticator $authenticator, Setting $settingModel
+                                           Module $moduleModel, Language $languageModel, Authenticator $authenticator, Setting $settingModel,
+                                           AuthorizatorFactory $authorizatorFactory,
     ): void
     {
         $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel): void {
@@ -103,9 +109,18 @@ trait StandardTemplateTrait
             $this->template->menuModules = $moduleModel->getToMenu();
             $this->template->moduleModel = $moduleModel;
             $this->template->languages = $languages = $languageModel->getToTranslate();
-            $this->template->moduleTree = $moduleModel->getTree($this->getName());
+            $this->template->moduleTree = $moduleTree = $moduleModel->getTree($this->getName());
             $this->template->mainMenuFactory = $this->mainMenuFactory;
             $this->template->setting = $settingModel->getDefault();
+            $this->template->metronicDir = $parameterBag->metronicDir;
+            $showSubmenuDropdown = false;
+            foreach($submenuFactory->getSubMenus() as $subMenuItem){
+                if($subMenuItem->isShowInDropdown() && $this->user->isAllowed(Arrays::last($moduleTree)->system_name, $subMenuItem->getAction())){
+                    $showSubmenuDropdown = true;
+                    break;
+                }
+            }
+            $this->template->showSubmenuDropdown = $showSubmenuDropdown;
             foreach ($languages as $language) {
                 if ($language->is_default) {
                     $this->template->defaultLanguage = $language;
@@ -114,14 +129,15 @@ trait StandardTemplateTrait
                 }
             }
         };
-        $this->onStartup[] = function () use ($authenticator): void {
+        $this->onStartup[] = function () use ($authenticator, $authorizatorFactory): void {
             $this->translator->setLang($this->lang);
+            $this->template->editedImage = null;
+            $this->getUser()->setAuthenticator($authenticator);
+            $this->getUser()->setAuthorizator($authorizatorFactory->create());
             $storage = $this->getUser()->getStorage();
             if ($storage instanceof SessionStorage) {
                 $storage->setNamespace('admin');
             }
-            $this->template->editedImage = null;
-            $this->getUser()->setAuthenticator($authenticator);
         };
     }
 }

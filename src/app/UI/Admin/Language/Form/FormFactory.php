@@ -7,6 +7,7 @@ use App\Model\Admin\LanguageSetting;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\LanguageSettingEntity;
 use App\Model\Enum\LanguageSettingTypeEnum;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
 
@@ -72,7 +73,7 @@ readonly class FormFactory
         $form->addText('url', $this->translator->translate('input_url'))
             ->addRule($form::MaxLength, $this->translator->translate('input_url_max_length_%length%', 10), 10)
         ;
-        $form->addDropzone('flag_id', $this->translator->translate('input_flag'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::LanguageFlag, 'flag_id', $this->translator->translate('input_flag'))
             ->setNullable()
         ;
         if($this->languageSettingModel->getSetting()->type === LanguageSettingTypeEnum::Host->value){

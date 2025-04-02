@@ -2,6 +2,8 @@
 
 namespace App\UI\Admin\Translate;
 
+use App\Component\Log\LogActionEnum;
+use App\Component\Log\LogFacade;
 use App\Component\Translator\Extractor\LatteExtractor;
 use App\Component\Translator\Extraxtor\NetteTranslatorExtractor;
 use App\Component\Translator\Translator;
@@ -30,6 +32,7 @@ readonly class TranslateFacade
         private Module $moduleModel,
         private Translate $translateModel,
         private Storage $storage,
+        private LogFacade $logFacade,
     ) {}
 
     /**
@@ -57,6 +60,7 @@ readonly class TranslateFacade
             }
             $cache->remove($language->id);
         }
+        $this->logFacade->create(LogActionEnum::Translate, 'translate', $translate->id);
     }
 
     public function synchronize(): void
@@ -94,6 +98,8 @@ readonly class TranslateFacade
         }
 
         $this->updateTranslates($extractorKeys, 'front');
+
+        $this->logFacade->create(LogActionEnum::Translate, 'translate');
     }
 
     /**

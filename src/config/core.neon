@@ -4,6 +4,7 @@ parameters:
     previewDir: %appDir%/../www%previewWwwDir%
     encryptionKey: 'LDN0RitjRxUdrhhuTXDVbo914sEcjmOy'
     autoGenerateEntities: false
+    metronicDir: 'metronic'
 
 services:
     - App\Component\Translator\Translator
@@ -12,9 +13,8 @@ services:
     router: @routerFactory::createRouter()
 
     authorizatorFactory: App\Core\Admin\AuthorizatorFactory
-    authorizator: @authorizatorFactory::create()
 
-    - App\UI\Accessory\ParameterBag(%wwwDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%)
+    - App\UI\Accessory\ParameterBag(%wwwDir%, %rootDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%, %metronicDir%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
 
     - App\Component\Translator\Extractor\LatteExtractor

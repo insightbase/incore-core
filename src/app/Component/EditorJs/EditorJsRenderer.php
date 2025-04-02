@@ -20,7 +20,7 @@ class EditorJsRenderer
         foreach($jsonDecode['blocks'] as $block){
             switch ($block['type']){
                 case 'paragraph': $html->addHtml(Html::el('p')->setHtml($block['data']['text'])); break;
-                case 'list': (function() use ($block, $html){
+                case 'list': (function() use ($block, $html):void{
                     if($block['data']['style'] === 'unordered'){
                         $mainTag = 'ul';
                     }else{
@@ -30,7 +30,25 @@ class EditorJsRenderer
                     $this->addListItems($mainTag, $htmlUl, $block['data']['items']);
                     $html->addHtml($htmlUl);
                 })(); break;
-                case 'customHTML': $html->addHtml(Html::el()->setHtml($block['data']['html'])); break;
+                case 'raw': $html->addHtml(Html::el()->setHtml($block['data']['html'])); break;
+                case 'header': $html->addHtml(Html::el()->setHtml($block['data']['text'])); break;
+                case 'table': (function() use ($block, $html):void{
+                    $table = Html::el('table');
+                    $isFirst = true;
+                    foreach($block['data']['content'] as $row){
+                        $tr = Html::el('tr');
+                        foreach($row as $column){
+                            if($isFirst && $block['data']['withHeadings']){
+                                $tr->addHtml(Html::el('th')->setText($column));
+                            }else {
+                                $tr->addHtml(Html::el('td')->setText($column));
+                            }
+                        }
+                        $table->addHtml($tr);
+                        $isFirst = false;
+                    }
+                    $html->addHtml($table);
+                })(); break;
                 default: throw new \Exception(sprintf('Block %s not supported', $block['type']));
             }
         }

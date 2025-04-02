@@ -11,16 +11,16 @@ class Role implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $name;
+    public string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $system_name;
+    public string $system_name;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $is_systemic = false;
+    public bool $is_systemic = false;
 
     public function setName(string $name): self
     {

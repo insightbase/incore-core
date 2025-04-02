@@ -11,19 +11,19 @@ class Permission implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\ManyToOne(targetEntity: Role::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Role $role;
+    public Role $role;
 
     #[ORM\ManyToOne(targetEntity: Module::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Module $module;
+    public Module $module;
 
     #[ORM\ManyToOne(targetEntity: Privilege::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Privilege $privilege;
+    public Privilege $privilege;
 
     public function setRole(Role $role): self
     {

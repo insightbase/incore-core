@@ -11,23 +11,27 @@ class Image implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $original_name;
+    public string $original_name;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $saved_name;
+    public string $saved_name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $alt = null;
+    public ?string $alt = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $name = null;
+    public ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $description = null;
+    public ?string $description = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    private ?string $author = null;
+    public ?string $author = null;
+
+    #[ORM\ManyToOne(targetEntity: ImageLocation::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    public ?ImageLocation $image_location = null;
 }

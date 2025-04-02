@@ -83,7 +83,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'paginator_show %perPage% from %count%' => 'Zobrazuji %perPage% z %count%',
 		'button_export' => 'Export',
 		'input_search' => 'Hledat',
-		'%itemFrom%-%itemTo% z %count%' => null,
+		'%itemFrom%-%itemTo% z %count%' => '%itemFrom%-%itemTo% z %count%',
 		'flash_badLink' => 'Špatný odkaz',
 		'header_contactForms' => 'Formuláře',
 		'header_newForm' => 'Nový formulář',
@@ -111,12 +111,11 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_label' => 'Label',
 		'button_addNewRow' => 'Přidat nový',
 		'header_users' => 'Uživatelé',
-		'Editace uživatele' => null, // TODO: add translation
 		'column_firstname' => 'Jméno',
 		'column_lastname' => 'Příjmení',
 		'column_email' => 'Email',
-		'input_firstname' => 'Jméno',
-		'input_lastname' => 'Příjmení',
+		'input_firstname' => null,
+		'input_lastname' => null,
 		'submit_update' => 'Upravit',
 		'menu_newUser' => 'Nový',
 		'flash_userUpdated' => 'Uživatel upraven',
@@ -146,7 +145,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'flash_module_updated' => 'Modul upraven',
 		'menu_authorization' => 'Oprávnění',
 		'column_privileges' => 'Oprávnění',
-		'Nastavit' => 'Nastavit', // TODO: add translation
+		'Nastavit' => 'Nastavit',
 		'input_privileges' => 'Oprávnění',
 		'send_update' => 'Upravit',
 		'send_create' => 'Vytvořit',
@@ -160,7 +159,6 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_message' => 'Zpráva',
 		'send_send' => 'Odeslat',
 		'field_general' => 'Obecné',
-		'input_favicon' => 'Favicon',
 		'input_shareimage' => 'Obrázek pro sdílení',
 		'field_email' => 'Email',
 		'input_email_sender' => 'Odesílatel',
@@ -195,29 +193,138 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_logo' => 'Logo',
 		'input_logo_small' => 'Logo malé',
 		'input_logo_dark' => 'Logo darkmode',
-		'input_logo_dark_small' => 'Logo darkmode malé'
+		'input_logo_dark_small' => 'Logo darkmode malé',
+		'inputType_editor' => 'HTML editor',
+		'column_internalName' => 'Interní název',
+		'input_internalName' => 'Interní název',
+		'error_typeAlreadyExists' => 'Takový typ už existuje',
+		'input_role' => 'Role',
+		'header_performance' => 'Performance',
+		'flash_performanceSet' => 'Nastavit',
+		'flash_performanceCreated' => 'Performance vytvořena',
+		'menu_newPerformance' => 'Nová performance',
+		'input_position' => 'Pořadí',
+		'input_create' => 'Vytvořit',
+		'header_editImage' => 'Upravit obrázek',
+		'hader_images' => 'Obrázky',
+		'input_alt' => 'ALT',
+		'input_description' => 'Description',
+		'input_author' => 'Autor',
+		'flash_imageNotFound' => 'Obrázek nebyl nalezen',
+		'flash_imageUpdated' => 'Obrázek upraven',
+		'field_images' => 'Obrázky',
+		'input_maxImageResolution' => 'Maximální rozlišení obrázku',
+		'flash_deleteUnusedImages' => 'Smazat nepouživané obrázky',
+		'menu_deleteUnused' => 'Smazat nepoužívané',
+		'column_image' => 'Obrázek',
+		'column_alt' => 'ALT',
+		'column_author' => 'Autor',
+		'column_description' => 'Description',
+		'column_used' => 'Použito',
+		'column_action' => 'Akce',
+		'header_languageSetting' => 'Nastavení jazyků',
+		'input_radio_languageByUrl' => 'Detekce jazyka z URL',
+		'input_radio_languageByHost' => 'Detekce jazyka podle HOST',
+		'input_host' => 'Host',
+		'flash_languageSettingUpdated' => 'Nastavení jazyků upraveno',
+		'menu_setting' => 'Nastavení',
+		'menu_front' => 'Frontend',
+		'menu_admin' => 'Admin',
+		'filter_onlyNotTranslated' => 'Pouze nepřeložené',
+		'demo title' => null,
+		'demo description' => null,
+		'demo keywords' => null,
+		'Tohle je frontend, pokud hledáš inspiraci, podívej se do readme' => null,
+		'header_editUser' => 'Editace uživatele',
+		'header_changePassword' => 'Změnit heslo',
+		'input_set' => 'Nastavit',
+		'header_performanceShow' => 'Nastavení performance',
+		'performance_typeHtml' => 'HTML',
+		'performance_typeUrl' => 'URL',
+		'performance_typeFile' => 'Soubor',
+		'column_positiion' => 'Pořadí',
+		'column_type' => 'Typ',
+		'flash_performanceItemDeleted' => 'Položka performance smazána',
+		'flash_performanceItemNotFound' => 'Taková položka performance nebyla nalezena',
+		'flash_performanceUpdated' => 'Performance upravena',
+		'menu_show' => 'Zobrazit',
+		'error_internalNameAlreadyExists' => 'Takový interní název už existuje',
+		'header_favicons' => 'Favicony',
+		'new_favicon' => 'Přidat faviconu',
+		'new_import' => 'Nový import',
+		'home_googleAnalyticsNotConfigured' => 'Google analytics API nebylo nastaveno',
+		'header_homeAccessGraph' => 'Graf přístupů',
+		'dasboard_lastChanges' => 'Poslední změny',
+		'action_created' => 'Vytvořeno',
+		'action_updated' => 'Upraveno',
+		'action_deleted' => 'Smazáno',
+		'action_imported' => 'Importováno',
+		'action_deletedUnused' => 'Smazány nepoužívané',
+		'action_changeDefault' => 'Změna výchozího',
+		'action_changeActive' => 'Aktivace',
+		'action_changePassword' => 'Změna hesla',
+		'action_setAuthorization' => 'Nastavení přístupů',
+		'action_testedEmail' => 'Odeslán testovací email',
+		'action_translated' => 'Přeloženo',
+		'action_synchronized' => 'Synchronizovány překlady',
+		'action_createdItem' => 'Vytvořena položka',
+		'action_updatedItem' => 'Upravena položka',
+		'flash_fileNotFound' => 'Soubor nebyl nalezen',
+		'flash_faviconImported' => 'Favicony naimportovány',
+		'flash_faviconUpdated' => 'Favicona upravena',
+		'flash_faviconNotFound' => 'Taková favicona nebyla nalezena',
+		'flash_faviconCreated' => 'Favicona vytvořena',
+		'menu_import' => 'Import',
+		'column_rel' => 'REL',
+		'column_sizes' => 'Element sizes',
+		'column_content' => 'Element "content"',
+		'flash_filesNotFound%files%' => 'Nebyly nalezeny soubory: %files%',
+		'input_html' => 'HTML',
+		'input_files' => 'Soubory',
+		'input_import' => 'Import',
+		'input_tag' => 'Tag',
+		'input_rel' => 'Rel',
+		'input_sizes' => 'Sizes',
+		'input_href' => 'Href',
+		'input_content' => 'Content',
+		'input_image' => 'Image',
+		'input_imageToAttribute' => 'Atribut, do kterého se vloží obrázek',
+		'column_module' => 'Modul',
+		'column_date' => 'Datum',
+		'column_user' => 'Uživatel',
+		'input_settingGoogleServiceAccount' => 'Nastavení servisního účtu google',
+		'input_settingGoogleAnalyticsServiceId' => '"service id" pro Google analytics',
+		'performance_positionHead' => 'Head',
+		'performance_positionBodyStart' => 'Začátek <body>',
+		'performance_positionEnd' => 'Konec <body>',
+		'input_edit' => 'Upravit',
+		'header_editFavicon' => 'Editace favicony',
+		'favicon_importHelp' => 'Import favicon. Je potřeba zadat vygenerované HTML a tomu odpovídající obrázky. Manifest bude upraven automaticky.',
+		'field_googleAnalytics' => 'Google Analytics',
 	];
 
 
 	public function load(\Doctrine\Persistence\ObjectManager $manager): void
 	{
 		$language = $this->getReference(LanguageFixtures::LANG_CS, Language::class);
-        foreach($this->translates as $key => $value){
-            $translate = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
-            if($translate === null) {
-                $translate = new Translate();
-                $translate->setKey($key);
-                $manager->persist($translate);
-            }
-            if($value !== null){
-                $translateLanguage = new TranslateLanguage();
-                $translateLanguage->setLanguage($language);
-                $translateLanguage->setTranslate($translate);
-                $translateLanguage->setValue($value);
-                $manager->persist($translateLanguage);
-            }
-        }
-        $manager->flush();
+		        foreach($this->translates as $key => $value){
+		            $translate = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
+		            if($translate === null){
+		                $translate = new Translate();
+		                $translate->setKey($key);
+		                $translate->source = 'admin';
+		                $manager->persist($translate);
+		            }
+
+		            if($value !== null){
+		                $translateLanguage = new TranslateLanguage();
+		                $translateLanguage->setLanguage($language);
+		                $translateLanguage->setTranslate($translate);
+		                $translateLanguage->setValue($value);
+		                $manager->persist($translateLanguage);
+		            }
+		        }
+		        $manager->flush();
 	}
 
 

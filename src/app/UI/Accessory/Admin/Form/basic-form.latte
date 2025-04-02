@@ -65,19 +65,22 @@
         {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJsInput}
             {php $class .= ' text editorJsText'}
         {/if}
+        {if $input instanceof Nette\Forms\Controls\TextArea}
+            {php $class .= ' textarea'}
+        {/if}
         {if $input->getOption(type) === 'select'}
             {php $class .= ' select'}
         {/if}
         <div class="flex flex-col w-full gap-1" n:tag-if="!$repeater">
-            {if $input instanceof App\UI\Accessory\Admin\Form\Controls\DropzoneInput}
-                {$input->getControl()}
-            {elseif $input instanceof Nette\Forms\Controls\CheckboxList}
+            {if $input instanceof Nette\Forms\Controls\CheckboxList}
                 {foreach $input->items as $key => $label}
                     {label $input->getName():$key}{input $input->getName():$key, class: 'checkbox'} {$label}{/label}
                 {/foreach}
             {else}
                 {if $input instanceof Nette\Forms\Controls\Checkbox}
                     {input $input:, class:$class}
+                {elseif $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput}
+                    {$input->getControlDropzone(null, $input)}
                 {else}
                     {input $input, class:$class}
                 {/if}
@@ -90,7 +93,11 @@
                                     {php $lang = $lang[$key]}
                                 {/foreach}
                             {/if}
-                            {input $lang[$input->getName()] class: $class . ' hidden'}
+                            {if $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput}
+                                {$input->getControlDropzone('hidden', $lang[$input->getName()])}
+                            {else}
+                                {input $lang[$input->getName()] class: $class . ' hidden'}
+                            {/if}
                         {/foreach}
                     {/if}
                 {/if}

@@ -1,0 +1,219 @@
+div.imageContainer {
+    position: relative;
+    a.imageUpdate {
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
+}
+.editorJsText{
+    display: none !important;
+}
+
+.editorJsText{
+    font-family: sans-serif;
+    border: 1px solid black;
+}
+
+.dropzone {
+    height: auto !important;
+    min-height: 120px !important;
+    border: 2px dashed var(--tw-gray-300) !important;
+    border-radius: 8px !important;
+    background-color: #f9fafb !important;
+    transition: none !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 20px !important;
+}
+
+.dropzone .dz-button {
+    color: #000 !important;
+}
+
+.dropzone:hover {
+    border-color: var(--tw-primary) !important;
+    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.05) !important;
+}
+
+
+.dropzoneContainer input {
+    display: none !important;
+}
+
+.dropzone:hover .dz-button {
+    color: var(--tw-primary) !important;
+}
+
+.dropzone .dz-message {
+    color: var(--tw-primary) !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    width: 100%;
+}
+
+.dropzone.dz-drag-hover {
+    border-color: var(--tw-primary) !important;
+    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.1) !important;
+}
+
+
+html.dark .dropzone {
+    background-color: var(--tw-light-active) !important;
+    border: 2px dashed var(--tw-gray-300) !important;
+}
+
+html.dark .dz-button {
+    color: var(--tw-gray-700) !important;
+}
+
+html.dark .dropzone .dz-preview.dz-image-preview {
+    background-color: var(--tw-light-active) !important;
+    border: 1px solid var(--tw-gray-300) !important;
+}
+
+.dropzone {
+    max-width: 534px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Firefox */
+}
+
+/* (Chrome, Safari, etc.) */
+.dropzone::-webkit-scrollbar {
+    height: 6px;
+}
+
+.dropzone::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.dropzone::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.dropzone::-webkit-scrollbar-thumb:hover {
+    background: #969696;
+}
+
+.dropzoneContainer input {
+    display: none !important;
+}
+
+.dropzone .dz-message {
+    color: var(--tw-primary);
+}
+
+#snippet-grid-dataGrid {
+    overflow-x: auto !important;
+}
+
+.dz-preview {
+    z-index: 0 !important;
+    padding: .5rem;
+    border-radius: 20px;
+}
+
+.form-control {
+    display: flex;
+    gap: .5rem;
+    flex-direction: column;
+}
+
+
+.form-control input[type=checkbox] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    border-radius: .375rem;
+}
+
+.form-control .max-w-32 {
+    max-width: unset !important;
+}
+
+.formLanguageSelect {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    line-height: 1;
+    border-radius: .375rem;
+    padding-block: .25rem;
+    gap: .375rem;
+    border: 1px solid transparent;
+    font-weight: 500;
+    font-size: .9rem;
+    outline: none;
+    color: var(--tw-primary);
+    padding-inline: 1rem;
+}
+
+.formLanguageSelect option {
+    color: #000000;
+}
+
+.formLanguageSelect:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--tw-primary-rgb, 0, 123, 255), 0.25);
+}
+
+.formLanguageSelect:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.dropdown-content .menu-link {
+    font-size: .85rem !important;
+    padding-inline: .25rem !important;
+    padding-block: .2rem !important;
+}
+
+textarea {
+    line-height: normal !important;
+}
+
+.modal, .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.datagrid-inline-edit.modal.open {
+    z-index: 90;
+    width: 600px;
+    height: 100vh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.datagrid-inline-edit.modal.open .modal-content {
+    max-width: 600px !important;
+    width: 100% !important;
+}
+
+.modal-body {
+    padding-top: 1.75rem !important;
+}
+
+.fieldset {
+    padding-block: 1.5rem !important;
+}
+

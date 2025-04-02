@@ -84,6 +84,37 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
                 $manager->flush();
             }
         }
+
+        $settingFavicon = $manager->getRepository(Module::class)
+            ->findOneBy(['system_name' => 'setting_favicon'])
+        ;
+        if (!$settingFavicon) {
+            $settingFavicon = (new Module())
+                ->setSystemName('setting_favicon')
+                ->setName('Favicon')
+                ->setPresenter('Favicon')
+                ->setParent($setting)
+            ;
+            $manager->persist($settingFavicon);
+            $manager->flush();
+        }
+
+        $privileges = [
+            $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
+            $this->getReference(PrivilegeFixtures::EDIT, Privilege::class),
+            $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
+            $this->getReference(PrivilegeFixtures::IMPORT, Privilege::class),
+        ];
+        $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
+        foreach ($privileges as $privilege) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $settingFavicon, 'privilege' => $privilege])) {
+                $modulePrivilege = new ModulePrivilege();
+                $modulePrivilege->setModule($settingFavicon);
+                $modulePrivilege->setPrivilege($privilege);
+                $manager->persist($modulePrivilege);
+                $manager->flush();
+            }
+        }
     }
 
     public function getDependencies(): array

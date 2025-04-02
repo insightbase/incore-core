@@ -33,7 +33,13 @@
         "symfony/cache": "^7.2",
         "doctrine/doctrine-fixtures-bundle": "^4.0",
         "incore/users": "@dev",
-        "incore/datagrid": "@dev"
+        "incore/datagrid": "@dev",
+        "google/analytics-data": "^0.22.2",
+        "ext-bcmath": "*",
+        "ext-openssl": "*",
+        "ext-dom": "*",
+        "ext-iconv": "*",
+        "symfony/translation": "^7.2"
     },
     "repositories": [
         {

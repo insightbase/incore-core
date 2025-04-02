@@ -11,13 +11,13 @@ class Privilege implements Entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    public int $id;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $system_name;
+    public string $system_name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $name;
+    public string $name;
 
     public function setSystemName(string $system_name): self
     {

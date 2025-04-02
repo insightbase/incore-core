@@ -4,6 +4,7 @@ namespace App\UI\Admin\MyAccount\Form;
 
 use App\Component\Translator\Translator;
 use App\Model\Admin\User;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\Form\FormFactory;
 use Nette\Forms\Controls\BaseControl;
@@ -52,7 +53,7 @@ readonly class MyAccountFormFactory
             ->addRule([$this, 'validateEmail'], $this->translator->translate('error_emailAlreadyExists'))
         ;
 
-        $form->addDropzone('avatar_id', $this->translator->translate('input_avatar'))
+        $form->addDropzoneImage(DropzoneImageLocationEnum::UserAvatar, 'avatar_id', $this->translator->translate('input_avatar'))
             ->setNullable()
         ;
         $form->addSubmit('send', $this->translator->translate('input_update'));

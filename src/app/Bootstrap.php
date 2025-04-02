@@ -58,6 +58,9 @@ class Bootstrap
 
         $this->configurator->addConfig($configDir.'/common.neon');
         $this->configurator->addConfig($configDir.'/services.neon');
+        if (file_exists($this->rootDir.'/config/database.neon')) {
+            $this->configurator->addConfig($configDir . '/database.neon');
+        }
         if (file_exists($this->rootDir.'/config/local.neon')) {
             $this->configurator->addConfig($configDir.'/local.neon');
         }

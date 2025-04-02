@@ -63,7 +63,7 @@ readonly class SignFacade
 
         $sender = $this->senderFactory->create(SystemNameEnum::ForgotPassword->value);
         $sender->addTo($user->email);
-        $sender->addModifier('link', $this->linkGenerator->link('Sign:resetPassword', ['hash' => $hash]));
+        $sender->addModifier('link', $this->linkGenerator->link('Admin:Sign:resetPassword', ['hash' => $hash]));
         $sender->send();
 
         return $user;

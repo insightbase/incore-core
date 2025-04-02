@@ -18,12 +18,19 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<meta charset="utf-8"/>
 	<meta content="follow, index" name="robots"/>
 	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-	<link href="/dist/admin/assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-	<link href="/dist/admin/assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
-	<link href="/dist/admin/assets/media/app/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
-	<link href="/dist/admin/assets/media/app/favicon.ico" rel="shortcut icon"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+	<link href="/{$metronicDir}/admin/assets/media/app/favicon.ico" rel="shortcut icon"/>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-	<link href="/dist/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+	<link href="/{$metronicDir}/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+	<script src="/{$metronicDir}/js/core.bundle.js"></script>
+	<link href="/{$metronicDir}/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+	<link href="/{$metronicDir}/vendors/apexcharts/apexcharts.css" rel="stylesheet"/>
+	<script src="/{$metronicDir}/js/widgets/general.js"></script>
+	<script src="/{$metronicDir}/js/layouts/demo1.js"></script>
+	<script src="/{$metronicDir}/vendors/apexcharts/apexcharts.min.js"></script>
+	<link href="/{$metronicDir}/css/styles.css" rel="stylesheet"/>
 
 	<title>{ifset title}{include title|stripHtml} | {/ifset}inCore</title>
 </head>
@@ -53,11 +60,11 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- Page -->
 <style n:if="$presenter->isLinkCurrent('Sign:*')">
 	.page-bg {
-		background-image: url('/dist/admin/assets/media/images/2600x1200/bg-10.png');
+		background-image: url('/{$metronicDir}/admin/assets/media/images/2600x1200/bg-10.png');
 	}
 
 	.dark .page-bg {
-		background-image: url('/dist/admin/assets/media/images/2600x1200/bg-10-dark.png');
+		background-image: url('/{$metronicDir}/admin/assets/media/images/2600x1200/bg-10-dark.png');
 	}
 </style>
 {if $presenter->isLinkCurrent('Sign:*')}
@@ -74,14 +81,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							{control image, $setting->logo_id, 136, 22}
 						</span>
 					{else}
-						<img class="default-logo min-h-[22px] max-w-none" src="/dist/admin/assets/media/app/default-logo.svg"/>
+						<img class="default-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/default-logo.svg"/>
 					{/if}
 					{if $setting?->logo_small_id !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
 							{control image, $setting->logo_small_id, 24, 22}
 						</span>
 					{else}
-						<img class="small-logo min-h-[22px] max-w-none" src="/dist/admin/assets/media/app/mini-logo.svg"/>
+						<img class="small-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/mini-logo.svg"/>
 					{/if}
 				</a>
 				<a class="hidden dark:block" n:href="Home:default">
@@ -94,7 +101,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							{control image, $setting->logo_id, 136, 22}
 						</span>
 					{else}
-						<img class="default-logo min-h-[22px] max-w-none" src="/dist/admin/assets/media/app/default-logo-dark.svg"/>
+						<img class="default-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/default-logo-dark.svg"/>
 					{/if}
 					{if $setting?->logo_dark_small_id !== null}
 						<span class="small-logo min-h-[22px] max-w-none">
@@ -105,7 +112,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							{control image, $setting->logo_small_id, 24, 22}
 						</span>
 					{else}
-						<img class="small-logo min-h-[22px] max-w-none" src="/dist/admin/assets/media/app/mini-logo.svg"/>
+						<img class="small-logo min-h-[22px] max-w-none" src="/{$metronicDir}/admin/assets/media/app/mini-logo.svg"/>
 					{/if}
 				</a>
 				<button class="btn btn-icon btn-icon-md size-[30px] rounded-lg border border-gray-200 dark:border-gray-300 bg-light text-gray-500 hover:text-gray-700 toggle absolute start-full top-2/4 -translate-x-2/4 -translate-y-2/4 rtl:translate-x-2/4" data-toggle="body" data-toggle-class="sidebar-collapse" id="sidebar_toggle">
@@ -196,7 +203,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 					<!-- Mobile Logo -->
 					<div class="flex gap-1 lg:hidden items-center -ms-1">
 						<a class="shrink-0" href="#">
-							<img class="max-h-[25px] w-full" src="/dist/admin/assets/media/app/mini-logo.svg"/>
+							<img class="max-h-[25px] w-full" src="/{$metronicDir}/admin/assets/media/app/mini-logo.svg"/>
 						</a>
 						<div class="flex items-center">
 							<button class="btn btn-icon btn-light btn-clear btn-sm" data-drawer-toggle="#sidebar">
@@ -221,7 +228,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 							<div class="menu-item" data-menu-item-offset="20px, 10px" data-menu-item-offset-rtl="-20px, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
 								<div class="menu-toggle btn btn-icon rounded-full">
 									{if $user->getIdentity()->getData()['avatar_id'] === null}
-										<img alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/dist/admin/assets/media/avatars/300-2.png" />
+										<img alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/{$metronicDir}/admin/assets/media/avatars/300-2.png" />
 									{else}
 										{control image, $user->getIdentity()->getData()['avatar_id'], 32, 32, 'size-9 rounded-full border-2 border-success shrink-0'}
 									{/if}
@@ -230,7 +237,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 									<div class="flex items-center justify-between px-5 py-1.5 gap-1.5">
 										<div class="flex items-center gap-2">
 											{if $user->getIdentity()->getData()['avatar_id'] === null}
-												<img alt="" class="size-9 rounded-full border-2 border-success" src="/dist/admin/assets/media/avatars/300-2.png" />
+												<img alt="" class="size-9 rounded-full border-2 border-success" src="/{$metronicDir}/admin/assets/media/avatars/300-2.png" />
 											{else}
 												{control image, $user->getIdentity()->getData()['avatar_id'], 32, 32, 'size-9 rounded-full border-2 border-success'}
 											{/if}
@@ -300,18 +307,37 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 				<!-- Container -->
 				<div class="container-fixed">
 					<div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
-						<div class="flex flex-col justify-center gap-2">
-							<h1 class="text-xl font-medium leading-none text-gray-900">
+						<div class="flex flex-col justify-center gap-2 w-full">
+							<h1 class="text-xl font-medium leading-none text-gray-900 max-w-2xl flex items-center justify-between">
 								{include h1}
 							</h1>
 						</div>
 						<div class="flex items-center gap-2.5" n:if="count($submenuFactory->getSubMenus()) > 0">
-							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction())">
+							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()">
 								{$subMenuItem->getName()}
 							</a>
-							<button n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" n:if="$subMenuItem->getModalId() !== null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction())" data-modal-toggle="#{$subMenuItem->getModalId()}">
+							<button n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" n:if="$subMenuItem->getModalId() !== null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()" data-modal-toggle="#{$subMenuItem->getModalId()}">
 								{$subMenuItem->getName()}
 							</button>
+							<div class="dropdown" data-dropdown="true" data-dropdown-placement="bottom-end" data-dropdown-placement-rtl="bottom-start" data-dropdown-trigger="click" n:if="$showSubmenuDropdown">
+								<button class="dropdown-toggle btn btn-sm btn-icon btn-light">
+									<i class="ki-filled ki-dots-vertical">
+									</i>
+								</button>
+								<div class="dropdown-content menu-default w-full max-w-[220px] hidden" style="opacity: 0;">
+									<div class="menu-item" data-dropdown-dismiss="true" n:foreach="$submenuFactory->getSubMenus() as $subMenuItem">
+										<a class="menu-link" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction()) && $subMenuItem->isShowInDropdown()">
+											{$subMenuItem->getName()}
+										</a>
+										<button class="menu-link" n:if="$subMenuItem->getModalId() !== null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction()) && $subMenuItem->isShowInDropdown()" data-modal-toggle="#{$subMenuItem->getModalId()}">
+											<span class="menu-title">
+											 {$subMenuItem->getName()}
+											</span>
+										</button>
+									</div>
+
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -354,7 +380,6 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- End of Page -->
 <!-- Scripts -->
 {block scripts}
-	<script src="/dist/admin.bundle.js"></script>
 	<script src="/incore/admin.bundle.js?v={$webpackVersion}"></script>
 {/block}
 <!-- End of Scripts -->

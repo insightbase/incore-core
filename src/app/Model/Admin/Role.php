@@ -46,9 +46,13 @@ readonly class Role implements Model
         return $this->getTable()->where('system_name', $systemName)->fetch();
     }
 
-    public function insert(array $data): void
+    /**
+     * @param array<string, mixed> $data
+     * @return RoleEntity
+     */
+    public function insert(array $data): ActiveRow
     {
-        $this->getTable()->insert($data);
+        return $this->getTable()->insert($data);
     }
 
     /**

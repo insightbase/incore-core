@@ -19,6 +19,8 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
     public const string AUTHORIZATION = 'privilege-authorization';
     public const string SET = 'privilege-set';
     public const string DELETE_UNUSED = 'privilege-delete-unused';
+    public const string IMPORT = 'privilege-import';
+    public const string SHOW = 'privilege-show';
 
     public function load(ObjectManager $manager): void
     {
@@ -113,5 +115,25 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
             $manager->flush();
         }
         $this->addReference(self::DELETE_UNUSED, $deleteUnused);
+
+        $import = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Import->value]);
+        if (!$import) {
+            $import = new Privilege();
+            $import->setName('Importovat');
+            $import->setSystemName(PrivilegeEnum::Import->value);
+            $manager->persist($import);
+            $manager->flush();
+        }
+        $this->addReference(self::IMPORT, $import);
+
+        $show = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::Show->value]);
+        if (!$show) {
+            $show = new Privilege();
+            $show->setName('Zobrazit');
+            $show->setSystemName(PrivilegeEnum::Show->value);
+            $manager->persist($show);
+            $manager->flush();
+        }
+        $this->addReference(self::SHOW, $show);
     }
 }

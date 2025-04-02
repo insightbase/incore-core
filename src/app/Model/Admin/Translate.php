@@ -30,6 +30,10 @@ readonly class Translate implements Model
         return $this->getTable()->where('source', $source);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
     public function insert(array $data): void
     {
         $this->getTable()->insert($data);

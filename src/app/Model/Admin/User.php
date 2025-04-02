@@ -45,9 +45,13 @@ readonly class User implements Model
         return $selection->fetch();
     }
 
-    public function insert(array $data): void
+    /**
+     * @param array<string, mixed> $data
+     * @return UserEntity
+     */
+    public function insert(array $data): ActiveRow
     {
-        $this->getTable()->insert($data);
+        return $this->getTable()->insert($data);
     }
 
     /**

@@ -49,7 +49,7 @@ final class RouterFactory
 
         $router
             ->withModule('Admin')
-                ->addRoute($langPrefix.'admin/<presenter>/<action>[/<id>]', 'Home:default')
+                ->addRoute('[<lang=cs cs>/]admin/<presenter>/<action>[/<id>]', 'Home:default')
             ->end()
             ->withModule('Front')
             ->addRoute($langPrefix.'<presenter>/<action>[/<id>]', 'Home:default')

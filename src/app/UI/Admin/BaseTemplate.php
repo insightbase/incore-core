@@ -55,4 +55,6 @@ class BaseTemplate extends Template
      * @var ?ImageEntity
      */
     public ?ActiveRow $editedImage = null;
+    public bool $showSubmenuDropdown;
+    public string $metronicDir;
 }
