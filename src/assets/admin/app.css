@@ -199,3 +199,6 @@ textarea {
     padding-block: 1.5rem !important;
 }
 
+#snippet-grid-dataGrid {
+    overflow-x: auto !important;
+}
