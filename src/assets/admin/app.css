@@ -10,24 +10,96 @@ div.imageContainer {
 .editorJsText{
     display: none !important;
 }
-.dropzoneContainer input{
-    display: none !important;
-}
+
 .editorJsText{
     font-family: sans-serif;
     border: 1px solid black;
 }
-.dropzone{
+
+.dropzone {
     height: auto !important;
-    min-height: auto !important;
-    border: 1px dashed var(--tw-gray-300) !important;
+    min-height: 120px !important;
+    border: 2px dashed var(--tw-gray-300) !important;
+    border-radius: 8px !important;
+    background-color: #f9fafb !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 20px !important;
+}
+
+.dropzone .dz-button {
+    color: #000 !important;
+}
+
+.dropzone:hover {
+    border-color: var(--tw-primary) !important;
+    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.05) !important;
+}
+
+.dropzoneContainer input {
+    display: none !important;
+}
+
+.dropzone:hover .dz-button {
+    color: var(--tw-primary) !important;
+}
+
+.dropzone .dz-message {
+    color: var(--tw-primary) !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    width: 100%;
+}
+
+.dropzone.dz-drag-hover {
+    border-color: var(--tw-primary) !important;
+    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.1) !important;
+}
+
+
+.dropzone {
+    max-width: 534px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Firefox */
+}
+
+/* (Chrome, Safari, etc.) */
+.dropzone::-webkit-scrollbar {
+    height: 6px;
+}
+
+.dropzone::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.dropzone::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.dropzone::-webkit-scrollbar-thumb:hover {
+    background: #969696;
+}
+
+.dropzoneContainer input {
+    display: none !important;
 }
 
 .dropzone .dz-message {
     color: var(--tw-primary);
 }
+
 #snippet-grid-dataGrid{
     overflow-x: scroll;
+}
+.dz-preview {
+    z-index: 0 !important;
 }
 
 .form-control {
@@ -68,9 +140,10 @@ div.imageContainer {
     gap: .375rem;
     border: 1px solid transparent;
     font-weight: 500;
-    font-size: .8125rem;
+    font-size: .9rem;
     outline: none;
     color: var(--tw-primary);
+    padding-inline: 1rem;
 }
 
 .formLanguageSelect option {
@@ -85,3 +158,44 @@ div.imageContainer {
     opacity: 0.65;
     cursor: not-allowed;
 }
+
+.dropdown-content .menu-link {
+    font-size: .85rem !important;
+    padding-inline: .25rem !important;
+    padding-block: .2rem !important;
+}
+
+textarea {
+    line-height: normal !important;
+}
+
+.modal, .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.datagrid-inline-edit.modal.open {
+    z-index: 90;
+    width: 600px;
+    height: 100vh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.datagrid-inline-edit.modal.open .modal-content {
+    max-width: 600px !important;
+    width: 100% !important;
+}
+
+.modal-body {
+    padding-top: 1.75rem !important;
+}
+
+.fieldset {
+    padding-block: 1.5rem !important;
+}
+
