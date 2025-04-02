@@ -120,4 +120,13 @@ readonly class FaviconFacade
             throw new NotFoundFilesException($this->translator->translate('flash_filesNotFound%files%', ['files' => implode(', ', $notFoundFiles)]));
         }
     }
+
+    /**
+     * @param FaviconEntity $favicon
+     * @return void
+     */
+    public function delete(ActiveRow $favicon):void
+    {
+        $favicon->delete();
+    }
 }

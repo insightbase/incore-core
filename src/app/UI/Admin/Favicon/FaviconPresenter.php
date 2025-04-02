@@ -16,6 +16,7 @@ use App\UI\Admin\Favicon\Form\FormEditData;
 use App\UI\Admin\Favicon\Form\FormFactory;
 use App\UI\Admin\Favicon\Form\FormImportData;
 use App\UI\Admin\Favicon\Form\FormNewData;
+use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -68,13 +69,25 @@ class FaviconPresenter extends Presenter
         return $form;
     }
 
-    public function actionEdit(int $id):void
-    {
+    private function exist(int $id):void{
         $favicon = $this->faviconModel->get($id);
         if (null === $favicon) {
             $this->error($this->translator->translate('flash_faviconNotFound'));
         }
         $this->favicon = $favicon;
+    }
+
+    public function actionEdit(int $id):void
+    {
+        $this->exist($id);
+    }
+
+    #[NoReturn] public function actionDelete(int $id):void
+    {
+        $this->exist($id);
+        $this->faviconFacade->delete($this->favicon);
+        $this->flashMessage($this->translator->translate('flash_faviconDeleted'));
+        $this->redirect('default');
     }
 
     protected function createComponentFormNew():Form
