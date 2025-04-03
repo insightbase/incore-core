@@ -6,6 +6,8 @@ use App\Component\Datagrid\Column\Column;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use App\UI\Accessory\Admin\Form\Form;
+use App\UI\Accessory\Admin\Form\FormFactory;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
@@ -17,6 +19,8 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
         private Translate         $translateModel,
         private TranslateLanguage $translateLanguageModel,
         private Storage $storage,
+        private FormFactory $formFactory,
+        private Translator $translator,
     )
     {
     }
@@ -60,5 +64,23 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
             $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
             $cache->remove($this->language->id);
         };
+    }
+
+    public function getForm(): ?Form
+    {
+        $form = $this->formFactory->create();
+
+        $form->addRadioList('type', $this->translator->translate('input_type'), [
+            'text' => $this->translator->translate('type_text'),
+            'html' => $this->translator->translate('type_html'),
+        ]);
+        $form->addTextArea('value_text', $this->translator->translate('input_valueText'))
+            ->setNullable()
+        ;
+        $form->addEditorJs('value_html', $this->translator->translate('input_valueHtml'))
+            ->setNullable()
+        ;
+
+        return $form;
     }
 }
