@@ -16,8 +16,10 @@ import List from '@editorjs/list';
 import 'dropzone/dist/dropzone.css';
 import './form';
 import './app.css';
+import netteForms from 'nette-forms';
 
 naja.initialize();
+netteForms.initOnLoad();
 
 let loaderId = null;
 let editor = undefined;
@@ -38,6 +40,7 @@ naja.redirectHandler.addEventListener('redirect', (event) => {
     event.detail.setHardRedirect(true);
 });
 naja.addEventListener('success', (event) => {
+    netteForms.initOnLoad();
     initDatagrid();
     initFlashes();
     initDropzone();
@@ -205,8 +208,6 @@ function inlineEdit(event){
         }
     }
 }
-
-// netteForms.initOnLoad();
 
 function initDropzone(){
     let uploadedImageIds = {};

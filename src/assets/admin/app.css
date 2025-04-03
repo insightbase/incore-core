@@ -216,4 +216,6 @@ textarea {
 .fieldset {
     padding-block: 1.5rem !important;
 }
-
+[hidden]{
+    display: none;
+}
