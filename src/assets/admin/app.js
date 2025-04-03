@@ -16,8 +16,10 @@ import List from '@editorjs/list';
 import 'dropzone/dist/dropzone.css';
 import './form';
 import './app.css';
+import netteForms from 'nette-forms';
 
 naja.initialize();
+netteForms.initOnLoad();
 
 let loaderId = null;
 let editor = undefined;
@@ -38,9 +40,11 @@ naja.redirectHandler.addEventListener('redirect', (event) => {
     event.detail.setHardRedirect(true);
 });
 naja.addEventListener('success', (event) => {
+    netteForms.initOnLoad();
     initDatagrid();
     initFlashes();
     initDropzone();
+    initEditorJs();
     loader.hide(loaderId);
 });
 let globalSearchTimeout;
@@ -100,68 +104,70 @@ function generateUniqueId() {
     return Date.now() + Math.floor(Math.random() * 10000);
 }
 
-Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
-    const editorDiv = document.createElement('div');
-    editorDiv.classList.add('editorJsHolder');
-    element.after(editorDiv);
+initEditorJs();
+function initEditorJs() {
+    Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
+        const editorDiv = document.createElement('div');
+        editorDiv.classList.add('editorJsHolder');
+        element.after(editorDiv);
 
-    const id = generateUniqueId();
+        const id = generateUniqueId();
 
-    let data = '';
-    if(element.value !== ''){
-        data = JSON.parse(element.value);
-    }
-
-    editors[id] = new EditorJS({
-        holder: editorDiv,
-        data: data,
-        tools: {
-            raw: EditorJsRaw,
-            paragraph: {
-                class: EditorJsParagraph,
-                config: {
-                    placeholder: 'Add paragraph',
-                    preserveBlank: true,
-                }
-            },
-            list: {
-                class: EditorJsList,
-                inlineToolbar: true,
-            },
-            header: {
-                class: EditorJsHeader,
-                inlineToolbar : true,
-                config: {
-                    placeholder: 'Add list',
-                    levels: [2, 3, 4],
-                    defaultLevel: 2
-                }
-            },
-            table: EditorJsTable
+        let data = '';
+        if (element.value !== '') {
+            data = JSON.parse(element.value);
         }
-    });
-    editorDiv.setAttribute('data-editor-id', id);
-    element.setAttribute('data-for-editor-id', id);
-    editorDiv.setAttribute('data-language-id', element.getAttribute('data-language-id'));
-    if(element.getAttribute('langchange') !== null){
-        editorDiv.toggleAttribute('langchange');
-        if (formLanguageSelect) {
-            if(formLanguageSelect.value !== element.getAttribute('data-language-id')){
-                editorDiv.style.display = 'none';
+
+        editors[id] = new EditorJS({
+            holder: editorDiv,
+            data: data,
+            tools: {
+                raw: EditorJsRaw,
+                paragraph: {
+                    class: EditorJsParagraph,
+                    config: {
+                        placeholder: 'Add paragraph',
+                        preserveBlank: true,
+                    }
+                },
+                list: {
+                    class: EditorJsList,
+                    inlineToolbar: true,
+                },
+                header: {
+                    class: EditorJsHeader,
+                    inlineToolbar: true,
+                    config: {
+                        placeholder: 'Add list',
+                        levels: [2, 3, 4],
+                        defaultLevel: 2
+                    }
+                },
+                table: EditorJsTable
+            }
+        });
+        editorDiv.setAttribute('data-editor-id', id);
+        element.setAttribute('data-for-editor-id', id);
+        editorDiv.setAttribute('data-language-id', element.getAttribute('data-language-id'));
+        if (element.getAttribute('langchange') !== null) {
+            editorDiv.toggleAttribute('langchange');
+            if (formLanguageSelect) {
+                if (formLanguageSelect.value !== element.getAttribute('data-language-id')) {
+                    editorDiv.style.display = 'none';
+                }
             }
         }
-    }
-});
-
-Array.from(document.getElementsByTagName('form')).forEach((element) => {
-    element.onsubmit = function(event) {
-        Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
-            editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
-                elementEditor.value = JSON.stringify(data);
-            })
-        });
-    };
-});
+    });
+    Array.from(document.getElementsByTagName('form')).forEach((element) => {
+        element.onsubmit = function(event) {
+            Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
+                editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
+                    elementEditor.value = JSON.stringify(data);
+                })
+            });
+        };
+    });
+}
 
 function truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -202,8 +208,6 @@ function inlineEdit(event){
         }
     }
 }
-
-// netteForms.initOnLoad();
 
 function initDropzone(){
     let uploadedImageIds = {};

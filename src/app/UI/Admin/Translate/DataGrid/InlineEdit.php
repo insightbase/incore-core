@@ -3,9 +3,13 @@
 namespace App\UI\Admin\Translate\DataGrid;
 
 use App\Component\Datagrid\Column\Column;
+use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use App\Model\Enum\TranslateTypeEnum;
+use App\UI\Accessory\Admin\Form\Form;
+use App\UI\Accessory\Admin\Form\FormFactory;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
@@ -17,6 +21,8 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
         private Translate         $translateModel,
         private TranslateLanguage $translateLanguageModel,
         private Storage $storage,
+        private FormFactory $formFactory,
+        private Translator $translator,
     )
     {
     }
@@ -31,9 +37,18 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
         $translate = $this->translateModel->get($id);
         $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $this->language);
         if($translateLanguage !== null){
-            return ['value' => $translateLanguage->value];
+            $type = TranslateTypeEnum::from($translate->type);
+            return [
+                'value_text' => $type === TranslateTypeEnum::Text ? $translateLanguage->value : null,
+                'value_html' => $type === TranslateTypeEnum::Html ? $translateLanguage->value : null,
+                'type' => $type->value,
+            ];
         }else{
-            return [];
+            return [
+                'value_text' => null,
+                'value_html' => null,
+                'type' => TranslateTypeEnum::Text,
+            ];
         }
     }
 
@@ -41,24 +56,61 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
     {
         return function(array $values):void{
             $translate = $this->translateModel->get($values['id']);
+            $translate->update(['type' => $values['type']]);
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $this->language);
+            $type = TranslateTypeEnum::from($values['type']);
+            $value = match($type){
+                TranslateTypeEnum::Text => $values['value_text'],
+                TranslateTypeEnum::Html => $values['value_html'],
+            };
+
             if ($translateLanguage !== null) {
-                if ('' === $values['value'] || $values['value'] === null) {
+                if ($value === null) {
                     $translateLanguage->delete();
                 } else {
-                    $translateLanguage->update(['value' => $values['value']]);
+                    $translateLanguage->update([
+                        'value' => $value,
+                    ]);
                 }
             } else {
-                if ('' !== $values['value'] && $values['value'] !== null) {
+                if ($value !== null) {
                     $this->translateLanguageModel->insert([
                         'translate_id' => $translate->id,
                         'language_id' => $this->language->id,
-                        'value' => $values['value'],
+                        'value' => $value,
                     ]);
                 }
             }
             $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
             $cache->remove($this->language->id);
         };
+    }
+
+    public function getForm(): ?Form
+    {
+        $form = $this->formFactory->create();
+
+        $type = $form->addRadioList('type', $this->translator->translate('input_type'), [
+            TranslateTypeEnum::Text->value => $this->translator->translate('type_text'),
+            TranslateTypeEnum::Html->value => $this->translator->translate('type_html'),
+        ]);
+        $type->addCondition($form::Equal, TranslateTypeEnum::Text->value)->toggle('valueText');
+        $type->addCondition($form::Equal, TranslateTypeEnum::Html->value)->toggle('valueHtml');
+        $form->addTextArea('value_text', $this->translator->translate('input_valueText'))
+            ->setNullable()
+            ->setOption('id', 'valueText')
+        ;
+        $form->addEditorJs('value_html', $this->translator->translate('input_valueHtml'))
+            ->setNullable()
+            ->setOption('id', 'valueHtml')
+        ;
+
+        return $form;
+    }
+
+    public function getHeader(int $id): string
+    {
+        $translate = $this->translateModel->get($id);
+        return $translate->key;
     }
 }

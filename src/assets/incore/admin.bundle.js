@@ -15083,25 +15083,215 @@ ___CSS_LOADER_EXPORT___.push([module.id, `div.imageContainer {
 .editorJsText{
     display: none !important;
 }
-.dropzoneContainer input{
-    display: none !important;
-}
+
 .editorJsText{
     font-family: sans-serif;
     border: 1px solid black;
 }
-.dropzone{
+
+.dropzone {
     height: auto !important;
-    min-height: auto !important;
-    border: 1px dashed var(--tw-gray-300) !important;
+    min-height: 120px !important;
+    border: 2px dashed var(--tw-gray-300) !important;
+    border-radius: 8px !important;
+    background-color: #f9fafb !important;
+    transition: none !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 20px !important;
+}
+
+.dropzone .dz-button {
+    color: #000 !important;
+}
+
+.dropzone:hover {
+    border-color: var(--tw-primary) !important;
+    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.05) !important;
+}
+
+
+.dropzoneContainer input {
+    display: none !important;
+}
+
+.dropzone:hover .dz-button {
+    color: var(--tw-primary) !important;
+}
+
+.dropzone .dz-message {
+    color: var(--tw-primary) !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    width: 100%;
+}
+
+.dropzone.dz-drag-hover {
+    border-color: var(--tw-primary) !important;
+    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.1) !important;
+}
+
+
+html.dark .dropzone {
+    background-color: var(--tw-light-active) !important;
+    border: 2px dashed var(--tw-gray-300) !important;
+}
+
+html.dark .dz-button {
+    color: var(--tw-gray-700) !important;
+}
+
+html.dark .dropzone .dz-preview.dz-image-preview {
+    background-color: var(--tw-light-active) !important;
+    border: 1px solid var(--tw-gray-300) !important;
+}
+
+.dropzone {
+    max-width: 534px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Firefox */
+}
+
+/* (Chrome, Safari, etc.) */
+.dropzone::-webkit-scrollbar {
+    height: 6px;
+}
+
+.dropzone::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.dropzone::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.dropzone::-webkit-scrollbar-thumb:hover {
+    background: #969696;
+}
+
+.dropzoneContainer input {
+    display: none !important;
 }
 
 .dropzone .dz-message {
     color: var(--tw-primary);
 }
-#snippet-grid-dataGrid{
-    overflow-x: scroll;
-}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,uBAAuB;IACvB,uBAAuB;AAC3B;AACA;IACI,uBAAuB;IACvB,2BAA2B;IAC3B,gDAAgD;AACpD;;AAEA;IACI,wBAAwB;AAC5B;AACA;IACI,kBAAkB;AACtB","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n.dropzoneContainer input{\r\n    display: none !important;\r\n}\r\n.editorJsText{\r\n    font-family: sans-serif;\r\n    border: 1px solid black;\r\n}\r\n.dropzone{\r\n    height: auto !important;\r\n    min-height: auto !important;\r\n    border: 1px dashed var(--tw-gray-300) !important;\r\n}\r\n\r\n.dropzone .dz-message {\r\n    color: var(--tw-primary);\r\n}\r\n#snippet-grid-dataGrid{\r\n    overflow-x: scroll;\r\n}"],"sourceRoot":""}]);
+
+#snippet-grid-dataGrid {
+    overflow-x: auto !important;
+}
+
+.dz-preview {
+    z-index: 0 !important;
+    padding: .5rem;
+    border-radius: 20px;
+}
+
+.form-control {
+    display: flex;
+    gap: .5rem;
+    flex-direction: column;
+}
+
+
+.form-control input[type=checkbox] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    border-radius: .375rem;
+}
+
+.form-control .max-w-32 {
+    max-width: unset !important;
+}
+
+.formLanguageSelect {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    line-height: 1;
+    border-radius: .375rem;
+    padding-block: .25rem;
+    gap: .375rem;
+    border: 1px solid transparent;
+    font-weight: 500;
+    font-size: .9rem;
+    outline: none;
+    color: var(--tw-primary);
+    padding-inline: 1rem;
+}
+
+.formLanguageSelect option {
+    color: #000000;
+}
+
+.formLanguageSelect:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--tw-primary-rgb, 0, 123, 255), 0.25);
+}
+
+.formLanguageSelect:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.dropdown-content .menu-link {
+    font-size: .85rem !important;
+    padding-inline: .25rem !important;
+    padding-block: .2rem !important;
+}
+
+textarea {
+    line-height: normal !important;
+}
+
+.modal, .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.datagrid-inline-edit.modal.open {
+    z-index: 90;
+    width: 600px;
+    height: 100vh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.datagrid-inline-edit.modal.open .modal-content {
+    max-width: 600px !important;
+    width: 100% !important;
+}
+
+.modal-body {
+    padding-top: 1.75rem !important;
+}
+
+.fieldset {
+    padding-block: 1.5rem !important;
+}
+[hidden]{
+    display: none;
+}`, "",{"version":3,"sources":["webpack://./assets/admin/app.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB;QACI,eAAe;QACf,kBAAkB;QAClB,QAAQ;QACR,SAAS;IACb;AACJ;AACA;IACI,wBAAwB;AAC5B;;AAEA;IACI,uBAAuB;IACvB,uBAAuB;AAC3B;;AAEA;IACI,uBAAuB;IACvB,4BAA4B;IAC5B,gDAAgD;IAChD,6BAA6B;IAC7B,oCAAoC;IACpC,2BAA2B;IAC3B,wBAAwB;IACxB,8BAA8B;IAC9B,wBAAwB;AAC5B;;AAEA;IACI,sBAAsB;AAC1B;;AAEA;IACI,0CAA0C;IAC1C,2EAA2E;AAC/E;;;AAGA;IACI,wBAAwB;AAC5B;;AAEA;IACI,mCAAmC;AACvC;;AAEA;IACI,mCAAmC;IACnC,2BAA2B;IAC3B,6BAA6B;IAC7B,oBAAoB;IACpB,WAAW;AACf;;AAEA;IACI,0CAA0C;IAC1C,0EAA0E;AAC9E;;;AAGA;IACI,mDAAmD;IACnD,gDAAgD;AACpD;;AAEA;IACI,oCAAoC;AACxC;;AAEA;IACI,mDAAmD;IACnD,+CAA+C;AACnD;;AAEA;IACI,2BAA2B;IAC3B,gBAAgB;IAChB,kBAAkB;;IAElB,qBAAqB,EAAE,YAAY;IACnC,6BAA6B,EAAE,YAAY;AAC/C;;AAEA,2BAA2B;AAC3B;IACI,WAAW;AACf;;AAEA;IACI,mBAAmB;IACnB,kBAAkB;AACtB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;AACtB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,wBAAwB;AAC5B;;AAEA;IACI,wBAAwB;AAC5B;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,qBAAqB;IACrB,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,UAAU;IACV,sBAAsB;AAC1B;;;AAGA;IACI,gBAAgB;IAChB,wBAAwB;IACxB,qBAAqB;IACrB,sBAAsB;IACtB,sBAAsB;IACtB,eAAe;IACf,qBAAqB;IACrB,kBAAkB;IAClB,SAAS;IACT,UAAU;IACV,sBAAsB;IACtB,sBAAsB;IACtB,gCAAgC;IAChC,sBAAsB;AAC1B;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,eAAe;IACf,cAAc;IACd,sBAAsB;IACtB,qBAAqB;IACrB,YAAY;IACZ,6BAA6B;IAC7B,gBAAgB;IAChB,gBAAgB;IAChB,aAAa;IACb,wBAAwB;IACxB,oBAAoB;AACxB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,uEAAuE;AAC3E;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,4BAA4B;IAC5B,iCAAiC;IACjC,+BAA+B;AACnC;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,kBAAkB;IAClB,QAAQ;IACR,SAAS;IACT,gCAAgC;IAChC,WAAW;AACf;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,aAAa;IACb,wBAAwB;IACxB,mBAAmB;IACnB,uBAAuB;AAC3B;;AAEA;IACI,2BAA2B;IAC3B,sBAAsB;AAC1B;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,gCAAgC;AACpC;AACA;IACI,aAAa;AACjB","sourcesContent":["div.imageContainer {\r\n    position: relative;\r\n    a.imageUpdate {\r\n        cursor: pointer;\r\n        position: absolute;\r\n        right: 0;\r\n        bottom: 0;\r\n    }\r\n}\r\n.editorJsText{\r\n    display: none !important;\r\n}\r\n\r\n.editorJsText{\r\n    font-family: sans-serif;\r\n    border: 1px solid black;\r\n}\r\n\r\n.dropzone {\r\n    height: auto !important;\r\n    min-height: 120px !important;\r\n    border: 2px dashed var(--tw-gray-300) !important;\r\n    border-radius: 8px !important;\r\n    background-color: #f9fafb !important;\r\n    transition: none !important;\r\n    display: flex !important;\r\n    align-items: center !important;\r\n    padding: 20px !important;\r\n}\r\n\r\n.dropzone .dz-button {\r\n    color: #000 !important;\r\n}\r\n\r\n.dropzone:hover {\r\n    border-color: var(--tw-primary) !important;\r\n    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.05) !important;\r\n}\r\n\r\n\r\n.dropzoneContainer input {\r\n    display: none !important;\r\n}\r\n\r\n.dropzone:hover .dz-button {\r\n    color: var(--tw-primary) !important;\r\n}\r\n\r\n.dropzone .dz-message {\r\n    color: var(--tw-primary) !important;\r\n    font-weight: 500 !important;\r\n    text-align: center !important;\r\n    margin: 0 !important;\r\n    width: 100%;\r\n}\r\n\r\n.dropzone.dz-drag-hover {\r\n    border-color: var(--tw-primary) !important;\r\n    background-color: rgba(var(--tw-primary-rgb, 0, 120, 212), 0.1) !important;\r\n}\r\n\r\n\r\nhtml.dark .dropzone {\r\n    background-color: var(--tw-light-active) !important;\r\n    border: 2px dashed var(--tw-gray-300) !important;\r\n}\r\n\r\nhtml.dark .dz-button {\r\n    color: var(--tw-gray-700) !important;\r\n}\r\n\r\nhtml.dark .dropzone .dz-preview.dz-image-preview {\r\n    background-color: var(--tw-light-active) !important;\r\n    border: 1px solid var(--tw-gray-300) !important;\r\n}\r\n\r\n.dropzone {\r\n    max-width: 534px !important;\r\n    overflow-x: auto;\r\n    overflow-y: hidden;\r\n\r\n    scrollbar-width: thin; /* Firefox */\r\n    scrollbar-color: #888 #f1f1f1; /* Firefox */\r\n}\r\n\r\n/* (Chrome, Safari, etc.) */\r\n.dropzone::-webkit-scrollbar {\r\n    height: 6px;\r\n}\r\n\r\n.dropzone::-webkit-scrollbar-track {\r\n    background: #f1f1f1;\r\n    border-radius: 3px;\r\n}\r\n\r\n.dropzone::-webkit-scrollbar-thumb {\r\n    background: #888;\r\n    border-radius: 3px;\r\n}\r\n\r\n.dropzone::-webkit-scrollbar-thumb:hover {\r\n    background: #969696;\r\n}\r\n\r\n.dropzoneContainer input {\r\n    display: none !important;\r\n}\r\n\r\n.dropzone .dz-message {\r\n    color: var(--tw-primary);\r\n}\r\n\r\n#snippet-grid-dataGrid {\r\n    overflow-x: auto !important;\r\n}\r\n\r\n.dz-preview {\r\n    z-index: 0 !important;\r\n    padding: .5rem;\r\n    border-radius: 20px;\r\n}\r\n\r\n.form-control {\r\n    display: flex;\r\n    gap: .5rem;\r\n    flex-direction: column;\r\n}\r\n\r\n\r\n.form-control input[type=checkbox] {\r\n    appearance: none;\r\n    -webkit-appearance: none;\r\n    -moz-appearance: none;\r\n    background-color: #fff;\r\n    border: 1px solid #ccc;\r\n    cursor: pointer;\r\n    display: inline-block;\r\n    position: relative;\r\n    margin: 0;\r\n    padding: 0;\r\n    vertical-align: middle;\r\n    box-sizing: border-box;\r\n    transition: all 0.2s ease-in-out;\r\n    border-radius: .375rem;\r\n}\r\n\r\n.form-control .max-w-32 {\r\n    max-width: unset !important;\r\n}\r\n\r\n.formLanguageSelect {\r\n    display: inline-flex;\r\n    align-items: center;\r\n    cursor: pointer;\r\n    line-height: 1;\r\n    border-radius: .375rem;\r\n    padding-block: .25rem;\r\n    gap: .375rem;\r\n    border: 1px solid transparent;\r\n    font-weight: 500;\r\n    font-size: .9rem;\r\n    outline: none;\r\n    color: var(--tw-primary);\r\n    padding-inline: 1rem;\r\n}\r\n\r\n.formLanguageSelect option {\r\n    color: #000000;\r\n}\r\n\r\n.formLanguageSelect:focus {\r\n    box-shadow: 0 0 0 0.2rem rgba(var(--tw-primary-rgb, 0, 123, 255), 0.25);\r\n}\r\n\r\n.formLanguageSelect:disabled {\r\n    opacity: 0.65;\r\n    cursor: not-allowed;\r\n}\r\n\r\n.dropdown-content .menu-link {\r\n    font-size: .85rem !important;\r\n    padding-inline: .25rem !important;\r\n    padding-block: .2rem !important;\r\n}\r\n\r\ntextarea {\r\n    line-height: normal !important;\r\n}\r\n\r\n.modal, .modal-content {\r\n    position: absolute;\r\n    top: 50%;\r\n    left: 50%;\r\n    transform: translate(-50%, -50%);\r\n    width: 100%;\r\n}\r\n\r\n.datagrid-inline-edit.modal.open {\r\n    z-index: 90;\r\n    width: 600px;\r\n    height: 100vh;\r\n    display: flex !important;\r\n    align-items: center;\r\n    justify-content: center;\r\n}\r\n\r\n.datagrid-inline-edit.modal.open .modal-content {\r\n    max-width: 600px !important;\r\n    width: 100% !important;\r\n}\r\n\r\n.modal-body {\r\n    padding-top: 1.75rem !important;\r\n}\r\n\r\n.fieldset {\r\n    padding-block: 1.5rem !important;\r\n}\r\n[hidden]{\r\n    display: none;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -18403,6 +18593,578 @@ naja.registerExtension(new UniqueExtension());
 
 /***/ }),
 
+/***/ "./node_modules/nette-forms/src/assets/netteForms.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/nette-forms/src/assets/netteForms.js ***!
+  \***********************************************************/
+/***/ (function(module) {
+
+/*!
+ * NetteForms - simple form validation.
+ *
+ * This file is part of the Nette Framework (https://nette.org)
+ * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
+ */
+(function (global, factory) {
+	 true ? module.exports = factory() :
+	0;
+})(this, (function () { 'use strict';
+
+	class Validators {
+		filled(elem, arg, val) {
+			return val !== '' && val !== false && val !== null
+				&& (!Array.isArray(val) || val.length > 0)
+				&& (!(val instanceof FileList) || val.length > 0);
+		}
+		blank(elem, arg, val) {
+			return !this.filled(elem, arg, val);
+		}
+		valid(elem, arg) {
+			return arg.validateControl(elem, undefined, true);
+		}
+		equal(elem, arg, val) {
+			if (arg === undefined) {
+				return null;
+			}
+			let toString = (val) => {
+				if (typeof val === 'number' || typeof val === 'string') {
+					return '' + val;
+				}
+				else {
+					return val === true ? '1' : '';
+				}
+			};
+			let vals = Array.isArray(val) ? val : [val];
+			let args = Array.isArray(arg) ? arg : [arg];
+			loop: for (let a of vals) {
+				for (let b of args) {
+					if (toString(a) === toString(b)) {
+						continue loop;
+					}
+				}
+				return false;
+			}
+			return vals.length > 0;
+		}
+		notEqual(elem, arg, val) {
+			return arg === undefined ? null : !this.equal(elem, arg, val);
+		}
+		minLength(elem, arg, val) {
+			val = typeof val === 'number' ? val.toString() : val;
+			return val.length >= arg;
+		}
+		maxLength(elem, arg, val) {
+			val = typeof val === 'number' ? val.toString() : val;
+			return val.length <= arg;
+		}
+		length(elem, arg, val) {
+			val = typeof val === 'number' ? val.toString() : val;
+			arg = Array.isArray(arg) ? arg : [arg, arg];
+			return ((arg[0] === null || val.length >= arg[0])
+				&& (arg[1] === null || val.length <= arg[1]));
+		}
+		email(elem, arg, val) {
+			return (/^("([ !#-[\]-~]|\\[ -~])+"|[-a-z0-9!#$%&'*+/=?^_`{|}~]+(\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*)@([0-9a-z\u00C0-\u02FF\u0370-\u1EFF]([-0-9a-z\u00C0-\u02FF\u0370-\u1EFF]{0,61}[0-9a-z\u00C0-\u02FF\u0370-\u1EFF])?\.)+[a-z\u00C0-\u02FF\u0370-\u1EFF]([-0-9a-z\u00C0-\u02FF\u0370-\u1EFF]{0,17}[a-z\u00C0-\u02FF\u0370-\u1EFF])?$/i).test(val);
+		}
+		url(elem, arg, val, newValue) {
+			if (!(/^[a-z\d+.-]+:/).test(val)) {
+				val = 'https://' + val;
+			}
+			if ((/^https?:\/\/((([-_0-9a-z\u00C0-\u02FF\u0370-\u1EFF]+\.)*[0-9a-z\u00C0-\u02FF\u0370-\u1EFF]([-0-9a-z\u00C0-\u02FF\u0370-\u1EFF]{0,61}[0-9a-z\u00C0-\u02FF\u0370-\u1EFF])?\.)?[a-z\u00C0-\u02FF\u0370-\u1EFF]([-0-9a-z\u00C0-\u02FF\u0370-\u1EFF]{0,17}[a-z\u00C0-\u02FF\u0370-\u1EFF])?|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[[0-9a-f:]{3,39}\])(:\d{1,5})?(\/\S*)?$/i).test(val)) {
+				newValue.value = val;
+				return true;
+			}
+			return false;
+		}
+		regexp(elem, arg, val) {
+			let parts = typeof arg === 'string' ? arg.match(/^\/(.*)\/([imu]*)$/) : false;
+			try {
+				return parts && (new RegExp(parts[1], parts[2].replace('u', ''))).test(val);
+			}
+			catch {
+				return null;
+			}
+		}
+		pattern(elem, arg, val, newValue, caseInsensitive) {
+			if (typeof arg !== 'string') {
+				return null;
+			}
+			try {
+				let regExp;
+				try {
+					regExp = new RegExp('^(?:' + arg + ')$', caseInsensitive ? 'ui' : 'u');
+				}
+				catch {
+					regExp = new RegExp('^(?:' + arg + ')$', caseInsensitive ? 'i' : '');
+				}
+				return val instanceof FileList
+					? Array.from(val).every((file) => regExp.test(file.name))
+					: regExp.test(val);
+			}
+			catch {
+				return null;
+			}
+		}
+		patternCaseInsensitive(elem, arg, val) {
+			return this.pattern(elem, arg, val, null, true);
+		}
+		numeric(elem, arg, val) {
+			return (/^[0-9]+$/).test(val);
+		}
+		integer(elem, arg, val, newValue) {
+			if ((/^-?[0-9]+$/).test(val)) {
+				newValue.value = parseFloat(val);
+				return true;
+			}
+			return false;
+		}
+		float(elem, arg, val, newValue) {
+			val = val.replace(/ +/g, '').replace(/,/g, '.');
+			if ((/^-?[0-9]*\.?[0-9]+$/).test(val)) {
+				newValue.value = parseFloat(val);
+				return true;
+			}
+			return false;
+		}
+		min(elem, arg, val) {
+			if (Number.isFinite(arg)) {
+				val = parseFloat(val);
+			}
+			return val >= arg;
+		}
+		max(elem, arg, val) {
+			if (Number.isFinite(arg)) {
+				val = parseFloat(val);
+			}
+			return val <= arg;
+		}
+		range(elem, arg, val) {
+			if (!Array.isArray(arg)) {
+				return null;
+			}
+			else if (elem.type === 'time' && arg[0] > arg[1]) {
+				return val >= arg[0] || val <= arg[1];
+			}
+			return (arg[0] === null || this.min(elem, arg[0], val))
+				&& (arg[1] === null || this.max(elem, arg[1], val));
+		}
+		submitted(elem) {
+			return elem.form['nette-submittedBy'] === elem;
+		}
+		fileSize(elem, arg, val) {
+			return Array.from(val).every((file) => file.size <= arg);
+		}
+		mimeType(elem, args, val) {
+			let parts = [];
+			args = Array.isArray(args) ? args : [args];
+			args.forEach((arg) => parts.push('^' + arg.replace(/([^\w])/g, '\\$1').replace('\\*', '.*') + '$'));
+			let re = new RegExp(parts.join('|'));
+			return Array.from(val).every((file) => !file.type || re.test(file.type));
+		}
+		image(elem, arg, val) {
+			return this.mimeType(elem, arg ?? ['image/gif', 'image/png', 'image/jpeg', 'image/webp'], val);
+		}
+		static(elem, arg) {
+			return arg;
+		}
+	}
+
+	class FormValidator {
+		formErrors = [];
+		validators = new Validators;
+		#preventFiltering = {};
+		#formToggles = {};
+		#toggleListeners = new WeakMap;
+		#getFormElement(form, name) {
+			let res = form.elements.namedItem(name);
+			return (res instanceof RadioNodeList ? res[0] : res);
+		}
+		#expandRadioElement(elem) {
+			let res = elem.form.elements.namedItem(elem.name);
+			return (res instanceof RadioNodeList ? Array.from(res) : [res]);
+		}
+		/**
+		 * Function to execute when the DOM is fully loaded.
+		 */
+		#onDocumentReady(callback) {
+			if (document.readyState !== 'loading') {
+				callback.call(this);
+			}
+			else {
+				document.addEventListener('DOMContentLoaded', callback);
+			}
+		}
+		/**
+		 * Returns the value of form element.
+		 */
+		getValue(elem) {
+			if (elem instanceof HTMLInputElement) {
+				if (elem.type === 'radio') {
+					return this.#expandRadioElement(elem)
+						.find((input) => input.checked)
+						?.value ?? null;
+				}
+				else if (elem.type === 'file') {
+					return elem.files;
+				}
+				else if (elem.type === 'checkbox') {
+					return elem.name.endsWith('[]') // checkbox list
+						? this.#expandRadioElement(elem)
+							.filter((input) => input.checked)
+							.map((input) => input.value)
+						: elem.checked;
+				}
+				else {
+					return elem.value.trim();
+				}
+			}
+			else if (elem instanceof HTMLSelectElement) {
+				return elem.multiple
+					? Array.from(elem.selectedOptions, (option) => option.value)
+					: elem.selectedOptions[0]?.value ?? null;
+			}
+			else if (elem instanceof HTMLTextAreaElement) {
+				return elem.value;
+			}
+			else if (elem instanceof RadioNodeList) {
+				return this.getValue(elem[0]);
+			}
+			else {
+				return null;
+			}
+		}
+		/**
+		 * Returns the effective value of form element.
+		 */
+		getEffectiveValue(elem, filter = false) {
+			let val = this.getValue(elem);
+			if (val === elem.getAttribute('data-nette-empty-value')) {
+				val = '';
+			}
+			if (filter && this.#preventFiltering[elem.name] === undefined) {
+				this.#preventFiltering[elem.name] = true;
+				let ref = { value: val };
+				this.validateControl(elem, undefined, true, ref);
+				val = ref.value;
+				delete this.#preventFiltering[elem.name];
+			}
+			return val;
+		}
+		/**
+		 * Validates form element against given rules.
+		 */
+		validateControl(elem, rules, onlyCheck = false, value, emptyOptional) {
+			rules ??= JSON.parse(elem.getAttribute('data-nette-rules') ?? '[]');
+			value ??= { value: this.getEffectiveValue(elem) };
+			emptyOptional ??= !this.validateRule(elem, ':filled', null, value);
+			for (let rule of rules) {
+				let op = rule.op.match(/(~)?([^?]+)/), curElem = rule.control ? this.#getFormElement(elem.form, rule.control) : elem;
+				rule.neg = !!op[1];
+				rule.op = op[2];
+				rule.condition = !!rule.rules;
+				if (!curElem) {
+					continue;
+				}
+				else if (emptyOptional && !rule.condition && rule.op !== ':filled') {
+					continue;
+				}
+				let success = this.validateRule(curElem, rule.op, rule.arg, elem === curElem ? value : undefined);
+				if (success === null) {
+					continue;
+				}
+				else if (rule.neg) {
+					success = !success;
+				}
+				if (rule.condition && success) {
+					if (!this.validateControl(elem, rule.rules, onlyCheck, value, rule.op === ':blank' ? false : emptyOptional)) {
+						return false;
+					}
+				}
+				else if (!rule.condition && !success) {
+					if (this.isDisabled(curElem)) {
+						continue;
+					}
+					if (!onlyCheck) {
+						let arr = Array.isArray(rule.arg) ? rule.arg : [rule.arg], message = rule.msg.replace(/%(value|\d+)/g, (foo, m) => this.getValue(m === 'value' ? curElem : elem.form.elements.namedItem(arr[m].control)));
+						this.addError(curElem, message);
+					}
+					return false;
+				}
+			}
+			return true;
+		}
+		/**
+		 * Validates whole form.
+		 */
+		validateForm(sender, onlyCheck = false) {
+			let form = sender.form ?? sender, scope;
+			this.formErrors = [];
+			if (sender.getAttribute('formnovalidate') !== null) {
+				let scopeArr = JSON.parse(sender.getAttribute('data-nette-validation-scope') ?? '[]');
+				if (scopeArr.length) {
+					scope = new RegExp('^(' + scopeArr.join('-|') + '-)');
+				}
+				else {
+					this.showFormErrors(form, []);
+					return true;
+				}
+			}
+			for (let elem of form.elements) {
+				if (elem.willValidate && elem.validity.badInput) {
+					elem.reportValidity();
+					return false;
+				}
+			}
+			for (let elem of form.elements) {
+				if (elem.getAttribute('data-nette-rules')
+					&& (!scope || elem.name.replace(/]\[|\[|]|$/g, '-').match(scope))
+					&& !this.isDisabled(elem)
+					&& !this.validateControl(elem, undefined, onlyCheck)
+					&& !this.formErrors.length) {
+					return false;
+				}
+			}
+			let success = !this.formErrors.length;
+			this.showFormErrors(form, this.formErrors);
+			return success;
+		}
+		/**
+		 * Check if input is disabled.
+		 */
+		isDisabled(elem) {
+			if (elem.type === 'radio') {
+				return this.#expandRadioElement(elem)
+					.every((input) => input.disabled);
+			}
+			return elem.disabled;
+		}
+		/**
+		 * Adds error message to the queue.
+		 */
+		addError(elem, message) {
+			this.formErrors.push({
+				element: elem,
+				message: message,
+			});
+		}
+		/**
+		 * Display error messages.
+		 */
+		showFormErrors(form, errors) {
+			let messages = [], focusElem;
+			for (let error of errors) {
+				if (messages.indexOf(error.message) < 0) {
+					messages.push(error.message);
+					focusElem ??= error.element;
+				}
+			}
+			if (messages.length) {
+				this.showModal(messages.join('\n'), () => {
+					focusElem?.focus();
+				});
+			}
+		}
+		/**
+		 * Display modal window.
+		 */
+		showModal(message, onclose) {
+			let dialog = document.createElement('dialog');
+			if (!dialog.showModal) {
+				alert(message);
+				onclose();
+				return;
+			}
+			let style = document.createElement('style');
+			style.innerText = '.netteFormsModal { text-align: center; margin: auto; border: 2px solid black; padding: 1rem } .netteFormsModal button { padding: .1em 2em }';
+			let button = document.createElement('button');
+			button.innerText = 'OK';
+			button.onclick = () => {
+				dialog.remove();
+				onclose();
+			};
+			dialog.setAttribute('class', 'netteFormsModal');
+			dialog.innerText = message + '\n\n';
+			dialog.append(style, button);
+			document.body.append(dialog);
+			dialog.showModal();
+		}
+		/**
+		 * Validates single rule.
+		 */
+		validateRule(elem, op, arg, value) {
+			if (elem.validity.badInput) {
+				return op === ':filled';
+			}
+			value ??= { value: this.getEffectiveValue(elem, true) };
+			let method = op.charAt(0) === ':' ? op.substring(1) : op;
+			method = method.replace('::', '_').replaceAll('\\', '');
+			let args = Array.isArray(arg) ? arg : [arg];
+			args = args.map((arg) => {
+				if (arg?.control) {
+					let control = this.#getFormElement(elem.form, arg.control);
+					return control === elem ? value.value : this.getEffectiveValue(control, true);
+				}
+				return arg;
+			});
+			if (method === 'valid') {
+				args[0] = this; // todo
+			}
+			return this.validators[method]
+				? this.validators[method](elem, Array.isArray(arg) ? args : args[0], value.value, value)
+				: null;
+		}
+		/**
+		 * Process all toggles in form.
+		 */
+		toggleForm(form, event) {
+			this.#formToggles = {};
+			for (let elem of Array.from(form.elements)) {
+				if (elem.getAttribute('data-nette-rules')) {
+					this.toggleControl(elem, undefined, null, !event);
+				}
+			}
+			for (let i in this.#formToggles) {
+				this.toggle(i, this.#formToggles[i].state, this.#formToggles[i].elem, event);
+			}
+		}
+		/**
+		 * Process toggles on form element.
+		 */
+		toggleControl(elem, rules, success = null, firsttime = false, value, emptyOptional) {
+			rules ??= JSON.parse(elem.getAttribute('data-nette-rules') ?? '[]');
+			value ??= { value: this.getEffectiveValue(elem) };
+			emptyOptional ??= !this.validateRule(elem, ':filled', null, value);
+			let has = false, curSuccess;
+			for (let rule of rules) {
+				let op = rule.op.match(/(~)?([^?]+)/), curElem = rule.control ? this.#getFormElement(elem.form, rule.control) : elem;
+				rule.neg = !!op[1];
+				rule.op = op[2];
+				rule.condition = !!rule.rules;
+				if (!curElem) {
+					continue;
+				}
+				else if (emptyOptional && !rule.condition && rule.op !== ':filled') {
+					continue;
+				}
+				curSuccess = success;
+				if (success !== false) {
+					curSuccess = this.validateRule(curElem, rule.op, rule.arg, elem === curElem ? value : undefined);
+					if (curSuccess === null) {
+						continue;
+					}
+					else if (rule.neg) {
+						curSuccess = !curSuccess;
+					}
+					if (!rule.condition) {
+						success = curSuccess;
+					}
+				}
+				if ((rule.condition && this.toggleControl(elem, rule.rules, curSuccess, firsttime, value, rule.op === ':blank' ? false : emptyOptional)) || rule.toggle) {
+					has = true;
+					if (firsttime) {
+						this.#expandRadioElement(curElem)
+							.filter((el) => !this.#toggleListeners.has(el))
+							.forEach((el) => {
+							el.addEventListener('change', (e) => this.toggleForm(elem.form, e));
+							this.#toggleListeners.set(el, null);
+						});
+					}
+					for (let id in rule.toggle ?? {}) {
+						this.#formToggles[id] ??= { elem: elem, state: false };
+						this.#formToggles[id].state ||= rule.toggle[id] ? !!curSuccess : !curSuccess;
+					}
+				}
+			}
+			return has;
+		}
+		/**
+		 * Displays or hides HTML element.
+		 */
+		toggle(selector, visible, srcElement, event) {
+			if (/^\w[\w.:-]*$/.test(selector)) { // id
+				selector = '#' + selector;
+			}
+			Array.from(document.querySelectorAll(selector))
+				.forEach((elem) => elem.hidden = !visible);
+		}
+		/**
+		 * Compact checkboxes
+		 */
+		compactCheckboxes(form, formData) {
+			let values = {};
+			for (let elem of form.elements) {
+				if (elem instanceof HTMLInputElement && elem.type === 'checkbox' && elem.name.endsWith('[]') && elem.checked && !elem.disabled) {
+					formData.delete(elem.name);
+					values[elem.name] ??= [];
+					values[elem.name].push(elem.value);
+				}
+			}
+			for (let name in values) {
+				formData.set(name.substring(0, name.length - 2), values[name].join(','));
+			}
+		}
+		/**
+		 * Setup handlers.
+		 */
+		initForm(form) {
+			if (form.method === 'get' && form.hasAttribute('data-nette-compact')) {
+				form.addEventListener('formdata', (e) => this.compactCheckboxes(form, e.formData));
+			}
+			if (!Array.from(form.elements).some((elem) => elem.getAttribute('data-nette-rules'))) {
+				return;
+			}
+			this.toggleForm(form);
+			if (form.noValidate) {
+				return;
+			}
+			form.noValidate = true;
+			form.addEventListener('submit', (e) => {
+				if (!this.validateForm((e.submitter || form))) {
+					e.stopImmediatePropagation();
+					e.preventDefault();
+				}
+			});
+			form.addEventListener('reset', () => {
+				setTimeout(() => this.toggleForm(form));
+			});
+		}
+		initOnLoad() {
+			this.#onDocumentReady(() => {
+				Array.from(document.forms)
+					.forEach((form) => this.initForm(form));
+			});
+		}
+	}
+
+	let webalizeTable = { \u00e1: 'a', \u00e4: 'a', \u010d: 'c', \u010f: 'd', \u00e9: 'e', \u011b: 'e', \u00ed: 'i', \u013e: 'l', \u0148: 'n', \u00f3: 'o', \u00f4: 'o', \u0159: 'r', \u0161: 's', \u0165: 't', \u00fa: 'u', \u016f: 'u', \u00fd: 'y', \u017e: 'z' };
+	/**
+	 * Converts string to web safe characters [a-z0-9-] text.
+	 * @param {string} s
+	 * @return {string}
+	 */
+	function webalize(s) {
+		s = s.toLowerCase();
+		let res = '';
+		for (let i = 0; i < s.length; i++) {
+			let ch = webalizeTable[s.charAt(i)];
+			res += ch ? ch : s.charAt(i);
+		}
+		return res.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+	}
+
+	var version = "3.5.3";
+
+	let nette = new FormValidator;
+	nette.version = version;
+	nette.webalize = webalize;
+
+	return nette;
+
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
 /*!****************************************************************************!*\
   !*** ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
@@ -18696,7 +19458,7 @@ module.exports = styleTagTransform;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -18769,6 +19531,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./form */ "./assets/admin/form.js");
 /* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_form__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _app_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./app.css */ "./assets/admin/app.css");
+/* harmony import */ var nette_forms__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! nette-forms */ "./node_modules/nette-forms/src/assets/netteForms.js");
+/* harmony import */ var nette_forms__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(nette_forms__WEBPACK_IMPORTED_MODULE_11__);
 
 
 
@@ -18788,7 +19552,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 naja__WEBPACK_IMPORTED_MODULE_0__["default"].initialize();
+nette_forms__WEBPACK_IMPORTED_MODULE_11___default().initOnLoad();
 
 let loaderId = null;
 let editor = undefined;
@@ -18809,9 +19575,11 @@ naja__WEBPACK_IMPORTED_MODULE_0__["default"].redirectHandler.addEventListener('r
     event.detail.setHardRedirect(true);
 });
 naja__WEBPACK_IMPORTED_MODULE_0__["default"].addEventListener('success', (event) => {
+    nette_forms__WEBPACK_IMPORTED_MODULE_11___default().initOnLoad();
     initDatagrid();
     initFlashes();
     initDropzone();
+    initEditorJs();
     loader.hide(loaderId);
 });
 let globalSearchTimeout;
@@ -18871,68 +19639,70 @@ function generateUniqueId() {
     return Date.now() + Math.floor(Math.random() * 10000);
 }
 
-Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
-    const editorDiv = document.createElement('div');
-    editorDiv.classList.add('editorJsHolder');
-    element.after(editorDiv);
+initEditorJs();
+function initEditorJs() {
+    Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
+        const editorDiv = document.createElement('div');
+        editorDiv.classList.add('editorJsHolder');
+        element.after(editorDiv);
 
-    const id = generateUniqueId();
+        const id = generateUniqueId();
 
-    let data = '';
-    if(element.value !== ''){
-        data = JSON.parse(element.value);
-    }
-
-    editors[id] = new _editorjs_editorjs__WEBPACK_IMPORTED_MODULE_2__["default"]({
-        holder: editorDiv,
-        data: data,
-        tools: {
-            raw: _editorjs_raw__WEBPACK_IMPORTED_MODULE_3__["default"],
-            paragraph: {
-                class: _editorjs_paragraph__WEBPACK_IMPORTED_MODULE_5__["default"],
-                config: {
-                    placeholder: 'Add paragraph',
-                    preserveBlank: true,
-                }
-            },
-            list: {
-                class: _editorjs_list__WEBPACK_IMPORTED_MODULE_4__["default"],
-                inlineToolbar: true,
-            },
-            header: {
-                class: _editorjs_header__WEBPACK_IMPORTED_MODULE_6__["default"],
-                inlineToolbar : true,
-                config: {
-                    placeholder: 'Add list',
-                    levels: [2, 3, 4],
-                    defaultLevel: 2
-                }
-            },
-            table: _editorjs_table__WEBPACK_IMPORTED_MODULE_7__["default"]
+        let data = '';
+        if (element.value !== '') {
+            data = JSON.parse(element.value);
         }
-    });
-    editorDiv.setAttribute('data-editor-id', id);
-    element.setAttribute('data-for-editor-id', id);
-    editorDiv.setAttribute('data-language-id', element.getAttribute('data-language-id'));
-    if(element.getAttribute('langchange') !== null){
-        editorDiv.toggleAttribute('langchange');
-        if (formLanguageSelect) {
-            if(formLanguageSelect.value !== element.getAttribute('data-language-id')){
-                editorDiv.style.display = 'none';
+
+        editors[id] = new _editorjs_editorjs__WEBPACK_IMPORTED_MODULE_2__["default"]({
+            holder: editorDiv,
+            data: data,
+            tools: {
+                raw: _editorjs_raw__WEBPACK_IMPORTED_MODULE_3__["default"],
+                paragraph: {
+                    class: _editorjs_paragraph__WEBPACK_IMPORTED_MODULE_5__["default"],
+                    config: {
+                        placeholder: 'Add paragraph',
+                        preserveBlank: true,
+                    }
+                },
+                list: {
+                    class: _editorjs_list__WEBPACK_IMPORTED_MODULE_4__["default"],
+                    inlineToolbar: true,
+                },
+                header: {
+                    class: _editorjs_header__WEBPACK_IMPORTED_MODULE_6__["default"],
+                    inlineToolbar: true,
+                    config: {
+                        placeholder: 'Add list',
+                        levels: [2, 3, 4],
+                        defaultLevel: 2
+                    }
+                },
+                table: _editorjs_table__WEBPACK_IMPORTED_MODULE_7__["default"]
+            }
+        });
+        editorDiv.setAttribute('data-editor-id', id);
+        element.setAttribute('data-for-editor-id', id);
+        editorDiv.setAttribute('data-language-id', element.getAttribute('data-language-id'));
+        if (element.getAttribute('langchange') !== null) {
+            editorDiv.toggleAttribute('langchange');
+            if (formLanguageSelect) {
+                if (formLanguageSelect.value !== element.getAttribute('data-language-id')) {
+                    editorDiv.style.display = 'none';
+                }
             }
         }
-    }
-});
-
-Array.from(document.getElementsByTagName('form')).forEach((element) => {
-    element.onsubmit = function(event) {
-        Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
-            editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
-                elementEditor.value = JSON.stringify(data);
-            })
-        });
-    };
-});
+    });
+    Array.from(document.getElementsByTagName('form')).forEach((element) => {
+        element.onsubmit = function(event) {
+            Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
+                editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
+                    elementEditor.value = JSON.stringify(data);
+                })
+            });
+        };
+    });
+}
 
 function truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -18973,8 +19743,6 @@ function inlineEdit(event){
         }
     }
 }
-
-// netteForms.initOnLoad();
 
 function initDropzone(){
     let uploadedImageIds = {};
