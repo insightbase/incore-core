@@ -51,9 +51,12 @@ class Translator implements \Nette\Localization\Translator
 
         foreach ($parameters as $key => $value) {
             if($value instanceof TranslateTypeEnum){
-                $json = Json::decode((string)$translated, true);
-                if(is_array($json) && array_key_exists('time', $json)){
-                    $translated = $this->editorJsRenderer->render($translated);
+                try {
+                    $json = Json::decode((string)$translated, true);
+                    if(is_array($json) && array_key_exists('time', $json)){
+                        $translated = $this->editorJsRenderer->render($translated);
+                    }
+                } catch (JsonException $e) {
                 }
             }else {
                 $translated = str_replace("%{$key}%", (string)$value, $translated);
