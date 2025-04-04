@@ -9,10 +9,12 @@ use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Entity\FilterEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
 use App\Component\Datagrid\Enum\FilterTypeEnum;
+use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use App\Model\Enum\TranslateTypeEnum;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
@@ -24,14 +26,13 @@ readonly class DefaultDataGridEntityFactory
         private Translator        $translator,
         private Language          $languageModel,
         private TranslateLanguage $translateLanguageModel,
-        private Storage           $storage,
         private InlineEditFactory        $inlineEditFactory,
+        private EditorJsFacade $editorJsFacade,
     ) {}
 
     public function create(): DataGridEntity
     {
         $entity = new DataGridEntity();
-        $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
 
         $entity
             ->addColumn(
@@ -49,9 +50,14 @@ readonly class DefaultDataGridEntityFactory
                             return '';
                         }
 
-                        return $translateLanguage->value;
+                        $type = TranslateTypeEnum::from($row->type);
+                        return match($type){
+                            TranslateTypeEnum::Text => $translateLanguage->value,
+                            TranslateTypeEnum::Html => $this->editorJsFacade->renderJson($translateLanguage->value),
+                        };
                     })
                     ->setInlineEdit($this->inlineEditFactory->create($language))
+                    ->setNoEscape()
 //                    ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
 //                        return $row['id'].'-'.$language->id;
 //                    })

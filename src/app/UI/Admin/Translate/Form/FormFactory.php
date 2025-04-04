@@ -6,6 +6,7 @@ use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\TranslateEntity;
+use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
 
@@ -25,13 +26,17 @@ readonly class FormFactory
     {
         $form = $this->formFactory->create();
 
-        $languageInput = $form->addContainer('languageInput');
         foreach ($this->languageModel->getToTranslate() as $language) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
-            $languageInput->addText($language->id, $language->name.' ( '.$language->locale.' )')
-                ->setNullable()
-                ->setDefaultValue(null === $translateLanguage ? '' : $translateLanguage->value)
-            ;
+            $key = TranslateTypeEnum::from($translate->type);
+            match ($key){
+                TranslateTypeEnum::Text => $form->addText($language->id, $language->name.' ( '.$language->locale.' )')
+                    ->setNullable()
+                    ->setDefaultValue(null === $translateLanguage ? '' : $translateLanguage->value),
+                TranslateTypeEnum::Html => $form->addEditorJs($language->id, $language->name.' ( '.$language->locale.' )')
+                    ->setNullable()
+                    ->setDefaultValue(null === $translateLanguage ? '' : $translateLanguage->value),
+            };
         }
 
         $form->addSubmit('send', $this->translator->translate('submit_translate'));

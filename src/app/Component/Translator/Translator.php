@@ -6,6 +6,7 @@ use App\Component\EditorJs\EditorJsRendererFactory;
 use App\Model\Admin\Language;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
+use App\Model\Enum\TranslateTypeEnum;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
@@ -48,17 +49,18 @@ class Translator implements \Nette\Localization\Translator
             $translated = $message;
         }
 
-        try{
-            $json = Json::decode((string)$translated, true);
-            if(is_array($json) && array_key_exists('time', $json)){
-                $translated = $this->editorJsRenderer->render($translated);
-            }
-        }catch(JsonException $e){
-
-        }
-
         foreach ($parameters as $key => $value) {
-            $translated = str_replace("%{$key}%", (string) $value, $translated);
+            if($value instanceof TranslateTypeEnum){
+                try {
+                    $json = Json::decode((string)$translated, true);
+                    if(is_array($json) && array_key_exists('time', $json)){
+                        $translated = $this->editorJsRenderer->render($translated);
+                    }
+                } catch (JsonException $e) {
+                }
+            }else {
+                $translated = str_replace("%{$key}%", (string)$value, $translated);
+            }
         }
 
         return $translated;

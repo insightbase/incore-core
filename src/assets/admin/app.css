@@ -216,6 +216,9 @@ textarea {
 .fieldset {
     padding-block: 1.5rem !important;
 }
+[hidden]{
+    display: none;
+}
 
 .modal .codex-editor__redactor{
     padding-bottom: 0 !important;

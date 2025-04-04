@@ -4,18 +4,21 @@ namespace App\Component\EditorJs;
 
 use Nette\Utils\Html;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 class EditorJsRenderer
 {
     /**
      * @param string $json
      * @return Html
-     * @throws \Nette\Utils\JsonException
-     * @throws \Exception
      */
     public function render(string $json):Html
     {
-        $jsonDecode = Json::decode($json, true);
+        try {
+            $jsonDecode = Json::decode($json, true);
+        } catch (JsonException $e) {
+            return Html::fromHtml($json);
+        }
         $html = Html::el();
         foreach($jsonDecode['blocks'] as $block){
             switch ($block['type']){

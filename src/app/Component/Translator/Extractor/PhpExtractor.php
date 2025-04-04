@@ -2,6 +2,8 @@
 
 namespace App\Component\Translator\Extraxtor;
 
+use App\Model\Enum\TranslateTypeEnum;
+use Nette\Utils\FileSystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\Extractor\AbstractFileExtractor;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
@@ -156,6 +158,8 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
     {
         $tokenIterator = new \ArrayIterator($tokens);
 
+        preg_match_all("/'([^']+)'(?:\s*,\s*type:\s*([A-Za-z0-9\\\\_\\:\\\\]+(?:\:[A-Za-z0-9\\\\_\\:\\\\]+)*))/", FileSystem::read($filename), $matches);
+
         for ($key = 0; $key < $tokenIterator->count(); ++$key) {
             foreach ($this->sequences as $sequence) {
                 $message = '';
@@ -191,10 +195,29 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
                 }
 
                 if ($message) {
+                    $type = TranslateTypeEnum::Text;
+                    for($i = 0; $i < count($matches[1]); $i++){
+                        if($matches[1][$i] === $message){
+
+                            preg_match('/::([A-Za-z0-9_]+)/', $matches[2][$i], $matchesEnum);
+
+                            if (isset($matchesEnum[1])) {
+                                $enumName = $matchesEnum[1];
+                                foreach(TranslateTypeEnum::cases() as $value){
+                                    if($value->name === $enumName){
+                                        $type = $value;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     $catalog->set($message, $this->prefix.$message, $domain);
                     $metadata = $catalog->getMetadata($message, $domain) ?? [];
                     $normalizedFilename = preg_replace('{[\\\/]+}', '/', $filename);
                     $metadata['sources'][] = $normalizedFilename.':'.$tokens[$key][2];
+                    $metadata['type'][] = $type;
                     $catalog->setMetadata($message, $metadata, $domain);
 
                     break;
