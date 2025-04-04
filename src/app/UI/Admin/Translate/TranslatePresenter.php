@@ -72,7 +72,7 @@ class TranslatePresenter extends Presenter
     protected function createComponentFormTranslate(): Form
     {
         $form = $this->formFactory->createTranslate($this->translate);
-        $form->onSuccess[] = function (Form $form, FormTranslateData $data): void {
+        $form->onSuccess[] = function (Form $form, array $data): void {
             $this->translateFacade->translate($this->translate, $data);
             $this->flashMessage($this->translator->translate('flash_translateSet'));
             $this->redirect('default');

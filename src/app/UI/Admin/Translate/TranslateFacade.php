@@ -17,6 +17,7 @@ use App\UI\Admin\Translate\Form\FormTranslateData;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\Arrays;
 use Nette\Utils\Finder;
 use Symfony\Component\Translation\Extractor\ChainExtractor;
 use Symfony\Component\Translation\MessageCatalogue;
@@ -38,21 +39,21 @@ readonly class TranslateFacade
     /**
      * @param TranslateEntity $translate
      */
-    public function translate(ActiveRow $translate, FormTranslateData $data): void
+    public function translate(ActiveRow $translate, array $data): void
     {
         $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
         foreach ($this->languageModel->getToTranslate() as $language) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
             if ($translateLanguage) {
-                if (null === $data->languageInput[$language->id]) {
+                if (null === $data[$language->id]) {
                     $translateLanguage->delete();
                 } else {
-                    $translateLanguage->update(['value' => $data->languageInput[$language->id]]);
+                    $translateLanguage->update(['value' => $data[$language->id]]);
                 }
             } else {
-                if (null !== $data->languageInput[$language->id]) {
+                if (null !== $data[$language->id]) {
                     $this->translateLanguageModel->insert([
-                        'value' => $data->languageInput[$language->id],
+                        'value' => $data[$language->id],
                         'translate_id' => $translate->id,
                         'language_id' => $language->id,
                     ]);
@@ -110,26 +111,32 @@ readonly class TranslateFacade
         $dataInsert = [];
 
         $allKeys = [];
+        $allTypes = [];
 
         foreach ($extractorKeys as $module => $keys) {
             if($keys->getMetadata() !== null) {
                 foreach ($keys->getMetadata() as $key => $data) {
                     if (!in_array($key, $allKeys)) {
                         $allKeys[] = $key;
+                        $allTypes[] = Arrays::first($data['type']);
                     }
                 }
             }
         }
 
-        foreach ($allKeys as $key) {
+        foreach ($allKeys as $index => $key) {
             $translate = $this->translateModel->getByKey($key);
             if (null === $translate) {
                 $dataInsert[] = [
                     'key' => $key,
                     'source' => $source,
+                    'type' => $allTypes[$index]->value,
                 ];
             }else{
-                $translate->update(['source' => $source]);
+                $translate->update([
+                    'source' => $source,
+                    'type' => $allTypes[$index]->value,
+                ]);
             }
         }
 

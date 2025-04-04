@@ -36,8 +36,8 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
     {
         $translate = $this->translateModel->get($id);
         $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $this->language);
+        $type = TranslateTypeEnum::from($translate->type);
         if($translateLanguage !== null){
-            $type = TranslateTypeEnum::from($translate->type);
             return [
                 'value_text' => $type === TranslateTypeEnum::Text ? $translateLanguage->value : null,
                 'value_html' => $type === TranslateTypeEnum::Html ? $translateLanguage->value : null,
@@ -47,7 +47,7 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
             return [
                 'value_text' => null,
                 'value_html' => null,
-                'type' => TranslateTypeEnum::Text,
+                'type' => $type->value,
             ];
         }
     }
@@ -56,7 +56,6 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
     {
         return function(array $values):void{
             $translate = $this->translateModel->get($values['id']);
-            $translate->update(['type' => $values['type']]);
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $this->language);
             $type = TranslateTypeEnum::from($values['type']);
             $value = match($type){
@@ -93,7 +92,7 @@ readonly class InlineEdit implements \App\Component\Datagrid\InlineEdit
         $type = $form->addRadioList('type', $this->translator->translate('input_type'), [
             TranslateTypeEnum::Text->value => $this->translator->translate('type_text'),
             TranslateTypeEnum::Html->value => $this->translator->translate('type_html'),
-        ]);
+        ])->setOption('hidden', true);
         $type->addCondition($form::Equal, TranslateTypeEnum::Text->value)->toggle('valueText');
         $type->addCondition($form::Equal, TranslateTypeEnum::Html->value)->toggle('valueHtml');
         $form->addTextArea('value_text', $this->translator->translate('input_valueText'))

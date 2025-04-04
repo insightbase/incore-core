@@ -45,7 +45,7 @@
     <div n:foreach="$controls as $input"
             n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
             n:class="!$repeater ? 'flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4', $repeater ? 'form-control w-full'"
-            n:attr="id: $input->getOption('id')"
+            n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden')"
     >
         {var Nette\Utils\Html $control = $input->getControl()}
         {continueIf array_key_exists('name', $control->attrs) && str_starts_with($control->attrs['name'], 'language[')}
