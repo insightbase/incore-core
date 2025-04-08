@@ -49,6 +49,15 @@ class Translator implements \Nette\Localization\Translator
             $translated = $message;
         }
 
+        $params = [];
+        foreach($parameters as $key => $value){
+            if(is_array($value)){
+                $params += $value;
+            }else{
+                $params[$key] = $value;
+            }
+        }
+
         foreach ($parameters as $key => $value) {
             if($value instanceof TranslateTypeEnum){
                 try {
