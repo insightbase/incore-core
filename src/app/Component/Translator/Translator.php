@@ -58,7 +58,7 @@ class Translator implements \Nette\Localization\Translator
             }
         }
 
-        foreach ($parameters as $key => $value) {
+        foreach ($params as $key => $value) {
             if($value instanceof TranslateTypeEnum){
                 try {
                     $json = Json::decode((string)$translated, true);
