@@ -69,7 +69,11 @@ readonly class GenerateEntitiesFacade
                     }
                 }
 
-                FileSystem::write($this->parameterBag->appDir . '/../../' . $module . '/src/app/Model/Entity/' . $className . '.php', $file);
+                if(str_ends_with($module, '.php')){
+                    FileSystem::write($this->parameterBag->appDir . '/Model/Entity/' . $className . '.php', $file);
+                }else {
+                    FileSystem::write($this->parameterBag->appDir . '/../../' . $module . '/src/app/Model/Entity/' . $className . '.php', $file);
+                }
             }
         }
     }
