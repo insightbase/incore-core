@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Component\Translator\Translator;
 use App\Core\DbParameterBag;
+use App\Model\DoctrineEntity\NoGenerateTable;
 use App\Service\Admin\GenerateEntitiesFacade;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
@@ -50,8 +51,10 @@ class GenerateDBCommand extends Command
         foreach (array_keys($services) as $class) {
             $reflection = new \ReflectionClass($class);
             if ($reflection->getAttributes(Table::class)) {
-                $classes[] = $class;
-                $doctrineEntityReflections[] = $reflection;
+                if(!array_key_exists(NoGenerateTable::class, $reflection->getInterfaces())) {
+                    $classes[] = $class;
+                    $doctrineEntityReflections[] = $reflection;
+                }
             }
             if (array_key_exists(FixtureInterface::class, $reflection->getInterfaces())) {
                 $fixtureFiles[] = $reflection->getFileName();
