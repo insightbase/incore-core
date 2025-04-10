@@ -87,20 +87,34 @@ class Translator implements \Nette\Localization\Translator
     private function getTranslate(string $message): ?string
     {
         if (!array_key_exists($this->language->id, $this->messages)) {
-            $this->messages[$this->language->id] = $this->getMessages();
+            $this->messages[$this->language->id] = $this->getMessages($this->language);
         }
         if (!array_key_exists($message, $this->messages[$this->language->id])) {
-            return null;
+            $defaultLanguage = $this->languageModel->getDefault();
+            if ($defaultLanguage !== null && !array_key_exists($defaultLanguage->id, $this->messages)) {
+                $this->messages[$defaultLanguage->id] = $this->getMessages($defaultLanguage);
+            }
+
+            if (!array_key_exists($message, $this->messages[$defaultLanguage->id])) {
+                return null;
+            }else{
+                return $this->messages[$defaultLanguage->id][$message];
+            }
         }
 
         return $this->messages[$this->language->id][$message];
     }
 
-    private function getMessages(): array
+    /**
+     * @param LanguageEntity $language
+     * @return array
+     * @throws \Throwable
+     */
+    private function getMessages(ActiveRow $language): array
     {
-        return $this->cache->load($this->language->id, function (): array {
+        return $this->cache->load($language->id, function () use ($language): array {
             $messages = [];
-            foreach ($this->translateLanguageModel->getByLanguage($this->language) as $translateLanguage) {
+            foreach ($this->translateLanguageModel->getByLanguage($language) as $translateLanguage) {
                 $messages[$translateLanguage->translate->key] = $translateLanguage->value;
             }
 
