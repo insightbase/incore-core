@@ -5,6 +5,8 @@ namespace App\UI\Admin\Language;
 use App\Component\Log\LogActionEnum;
 use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
+use App\Event\EventFacade;
+use App\Event\Language\ChangeDefaultEvent;
 use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
@@ -14,9 +16,10 @@ use Nette\Database\Table\ActiveRow;
 readonly class LanguageFacade
 {
     public function __construct(
-        private Language $language,
-        private Translator $translator,
-        private LogFacade $logFacade,
+        private Language    $language,
+        private Translator  $translator,
+        private LogFacade   $logFacade,
+        private EventFacade $eventFacade,
     ) {}
 
     public function create(NewFormData $data): void
@@ -53,8 +56,12 @@ readonly class LanguageFacade
     public function changeDefault(ActiveRow $language): void
     {
         $this->language->getExplorer()->transaction(function () use ($language) {
+            $default = $this->language->getDefault();
+
             $this->language->getTable()->update(['is_default' => false]);
             $language->update(['is_default' => true]);
+            $event = new ChangeDefaultEvent($default, $language);
+            $this->eventFacade->dispatch($event);
             $this->logFacade->create(LogActionEnum::ChangeDefault, 'language', $language->id);
         });
     }
