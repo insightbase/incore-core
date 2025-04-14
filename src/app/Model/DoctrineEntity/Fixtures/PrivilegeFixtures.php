@@ -21,6 +21,7 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
     public const string DELETE_UNUSED = 'privilege-delete-unused';
     public const string IMPORT = 'privilege-import';
     public const string SHOW = 'privilege-show';
+    public const string DELETE_ITEM = 'privilege-delete-item';
 
     public function load(ObjectManager $manager): void
     {
@@ -135,5 +136,15 @@ class PrivilegeFixtures extends Fixture implements FixtureInterface
             $manager->flush();
         }
         $this->addReference(self::SHOW, $show);
+
+        $deleteItem = $privilegeRepository->findOneBy(['system_name' => PrivilegeEnum::DeleteItem->value]);
+        if (!$deleteItem) {
+            $deleteItem = new Privilege();
+            $deleteItem->setName('Smazat záznam');
+            $deleteItem->setSystemName(PrivilegeEnum::DeleteItem->value);
+            $manager->persist($deleteItem);
+            $manager->flush();
+        }
+        $this->addReference(self::DELETE_ITEM, $deleteItem);
     }
 }
