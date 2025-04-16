@@ -8,8 +8,10 @@ use App\Model\Admin\Email;
 use App\Model\Admin\EmailLog;
 use App\Model\Admin\Setting;
 use App\UI\Accessory\ParameterBag;
+use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 use Nette\Mail\SendException;
+use Nette\Mail\SendmailMailer;
 use Nette\Mail\SmtpMailer;
 use Nette\Utils\DateTime;
 
@@ -60,23 +62,25 @@ class Sender
         return $this;
     }
 
-    /**
-     * @throws SendException|SystemNameNotFoundException
-     */
-    public function send(): void
-    {
+    private function getMailer():Mailer{
         $setting = $this->settingModel->getDefault();
         if (null === $setting || null === $setting->email || null === $setting->smtp_host || null === $setting->smtp_username || null === $setting->smtp_password) {
-            throw new SendException('For send email you must set setting in Setting section');
+            return new SendmailMailer();
         }
 
-        $mailer = new SmtpMailer(
+        return new SmtpMailer(
             host: $setting->smtp_host,
             username: $setting->smtp_username,
             password: $this->encryptFacade->encrypt($setting->smtp_password),
             encryption: 'ssl',
         );
+    }
 
+    /**
+     * @throws SendException|SystemNameNotFoundException
+     */
+    public function send(): void
+    {
         $email = $this->emailModel->getBySystemName($this->systemName);
         if (null === $email) {
             throw (new SystemNameNotFoundException())->setSystemName($this->systemName);
@@ -91,7 +95,7 @@ class Sender
         $this->message->setHtmlBody($text);
 
         try {
-            $mailer->send($this->message);
+            $this->getMailer()->send($this->message);
             $this->log();
         } catch (SendException $e) {
             $this->log($e->getMessage());
