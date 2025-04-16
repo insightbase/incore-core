@@ -1,0 +1,16 @@
+{templateType App\UI\Admin\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}{_'header_emails'}{/block}
+
+{block content}
+    {control grid}
+
+    {embed basicModal, 'formNew'}
+        {block title}{_'new_email'}{/block}
+        {block body}
+            {embed basicForm, formNew}{/embed}
+        {/block}
+    {/embed}
+{/block}

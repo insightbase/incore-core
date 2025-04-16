@@ -6,4 +6,5 @@ enum SystemNameEnum: string
 {
     case ForgotPassword = 'forgotPassword';
     case TestEmail = 'testEmail';
+    case ContactFormEmail = 'contactFormEmail';
 }

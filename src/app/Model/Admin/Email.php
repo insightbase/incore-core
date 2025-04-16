@@ -29,4 +29,30 @@ readonly class Email implements Model
     {
         return $this->explorer->table('email');
     }
+
+    /**
+     * @param int $id
+     * @return ?EmailEntity
+     */
+    public function get(int $id):?ActiveRow
+    {
+        return $this->getTable()->get($id);
+    }
+
+    /**
+     * @param array $data
+     * @return ?EmailEntity
+     */
+    public function insert(array $data):?ActiveRow
+    {
+        return $this->getTable()->insert($data);
+    }
+
+    /**
+     * @return Selection<EmailEntity>
+     */
+    public function getToGrid():Selection
+    {
+        return $this->getTable();
+    }
 }

@@ -21,6 +21,8 @@ enum LogActionEnum:string
     case CreatedItem = 'createdItem';
     case UpdatedItem = 'updatedItem';
 
+    case DeletedItem = 'deletedItem';
+
     public function translate(Translator $translator):string
     {
         return match($this){
@@ -38,6 +40,7 @@ enum LogActionEnum:string
             self::Synchronize => $translator->translate('action_synchronized'),
             self::CreatedItem => $translator->translate('action_createdItem'),
             self::UpdatedItem => $translator->translate('action_updatedItem'),
+            self::DeletedItem => $translator->translate('action_deletedItem'),
         };
     }
 }
