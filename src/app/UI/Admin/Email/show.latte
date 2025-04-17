@@ -1,0 +1,16 @@
+{templateType App\UI\Admin\Email\Template}
+
+{layout $layoutFile}
+
+{block h1}{_'header_emailDetail'}{/block}
+
+{block content}
+    <p>
+        <strong>{_'email_created:'}</strong> {$emailLog->created|date:'j.n.Y H:i:s'}<br />
+        <strong>{_'email_address:'}</strong> {$emailLog->address}<br />
+        <strong>{_'email_subject:'}</strong> {$emailLog->subject}<br />
+        <strong>{_'email_error:'}</strong> {$emailLog->error}<br />
+        <strong>{_'email_text:'}</strong>
+        <iframe srcdoc="{$emailLog->text|noescape}" style="width: 100%"></iframe>
+    </p>
+{/block}
