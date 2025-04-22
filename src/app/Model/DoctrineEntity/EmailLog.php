@@ -22,12 +22,12 @@ class EmailLog implements Entity
     #[ORM\Column(type: 'text')]
     public string $text;
 
-    #[ORM\Column(type: 'text', length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     public string $address;
 
-    #[ORM\Column(type: 'text', length: 255, nullable: true, options: ['default' => null])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $error = null;
 
-    #[ORM\Column(type: 'text', length: 255, nullable: true, options: ['default' => null])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $from = null;
 }
