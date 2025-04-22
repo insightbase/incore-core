@@ -91,6 +91,9 @@ class Sender
             $text = str_replace('%'.$modifier.'%', $value, $text);
         }
 
+        if($this->settingModel->getDefault()?->email_sender !== null) {
+            $this->message->setFrom($this->settingModel->getDefault()->email_sender);
+        }
         $this->message->setSubject($email['subject']);
         $this->message->setHtmlBody($text);
 
