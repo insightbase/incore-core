@@ -118,7 +118,7 @@ class Sender
                 'text' => $this->message->getHtmlBody(),
                 'address' => $address,
                 'error' => $error,
-                'from' => Arrays::firstKey($this->message->getFrom()),
+                'from' => $this->message->getFrom() === null ? null : Arrays::firstKey($this->message->getFrom()),
             ]);
         }
     }
