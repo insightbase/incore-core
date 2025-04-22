@@ -13,6 +13,7 @@ use Nette\Mail\Message;
 use Nette\Mail\SendException;
 use Nette\Mail\SendmailMailer;
 use Nette\Mail\SmtpMailer;
+use Nette\Utils\Arrays;
 use Nette\Utils\DateTime;
 
 class Sender
@@ -117,6 +118,7 @@ class Sender
                 'text' => $this->message->getHtmlBody(),
                 'address' => $address,
                 'error' => $error,
+                'from' => Arrays::firstKey($this->message->getFrom()),
             ]);
         }
     }

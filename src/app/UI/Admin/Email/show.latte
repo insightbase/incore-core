@@ -8,6 +8,7 @@
     <p>
         <strong>{_'email_created:'}</strong> {$emailLog->created|date:'j.n.Y H:i:s'}<br />
         <strong>{_'email_address:'}</strong> {$emailLog->address}<br />
+        <strong>{_'email_sender:'}</strong> {$emailLog->from}<br />
         <strong>{_'email_subject:'}</strong> {$emailLog->subject}<br />
         <strong>{_'email_error:'}</strong> {$emailLog->error}<br />
         <strong>{_'email_text:'}</strong>

@@ -14,6 +14,7 @@ use Nette\Utils\DateTime;
  * @property-read string $text
  * @property-read string $address
  * @property-read ?string $error
+ * @property-read ?string $from
  */
 class EmailLogEntity extends ActiveRow
 {

@@ -27,4 +27,7 @@ class EmailLog implements Entity
 
     #[ORM\Column(type: 'text', length: 255, nullable: true, options: ['default' => null])]
     public ?string $error = null;
+
+    #[ORM\Column(type: 'text', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $from = null;
 }

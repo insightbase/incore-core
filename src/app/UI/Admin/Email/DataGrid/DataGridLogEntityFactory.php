@@ -7,6 +7,7 @@ use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Entity\DateTimeColumnEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
+use App\Component\Datagrid\SortDirEnum;
 use App\Component\Translator\Translator;
 
 readonly class DataGridLogEntityFactory
@@ -23,7 +24,7 @@ readonly class DataGridLogEntityFactory
 
         $dataGridEntity
             ->addColumn(
-                new DateTimeColumnEntity('created', $this->translator->translate('column_created'))
+                new DateTimeColumnEntity('created', $this->translator->translate('column_created'), true, SortDirEnum::DESC)
             )
             ->addColumn(
                 new ColumnEntity('subject', $this->translator->translate('column_subject'))
