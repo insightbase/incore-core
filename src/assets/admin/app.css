@@ -223,3 +223,9 @@ textarea {
 .modal .codex-editor__redactor{
     padding-bottom: 0 !important;
 }
+.draggable .menu{
+    display: none;
+}
+.draggable:hover .menu{
+    display: block;
+}

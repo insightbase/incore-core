@@ -23,6 +23,12 @@ enum LogActionEnum:string
 
     case DeletedItem = 'deletedItem';
 
+    case CreatedGroup = 'createdGroup';
+
+    case UpdatedGroup = 'updatedGroup';
+
+    case DeletedGroup = 'deletedGroup';
+
     public function translate(Translator $translator):string
     {
         return match($this){
@@ -41,6 +47,9 @@ enum LogActionEnum:string
             self::CreatedItem => $translator->translate('action_createdItem'),
             self::UpdatedItem => $translator->translate('action_updatedItem'),
             self::DeletedItem => $translator->translate('action_deletedItem'),
+            self::CreatedGroup => $translator->translate('action_createdGroup'),
+            self::UpdatedGroup => $translator->translate('action_updatedGroup'),
+            self::DeletedGroup => $translator->translate('action_deletedGroup'),
         };
     }
 }

@@ -45,6 +45,7 @@ naja.addEventListener('success', (event) => {
     initFlashes();
     initDropzone();
     initEditorJs();
+    initSortable();
     loader.hide(loaderId);
 });
 let globalSearchTimeout;
@@ -59,6 +60,29 @@ if (formLanguageSelect) {
             element.style.display = 'inline';
         });
     });
+}
+
+initSortable();
+function initSortable() {
+    const container = document.querySelector('.draggable-zone');
+    new Draggable.Sortable(container, {
+        draggable: '.draggable',
+        handle: '.draggable-handle'
+    })
+    .on('sortable:stop', () => {
+        const sortedIds = getSortedIds(container);
+        let url = container.getAttribute('data-url-sort').replace('xxxxxx', sortedIds.join(','));
+        naja.makeRequest('GET', url, {}, {history: false})
+    });
+}
+function getSortedIds(container) {
+    let ret = [];
+    Array.from(container.querySelectorAll('.draggable')).forEach((element) => {
+        if(!element.classList.contains('draggable--original') && !element.classList.contains('draggable-mirror')) {
+            ret.push(element.getAttribute('data-id'));
+        }
+    });
+    return ret;
 }
 
 function initDatagrid() {
