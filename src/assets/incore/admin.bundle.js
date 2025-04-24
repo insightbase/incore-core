@@ -19610,15 +19610,17 @@ if (formLanguageSelect) {
 initSortable();
 function initSortable() {
     const container = document.querySelector('.draggable-zone');
-    new Draggable.Sortable(container, {
-        draggable: '.draggable',
-        handle: '.draggable-handle'
-    })
-    .on('sortable:stop', () => {
-        const sortedIds = getSortedIds(container);
-        let url = container.getAttribute('data-url-sort').replace('xxxxxx', sortedIds.join(','));
-        naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', url, {}, {history: false})
-    });
+    if(container !== null) {
+        new Draggable.Sortable(container, {
+            draggable: '.draggable',
+            handle: '.draggable-handle'
+        })
+            .on('sortable:stop', () => {
+                const sortedIds = getSortedIds(container);
+                let url = container.getAttribute('data-url-sort').replace('xxxxxx', sortedIds.join(','));
+                naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', url, {}, {history: false})
+            });
+    }
 }
 function getSortedIds(container) {
     let ret = [];
