@@ -10,4 +10,5 @@ enum DropzoneImageLocationEnum:string
     case SettingLogo = 'settingLogo';
     case SettingShareImage = 'settingShareImage';
     case Enumeration = 'enumeration';
+    case Content = 'content';
 }
