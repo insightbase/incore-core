@@ -48,15 +48,25 @@ class DropzoneImageInput extends TextInput
         }
     }
 
+    public function setDefaultValue($value)
+    {
+        if($this->multiple){
+            $value = implode(';', $value);
+        }
+        return parent::setDefaultValue($value);
+    }
+
     public function getControlDropzone(?string $class, TextInput $input): Html
     {
         $image = Html::el();
         if ($input->getValue()) {
             $imageControl = $this->imageControlFactory->create()->setParent($this->getForm()->getPresenter());
-            $imageRow = $this->imageModel->get($input->getValue());
-            if($imageRow !== null) {
-                $image = Html::el('div')->class('dz-preview dz-file-preview')
-                    ->addHtml(Html::el('div')->class('dz-image')->addHtml($imageControl->renderToString($input->getValue(), 100, 100)));
+            if(!$this->multiple){
+                $imageRow = $this->imageModel->get($input->getValue());
+                if ($imageRow !== null) {
+                    $image = Html::el('div')->class('dz-preview dz-file-preview')
+                        ->addHtml(Html::el('div')->class('dz-image')->addHtml($imageControl->renderToString($input->getValue(), 100, 100)));
+                }
             }
         }
 
