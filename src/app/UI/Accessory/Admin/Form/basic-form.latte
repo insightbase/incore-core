@@ -28,7 +28,7 @@
                             {php $usedRepeaters[] = $group->getOption('repeater')}
                         {/if}
                     {else}
-                        <fieldset class="{$group->getOption('class')}">
+                        <fieldset class="{$group->getOption('class')}" n:attr="$group->getOptions()">
                             <legend>{$group->getOption('label')}</legend>
                             {embed controls, $group->getControls()}{/embed}
                         </fieldset>
