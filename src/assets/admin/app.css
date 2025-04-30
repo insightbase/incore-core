@@ -211,6 +211,8 @@ textarea {
 
 .modal-body {
     padding-top: 1.75rem !important;
+    height: 400px;
+    overflow-y: auto;
 }
 
 .fieldset {
@@ -233,3 +235,5 @@ textarea {
 #snippet-gridRecord-dataGrid {
     overflow: auto  !important;
 }
+
+
