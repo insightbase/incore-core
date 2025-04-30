@@ -229,3 +229,7 @@ textarea {
 .draggable:hover .menu{
     display: block;
 }
+
+#snippet-gridRecord-dataGrid {
+    overflow: auto  !important;
+}
