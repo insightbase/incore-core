@@ -80,6 +80,9 @@ readonly class Language implements Model
         return $this->getTable()->where('url', $url)->fetch();
     }
 
+    /**
+     * @return ?LanguageEntity
+     */
     public function getDefault(): ?ActiveRow
     {
         return $this->getTable()->where('is_default', true)->fetch();

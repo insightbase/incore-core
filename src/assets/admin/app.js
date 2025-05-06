@@ -17,6 +17,7 @@ import 'dropzone/dist/dropzone.css';
 import './form';
 import './app.css';
 import netteForms from 'nette-forms';
+import './content.js';
 
 naja.initialize();
 netteForms.initOnLoad();

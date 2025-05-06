@@ -119,10 +119,10 @@
     </div>
 {/define}
 
-{define languageSelect}
+{define languageSelect, ?int $defaultId = null}
     <select class="formLanguageSelect">
         {foreach $languages as $language}
-            <option value="{$language->id}"{if $language->is_default} selected{/if}>{$language->name}</option>
+            <option value="{$language->id}"{if ($defaultId === null && $language->is_default) || ($defaultId !== null && $language->id === $defaultId)} selected{/if}>{$language->name}</option>
         {/foreach}
     </select>
 {/define}
