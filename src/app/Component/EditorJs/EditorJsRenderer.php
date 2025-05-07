@@ -34,7 +34,7 @@ class EditorJsRenderer
                     $html->addHtml($htmlUl);
                 })(); break;
                 case 'raw': $html->addHtml(Html::el()->setHtml($block['data']['html'])); break;
-                case 'header': $html->addHtml(Html::el()->setHtml($block['data']['text'])); break;
+                case 'header': $html->addHtml(Html::el('h' . $block['data']['level'])->setHtml($block['data']['text'])); break;
                 case 'table': (function() use ($block, $html):void{
                     $table = Html::el('table');
                     $isFirst = true;
