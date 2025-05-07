@@ -253,3 +253,7 @@ textarea {
     gap: 1rem;
 }
 
+/* TODO: remove from templates, if OK */
+form.max-w-2xl{
+    max-width: 100% !important;
+}
