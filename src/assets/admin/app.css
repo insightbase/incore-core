@@ -188,11 +188,15 @@ textarea {
 }
 
 .modal, .modal-content {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
+}
+
+.modal-content{
+    max-width: 1200px;
 }
 
 .datagrid-inline-edit.modal.open {
