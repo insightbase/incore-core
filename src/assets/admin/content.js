@@ -21,17 +21,17 @@ function initBLockItemValueEdit() {
         let input = element.getElementsByTagName('input')[0];
         if (input) {
             input.addEventListener('change', function () {
-                blockItemValueEdit(element, input.value);
+                blockItemValueEdit(input.value);
             });
             input.addEventListener('keydown', function () {
                 if (event.key === 'Enter') {
-                    blockItemValueEdit(element, input.value);
+                    blockItemValueEdit(input.value);
                 }
             });
         }
     });
 }
-function blockItemValueEdit(element, value){
-    let url = element.getAttribute('data-url-change').replace('xxxx', value);
+function blockItemValueEdit(input){
+    let url = input.getAttribute('data-url-change').replace('xxxx', value);
     naja.makeRequest('GET', url, {}, {history: false});
 }
