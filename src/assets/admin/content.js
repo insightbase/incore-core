@@ -18,8 +18,7 @@ if (contentDetail) {
 initBLockItemValueEdit();
 function initBLockItemValueEdit() {
     Array.from(document.getElementsByClassName('blockItem-value-edit')).forEach((element) => {
-        let input = element.getElementsByTagName('input')[0];
-        if (input) {
+        Array.from(document.getElementsByTagName('input')).forEach((input) => {
             input.addEventListener('change', function () {
                 blockItemValueEdit(input.value);
             });
@@ -28,7 +27,7 @@ function initBLockItemValueEdit() {
                     blockItemValueEdit(input.value);
                 }
             });
-        }
+        });
     });
 }
 function blockItemValueEdit(input){
