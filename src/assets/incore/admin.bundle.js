@@ -85,18 +85,18 @@ function initBLockItemValueEdit() {
     Array.from(document.getElementsByClassName('blockItem-value-edit')).forEach((element) => {
         Array.from(document.getElementsByTagName('input')).forEach((input) => {
             input.addEventListener('change', function () {
-                blockItemValueEdit(input.value);
+                blockItemValueEdit(input);
             });
             input.addEventListener('keydown', function () {
                 if (event.key === 'Enter') {
-                    blockItemValueEdit(input.value);
+                    blockItemValueEdit(input);
                 }
             });
         });
     });
 }
 function blockItemValueEdit(input){
-    let url = input.getAttribute('data-url-change').replace('xxxx', value);
+    let url = input.getAttribute('data-url-change').replace('xxxx', input.value);
     naja__WEBPACK_IMPORTED_MODULE_0__["default"].makeRequest('GET', url, {}, {history: false});
 }
 
