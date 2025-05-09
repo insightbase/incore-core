@@ -257,3 +257,13 @@ textarea {
 form.max-w-2xl{
     max-width: 100% !important;
 }
+
+.blockItem-value-edit{
+    display: none;
+}
+.item.card.draggable:hover .blockItem-value-edit{
+    display: block;
+}
+.item.card.draggable:hover .blockItem-value-show{
+    display: none;
+}
