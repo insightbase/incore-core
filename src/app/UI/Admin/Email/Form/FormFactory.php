@@ -41,7 +41,12 @@ readonly class FormFactory
         $form->addText('subject', $this->translator->translate('input_subject'))
             ->setRequired()
         ;
-        $form->addTextArea('text', $this->translator->translate('input_text'));
+        $form->addText('template', $this->translator->translate('input_template'))
+            ->setNullable()
+        ;
+        $form->addTextArea('text', $this->translator->translate('input_text'))
+            ->setNullable()
+        ;
 
         $form->addText('modifier', $this->translator->translate('input_modifier'))
             ->setNullable()

@@ -19,14 +19,17 @@ class Email implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     public string $name;
 
-    #[ORM\Column(type: 'text')]
-    public string $text;
+    #[ORM\Column(type: 'text', nullable: true)]
+    public ?string $text = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     public string $subject;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    public ?string $modifier;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    public ?string $modifier = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    public ?string $template = null;
 
     public function setSystemName(string $system_name): self
     {

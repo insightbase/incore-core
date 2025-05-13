@@ -4,10 +4,13 @@ namespace App\Component\Mail;
 
 use App\Component\EncryptFacade;
 use App\Component\Mail\Exception\SystemNameNotFoundException;
+use App\Component\Translator\Translator;
 use App\Model\Admin\Email;
 use App\Model\Admin\EmailLog;
 use App\Model\Admin\Setting;
 use App\UI\Accessory\ParameterBag;
+use Nette\Application\LinkGenerator;
+use Nette\Application\UI\TemplateFactory;
 use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 use Nette\Mail\SendException;
@@ -31,12 +34,15 @@ class Sender
     private array $address = [];
 
     public function __construct(
-        private readonly string $systemName,
-        private readonly Email $emailModel,
-        private readonly EmailLog $emailLogModel,
-        private readonly ParameterBag $parameterBag,
-        private readonly Setting $settingModel,
-        private readonly EncryptFacade $encryptFacade,
+        private readonly string          $systemName,
+        private readonly Email           $emailModel,
+        private readonly EmailLog        $emailLogModel,
+        private readonly ParameterBag    $parameterBag,
+        private readonly Setting         $settingModel,
+        private readonly EncryptFacade   $encryptFacade,
+        private readonly LinkGenerator   $linkGenerator,
+        private readonly TemplateFactory $templateFactory,
+        private readonly Translator      $translator,
     ) {
         $this->message = new Message();
     }
@@ -84,10 +90,19 @@ class Sender
     {
         $email = $this->emailModel->getBySystemName($this->systemName);
         if (null === $email) {
-            throw (new SystemNameNotFoundException())->setSystemName($this->systemName);
+            throw new SystemNameNotFoundException()->setSystemName($this->systemName);
         }
 
-        $text = $email['text'];
+        if($email->template !== null){
+            $template = $this->templateFactory->createTemplate();
+            $template->getLatte()->addProvider('uiControl', $this->linkGenerator);
+            $template->setTranslator($this->translator);
+            $text = $template->renderToString($this->parameterBag->rootDir . '/' . $email->template);
+        }else{
+            $text = $email->text;
+        }
+
+
         foreach ($this->modifier as $modifier => $value) {
             $text = str_replace('%'.$modifier.'%', $value, $text);
         }
@@ -95,7 +110,7 @@ class Sender
         if($this->settingModel->getDefault()?->email_sender !== null) {
             $this->message->setFrom($this->settingModel->getDefault()->email_sender);
         }
-        $this->message->setSubject($email['subject']);
+        $this->message->setSubject($email->subject);
         $this->message->setHtmlBody($text);
 
         try {
