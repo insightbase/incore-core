@@ -97,8 +97,10 @@ class ImageControl extends Control
             $svg->style('display', 'inline-block');
             $svg->class($class);
 
-            $svgFile = FileSystem::read($this->parameterBag->uploadDir . '/' . $file);
-            $svg->addHtml($svgFile);
+            if(file_exists($this->parameterBag->uploadDir . '/' . $file)) {
+                $svgFile = FileSystem::read($this->parameterBag->uploadDir . '/' . $file);
+                $svg->addHtml($svgFile);
+            }
             $ret['svg'] = (string)$svg;
             $ret['image'] = null;
         }else{
