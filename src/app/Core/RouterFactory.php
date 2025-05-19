@@ -20,7 +20,7 @@ final class RouterFactory
         private readonly Nette\Http\Request $request,
     ) {}
 
-    public function createRouter(bool $defaultFront = true): RouteList
+    public function getLangPrefix():string
     {
         $languageByHost = null;
         if($this->languageSettingModel->getSetting()->type === LanguageSettingTypeEnum::Host->value){
@@ -44,6 +44,12 @@ final class RouterFactory
 
             $langPrefix = sprintf('[<lang=%s %s>/]', $default->url, implode('|', $langs));
         }
+        return $langPrefix;
+    }
+
+    public function createRouter(bool $defaultFront = true): RouteList
+    {
+        $langPrefix = $this->getLangPrefix();
 
         $router = new RouteList();
 
