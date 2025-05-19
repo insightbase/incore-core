@@ -20,7 +20,7 @@ final class RouterFactory
         private readonly Nette\Http\Request $request,
     ) {}
 
-    public function createRouter(): RouteList
+    public function createRouter(bool $defaultFront = true): RouteList
     {
         $languageByHost = null;
         if($this->languageSettingModel->getSetting()->type === LanguageSettingTypeEnum::Host->value){
@@ -50,11 +50,13 @@ final class RouterFactory
         $router
             ->withModule('Admin')
                 ->addRoute('[<lang=cs cs>/]admin/<presenter>/<action>[/<id>]', 'Home:default')
-            ->end()
-            ->withModule('Front')
-            ->addRoute($langPrefix.'<presenter>/<action>[/<id>]', 'Home:default')
-            ->end()
-        ;
+            ->end();
+        if($defaultFront) {
+            $router
+                ->withModule('Front')
+                ->addRoute($langPrefix . '<presenter>/<action>[/<id>]', 'Home:default')
+                ->end();
+        }
 
         return $router;
     }
