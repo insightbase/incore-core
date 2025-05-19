@@ -38,7 +38,7 @@ class MainMenuItem
         return $sub;
     }
 
-    public function addParam(string $param, string $value): self
+    public function addParam(string $param, ?string $value): self
     {
         $this->params[$param] = $value;
         return $this;
