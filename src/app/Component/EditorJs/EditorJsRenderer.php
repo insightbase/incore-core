@@ -42,9 +42,9 @@ class EditorJsRenderer
                         $tr = Html::el('tr');
                         foreach($row as $column){
                             if($isFirst && $block['data']['withHeadings']){
-                                $tr->addHtml(Html::el('th')->setText($column));
+                                $tr->addHtml(Html::el('th')->setHtml($column));
                             }else {
-                                $tr->addHtml(Html::el('td')->setText($column));
+                                $tr->addHtml(Html::el('td')->setHtml($column));
                             }
                         }
                         $table->addHtml($tr);
