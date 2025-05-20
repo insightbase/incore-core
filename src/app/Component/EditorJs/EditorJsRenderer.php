@@ -60,7 +60,7 @@ class EditorJsRenderer
 
     private function addListItems(string $mainTag, Html $html, array $items):Html{
         foreach($items as $item){
-            $li = Html::el('li')->setText($item['content']);
+            $li = Html::el('li')->setHtml($item['content']);
             if(count($item['items']) > 0){
                 $subHtml = Html::el($mainTag);
                 $this->addListItems($mainTag, $subHtml, $item['items']);
