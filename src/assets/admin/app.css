@@ -267,3 +267,7 @@ form.max-w-2xl{
 .item.card.draggable:hover .blockItem-value-show{
     display: none;
 }
+
+.page-bg {
+    background-size: cover !important;
+}
