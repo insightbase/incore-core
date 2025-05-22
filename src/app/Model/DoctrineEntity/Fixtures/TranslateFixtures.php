@@ -406,10 +406,13 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'menu_content' => 'Články',
 		'column_title' => 'Title',
 		'input_template' => 'Šablona',
-		'demo title' => null,
+		'demo title' => 'dddd',
 		'demo description' => null,
 		'demo keywords' => null,
 		'<p>Tohle je frontend, pokud hledáš inspiraci, podívej se do readme</p>' => null,
+		'header_performanceTranslates' => 'Překlady',
+		'menu_translates' => 'Překlady',
+		'input_isPerformance' => 'Zobrazovat v performance',
 	];
 
 

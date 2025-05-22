@@ -41,6 +41,8 @@ readonly class TranslateFacade
      */
     public function translate(ActiveRow $translate, array $data): void
     {
+        $translate->update(['is_performance' => $data['is_performance']]);
+
         $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
         foreach ($this->languageModel->getToTranslate() as $language) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);

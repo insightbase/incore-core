@@ -77,4 +77,12 @@ readonly class Translate implements Model
     {
         return $this->getTable();
     }
+
+    /**
+     * @return Selection<TranslateEntity>
+     */
+    public function getToGridPerformance():Selection
+    {
+        return $this->getTable()->where('is_performance', true);
+    }
 }

@@ -15,6 +15,7 @@ use App\Model\Admin\Language;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Enum\TranslateTypeEnum;
+use Nette\Application\Application;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
@@ -28,6 +29,7 @@ readonly class DefaultDataGridEntityFactory
         private TranslateLanguage $translateLanguageModel,
         private InlineEditFactory        $inlineEditFactory,
         private EditorJsFacade $editorJsFacade,
+        private Application $application,
     ) {}
 
     public function create(): DataGridEntity
@@ -85,20 +87,21 @@ readonly class DefaultDataGridEntityFactory
 //                    })
             );
         }
+        if($this->application->getPresenter()->getName() !== 'Admin:Performance') {
+            $entity->addMenu(
+                (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
+                    ->setIcon(DefaultIconEnum::Edit->value)
+            );
 
-        $entity->addMenu(
-            (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
-                ->setIcon(DefaultIconEnum::Edit->value)
-        );
-
-        $entity->addFilter(
-            (new FilterEntity($this->translator->translate('filter_onlyNotTranslated'), FilterTypeEnum::Checkbox))
-                ->setOnChangeCallback(function(Selection $model, string $value):void{
-                    if($value !== '' && $value !== 'false'){
-                        $model->where('translate.id NOT IN ?', $this->translateLanguageModel->getTable()->select('translate.id'));
-                    }
-                })
-        );
+            $entity->addFilter(
+                (new FilterEntity($this->translator->translate('filter_onlyNotTranslated'), FilterTypeEnum::Checkbox))
+                    ->setOnChangeCallback(function (Selection $model, string $value): void {
+                        if ($value !== '' && $value !== 'false') {
+                            $model->where('translate.id NOT IN ?', $this->translateLanguageModel->getTable()->select('translate.id'));
+                        }
+                    })
+            );
+        }
 
         return $entity;
     }

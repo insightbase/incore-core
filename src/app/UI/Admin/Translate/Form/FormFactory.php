@@ -39,6 +39,10 @@ readonly class FormFactory
             };
         }
 
+        $form->addCheckbox('is_performance', $this->translator->translate('input_isPerformance'))
+            ->setDefaultValue($translate->is_performance)
+        ;
+
         $form->addSubmit('send', $this->translator->translate('submit_translate'));
 
         return $form;

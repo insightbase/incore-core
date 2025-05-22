@@ -23,6 +23,9 @@ class Translate implements Entity
     #[ORM\Column(type: 'string', length: 255, options: ['default' => TranslateTypeEnum::Text->value])]
     public string $type = TranslateTypeEnum::Text->value;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    public bool $is_performance = false;
+
     public function setKey(string $key): self
     {
         $this->key = $key;

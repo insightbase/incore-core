@@ -11,6 +11,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read string $key
  * @property-read string $source
  * @property-read string $type
+ * @property-read bool $is_performance
  */
 class TranslateEntity extends ActiveRow
 {
