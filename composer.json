@@ -39,7 +39,8 @@
         "ext-openssl": "*",
         "ext-dom": "*",
         "ext-iconv": "*",
-        "symfony/translation": "^7.2"
+        "symfony/translation": "^7.2",
+        "ext-zip": "*"
     },
     "repositories": [
         {

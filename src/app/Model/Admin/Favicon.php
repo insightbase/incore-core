@@ -47,4 +47,9 @@ readonly class Favicon implements Model
     {
         return $this->getTable()->get($id);
     }
+
+    public function truncate():void
+    {
+        $this->explorer->fetch('TRUNCATE TABLE favicon');
+    }
 }

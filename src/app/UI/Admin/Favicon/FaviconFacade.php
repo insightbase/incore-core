@@ -7,12 +7,20 @@ use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Favicon;
 use App\Model\Admin\Image;
+use App\Model\Admin\ImageLocation;
+use App\Model\Admin\Setting;
 use App\Model\Entity\FaviconEntity;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
+use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Favicon\Exception\NotFoundFilesException;
 use App\UI\Admin\Favicon\Form\FormNewData;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\Arrays;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Finder;
+use Nette\Utils\Random;
 
 readonly class FaviconFacade
 {
@@ -22,6 +30,9 @@ readonly class FaviconFacade
         private Translator $translator,
         private Storage $storage,
         private LogFacade $logFacade,
+        private ParameterBag $parameterBag,
+        private Setting $settingModel,
+        private ImageLocation $imageLocation,
     )
     {
     }
@@ -63,8 +74,33 @@ readonly class FaviconFacade
 
         $images = [];
         foreach($this->imageModel->getByIds($data->files) as $image){
-            $images[$image->original_name] = $image->id;
+            if(strtolower(pathinfo($this->parameterBag->uploadDir . '/' . $image->saved_name, PATHINFO_EXTENSION)) === 'zip'){
+                $dir = $this->parameterBag->tempDir . '/favion-unzipped/';
+                FileSystem::delete($dir);
+                FileSystem::createDir($dir);
+                $zip = new \ZipArchive();
+                if($zip->open($this->parameterBag->uploadDir . '/' . $image->saved_name) === true){
+                    $zip->extractTo($dir);
+                    $zip->close();
+                    foreach(Finder::findFiles('*')->in($dir) as $name => $file){
+                        $suffix = Arrays::last(explode('.', $name));
+                        $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
+                        $image = $this->imageModel->insert([
+                            'original_name' => $file->getBasename(),
+                            'saved_name' => $fileName,
+                            'image_location_id' => $this->imageLocation->getByLocation(DropzoneImageLocationEnum::Favicon)->id,
+                        ]);
+                        FileSystem::createDir($this->parameterBag->uploadDir);
+                        FileSystem::copy($name, $this->parameterBag->uploadDir . '/' . $fileName);
+                        $images[$file->getBasename()] = $image->id;
+                    }
+                }
+            }else {
+                $images[$image->original_name] = $image->id;
+            }
         }
+
+        $this->faviconModel->truncate();
 
         /** @var \DOMElement $element */
         foreach($xml->getElementsByTagName('*') as $element){
