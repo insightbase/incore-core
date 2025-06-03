@@ -69,20 +69,22 @@ class FaviconControl extends Control
             foreach($this->faviconModel->getToFront() as $favicon){
 
                 if($favicon->image_id !== null && str_ends_with($favicon->image->original_name, '.json')){
-                    $json = FileSystem::read($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name);
-                    $json = preg_replace_callback(
-                        '~"src":\s*"\\\\/([^"]+)"~',
-                        function ($matches) {
-                            $image = $this->imageModel->getByOriginalName(basename($matches[1]));
-                            if($image) {
-                                return '"src": "\\' . $this->imageControlFactory->create()->getOriginal($image->id) . '"';
-                            }else{
-                                return $matches[1];
-                            }
-                        },
-                        $json
-                    );
-                    FileSystem::write($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name, $json);
+                    if(file_exists($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name)) {
+                        $json = FileSystem::read($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name);
+                        $json = preg_replace_callback(
+                            '~"src":\s*"\\\\/([^"]+)"~',
+                            function ($matches) {
+                                $image = $this->imageModel->getByOriginalName(basename($matches[1]));
+                                if ($image) {
+                                    return '"src": "\\' . $this->imageControlFactory->create()->getOriginal($image->id) . '"';
+                                } else {
+                                    return $matches[1];
+                                }
+                            },
+                            $json
+                        );
+                        FileSystem::write($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name, $json);
+                    }
                 }
 
                 $favicons[] = json_encode(new FaviconDto(
