@@ -49,21 +49,7 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 
     public function actionDefault(): void
     {
-        $all = $this->logModel->getTable()
-            ->order('created DESC')
-            ->fetchAll();
-
-        $activitiesByYear = [];
-
-        foreach ($all as $row) {
-            $year = $row->created->format('Y');
-            $activitiesByYear[$year][] = $row;
-        }
-
-        $years = array_keys($activitiesByYear);
-        rsort($years);
-
-
+        $this->template->recentActivities = $this->logModel->getRecent(15);
 
         $serviceAccount = $this->settingModel->getDefault()?->google_service_account;
         $gaServiceId = $this->settingModel->getDefault()?->ga_service_id;
@@ -112,9 +98,6 @@ final class HomePresenter extends Nette\Application\UI\Presenter
             }
             $this->template->dataAccessGraph = $data;
         }
-
-        $this->template->activitiesByYear = $activitiesByYear;
-        $this->template->years            = $years;
     }
 
     public function getActivityIcon(ActiveRow $log): string

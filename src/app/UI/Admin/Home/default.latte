@@ -185,57 +185,50 @@
         </div>
     </div>
     <div class="lg:col-span-1">
-        <div class="flex gap-5 lg:gap-7.5">
-            {foreach $years as $year}
-                <div class="kt-card grow" id="activity_{$year}" style="{if $year !== $years[0]}display: none;{/if}">
-                    <div class="kt-card-header">
-                        <h3 class="kt-card-title">{_'dasboard_lastChanges'}</h3>
-                        <div class="flex items-center gap-2"></div>
-                    </div>
-                    <div class="kt-card-content">
-                        <div class="flex flex-col">
-                            {foreach $activitiesByYear[$year] as $activity}
-                                <div class="flex items-start relative">
-                                    <div class="w-9 start-0 top-9 absolute bottom-0 rtl:-translate-x-1/2 translate-x-1/2 border-s border-s-input"></div>
-                                    <div class="flex items-center justify-center shrink-0 rounded-full bg-accent/60 border border-input size-9 text-secondary-foreground">
-                                        <i class="{$activity|getActivityIcon} text-base"></i>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {_'dashboard_lastChanges'}
+                </h3>
+            </div>
+            <div class="card-content">
+                <div class="flex flex-col">
+                    {foreach $recentActivities as $activity}
+                        <div class="flex items-start relative">
+                            {if !$iterator->last}
+                                <div class="w-9 start-0 top-9 absolute bottom-0 rtl:-translate-x-1/2 translate-x-1/2 border-s border-s-input"></div>
+                            {/if}
+                            
+                            <div class="flex items-center justify-center shrink-0 rounded-full bg-accent/60 border border-input size-9 text-secondary-foreground">
+                                <i class="{$activity|getActivityIcon} text-base"></i>
+                            </div>
+                            
+                            <div class="ps-2.5 mb-7 text-base grow">
+                                <div class="flex flex-col">
+                                    <div class="text-sm text-foreground">
+                                        {$activity|getActivityDescription|noescape}
                                     </div>
-                                    <div class="ps-2.5 mb-7 text-base grow">
-                                        <div class="flex flex-col">
-                                            <div class="text-sm text-foreground">
-                                                {$activity|getActivityDescription|noescape}
-                                            </div>
-                                            <span class="text-xs text-secondary-foreground">
-                                                {$activity->created->format('j.n.Y, H:i')}
-                                            </span>
-                                        </div>
-
-                                        {* --- zkopírujte sem přesně všechny bloky pro speciální karty (shadow-none, obrázky, progres bary apod.) 
-                                            z paste.txt, a nahraďte jejich statický obsah proměnnými jako {$activity->...} --- *}
-                                    </div>
+                                    <span class="text-xs text-secondary-foreground">
+                                        {$activity->created|timeAgo}
+                                    </span>
                                 </div>
-                            {/foreach}
+                            </div>
                         </div>
-                    </div>
-                    <div class="kt-card-footer justify-center">
-                        <a class="kt-link kt-link-underlined kt-link-dashed" href="{link :Admin:Log:}">
-                            All-time Activity
-                        </a>
-                    </div>
+                    {/foreach}
+                    
+                    {if empty($recentActivities)}
+                        <div class="text-center text-secondary-foreground py-8">
+                            {_'no_recent_activity'}
+                        </div>
+                    {/if}
                 </div>
-            {/foreach}
-
-            <div class="flex flex-col gap-2.5" data-kt-tabs="true">
-                {foreach $years as $year}
-                    <a class="kt-btn kt-btn-sm bg-transparent shadow-none text-secondary-foreground hover:text-primary
-                            kt-tab-active:bg-primary/10 kt-tab-active:text-primary
-                            {if $year === $years[0]} kt-tab-active selected{/if}"
-                    data-kt-tab-toggle="#activity_{$year}" href="#">
-                        {$year}
-                    </a>
-                {/foreach}
+            </div>
+            <div class="card-footer justify-center">
+                <a class="link link-underlined link-dashed" href="{link :Admin:Log:}">
+                    {_'view_all_activity'}
+                </a>
             </div>
         </div>
-
     </div>
+
 </div>
