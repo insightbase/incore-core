@@ -22,7 +22,7 @@ readonly class Log implements Model
         return $this->explorer->table('log');
     }
 
-    public function insert(array $data):void
+    public function insert(array $data): void
     {
         $this->getTable()->insert($data);
     }
@@ -30,8 +30,19 @@ readonly class Log implements Model
     /**
      * @return Selection<LogEntity>
      */
-    public function getToGrid():Selection
+    public function getToGrid(): Selection
     {
         return $this->getTable();
+    }
+
+    /**
+     * Získání posledních aktivit pro timeline
+     * @return Selection<LogEntity>
+     */
+    public function getRecent(int $limit = 30): Selection
+    {
+        return $this->getTable()
+            ->order('created DESC')
+            ->limit($limit);
     }
 }
