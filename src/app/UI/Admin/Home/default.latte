@@ -184,141 +184,58 @@
             </div>
         </div>
     </div>
- <div class="lg:col-span-1">
-    <div class="kt-card grow">
-        <div class="kt-card-header">
-            <h3 class="kt-card-title">
-                {_'dashboard_lastChanges'}
-            </h3>
-            <div class="flex items-center gap-2">
-                {* Můžete přidat toggle nebo jiné ovládací prvky *}
-            </div>
-        </div>
-        <div class="kt-card-content">
-            <div class="flex flex-col">
-                {if !empty($recentActivities)}
-                    {foreach $recentActivities as $activity}
-                        <div class="flex items-start relative">
-                            {if !$iterator->last}
-                                <div class="w-9 start-0 top-9 absolute bottom-0 rtl:-translate-x-1/2 translate-x-1/2 border-s border-s-input"></div>
-                            {/if}
-                            
-                            <div class="flex items-center justify-center shrink-0 rounded-full bg-accent/60 border border-input size-9 text-secondary-foreground">
-                                <i class="{$activity|getActivityIcon} text-base"></i>
-                            </div>
-                            
-                            <div class="ps-2.5 mb-7 text-base grow">
-                                <div class="flex flex-col">
-                                    <div class="text-sm text-foreground">
-                                        {$activity|getActivityDescription|noescape}
-                                    </div>
-                                    <span class="text-xs text-secondary-foreground">
-                                        {if $activity->created}
-                                            {$activity->created|timeAgo}
-                                        {else}
-                                            neznámé datum
-                                        {/if}
-                                    </span>
-                                </div>
-                                
-                                {if $activity->action === 'imported'}
-                                    <div class="kt-card shadow-none mt-2.5">
-                                        <div class="kt-card-content">
-                                            <div class="flex items-center gap-3">
-                                                <div class="flex items-center justify-center size-10 rounded bg-primary/10">
-                                                    <i class="ki-filled ki-file-sheet text-primary"></i>
-                                                </div>
-                                                <div class="flex flex-col gap-1">
-                                                    <span class="text-sm font-medium">Import dokončen</span>
-                                                    <span class="text-xs text-secondary-foreground">
-                                                        Modul: {$activity->table}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {/if}
-                                
-                                {if $activity->action === 'synchronize'}
-                                    <div class="kt-card shadow-none p-4 mt-2.5">
-                                        <div class="flex flex-wrap gap-2.5">
-                                            <i class="ki-filled ki-arrows-circle text-lg text-blue-500"></i>
-                                            <div class="flex flex-col gap-5 grow">
-                                                <div class="flex flex-wrap items-center justify-between">
-                                                    <div class="flex flex-col gap-0.5">
-                                                        <span class="text-base font-medium text-mono cursor-pointer hover:text-primary mb-px">
-                                                            Synchronizace dat
-                                                        </span>
-                                                        <span class="text-xs text-secondary-foreground">
-                                                            Synchronizace modulu {$activity->table}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex flex-wrap gap-7.5">
-                                                    <div class="flex items-center gap-1.5">
-                                                        <span class="text-sm font-medium text-secondary-foreground">
-                                                            Modul:
-                                                        </span>
-                                                        <span class="text-sm text-primary">
-                                                            {$activity->table}
-                                                        </span>
-                                                    </div>
-                                                    <div class="flex items-center gap-1.5">
-                                                        <span class="text-sm text-secondary-foreground">
-                                                            Stav:
-                                                        </span>
-                                                        <div class="kt-progress kt-progress-success min-w-[120px]">
-                                                            <div class="kt-progress-indicator" style="width: 100%"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {/if}
-                                
-                                {if $activity->action === 'testEmail'}
-                                    <div class="kt-card shadow-none mt-2.5">
-                                        <div class="kt-card-content lg:py-4">
-                                            <div class="flex items-center gap-4">
-                                                <div class="flex items-center justify-center size-12 rounded bg-green-100">
-                                                    <i class="ki-filled ki-sms text-green-600 text-lg"></i>
-                                                </div>
-                                                <div class="flex flex-col gap-1">
-                                                    <div class="text-base font-medium text-mono">
-                                                        Test emailu úspěšný
-                                                    </div>
-                                                    <div class="flex items-center gap-1">
-                                                        <span class="text-sm text-secondary-foreground">
-                                                            Modul: {$activity->table}
-                                                        </span>
-                                                        <span class="kt-badge kt-badge-sm kt-badge-success kt-badge-outline">
-                                                            Úspěch
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {/if}
-                            </div>
-                        </div>
-                    {/foreach}
-                {else}
-                    <div class="text-center text-secondary-foreground py-8">
-                        <i class="ki-filled ki-information text-4xl mb-4"></i>
-                        <p>{_'no_recent_activity'}</p>
+    <div class="lg:col-span-1">
+        <div class="flex gap-5 lg:gap-7.5">
+            {foreach $years as $year}
+                <div class="kt-card grow" id="activity_{$year}" style="{if $year !== $years[0]}display: none;{/if}">
+                    <div class="kt-card-header">
+                        <h3 class="kt-card-title">{_'dasboard_lastChanges'}</h3>
+                        <div class="flex items-center gap-2"></div>
                     </div>
-                {/if}
+                    <div class="kt-card-content">
+                        <div class="flex flex-col">
+                            {foreach $activitiesByYear[$year] as $activity}
+                                <div class="flex items-start relative">
+                                    <div class="w-9 start-0 top-9 absolute bottom-0 rtl:-translate-x-1/2 translate-x-1/2 border-s border-s-input"></div>
+                                    <div class="flex items-center justify-center shrink-0 rounded-full bg-accent/60 border border-input size-9 text-secondary-foreground">
+                                        <i class="{$activity|getActivityIcon} text-base"></i>
+                                    </div>
+                                    <div class="ps-2.5 mb-7 text-base grow">
+                                        <div class="flex flex-col">
+                                            <div class="text-sm text-foreground">
+                                                {$activity|getActivityDescription|noescape}
+                                            </div>
+                                            <span class="text-xs text-secondary-foreground">
+                                                {$activity->created->format('j.n.Y, H:i')}
+                                            </span>
+                                        </div>
+
+                                        {* --- zkopírujte sem přesně všechny bloky pro speciální karty (shadow-none, obrázky, progres bary apod.) 
+                                            z paste.txt, a nahraďte jejich statický obsah proměnnými jako {$activity->...} --- *}
+                                    </div>
+                                </div>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div class="kt-card-footer justify-center">
+                        <a class="kt-link kt-link-underlined kt-link-dashed" href="{link :Admin:Log:}">
+                            All-time Activity
+                        </a>
+                    </div>
+                </div>
+            {/foreach}
+
+            <div class="flex flex-col gap-2.5" data-kt-tabs="true">
+                {foreach $years as $year}
+                    <a class="kt-btn kt-btn-sm bg-transparent shadow-none text-secondary-foreground hover:text-primary
+                            kt-tab-active:bg-primary/10 kt-tab-active:text-primary
+                            {if $year === $years[0]} kt-tab-active selected{/if}"
+                    data-kt-tab-toggle="#activity_{$year}" href="#">
+                        {$year}
+                    </a>
+                {/foreach}
             </div>
         </div>
-        <div class="kt-card-footer justify-center">
-            <a class="kt-link kt-link-underlined kt-link-dashed" href="{link :Admin:Log:}">
-                {_'view_all_activity'}
-            </a>
-        </div>
+
     </div>
-</div>
-
-
 </div>
