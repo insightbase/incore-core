@@ -16,6 +16,7 @@ import List from '@editorjs/list';
 import 'dropzone/dist/dropzone.css';
 import './form';
 import './app.css';
+import './content.css';
 import netteForms from 'nette-forms';
 import './content.js';
 
