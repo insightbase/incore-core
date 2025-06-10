@@ -1,27 +1,27 @@
-body.contentDetail .card, body.contentDetail form#frm-formNewItem {
+body.contentdetail .card, body.contentdetail form#frm-formNewItem {
   background: #fff;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03); }
 
-body.contentDetail .container-fixed {
+body.contentdetail .container-fixed {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem; }
 
-body.contentDetail .grid {
+body.contentdetail .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem; }
 
 @media (min-width: 1024px) {
-  body.contentDetail .grid {
+  body.contentdetail .grid {
     grid-template-columns: 2fr 400px;
     gap: 2rem;
     align-items: start; } }
 
-body.contentDetail .draggable:hover .menu {
+body.contentdetail .draggable:hover .menu {
   display: flex !important; }
 
-body.contentDetail .draggable-zone {
+body.contentdetail .draggable-zone {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -31,10 +31,10 @@ body.contentDetail .draggable-zone {
   border-radius: 8px;
   transition: border-color .2s; }
 
-body.contentDetail .draggable-zone:focus-within {
+body.contentdetail .draggable-zone:focus-within {
   border-color: #e2e8f0; }
 
-body.contentDetail .card {
+body.contentdetail .card {
   border: 1px solid #f1f5f9;
   border-radius: 8px;
   overflow: hidden;
@@ -43,16 +43,16 @@ body.contentDetail .card {
   transition: none;
   animation: .2s ease-out slideIn; }
 
-body.contentDetail .card.draggable:hover {
+body.contentdetail .card.draggable:hover {
   border-color: #e2e8f0;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
   transform: translateY(-1px); }
 
-body.contentDetail .card:focus-within {
+body.contentdetail .card:focus-within {
   border-color: #cbd5e1;
   box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.1); }
 
-body.contentDetail .card.dragging {
+body.contentdetail .card.dragging {
   opacity: .9;
   transform: rotate(1deg) scale(1.01) !important;
   box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.12) !important;
@@ -64,10 +64,10 @@ body.contentDetail .card.dragging {
   -moz-user-select: none;
   -ms-user-select: none; }
 
-body.contentDetail .card .card-body {
+body.contentdetail .card .card-body {
   padding: 1.25rem 4rem 1.25rem 1.25rem; }
 
-body.contentDetail .card h2 {
+body.contentdetail .card h2 {
   margin: 0 0 1rem;
   font-size: 1.125rem;
   font-weight: 600;
@@ -76,79 +76,79 @@ body.contentDetail .card h2 {
   align-items: center;
   gap: .5rem; }
 
-body.contentDetail .card h2::before {
+body.contentdetail .card h2::before {
   content: "";
   width: 3px;
   height: 1rem;
   border-radius: 2px;
   flex-shrink: 0; }
 
-body.contentDetail .card .office-detail-value .day, body.contentDetail .card ul li {
+body.contentdetail .card .office-detail-value .day, body.contentdetail .card ul li {
   align-items: center;
   padding: .5rem;
   font-size: .875rem; }
 
-body.contentDetail .card .type-news h2::before {
+body.contentdetail .card .type-news h2::before {
   background: #3b82f6; }
 
-body.contentDetail .card .type-office h2::before {
+body.contentdetail .card .type-office h2::before {
   background: #10b981; }
 
-body.contentDetail .card .type-employer h2::before {
+body.contentdetail .card .type-employer h2::before {
   background: #8b5cf6; }
 
-body.contentDetail .card .type-contact h2::before {
+body.contentdetail .card .type-contact h2::before {
   background: #f59e0b; }
 
-body.contentDetail .card .type-footer h2::before {
+body.contentdetail .card .type-footer h2::before {
   background: #64748b; }
 
-body.contentDetail .card .type-download h2::before {
+body.contentdetail .card .type-download h2::before {
   background: #ef4444; }
 
-body.contentDetail .card .blockItem-value-show {
+body.contentdetail .card .blockItem-value-show {
   display: block;
   margin: .5rem 0;
   font-size: .875rem;
   line-height: 1.5; }
 
-body.contentDetail .card .blockItem-value-edit {
+body.contentdetail .card .blockItem-value-edit {
   display: none;
   margin: .5rem 0;
   font-size: .875rem;
   line-height: 1.5; }
 
-body.contentDetail .card .office-detail-value .blockItem-value-edit, body.contentDetail .card:hover .blockItem-value-show, body.contentDetail .card:hover .office-detail-value .blockItem-value-show {
+body.contentdetail .card .office-detail-value .blockItem-value-edit, body.contentdetail .card:hover .blockItem-value-show, body.contentdetail .card:hover .office-detail-value .blockItem-value-show {
   display: none; }
 
-body.contentDetail .card .office-detail-value .blockItem-value-show, body.contentDetail .card:hover .blockItem-value-edit, body.contentDetail .card:hover .office-detail-value .blockItem-value-edit {
+body.contentdetail .card .office-detail-value .blockItem-value-show, body.contentdetail .card:hover .blockItem-value-edit, body.contentdetail .card:hover .office-detail-value .blockItem-value-edit {
   display: block; }
 
-body.contentDetail .card .blockItem-value-edit p, body.contentDetail .card .blockItem-value-show p {
+body.contentdetail .card .blockItem-value-edit p, body.contentdetail .card .blockItem-value-show p {
   margin: .25rem 0;
   color: #475569;
   font-weight: 500; }
 
-body.contentDetail .card .blockItem-value-edit span, body.contentDetail .card .blockItem-value-show span {
+body.contentdetail .card .blockItem-value-edit span, body.contentdetail .card .blockItem-value-show span {
   color: #64748b;
   font-weight: 500; }
 
-body.contentDetail .card .office-detail-value .day {
+body.contentdetail .card .office-detail-value .day {
   gap: .5rem;
   margin: .375rem 0;
   background: #f8fafc;
   border-radius: 4px; }
 
-body.contentDetail .card .office-detail-value .day span:first-child {
+body.contentdetail .card .office-detail-value .day span:first-child {
   min-width: 70px;
   font-weight: 600;
   color: #374151; }
 
-body.contentDetail .card .office-detail-value .officeOpen {
+body.contentdetail .card .office-detail-value .officeOpen {
   font-weight: 500;
   color: #059669; }
 
-body.contentDetail .card .input {
+body.contentdetail .card .input {
   margin: .25rem 0;
   font-size: .875rem;
   padding: .375rem .75rem;
@@ -157,29 +157,29 @@ body.contentDetail .card .input {
   border: 1px solid #e2e8f0;
   transition: border-color .15s,box-shadow .15s; }
 
-body.contentDetail .card .menu a, body.contentDetail .card ul li {
+body.contentdetail .card .menu a, body.contentdetail .card ul li {
   display: flex;
   border-radius: 4px; }
 
-body.contentDetail .card .input:focus {
+body.contentdetail .card .input:focus {
   border-color: #94a3b8;
   box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.1);
   outline: 0; }
 
-body.contentDetail .card .input:hover, body.contentDetail .card .menu a:hover {
+body.contentdetail .card .input:hover, body.contentdetail .card .menu a:hover {
   border-color: #cbd5e1; }
 
-body.contentDetail .card ul {
+body.contentdetail .card ul {
   margin: .5rem 0;
   padding: 0;
   list-style: none; }
 
-body.contentDetail .card ul li {
+body.contentdetail .card ul li {
   justify-content: space-between;
   margin: .25rem 0;
   background: #f8fafc; }
 
-body.contentDetail .card ul li a {
+body.contentdetail .card ul li a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -189,13 +189,13 @@ body.contentDetail .card ul li a {
   margin-left: .25rem;
   transition: background-color .15s; }
 
-body.contentDetail .card ul li a:hover {
+body.contentdetail .card ul li a:hover {
   background: #e2e8f0; }
 
-body.contentDetail .card ul li a i {
+body.contentdetail .card ul li a i {
   font-size: .75rem; }
 
-body.contentDetail .card .menu {
+body.contentdetail .card .menu {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -205,10 +205,10 @@ body.contentDetail .card .menu {
   opacity: 0;
   transition: opacity .15s; }
 
-body.contentDetail .card:focus-within .menu, body.contentDetail .card:hover .menu {
+body.contentdetail .card:focus-within .menu, body.contentdetail .card:hover .menu {
   opacity: 1; }
 
-body.contentDetail .card .menu a {
+body.contentdetail .card .menu a {
   align-items: center;
   justify-content: center;
   width: 1.75rem;
@@ -219,38 +219,38 @@ body.contentDetail .card .menu a {
   transition: .15s;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04); }
 
-body.contentDetail .card .menu a:hover {
+body.contentdetail .card .menu a:hover {
   background: #f8fafc;
   color: #475569;
   transform: translateY(-1px); }
 
-body.contentDetail .card .menu a:first-child:hover {
+body.contentdetail .card .menu a:first-child:hover {
   background: #eff6ff;
   border-color: #93c5fd;
   color: #2563eb; }
 
-body.contentDetail .card .menu a:nth-child(2):hover {
+body.contentdetail .card .menu a:nth-child(2):hover {
   background: #fef2f2;
   border-color: #fca5a5;
   color: #dc2626; }
 
-body.contentDetail .card .menu .draggable-handle {
+body.contentdetail .card .menu .draggable-handle {
   cursor: grab;
   background: #f8fafc;
   border-color: #cbd5e1; }
 
-body.contentDetail .card .menu .draggable-handle:hover {
+body.contentdetail .card .menu .draggable-handle:hover {
   background: #f1f5f9;
   border-color: #94a3b8;
   color: #475569;
   transform: translateY(-1px); }
 
-body.contentDetail .card .menu .draggable-handle:active {
+body.contentdetail .card .menu .draggable-handle:active {
   cursor: grabbing;
   background: #e2e8f0;
   transform: translateY(0); }
 
-body.contentDetail form#frm-formNewItem {
+body.contentdetail form#frm-formNewItem {
   border: 1px solid #f1f5f9;
   border-radius: 8px;
   padding: 1.25rem;
@@ -259,38 +259,38 @@ body.contentDetail form#frm-formNewItem {
   max-height: calc(100vh - 2rem);
   overflow-y: auto; }
 
-body.contentDetail form#frm-formNewItem .form-label {
+body.contentdetail form#frm-formNewItem .form-label {
   font-weight: 600;
   color: #374151;
   margin-bottom: .5rem; }
 
-body.contentDetail form#frm-formNewItem .select {
+body.contentdetail form#frm-formNewItem .select {
   margin-bottom: 1rem; }
 
-body.contentDetail form#frm-formNewItem .btn {
+body.contentdetail form#frm-formNewItem .btn {
   margin-top: .75rem; }
 
 @media (max-width: 768px) {
-  body.contentDetail .container-fixed {
+  body.contentdetail .container-fixed {
     padding: 0 .5rem; }
-  body.contentDetail .grid {
+  body.contentdetail .grid {
     grid-template-columns: 1fr; }
-  body.contentDetail .card .card-body {
+  body.contentdetail .card .card-body {
     padding: 1rem 3rem 1rem 1rem; }
-  body.contentDetail .card .menu {
+  body.contentdetail .card .menu {
     top: .75rem;
     right: .75rem;
     gap: .25rem; }
-  body.contentDetail .card .menu a {
+  body.contentdetail .card .menu a {
     width: 1.5rem;
     height: 1.5rem; }
-  body.contentDetail .card h2 {
+  body.contentdetail .card h2 {
     font-size: 1rem; }
-  body.contentDetail .card .office-detail-value .day {
+  body.contentdetail .card .office-detail-value .day {
     flex-direction: column;
     align-items: flex-start;
     gap: .25rem; }
-  body.contentDetail form {
+  body.contentdetail form {
     position: static;
     max-height: none; } }
 
@@ -302,14 +302,14 @@ body.contentDetail form#frm-formNewItem .btn {
     opacity: 1;
     transform: translateY(0); } }
 
-body.contentDetail .card:focus, body.contentDetail .draggable-zone:focus {
+body.contentdetail .card:focus, body.contentdetail .draggable-zone:focus {
   outline: 0; }
 
-body.contentDetail .card.loading {
+body.contentdetail .card.loading {
   opacity: .6;
   pointer-events: none; }
 
-body.contentDetail .card.loading::after {
+body.contentdetail .card.loading::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -326,9 +326,9 @@ body.contentDetail .card.loading::after {
   to {
     transform: rotate(360deg); } }
 
-body.contentDetail .card.dragging .menu {
+body.contentdetail .card.dragging .menu {
   opacity: 1; }
 
-body.contentDetail .card.dragging .menu .draggable-handle {
+body.contentdetail .card.dragging .menu .draggable-handle {
   cursor: grabbing;
   background: #e2e8f0; }
