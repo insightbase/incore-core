@@ -232,26 +232,26 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 						<div class="menu" data-menu="true">
 							<div class="menu-item" data-menu-item-offset="20px, 10px" data-menu-item-offset-rtl="-20px, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
 								<div class="menu-toggle btn btn-icon rounded-full">
-									{if $user->getIdentity()->getData()['avatar_id'] === null}
+									{if $loggedUser->avatar_id === null}
 										<img alt="" class="size-9 rounded-full border-2 border-success shrink-0" src="/{$metronicDir}/admin/assets/media/avatars/300-2.png" />
 									{else}
-										{control image, $user->getIdentity()->getData()['avatar_id'], 32, 32, 'size-9 rounded-full border-2 border-success shrink-0'}
+										{control image, $loggedUser->avatar_id, 32, 32, 'size-9 rounded-full border-2 border-success shrink-0', type: \Nette\Utils\Image::OrBigger}
 									{/if}
 								</div>
 								<div class="menu-dropdown menu-default light:border-gray-300 w-screen max-w-[250px]">
-									<div class="flex items-center justify-between px-5 py-1.5 gap-1.5">
+									<div class="flex items-center justify-between px-5 py-1.5 gap-1.5" n:snippet="layoutAvatar">
 										<div class="flex items-center gap-2">
-											{if $user->getIdentity()->getData()['avatar_id'] === null}
+											{if $loggedUser->avatar_id === null}
 												<img alt="" class="size-9 rounded-full border-2 border-success" src="/{$metronicDir}/admin/assets/media/avatars/300-2.png" />
 											{else}
-												{control image, $user->getIdentity()->getData()['avatar_id'], 32, 32, 'size-9 rounded-full border-2 border-success'}
+												{control image, $loggedUser->avatar_id, 32, 32, 'size-9 rounded-full border-2 border-success', type: \Nette\Utils\Image::OrBigger}
 											{/if}
 											<div class="flex flex-col gap-1.5">
 											  <span class="text-sm text-gray-800 font-semibold leading-none">
-											   {$user->getIdentity()->getData()['firstname']} {$user->getIdentity()->getData()['lastname']}
+											   {$loggedUser->firstname} {$loggedUser->lastname}
 											  </span>
 												<a class="text-xs text-gray-600 hover:text-primary font-medium leading-none" n:href="MyAccount:edit">
-													{$user->getIdentity()->getData()['email']}
+													{$loggedUser->email}
 												</a>
 											</div>
 										</div>

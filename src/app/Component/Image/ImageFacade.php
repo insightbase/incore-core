@@ -127,7 +127,7 @@ readonly class ImageFacade
         $container->saveAlpha(true);
         $container->place($imageNette, '50%', '50%');
         FileSystem::createDir($this->parameterBag->previewDir);
-        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height), 100);
+        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height, $type), 100);
 
         return $container;
     }

@@ -25,6 +25,7 @@ trait RequireLoggedUserTrait
                 $this->redirect('Sign:login', ['storeRequest' => $this->storeRequest()]);
             }
             $this->loggedUser = $userModel->get($this->getUser()->getId());
+            $this->template->loggedUser = $this->loggedUser;
         };
     }
 }

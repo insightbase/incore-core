@@ -8,6 +8,7 @@ use App\Model\Entity\ImageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\ModuleEntity;
 use App\Model\Entity\SettingEntity;
+use App\Model\Entity\UserEntity;
 use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use Nette\Application\UI\Presenter;
@@ -57,4 +58,8 @@ class BaseTemplate extends Template
     public ?ActiveRow $editedImage = null;
     public bool $showSubmenuDropdown;
     public string $metronicDir;
+    /**
+     * @var ?UserEntity
+     */
+    public?ActiveRow $loggedUser = null;
 }
