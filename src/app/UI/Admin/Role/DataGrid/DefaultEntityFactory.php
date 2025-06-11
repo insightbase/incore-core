@@ -38,6 +38,13 @@ readonly class DefaultEntityFactory
                     return !$row['is_systemic'];
                 })
         );
+        $entity->addMenu(
+            (new MenuEntity($this->translator->translate('menu_delete'), 'delete'))
+                ->setIcon(DefaultIconEnum::Delete->value)
+                ->setShowCallback(function (ActiveRow $row): bool {
+                    return !$row['is_systemic'];
+                })
+        );
 
         return $entity;
     }

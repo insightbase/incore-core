@@ -3,6 +3,7 @@
 namespace App\Model\Admin;
 
 use App\Model\Entity\RoleEntity;
+use App\Model\Enum\RoleEnum;
 use App\Model\Model;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
@@ -12,6 +13,7 @@ readonly class Role implements Model
 {
     public function __construct(
         private Explorer $explorer,
+        private \Nette\Security\User $userSecurity,
     ) {}
 
     /**
@@ -35,7 +37,11 @@ readonly class Role implements Model
      */
     public function getToGrid(): Selection
     {
-        return $this->getTable();
+        if($this->userSecurity->isInRole(RoleEnum::SUPER_ADMIN->value)){
+            return $this->getTable();
+        }else{
+            return $this->getTable()->where('system_name NOT IN ?', [RoleEnum::SUPER_ADMIN->value]);
+        }
     }
 
     /**
@@ -68,6 +74,6 @@ readonly class Role implements Model
      */
     public function getToSelect():Selection
     {
-        return $this->getTable();
+        return $this->getToGrid();
     }
 }

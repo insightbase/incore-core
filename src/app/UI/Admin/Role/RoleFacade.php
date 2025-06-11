@@ -70,4 +70,13 @@ readonly class RoleFacade
             throw new SystematicRoleException();
         }
     }
+
+    /**
+     * @param RoleEntity $role
+     * @return void
+     */
+    public function delete(ActiveRow $role):void
+    {
+        $role->delete();
+    }
 }

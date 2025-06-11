@@ -19,6 +19,7 @@ use App\UI\Admin\Role\Form\AuthorizationSetData;
 use App\UI\Admin\Role\Form\EditData;
 use App\UI\Admin\Role\Form\FormFactory;
 use App\UI\Admin\Role\Form\NewData;
+use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 
@@ -64,6 +65,22 @@ class RolePresenter extends Presenter
     public function actionEdit(int $id): void
     {
         $this->exist($id);
+        if($this->role->is_systemic){
+            $this->flashMessage($this->translator->translate('flash_roleIsSystemicCannotEdit'), 'error');
+            $this->redirect('default');
+        }
+    }
+
+    #[NoReturn] public function actionDelete(int $id): void
+    {
+        $this->exist($id);
+        if($this->role->is_systemic){
+            $this->flashMessage($this->translator->translate('flash_roleIsSystemicCannotDelete'), 'error');
+            $this->redirect('default');
+        }
+        $this->roleFacade->delete($this->role);
+        $this->flashMessage($this->translator->translate('flash_roleDeleted'));
+        $this->redirect('default');
     }
 
     protected function createComponentFormAuthorizationSet(): Form
