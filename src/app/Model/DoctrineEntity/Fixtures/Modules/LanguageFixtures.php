@@ -34,6 +34,7 @@ class LanguageFixtures extends Fixture implements FixtureInterface, DependentFix
             $this->getReference(PrivilegeFixtures::EDIT, Privilege::class),
             $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
             $this->getReference(PrivilegeFixtures::DELETE, Privilege::class),
+            $this->getReference(PrivilegeFixtures::TRANSLATE, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {

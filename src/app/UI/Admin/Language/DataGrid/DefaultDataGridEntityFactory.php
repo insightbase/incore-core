@@ -11,6 +11,7 @@ use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageRequiredException;
 use App\UI\Admin\Language\LanguageFacade;
+use Nette\Database\Table\ActiveRow;
 
 readonly class DefaultDataGridEntityFactory
 {
@@ -58,6 +59,13 @@ readonly class DefaultDataGridEntityFactory
             (new MenuEntity($this->translator->translate('menu_edit'), 'edit'))
                 ->setIcon(DefaultIconEnum::Edit->value)
         );
+//        $dataGridEntity->addMenu(
+//            (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
+//                ->setIcon('ki-filled ki-geolocation')
+//                ->setShowCallback(function (ActiveRow $row): bool {
+//                    return !$row['is_default'];
+//                })
+//        );
         $dataGridEntity->addMenu(
             (new MenuEntity($this->translator->translate('menu_delete'), 'delete'))
                 ->setIcon(DefaultIconEnum::Delete->value)

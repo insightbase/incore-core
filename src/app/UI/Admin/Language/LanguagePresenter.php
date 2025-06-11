@@ -6,6 +6,7 @@ use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\DataGridFactory;
 use App\Model\Admin\Language;
 use App\Model\DoctrineEntity\LanguageSetting;
+use App\Model\Entity\LanguageEntity;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
@@ -24,6 +25,9 @@ class LanguagePresenter extends Presenter
     use StandardTemplateTrait;
     use RequireLoggedUserTrait;
 
+    /**
+     * @var LanguageEntity
+     */
     private ActiveRow $language;
 
     public function __construct(
@@ -37,6 +41,16 @@ class LanguagePresenter extends Presenter
         private readonly LanguageSettingFacade            $languageSettingFacade,
     ) {
         parent::__construct();
+    }
+
+    public function actionTranslate(int $id):void
+    {
+        $this->exist($id);
+        if($this->language->is_default){
+            $this->flashMessage($this->translator->translate('flash_languageIsDefault'), 'error');
+            $this->redirect('default');
+        }
+        $this->languageFacade->translate($this->language);
     }
 
     public function actionEdit(int $id): void

@@ -85,4 +85,12 @@ readonly class Translate implements Model
     {
         return $this->getTable()->where('is_performance', true);
     }
+
+    /**
+     * @return Selection<TranslateEntity>
+     */
+    public function getNotAdmin():Selection
+    {
+        return $this->getTable()->where('NOT source', 'admin');
+    }
 }
