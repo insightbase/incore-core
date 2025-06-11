@@ -23,6 +23,7 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
                 ->setSystemName('users')
                 ->setName('Uživatelé a role')
                 ->setIcon('ki-filled ki-users text-lg')
+                ->setPosition(7)
             ;
             $manager->persist($users);
             $manager->flush();

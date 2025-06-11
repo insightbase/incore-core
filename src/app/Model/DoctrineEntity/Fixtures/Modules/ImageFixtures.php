@@ -23,7 +23,8 @@ class ImageFixtures extends Fixture implements FixtureInterface, DependentFixtur
                 ->setSystemName('images')
                 ->setName('Obrázky')
                 ->setIcon('ki-filled ki-files')
-                ->setPresenter('Image');
+                ->setPresenter('Image')
+                ->setPosition(11)
             ;
             $manager->persist($images);
             $manager->flush();

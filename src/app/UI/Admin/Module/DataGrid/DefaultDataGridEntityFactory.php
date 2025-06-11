@@ -6,6 +6,7 @@ use App\Component\Datagrid\DefaultIconEnum;
 use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
+use App\Component\Datagrid\SortDirEnum;
 use App\Component\Translator\Translator;
 
 readonly class DefaultDataGridEntityFactory
@@ -17,6 +18,10 @@ readonly class DefaultDataGridEntityFactory
     public function create(): DataGridEntity
     {
         $entity = new DataGridEntity();
+        $entity->setOrdering();
+        $entity->setDefaultOrder('position');
+        $entity->setDefaultOrderDir(SortDirEnum::ASC);
+        $entity->setRedrawSnippetAfterOrdering('layoutMenu');
 
         $entity
             ->addColumn(

@@ -11,37 +11,32 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class LanguageFixtures extends Fixture implements FixtureInterface, DependentFixtureInterface
+class HomeFixtures extends Fixture implements FixtureInterface, DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $module = $manager->getRepository(Module::class)
-            ->findOneBy(['system_name' => 'languages'])
-        ;
-        if (!$module) {
-            $module = (new Module())
-                ->setSystemName('languages')
-                ->setName('Jazyky')
-                ->setPresenter('Language')
-                ->setIcon('ki-filled ki-flag')
-                ->setPosition(9)
+        $home = $manager->getRepository(Module::class)
+            ->findOneBy(['system_name' => 'home']);
+        if (!$home) {
+            $home = (new Module())
+                ->setSystemName('home')
+                ->setName('Dashboard')
+                ->setIcon('ki-filled ki-element-11 text-lg')
+                ->setPresenter('Home')
+                ->setPosition(1)
             ;
-            $manager->persist($module);
+            $manager->persist($home);
             $manager->flush();
         }
 
         $privileges = [
             $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
-            $this->getReference(PrivilegeFixtures::EDIT, Privilege::class),
-            $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
-            $this->getReference(PrivilegeFixtures::DELETE, Privilege::class),
-            $this->getReference(PrivilegeFixtures::TRANSLATE, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {
-            if (!$modulePrivilegeRepository->findOneBy(['module' => $module, 'privilege' => $privilege])) {
+            if (!$modulePrivilegeRepository->findOneBy(['module' => $home, 'privilege' => $privilege])) {
                 $modulePrivilege = new ModulePrivilege();
-                $modulePrivilege->setModule($module);
+                $modulePrivilege->setModule($home);
                 $modulePrivilege->setPrivilege($privilege);
                 $manager->persist($modulePrivilege);
                 $manager->flush();

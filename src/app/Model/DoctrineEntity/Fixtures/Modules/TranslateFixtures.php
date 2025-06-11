@@ -27,6 +27,7 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
                 ->setName('Překlady')
                 ->setPresenter('Translate')
                 ->setIcon('ki-filled ki-geolocation')
+                ->setPosition(6)
             ;
             $manager->persist($module);
             $manager->flush();

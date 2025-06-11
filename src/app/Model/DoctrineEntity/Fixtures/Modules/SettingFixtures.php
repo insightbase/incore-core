@@ -23,6 +23,7 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
                 ->setSystemName('setting')
                 ->setName('Nastavení')
                 ->setIcon('ki-filled ki-setting-2')
+                ->setPosition(8)
             ;
             $manager->persist($setting);
             $manager->flush();

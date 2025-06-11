@@ -23,6 +23,7 @@ class EmailFixtures extends Fixture implements FixtureInterface, DependentFixtur
                 ->setName('Emaily')
                 ->setIcon('ki-filled ki-mail')
                 ->setPresenter('Email')
+                ->setPosition(10)
             ;
             $manager->persist($email);
             $manager->flush();

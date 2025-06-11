@@ -29,6 +29,9 @@ class Module implements Entity
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     public ?Module $parent = null;
 
+    #[ORM\Column(type: 'integer')]
+    public string $position;
+
     public function setSystemName(string $systemName): self
     {
         $this->system_name = $systemName;
@@ -61,6 +64,17 @@ class Module implements Entity
     {
         $this->parent = $parent;
 
+        return $this;
+    }
+
+    public function getPosition(): string
+    {
+        return $this->position;
+    }
+
+    public function setPosition(string $position): self
+    {
+        $this->position = $position;
         return $this;
     }
 }
