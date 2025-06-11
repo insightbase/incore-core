@@ -3,9 +3,12 @@
 namespace App\Model\DoctrineEntity\Fixtures\Modules;
 
 use App\Model\DoctrineEntity\Fixtures\PrivilegeFixtures;
+use App\Model\DoctrineEntity\Fixtures\RoleFixtures;
 use App\Model\DoctrineEntity\Module;
 use App\Model\DoctrineEntity\ModulePrivilege;
+use App\Model\DoctrineEntity\Permission;
 use App\Model\DoctrineEntity\Privilege;
+use App\Model\DoctrineEntity\Role;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -39,6 +42,22 @@ class HomeFixtures extends Fixture implements FixtureInterface, DependentFixture
                 $modulePrivilege->setModule($home);
                 $modulePrivilege->setPrivilege($privilege);
                 $manager->persist($modulePrivilege);
+                $manager->flush();
+            }
+        }
+
+        $role = $this->getReference(RoleFixtures::ADMIN, Role::class);
+        $access = [
+            $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
+        ];
+        $permissionRepository = $manager->getRepository(Permission::class);
+        foreach ($access as $privilege) {
+            if (!$permissionRepository->findOneBy(['module' => $home, 'privilege' => $privilege, 'role' => $role])) {
+                $permission = new Permission();
+                $permission->setModule($home);
+                $permission->setPrivilege($privilege);
+                $permission->setRole($role);
+                $manager->persist($permission);
                 $manager->flush();
             }
         }
