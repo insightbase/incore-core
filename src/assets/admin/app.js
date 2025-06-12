@@ -92,12 +92,19 @@ function getSortedIds(container) {
 function initDatagrid() {
 
     Array.from(document.getElementsByClassName('globalSearch')).forEach((element) => {
-        element.addEventListener('keyup', function () {
-            clearTimeout(globalSearchTimeout);
-            globalSearchTimeout = setTimeout(function () {
+        element.addEventListener('keyup', function (event) {
+            if(event.key === 'Enter'){
+                clearTimeout(globalSearchTimeout);
                 let url = element.getAttribute('data-url').replace('xxxxxx', element.value);
-                naja.makeRequest('GET', url)
-            }, 300);
+                naja.makeRequest('GET', url);
+            }else {
+                console.log('event.key');
+                clearTimeout(globalSearchTimeout);
+                globalSearchTimeout = setTimeout(function () {
+                    let url = element.getAttribute('data-url').replace('xxxxxx', element.value);
+                    naja.makeRequest('GET', url);
+                }, 1000);
+            }
         });
     });
 
