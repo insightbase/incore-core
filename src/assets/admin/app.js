@@ -202,39 +202,48 @@ function truncateText(text, maxLength) {
 }
 
 function inlineEdit(event){
-    if(event.target.tagName === 'TD' || event.target.tagName === 'SPAN') {
-        let elementText;
-        let element;
-        if(event.target.tagName === 'SPAN'){
-            elementText = event.target;
-            element = event.target.parentElement;
-        }else{
-            elementText = event.target.getElementsByClassName('text')[0];
-            element = event.target;
-        }
-        element.removeEventListener('click', inlineEdit);
+    let element;
+    if(event.target.tagName !== 'TD'){
+        element = event.target.closest('td');
+    }else{
+        element = event.target;
+    }
+    let elementText;
+    elementText = element.getElementsByClassName('text')[0];
+    element.removeEventListener('click', inlineEdit);
 
-        let value = element.getAttribute('data-value');
-        if (value.length <= 50) {
-            elementText.innerHTML = '<input type="text" class="input" value="' + value + '" />';
-            let input = element.getElementsByClassName('input')[0];
-            input.focus();
-            input.selectionStart = input.selectionEnd = input.value.length;
+    let value = element.getAttribute('data-value');
+    const escaped = value.replace(/"/g, '&quot;');
+    elementText.innerHTML = element.getAttribute('data-inline-input').replace('xxxx', escaped);
+    var input = element.getElementsByClassName('input')[0];
 
-
-            input.addEventListener('blur', function () {
-                let url = element.getAttribute('data-inline-edit-url').replace('xxxx', input.value);
+    let saveEditor = element.getElementsByClassName('saveEditor');
+    if(saveEditor.length > 0){
+        saveEditor = saveEditor[0];
+        saveEditor.addEventListener('click', function(event){
+            event.preventDefault();
+            editors[input.getAttribute('data-for-editor-id')].save().then((outputData) =>{
+                let url = element.getAttribute('data-inline-edit-url').replace('xxxx', JSON.stringify(outputData));
                 naja.makeRequest('GET', url, {}, {history: false, notShowLoader: true});
             });
-
-            input.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    const event = new Event('blur');
-                    input.dispatchEvent(event);
-                }
-            });
-        }
+        });
     }
+    input.focus();
+    input.selectionStart = input.selectionEnd = input.value.length;
+
+    input.addEventListener('blur', function () {
+        let url = element.getAttribute('data-inline-edit-url').replace('xxxx', input.value);
+        naja.makeRequest('GET', url, {}, {history: false, notShowLoader: true});
+    });
+
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const event = new Event('blur');
+            input.dispatchEvent(event);
+        }
+    });
+
+    initEditorJs();
 }
 
 function initDropzone(){

@@ -20,6 +20,7 @@ use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
+use Nette\Utils\Html;
 
 readonly class DefaultDataGridEntityFactory
 {
@@ -30,6 +31,7 @@ readonly class DefaultDataGridEntityFactory
         private InlineEditFactory        $inlineEditFactory,
         private EditorJsFacade $editorJsFacade,
         private Application $application,
+        private Storage $storage,
     ) {}
 
     public function create(): DataGridEntity
@@ -46,10 +48,14 @@ readonly class DefaultDataGridEntityFactory
             $entity->addColumn(
                 (new ColumnEntity(':translate_language.value', $language->name.' ( '.$language->locale.' )'))
                     ->setEnableSearchGlobal()
-                    ->setGetColumnCallback(function (ActiveRow $row) use ($language): string {
+                    ->setGetColumnCallback(function (ActiveRow $row, bool $original) use ($language): string {
                         $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($row, $language);
                         if (null === $translateLanguage) {
                             return '';
+                        }
+
+                        if($original){
+                            return $translateLanguage->value;
                         }
 
                         $type = TranslateTypeEnum::from($row->type);
@@ -60,31 +66,43 @@ readonly class DefaultDataGridEntityFactory
                     })
                     ->setInlineEdit($this->inlineEditFactory->create($language))
                     ->setNoEscape()
-//                    ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
-//                        return $row['id'].'-'.$language->id;
-//                    })
-//                    ->setInlineEditCallback(function (string $id, string $value) use ($cache): ReturnInlineEditCallback {
-//                        $id = explode('-', $id);
-//                        $translateLanguage = $this->translateLanguageModel->getByTranslateIdAndLanguageId((int) $id[0], (int) $id[1]);
-//                        if ($translateLanguage) {
-//                            if ('' === $value) {
-//                                $translateLanguage->delete();
-//                            } else {
-//                                $translateLanguage->update(['value' => $value]);
-//                            }
-//                        } else {
-//                            if ('' !== $value) {
-//                                $this->translateLanguageModel->insert([
-//                                    'translate_id' => $id[0],
-//                                    'language_id' => $id[1],
-//                                    'value' => $value,
-//                                ]);
-//                            }
-//                        }
-//                        $cache->remove((int) $id[1]);
-//
-//                        return new ReturnInlineEditCallback(redraw: true);
-//                    })
+                    ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
+                        return $row['id'].'-'.$language->id;
+                    })
+                    ->setInlineEditCallback(function (string $id, string $value): ReturnInlineEditCallback {
+                        $id = explode('-', $id);
+                        $translateLanguage = $this->translateLanguageModel->getByTranslateIdAndLanguageId((int) $id[0], (int) $id[1]);
+                        if ($translateLanguage) {
+                            if ('' === $value) {
+                                $translateLanguage->delete();
+                            } else {
+                                $translateLanguage->update(['value' => $value]);
+                            }
+                        } else {
+                            if ('' !== $value) {
+                                $this->translateLanguageModel->insert([
+                                    'translate_id' => $id[0],
+                                    'language_id' => $id[1],
+                                    'value' => $value,
+                                ]);
+                            }
+                        }
+
+                        $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
+                        $cache->remove($id[1]);
+
+                        return new ReturnInlineEditCallback(redraw: true);
+                    })
+                    ->setInlineEditInputCallback(function(ActiveRow $row):Html {
+                        if($row['type'] === TranslateTypeEnum::Html->value) {
+                            $container = Html::el('span');
+                            $container->addHtml(Html::el('input')->type('text')->class('input editorJsText')->value('xxxx'));
+                            $container->addHtml(Html::el('a')->class('btn btn-sm btn-primary saveEditor')->setText('Uložit'));
+                            return $container;
+                        }else{
+                            return Html::el('input')->type('text')->class('input')->value('xxxx');
+                        }
+                    })
             );
         }
         if($this->application->getPresenter()->getName() !== 'Admin:Performance') {

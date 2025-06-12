@@ -54,6 +54,11 @@ readonly class TranslateLanguage implements Model
         return $this->getTable()->where('language_id', $language->id);
     }
 
+    /**
+     * @param int $translateId
+     * @param int $languageId
+     * @return ?TranslateLanguageEntity
+     */
     public function getByTranslateIdAndLanguageId(int $translateId, int $languageId): ?ActiveRow
     {
         return $this->getTable()
