@@ -12,6 +12,7 @@ use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Admin\Translate\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Admin\Translate\Form\FormFactory;
+use App\UI\Admin\Translate\Form\FormNewData;
 use App\UI\Admin\Translate\Form\FormTranslateData;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
@@ -29,6 +30,8 @@ class TranslatePresenter extends Presenter
     private ?ActiveRow $translate;
     #[Persistent]
     public string $source = 'front';
+    #[Persistent]
+    public string $key = '';
 
     public function __construct(
         private readonly DataGridFactory $dataGridFactory,
@@ -41,16 +44,47 @@ class TranslatePresenter extends Presenter
         parent::__construct();
     }
 
+    protected function createComponentFormNew():Form
+    {
+        $form = $this->formFactory->createNew();
+        $form->onSuccess[] = function(Form $form, FormNewData $data):void{
+            $this->translateFacade->create($data);
+            $this->flashMessage($this->translator->translate('flash_keyCreated'));
+            $this->redirect('default');
+        };
+        return $form;
+    }
+
     protected function startup():void
     {
         parent::startup();
 
-        $this->submenuFactory->addMenu($this->translator->translate('menu_front'), 'default')->addParam('source', 'front');
+        foreach($this->translateModel->getFirstKey('front') as $key){
+            $menu = $this->submenuFactory
+                ->addMenu($this->translator->translate($key['prefix']), 'default')
+                ->addParam('source', 'front')
+                ->addParam('key', $key['prefix'])
+            ;
+            if($key['prefix'] === $this->key){
+                $menu->setIsPrimary();
+            }
+        };
+        $menu = $this->submenuFactory
+            ->addMenu($this->translator->translate('menu_front'), 'default')
+            ->addParam('source', 'front')
+            ->addParam('key', '')
+        ;
+        if($this->key === '' && $this->source === 'front' && $this->getAction() === 'default'){
+            $menu->setIsPrimary();
+        }
         $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')
             ->addParam('source', 'admin')
             ->setShowInDropdown()
         ;
         $this->submenuFactory->addMenu($this->translator->translate('menu_synchronize'), 'synchronize')
+            ->setShowInDropdown()
+        ;
+        $this->submenuFactory->addMenu($this->translator->translate('menu_new'), 'new')
             ->setShowInDropdown()
         ;
     }
@@ -83,7 +117,7 @@ class TranslatePresenter extends Presenter
 
     protected function createComponentGrid(): DataGrid
     {
-        return $this->dataGridFactory->create($this->translateModel->getToGrid($this->source), $this->defaultDataGridEntityFactory->create());
+        return $this->dataGridFactory->create($this->translateModel->getToGrid($this->source, $this->key), $this->defaultDataGridEntityFactory->create());
     }
 
     private function exist(int $id): void

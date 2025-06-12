@@ -26,6 +26,9 @@ class Translate implements Entity
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     public bool $is_performance = false;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    public bool $is_manual = false;
+
     public function setKey(string $key): self
     {
         $this->key = $key;

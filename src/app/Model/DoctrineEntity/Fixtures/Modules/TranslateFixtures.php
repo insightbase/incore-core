@@ -37,6 +37,7 @@ class TranslateFixtures extends Fixture implements FixtureInterface, DependentFi
             $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
             $this->getReference(PrivilegeFixtures::SYNCHRONIZE, Privilege::class),
             $this->getReference(PrivilegeFixtures::TRANSLATE, Privilege::class),
+            $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {

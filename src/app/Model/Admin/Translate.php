@@ -25,18 +25,22 @@ readonly class Translate implements Model
     /**
      * @return Selection<TranslateEntity>
      */
-    public function getToGrid(string $source): Selection
+    public function getToGrid(string $source, string $key): Selection
     {
-        return $this->getTable()->where('source', $source);
+        $model = $this->getTable()->where('source', $source);
+        if($key !== ''){
+            $model->where('key LIKE ?', $key . '.%');
+        }
+        return $model;
     }
 
     /**
      * @param array<string, mixed> $data
-     * @return void
+     * @return TranslateEntity
      */
-    public function insert(array $data): void
+    public function insert(array $data): ActiveRow
     {
-        $this->getTable()->insert($data);
+        return $this->getTable()->insert($data);
     }
 
     /**
@@ -61,13 +65,14 @@ readonly class Translate implements Model
     public function getNotKeys(array $keys, string $source): Selection
     {
         if(empty($keys)){
-            return $this->getTable()
+            $model = $this->getTable()
                 ->where('source', $source);
         }else {
-            return $this->getTable()
+            $model = $this->getTable()
                 ->where('NOT key', $keys)
                 ->where('source', $source);
         }
+        return $model->where('is_manual', false);
     }
 
     /**
@@ -92,5 +97,24 @@ readonly class Translate implements Model
     public function getNotAdmin():Selection
     {
         return $this->getTable()->where('NOT source', 'admin');
+    }
+
+    public function getFirstKey(string $source):Selection
+    {
+        return $this->getTable()
+            ->select('DISTINCT SUBSTRING_INDEX(key, ?, 1) AS prefix', '.')
+            ->where('source', $source)
+            ->order('prefix');
+    }
+
+    /**
+     * @return Selection<TranslateEntity>
+     */
+    public function getToGenerateTranslates():Selection
+    {
+        return $this->getTable()
+            ->where('source', 'admin')
+            ->where('is_manual', false)
+        ;
     }
 }

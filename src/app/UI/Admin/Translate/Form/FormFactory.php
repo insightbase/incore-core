@@ -19,6 +19,17 @@ readonly class FormFactory
         private TranslateLanguage                        $translateLanguageModel,
     ) {}
 
+    public function createNew():Form
+    {
+        $form = $this->formFactory->create();
+
+        $form->addText('key', $this->translator->translate('input_key'))
+            ->setRequired();
+        $form->addSubmit('send', $this->translator->translate('input_create'));
+
+        return $form;
+    }
+
     /**
      * @param TranslateEntity $translate
      */

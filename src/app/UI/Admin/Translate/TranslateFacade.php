@@ -147,4 +147,14 @@ readonly class TranslateFacade
         }
         $this->translateModel->getNotKeys($allKeys, $source)->delete();
     }
+
+    public function create(Form\FormNewData $data):void
+    {
+        $translate = $this->translateModel->insert([
+            'key' => $data->key,
+            'source' => 'admin',
+            'is_manual' => true,
+        ]);
+        $this->logFacade->create(LogActionEnum::Created, 'translate', $translate->id);
+    }
 }

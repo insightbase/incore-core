@@ -51,7 +51,7 @@ class GenerateTranslatesFixtureCommand extends Command
 
         $language = $this->languageModel->getByUrl('cs');
         $translates = [];
-        foreach($this->translateModel->getAll() as $translate){
+        foreach($this->translateModel->getToGenerateTranslates() as $translate){
             $translateLanguage = $this->translateLanguage->getByTranslateAndLanguage($translate, $language);
             $translates[$translate->key] = $translateLanguage?->value;
         }

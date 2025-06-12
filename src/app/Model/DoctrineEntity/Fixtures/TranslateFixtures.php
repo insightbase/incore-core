@@ -406,13 +406,18 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'menu_content' => 'Články',
 		'column_title' => 'Title',
 		'input_template' => 'Šablona',
-		'demo title' => 'dddd',
-		'demo description' => null,
-		'demo keywords' => null,
-		'<p>Tohle je frontend, pokud hledáš inspiraci, podívej se do readme</p>' => null,
 		'header_performanceTranslates' => 'Překlady',
 		'menu_translates' => 'Překlady',
 		'input_isPerformance' => 'Zobrazovat v performance',
+		'no_recent_activity' => 'Žádná poslední aktivita',
+		'view_all_activity' => 'Zobrazit veškerou aktivitu',
+		'flash_roleIsSystemicCannotEdit' => 'Nemůžete upravovat systémové role',
+		'flash_roleIsSystemicCannotDelete' => 'Nemůžete mazat systémové role',
+		'flash_roleDeleted' => 'Role smazána',
+		'flash_languageIsDefault' => 'Jazyk je výchozí',
+		'header_translateNew' => 'Nový klíč',
+		'input_key' => 'Klíč',
+		'flash_keyCreated' => 'Klíč vytvořen',
 	];
 
 
