@@ -4,6 +4,7 @@ namespace App\UI\Accessory\Admin\MainMenu;
 
 use App\Model\Entity\ModuleEntity;
 use Nette\Database\Table\ActiveRow;
+use Nette\Security\User;
 
 class MainMenuItem
 {
@@ -28,6 +29,7 @@ class MainMenuItem
         private readonly string             $action,
         private readonly string             $title,
         private readonly MainMenuSubFactory $mainMenuSubFactory,
+        private readonly User               $userSecurity,
     )
     {
     }
@@ -72,6 +74,12 @@ class MainMenuItem
      */
     public function getSubs(): array
     {
-        return $this->subs;
+        $subs = [];
+        foreach($this->subs as $mainMenuSub){
+            if($this->userSecurity->isAllowed($this->module->system_name, $mainMenuSub->getAction())){
+                $subs[] = $mainMenuSub;
+            }
+        }
+        return $subs;
     }
 }
