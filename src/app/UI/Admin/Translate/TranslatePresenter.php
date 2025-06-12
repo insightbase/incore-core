@@ -6,6 +6,7 @@ use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\DataGridFactory;
 use App\Model\Admin\Translate;
 use App\Model\Entity\TranslateEntity;
+use App\Model\Enum\RoleEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
@@ -77,16 +78,16 @@ class TranslatePresenter extends Presenter
         if($this->key === '' && $this->source === 'front' && $this->getAction() === 'default'){
             $menu->setIsPrimary();
         }
-        $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')
-            ->addParam('source', 'admin')
-            ->setShowInDropdown()
-        ;
-        $this->submenuFactory->addMenu($this->translator->translate('menu_synchronize'), 'synchronize')
-            ->setShowInDropdown()
-        ;
-        $this->submenuFactory->addMenu($this->translator->translate('menu_new'), 'new')
-            ->setShowInDropdown()
-        ;
+        if($this->getUser()->isInRole(RoleEnum::SUPER_ADMIN->value)) {
+            $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')
+                ->addParam('source', 'admin')
+                ->addParam('key', '')
+                ->setShowInDropdown();
+            $this->submenuFactory->addMenu($this->translator->translate('menu_synchronize'), 'synchronize')
+                ->setShowInDropdown();
+            $this->submenuFactory->addMenu($this->translator->translate('menu_new'), 'new')
+                ->setShowInDropdown();
+        }
     }
 
     #[NoReturn]
