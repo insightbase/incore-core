@@ -317,54 +317,36 @@ function initFlashes() {
 initFlashes();
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOM loaded, initializing clickable rows...');
     
     const clickableRows = document.querySelectorAll('.clickable-row');
-    console.log(`Found ${clickableRows.length} clickable rows`);
 
     if (clickableRows.length === 0) {
-        console.warn('No elements with class "clickable-row" found');
         return;
     }
 
     clickableRows.forEach((row, index) => {
-        console.log(`Initializing row ${index + 1}:`, row);
         
         row.addEventListener('click', function (e) {
-            console.log('Row clicked:', this);
-            console.log('Click target:', e.target);
             
             const excludedElement = e.target.closest('button, a, .menu, .dropdown, .menu-dropdown, .menu-item, .menu-link');
             if (excludedElement) {
-                console.log('Click ignored - excluded element:', excludedElement);
                 return;
             }
 
             const href = this.dataset.href;
-            console.log('Row href:', href);
             
             if (href) {
-                console.log('Navigating to:', href);
                 window.location.href = href;
-            } else {
-                console.warn('No href found in dataset for row:', this);
             }
         });
 
         row.addEventListener('mouseenter', function () {
-            console.log('Mouse entered row:', this);
             this.classList.add('selectedRow');
         });
 
         row.addEventListener('mouseleave', function () {
-            console.log('Mouse left row:', this);
             this.classList.remove('selectedRow');
         });
 
-        console.log(`Row ${index + 1} initialized successfully`);
     });
-
-    console.log('All clickable rows initialized successfully');
 });
-
-console.log('Script loaded');
