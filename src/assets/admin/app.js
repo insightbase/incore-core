@@ -28,7 +28,7 @@ let editor = undefined;
 
 naja.addEventListener('start', (event) => {
     loader.hide(loaderId);
-    if(!event.detail.options.notShowLoader) {
+    if (!event.detail.options.notShowLoader) {
         loaderId = loader.show({
             text: '',
             variant: 'dots',
@@ -67,7 +67,7 @@ if (formLanguageSelect) {
 initSortable();
 function initSortable() {
     const container = document.querySelector('.draggable-zone');
-    if(container !== null) {
+    if (container !== null) {
         new Draggable.Sortable(container, {
             draggable: '.draggable',
             handle: '.draggable-handle'
@@ -75,14 +75,14 @@ function initSortable() {
             .on('sortable:stop', () => {
                 const sortedIds = getSortedIds(container);
                 let url = container.getAttribute('data-url-sort').replace('xxxxxx', sortedIds.join(','));
-                naja.makeRequest('GET', url, {}, {history: false})
+                naja.makeRequest('GET', url, {}, { history: false })
             });
     }
 }
 function getSortedIds(container) {
     let ret = [];
     Array.from(container.querySelectorAll('.draggable')).forEach((element) => {
-        if(!element.classList.contains('draggable--original') && !element.classList.contains('draggable-mirror')) {
+        if (!element.classList.contains('draggable--original') && !element.classList.contains('draggable-mirror')) {
             ret.push(element.getAttribute('data-id'));
         }
     });
@@ -93,11 +93,11 @@ function initDatagrid() {
 
     Array.from(document.getElementsByClassName('globalSearch')).forEach((element) => {
         element.addEventListener('keyup', function (event) {
-            if(event.key === 'Enter'){
+            if (event.key === 'Enter') {
                 clearTimeout(globalSearchTimeout);
                 let url = element.getAttribute('data-url').replace('xxxxxx', element.value);
                 naja.makeRequest('GET', url);
-            }else {
+            } else {
                 console.log('event.key');
                 clearTimeout(globalSearchTimeout);
                 globalSearchTimeout = setTimeout(function () {
@@ -113,23 +113,23 @@ function initDatagrid() {
     });
 
     Array.from(document.getElementsByClassName('inlineEditOpenModal')).forEach((element) => {
-        element.addEventListener('click', function(){
+        element.addEventListener('click', function () {
             let td = element.parentElement;
             let urlRefresh = td.getAttribute('data-inline-edit-url-refresh');
-            naja.makeRequest('GET', urlRefresh, {}, {history: false});
+            naja.makeRequest('GET', urlRefresh, {}, { history: false });
         });
     });
 
     Array.from(document.getElementsByClassName('dataGridFilter')).forEach((element) => {
-       var input = element.getElementsByClassName('filterInput')[0];
-       input.addEventListener('change', function(){
-           let value = input.value;
-           if(input.getAttribute('type') === 'checkbox'){
-               value = input.checked;
-           }
-           let url = element.getAttribute('data-url').replace('xxxxxx', value);
-           naja.makeRequest('GET', url);
-       });
+        var input = element.getElementsByClassName('filterInput')[0];
+        input.addEventListener('change', function () {
+            let value = input.value;
+            if (input.getAttribute('type') === 'checkbox') {
+                value = input.checked;
+            }
+            let url = element.getAttribute('data-url').replace('xxxxxx', value);
+            naja.makeRequest('GET', url);
+        });
     });
 }
 initDatagrid();
@@ -194,7 +194,7 @@ function initEditorJs() {
         }
     });
     Array.from(document.getElementsByTagName('form')).forEach((element) => {
-        element.onsubmit = function(event) {
+        element.onsubmit = function (event) {
             Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
                 editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
                     elementEditor.value = JSON.stringify(data);
@@ -208,11 +208,11 @@ function truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 }
 
-function inlineEdit(event){
+function inlineEdit(event) {
     let element;
-    if(event.target.tagName !== 'TD'){
+    if (event.target.tagName !== 'TD') {
         element = event.target.closest('td');
-    }else{
+    } else {
         element = event.target;
     }
     let elementText;
@@ -225,13 +225,13 @@ function inlineEdit(event){
     var input = element.getElementsByClassName('input')[0];
 
     let saveEditor = element.getElementsByClassName('saveEditor');
-    if(saveEditor.length > 0){
+    if (saveEditor.length > 0) {
         saveEditor = saveEditor[0];
-        saveEditor.addEventListener('click', function(event){
+        saveEditor.addEventListener('click', function (event) {
             event.preventDefault();
-            editors[input.getAttribute('data-for-editor-id')].save().then((outputData) =>{
+            editors[input.getAttribute('data-for-editor-id')].save().then((outputData) => {
                 let url = element.getAttribute('data-inline-edit-url').replace('xxxx', JSON.stringify(outputData));
-                naja.makeRequest('GET', url, {}, {history: false, notShowLoader: true});
+                naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
             });
         });
     }
@@ -240,7 +240,7 @@ function inlineEdit(event){
 
     input.addEventListener('blur', function () {
         let url = element.getAttribute('data-inline-edit-url').replace('xxxx', input.value);
-        naja.makeRequest('GET', url, {}, {history: false, notShowLoader: true});
+        naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
     });
 
     input.addEventListener('keydown', (event) => {
@@ -253,10 +253,10 @@ function inlineEdit(event){
     initEditorJs();
 }
 
-function initDropzone(){
+function initDropzone() {
     let uploadedImageIds = {};
     Array.from(document.getElementsByClassName('dropzoneImage')).forEach((element, index) => {
-        if(!element.dropzone) {
+        if (!element.dropzone) {
             let dzKey = `dropzone-${index}`;
             uploadedImageIds[dzKey] = [];
 
@@ -266,14 +266,14 @@ function initDropzone(){
                 addRemoveLinks: true,
             });
             dropzone.on('success', (file, response) => {
-                if(element.getAttribute('data-multiple') == null) {
+                if (element.getAttribute('data-multiple') == null) {
                     element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
-                }else{
+                } else {
                     uploadedImageIds[dzKey].push(response.imageId);
                 }
             });
             dropzone.on('queuecomplete', (file, response) => {
-                if(element.getAttribute('data-multiple') != null) {
+                if (element.getAttribute('data-multiple') != null) {
                     element.parentElement.getElementsByTagName('input')[0].value = uploadedImageIds[dzKey].join(';');
                 }
             });
@@ -282,7 +282,7 @@ function initDropzone(){
 
     let uploadedFileIds = {};
     Array.from(document.getElementsByClassName('dropzoneFile')).forEach((element, index) => {
-        if(!element.dropzone) {
+        if (!element.dropzone) {
             let dzKey = `dropzone-${index}`;
             uploadedFileIds[dzKey] = [];
 
@@ -292,14 +292,14 @@ function initDropzone(){
                 addRemoveLinks: true,
             });
             dropzone.on('success', (file, response) => {
-                if(element.getAttribute('data-multiple') == null) {
+                if (element.getAttribute('data-multiple') == null) {
                     element.parentElement.getElementsByTagName('input')[0].value = Number(response.fileId);
-                }else{
+                } else {
                     uploadedFileIds[dzKey].push(response.fileId);
                 }
             });
             dropzone.on('queuecomplete', (file, response) => {
-                if(element.getAttribute('data-multiple') != null) {
+                if (element.getAttribute('data-multiple') != null) {
                     element.parentElement.getElementsByTagName('input')[0].value = uploadedFileIds[dzKey].join(';');
                 }
             });
@@ -308,11 +308,63 @@ function initDropzone(){
 }
 initDropzone();
 
-function initFlashes(){
+function initFlashes() {
     const flashes = document.getElementsByClassName('flashes')[0];
     Array.from(flashes.getElementsByClassName('flash')).forEach((element) => {
-        toast.show({type: element.getAttribute('data-toast'), message: element.innerHTML})
+        toast.show({ type: element.getAttribute('data-toast'), message: element.innerHTML })
     });
 }
 initFlashes();
 
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM loaded, initializing clickable rows...');
+    
+    const clickableRows = document.querySelectorAll('.clickable-row');
+    console.log(`Found ${clickableRows.length} clickable rows`);
+
+    if (clickableRows.length === 0) {
+        console.warn('No elements with class "clickable-row" found');
+        return;
+    }
+
+    clickableRows.forEach((row, index) => {
+        console.log(`Initializing row ${index + 1}:`, row);
+        
+        row.addEventListener('click', function (e) {
+            console.log('Row clicked:', this);
+            console.log('Click target:', e.target);
+            
+            const excludedElement = e.target.closest('button, a, .menu, .dropdown, .menu-dropdown, .menu-item, .menu-link');
+            if (excludedElement) {
+                console.log('Click ignored - excluded element:', excludedElement);
+                return;
+            }
+
+            const href = this.dataset.href;
+            console.log('Row href:', href);
+            
+            if (href) {
+                console.log('Navigating to:', href);
+                window.location.href = href;
+            } else {
+                console.warn('No href found in dataset for row:', this);
+            }
+        });
+
+        row.addEventListener('mouseenter', function () {
+            console.log('Mouse entered row:', this);
+            this.classList.add('selectedRow');
+        });
+
+        row.addEventListener('mouseleave', function () {
+            console.log('Mouse left row:', this);
+            this.classList.remove('selectedRow');
+        });
+
+        console.log(`Row ${index + 1} initialized successfully`);
+    });
+
+    console.log('All clickable rows initialized successfully');
+});
+
+console.log('Script loaded');

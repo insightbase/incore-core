@@ -4,162 +4,200 @@
 
 {block scripts}
     {include parent}
-
-    {if !$notConfigured}
-        <script type="text/javascript">
-            class KTExampleAreaChart {
-                static init() {
-                    const data = [];
-                    const categories = [];
-                    let last = null;
+    
+    <script type="text/javascript">
+        class KTExampleAreaChart {
+            static init() {
+                const data = [];
+                const categories = [];
+                
+                {if $notConfigured}
+                    // Generujeme realistická falešná data
+                    const today = new Date();
+                    const baseVisits = 45;
+                    
+                    for(let i = 29; i >= 0; i--) {
+                        const date = new Date(today);
+                        date.setDate(date.getDate() - i);
+                        
+                        // Realistická data s trendy (víkendy nižší, všední dny vyšší)
+                        const dayOfWeek = date.getDay();
+                        let multiplier = 1;
+                        
+                        if (dayOfWeek === 0 || dayOfWeek === 6) { // víkend
+                            multiplier = 0.7;
+                        } else if (dayOfWeek >= 1 && dayOfWeek <= 5) { // všední dny
+                            multiplier = 1.2;
+                        }
+                        
+                        // Přidáme náhodnou varianci
+                        const randomVariance = 0.8 + (Math.random() * 0.4); // 0.8 - 1.2
+                        const visits = Math.round(baseVisits * multiplier * randomVariance);
+                        
+                        data.push(visits);
+                        categories.push(date.getDate() + '.' + (date.getMonth() + 1) + '.');
+                    }
+                {else}
                     {foreach $dataAccessGraph as $value}
                         data.push({$value->count});
                         categories.push({$value->date->format('j.n.Y')});
                     {/foreach}
+                {/if}
 
-                    const options = {
-                        series: [{
-                            name: 'series1',
-                            data: data
-                        }],
-                        chart: {
-                            height: 250,
-                            type: 'area',
-                            toolbar: {
-                                show: false
-                            }
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        legend: {
+                const options = {
+                    series: [{
+                        name: '{if $notConfigured}Návštěvy (demo){else}Návštěvy{/if}',
+                        data: data
+                    }],
+                    chart: {
+                        height: 250,
+                        type: 'area',
+                        toolbar: {
                             show: false
                         },
-                        stroke: {
-                            curve: 'smooth',
-                            show: true,
-                            width: 3,
-                            colors: ['var(--tw-primary)']
+                        animations: {
+                            enabled: {if $notConfigured}true{else}true{/if},
+                            easing: 'easeinout',
+                            speed: 800
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    legend: {
+                        show: false
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        show: true,
+                        width: 3,
+                        colors: ['{if $notConfigured}#94a3b8{else}var(--tw-primary){/if}']
+                    },
+                    xaxis: {
+                        categories: categories,
+                        axisBorder: {
+                            show: false,
                         },
-                        xaxis: {
-                            categories: categories,
-                            axisBorder: {
-                                show: false,
-                            },
-                            maxTicks: 7,
-                            axisTicks: {
-                                show: false
-                            },
-                            labels: {
-                                style: {
-                                    colors: 'var(--tw-gray-500)',
-                                    fontSize: '12px'
-                                }
-                            },
-                            crosshairs: {
-                                position: 'front',
-                                stroke: {
-                                    color: 'var(--tw-primary)',
-                                    width: 1,
-                                    dashArray: 3
-                                }
-                            },
-                            tooltip: {
-                                enabled: false,
-                                formatter: undefined,
-                                offsetY: 0,
-                                style: {
-                                    fontSize: '12px'
-                                }
+                        maxTicks: 7,
+                        axisTicks: {
+                            show: false
+                        },
+                        labels: {
+                            style: {
+                                colors: '{if $notConfigured}#cbd5e1{else}var(--tw-gray-500){/if}',
+                                fontSize: '12px'
                             }
                         },
-                        yaxis: {
-                            axisTicks: {
-                                show: false
-                            },
-                            labels: {
-                                style: {
-                                    colors: 'var(--tw-gray-500)',
-                                    fontSize: '12px'
-                                },
+                        crosshairs: {
+                            position: 'front',
+                            stroke: {
+                                color: '{if $notConfigured}#94a3b8{else}var(--tw-primary){/if}',
+                                width: 1,
+                                dashArray: 3
                             }
                         },
                         tooltip: {
+                            enabled: false
+                        }
+                    },
+                    yaxis: {
+                        axisTicks: {
+                            show: false
+                        },
+                        labels: {
+                            style: {
+                                colors: '{if $notConfigured}#cbd5e1{else}var(--tw-gray-500){/if}',
+                                fontSize: '12px'
+                            },
+                        }
+                    },
+                    tooltip: {
+                        enabled: {if $notConfigured}false{else}true{/if},
+                        {if !$notConfigured}
+                        custom({ series, seriesIndex, dataPointIndex, w}) {
+                            const number = parseInt(series[seriesIndex][dataPointIndex]);
+                            return (
+                                `<div class="flex flex-col gap-2 p-3.5">
+                                 <div class="flex items-center gap-1.5">
+                                  <div class="font-semibold text-md text-gray-900">
+                                   ${ number }
+                                  </div>
+                                 </div>
+                                </div>`
+                            );
+                        }
+                        {/if}
+                    },
+                    markers: {
+                        size: 0,
+                        colors: '{if $notConfigured}#cbd5e1{else}var(--tw-primary-light){/if}',
+                        strokeColors: '{if $notConfigured}#94a3b8{else}var(--tw-primary){/if}',
+                        strokeWidth: 4,
+                        strokeOpacity: 1,
+                        strokeDashArray: 0,
+                        fillOpacity: 1,
+                        discrete: [],
+                        shape: "circle",
+                        radius: 2,
+                        offsetX: 0,
+                        offsetY: 0,
+                        showNullDataPoints: true,
+                        hover: {
+                            size: {if $notConfigured}0{else}8{/if},
+                            sizeOffset: 0
+                        }
+                    },
+                    fill: {
+                        gradient: {
                             enabled: true,
-                            custom({ series, seriesIndex, dataPointIndex, w}) {
-                                const number = parseInt(series[seriesIndex][dataPointIndex]);
-
-                                return (
-                                    `
-    <div class="flex flex-col gap-2 p-3.5">
-     <div class="flex items-center gap-1.5">
-      <div class="font-semibold text-md text-gray-900">
-       ${ number }
-      </div>
-     </div>
-    </div>
-    `
-                                );
+                            opacityFrom: {if $notConfigured}0.15{else}0.25{/if},
+                            opacityTo: 0
+                        }
+                    },
+                    grid: {
+                        borderColor: '{if $notConfigured}#f1f5f9{else}var(--tw-gray-200){/if}',
+                        strokeDashArray: 5,
+                        clipMarkers: false,
+                        yaxis: {
+                            lines: {
+                                show: true
                             }
                         },
-                        markers: {
-                            size: 0,
-                            colors: 'var(--tw-primary-light)',
-                            strokeColors: 'var(--tw-primary)',
-                            strokeWidth: 4,
-                            strokeOpacity: 1,
-                            strokeDashArray: 0,
-                            fillOpacity: 1,
-                            discrete: [],
-                            shape: "circle",
-                            radius: 2,
-                            offsetX: 0,
-                            offsetY: 0,
-                            onClick: undefined,
-                            onDblClick: undefined,
-                            showNullDataPoints: true,
-                            hover: {
-                                size: 8,
-                                sizeOffset: 0
+                        xaxis: {
+                            lines: {
+                                show: false
                             }
                         },
-                        fill: {
-                            gradient: {
-                                enabled: true,
-                                opacityFrom: 0.25,
-                                opacityTo: 0
-                            }
-                        },
-                        grid: {
-                            borderColor: 'var(--tw-gray-200)',
-                            strokeDashArray: 5,
-                            clipMarkers: false,
-                            yaxis: {
-                                lines: {
-                                    show: true
-                                }
-                            },
-                            xaxis: {
-                                lines: {
-                                    show: false
-                                }
-                            },
-                        },
-                    };
+                    },
+                    {if $notConfigured}
+                    noData: {
+                        text: undefined
+                    }
+                    {/if}
+                };
 
-                    const element = document.querySelector('#area_chart');
-                    if (!element) return;
+                const element = document.querySelector('#area_chart');
+                if (!element) return;
 
-                    const chart = new ApexCharts(element, options);
-                    chart.render();
-                }
+                const chart = new ApexCharts(element, options);
+                chart.render();
+                
+                {if $notConfigured}
+                // Přidáme overlay po vykreslení grafu
+                setTimeout(() => {
+                    const overlay = document.querySelector('#chart-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '1';
+                    }
+                }, 100);
+                {/if}
             }
+        }
 
-            KTDom.ready(() => {
-                KTExampleAreaChart.init();
-            });
-        </script>
-    {/if}
+        KTDom.ready(() => {
+            KTExampleAreaChart.init();
+        });
+    </script>
 {/block}
 
 {block content}
@@ -169,17 +207,39 @@
     <p>Vítejte v administraci webu. Pokračujte výběrem položky z levého menu.</p>
     </div>
     <div class="lg:col-span-1">
-        <div class="card" n:if="$notConfigured">
-            <p>{_'home_googleAnalyticsNotConfigured'}</p>
-        </div>
-        <div class="card" n:if="!$notConfigured">
+        <div class="card relative overflow-hidden">
             <div class="card-header">
                 <h3 class="card-title">
                     {_'header_homeAccessGraph'}
                 </h3>
             </div>
-            <div class="px-3 py-1">
-                <div id="area_chart">
+            <div class="px-3 py-1 relative">
+                <div id="area_chart"></div>
+                
+                <div n:if="$notConfigured" 
+                     id="chart-overlay"
+                     style="opacity: 0; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-image: linear-gradient(to top, var(--tw-gradient-stops)); --tw-gradient-from: white; --tw-gradient-stops: var(--tw-gradient-from), rgba(255, 255, 255, 0.95), var(--tw-gradient-to, rgba(255, 255, 255, 0)); --tw-gradient-to: rgba(255, 255, 255, 0.8); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; transition-property: opacity; transition-duration: 300ms;">
+                    <div class="text-center p-7 max-w-sm bg-white rounded-xl shadow-lg border border-gray-200/50">
+                        <div class="mb-4">
+                            <div class="w-12 h-12 mx-auto bg-orange-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class=" text-lg font-semibold text-gray-900 mb-2">
+                            {_'home_googleAnalyticsNotConfigured'}
+                        </p>
+                        <a href="/" 
+                           class="btn btn-primary btn-small">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            {* TODO: Nakonfigurovat Analytics *}
+                            {_'home_googleAnalyticsConfigure'}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

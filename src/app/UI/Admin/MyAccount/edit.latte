@@ -5,7 +5,9 @@
 {block h1}{_'my_account'}{/block}
 
 {block content}
-    {embed basicForm, formEdit}{/embed}
-    <h2 class="text-xl font-semibold mb-4">{_'change_password'}</h2>
-    {embed basicForm, formChangePassword}{/embed}
+    {capture $myAccountTitle}{_'my_account'}{/capture}
+    {capture $changePasswordTitle}{_'change_password'}{/capture}
+    
+    {embed basicForm, formEdit, 'new', $myAccountTitle}{/embed}
+    {embed basicForm, formChangePassword, 'new', $changePasswordTitle}{/embed}
 {/block}
