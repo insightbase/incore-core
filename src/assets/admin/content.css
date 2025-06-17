@@ -156,6 +156,9 @@ body.contentdetail .card .input {
   background: #fff;
   border: 1px solid #e2e8f0;
   transition: border-color .15s,box-shadow .15s; }
+body.contentdetail .card .input.inactive{
+  border-color: white;
+}
 
 body.contentdetail .card .menu a, body.contentdetail .card ul li {
   display: flex;
