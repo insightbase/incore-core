@@ -5,6 +5,7 @@ namespace App\UI\Admin\Email\DataGrid;
 use App\Component\Datagrid\DefaultIconEnum;
 use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
+use App\Component\Datagrid\Entity\DeleteMenuEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
 use App\Component\Translator\Translator;
 
@@ -37,8 +38,7 @@ readonly class DataGridEntityFactory
                     ->setIcon(DefaultIconEnum::Edit->value)
             )
             ->addMenu(
-                new MenuEntity($this->translator->translate('menu_delete'), 'delete')
-                    ->setIcon(DefaultIconEnum::Delete->value)
+                new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete')
             )
         ;
 

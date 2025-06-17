@@ -43,11 +43,7 @@ naja.redirectHandler.addEventListener('redirect', (event) => {
 });
 naja.addEventListener('success', (event) => {
     netteForms.initOnLoad();
-    initDatagrid();
-    initFlashes();
-    initDropzone();
-    initEditorJs();
-    initSortable();
+    initSystem();
     loader.hide(loaderId);
 });
 let globalSearchTimeout;
@@ -64,7 +60,25 @@ if (formLanguageSelect) {
     });
 }
 
-initSortable();
+function initSystem(){
+    initConfirmDelete();
+    initSortable();
+    initDatagrid();
+    initEditorJs();
+    initDropzone();
+    initFlashes();
+}
+initSystem();
+
+function initConfirmDelete(){
+    Array.from(document.getElementsByClassName('confirmDelete')).forEach((element) => {
+        element.addEventListener('click', function(event){
+            event.preventDefault();
+            document.getElementsByClassName('confirmDeleteLink')[0].setAttribute('href', element.getAttribute('href'));
+        });
+    });
+}
+
 function initSortable() {
     const container = document.querySelector('.draggable-zone');
     if (container !== null) {
@@ -132,14 +146,12 @@ function initDatagrid() {
         });
     });
 }
-initDatagrid();
 
 const editors = {};
 function generateUniqueId() {
     return Date.now() + Math.floor(Math.random() * 10000);
 }
 
-initEditorJs();
 function initEditorJs() {
     Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
         const editorDiv = document.createElement('div');
@@ -306,7 +318,6 @@ function initDropzone() {
         }
     });
 }
-initDropzone();
 
 function initFlashes() {
     const flashes = document.getElementsByClassName('flashes')[0];
@@ -314,7 +325,6 @@ function initFlashes() {
         toast.show({ type: element.getAttribute('data-toast'), message: element.innerHTML })
     });
 }
-initFlashes();
 
 document.addEventListener('DOMContentLoaded', function () {
     

@@ -174,7 +174,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 															</button>
 															<div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
 																<div class="menu-item" n:foreach="$mainMenuItem->getSubs() as $mainMenuSub" n:if="$presenter->getUser()->isAllowed($module->system_name, $mainMenuSub->getAction())">
-																	<a class="menu-link" n:href="$module->presenter . ':' . $mainMenuSub->getAction(), ...$mainMenuSub->getParams()">
+																	<a n:class="'menu-link', $mainMenuSub->getClass(), $mainMenuSub->isConfirmDelete() ? 'confirmDelete'" {if $mainMenuSub->isConfirmDelete()}data-modal-toggle="#confirmDelete"{/if} n:href="$module->presenter . ':' . $mainMenuSub->getAction(), ...$mainMenuSub->getParams()">
 																			<span class="menu-icon" n:if="$mainMenuSub->getIcon() !== null">
 																				<i class="{$mainMenuSub->getIcon()}"></i>
 																			</span>
@@ -372,6 +372,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 				{embed basicForm, editImageForm}
 				{/embed}
 			{/snippet}
+		{/block}
+	{/embed}
+
+	{embed basicModal, 'confirmDelete'}
+		{block title}{_'datagrid.confirmDelete'}{/block}
+		{block body}
+			<button class="btn btn-secondary" data-modal-dismiss="#confirmDelete">{_'datagrid.cancel'}</button>
+			<a class="btn btn-primary confirmDeleteLink" data-modal-dismiss="#confirmDelete" href="#">{_'datagrid.confirm'}</a>
 		{/block}
 	{/embed}
 
