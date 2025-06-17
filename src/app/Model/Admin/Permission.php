@@ -25,6 +25,14 @@ readonly class Permission implements Model
     }
 
     /**
+     * @return Selection<PermissionEntity>
+     */
+    public function getToAuthorizator():Selection
+    {
+        return $this->getTable()->where('active', true);
+    }
+
+    /**
      * @param RoleEntity   $role
      * @param ModuleEntity $module
      *
@@ -34,6 +42,7 @@ readonly class Permission implements Model
     {
         return $this->getTable()->where('role_id', $role->id)
             ->where('module_id', $module->id)
+            ->where('active', true)
         ;
     }
 
@@ -41,11 +50,12 @@ readonly class Permission implements Model
      * @param RoleEntity   $role
      * @param ModuleEntity $module
      *
-     * @return ?PermissionEntity>
+     * @return ?PermissionEntity
      */
     public function getByRoleAndModuleAndPrivilegeId(ActiveRow $role, ActiveRow $module, int $privilegeId): ?ActiveRow
     {
-        return $this->getByRoleAndModule($role, $module)
+        return $this->getTable()->where('role_id', $role->id)
+            ->where('module_id', $module->id)
             ->where('privilege_id', $privilegeId)
             ->fetch()
         ;
@@ -68,7 +78,9 @@ readonly class Permission implements Model
      */
     public function getByRoleAndModuleAndNotPrivilegesId(ActiveRow $role, ActiveRow $module, array $privilegeIds): Selection
     {
-        return $this->getByRoleAndModule($role, $module)
+        return $this->getTable()
+            ->where('role_id', $role->id)
+            ->where('module_id', $module->id)
             ->where('NOT privilege_id', $privilegeIds)
         ;
     }

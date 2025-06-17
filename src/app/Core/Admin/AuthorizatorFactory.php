@@ -25,7 +25,7 @@ readonly class AuthorizatorFactory
             $acl->addResource($module->system_name);
         }
 
-        foreach ($this->permissionModel->getTable() as $permission) {
+        foreach ($this->permissionModel->getToAuthorizator() as $permission) {
             $acl->allow($permission->role->system_name, $permission->module->system_name, $permission->privilege->system_name);
         }
 

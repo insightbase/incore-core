@@ -35,9 +35,6 @@ readonly class DefaultEntityFactory
         $entity->addMenu(
             (new MenuEntity($this->translator->translate('menu_authorization'), 'authorization'))
                 ->setIcon('ki-filled ki-key')
-                ->setShowCallback(function (ActiveRow $row): bool {
-                    return !$row['is_systemic'];
-                })
         );
         $entity->addMenu(
             (new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete'))
