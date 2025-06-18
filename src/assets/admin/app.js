@@ -317,6 +317,19 @@ function initDropzone() {
             });
         }
     });
+    Array.from(document.getElementsByClassName('avatarContainer')).forEach((element, index) => {
+        const inputChanged = element.getElementsByClassName('avatarInput')[0];
+        const input = element.getElementsByTagName('input')[0];
+        inputChanged.addEventListener('change', function(event){
+            const file = event.target.files[0];
+            const url = inputChanged.getAttribute('data-upload-url');
+            const formData = new FormData();
+            formData.append('file', file);
+            naja.makeRequest('POST', url, formData, {history: false}).then(function(payload){
+                input.value = Number(payload.imageId);
+            });
+        });
+    });
 }
 
 function initFlashes() {
