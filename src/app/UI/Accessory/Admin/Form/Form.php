@@ -12,6 +12,7 @@ use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJsInput;
 use App\UI\Accessory\Admin\Form\Controls\EditorJsInputFactory;
 use Nette;
+use Nette\Forms\Container;
 
 class Form extends Nette\Application\UI\Form
 {
@@ -29,10 +30,19 @@ class Form extends Nette\Application\UI\Form
         private readonly EditorJsInputFactory      $editorJsInputFactory,
         public readonly Language                   $languageModel,
         private readonly DropzoneFileInputFactory  $dropzoneFileInputFactory,
+        private readonly ContainerFactory          $containerFactory,
         ?Nette\ComponentModel\IContainer           $parent = null,
         ?string                                    $name = null
     ) {
         parent::__construct($parent, $name);
+    }
+
+    public function addContainer(int|string $name): Nette\Forms\Container
+    {
+        $control = $this->containerFactory->create();
+        $control->currentGroup = $this->currentGroup;
+        $this->currentGroup?->add($control);
+        return $this[$name] = $control;
     }
 
     /**

@@ -108,7 +108,8 @@ body.contentdetail .card .type-download h2::before {
 
 body.contentdetail .card .blockItem-value-show {
   display: block;
-  margin: .5rem 0;
+  margin: .375rem 0;
+  padding: .5rem;
   font-size: .875rem;
   line-height: 1.5; }
 
