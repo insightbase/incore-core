@@ -40,7 +40,7 @@ class TranslateMainMenuFactory implements MainMenuModule
                 ->addParam('source', 'front')
                 ->addParam('key', $key['prefix']);
             foreach($this->translateModel->getSecondKey('front', $key['prefix']) as $key2){
-                $menu->addSubMenu($this->mainMenuItemFactory->create($this->module, 'default', $key2['prefix'])
+                $menu->addSubMenu($this->mainMenuItemFactory->create($this->module, 'default', $this->translator->translate($key2['prefix']))
                     ->addParam('source', 'front')
                     ->addParam('key', $key2['prefix']))
                 ;
