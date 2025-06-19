@@ -83,8 +83,7 @@ function initConfirmDelete(){
 }
 
 function initSortable() {
-    const container = document.querySelector('.draggable-zone');
-    if (container !== null) {
+    Array.from(document.querySelectorAll('.draggable-zone')).forEach((container) => {
         new Draggable.Sortable(container, {
             draggable: '.draggable',
             handle: '.draggable-handle'
@@ -92,9 +91,9 @@ function initSortable() {
             .on('sortable:stop', () => {
                 const sortedIds = getSortedIds(container);
                 let url = container.getAttribute('data-url-sort').replace('xxxxxx', sortedIds.join(','));
-                naja.makeRequest('GET', url, {}, { history: false })
+                naja.makeRequest('GET', url, {}, {history: false})
             });
-    }
+    });
 }
 function getSortedIds(container) {
     let ret = [];
