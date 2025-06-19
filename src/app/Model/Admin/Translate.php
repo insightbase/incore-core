@@ -117,4 +117,14 @@ readonly class Translate implements Model
             ->where('is_manual', false)
         ;
     }
+
+    public function getSecondKey(string $source, string $prefix):Selection
+    {
+        return $this->getTable()
+            ->select('DISTINCT SUBSTRING_INDEX(key, ?, 2) AS prefix', '.')
+            ->where('source', $source)
+            ->where('key LIKE ?', $prefix . '.%.__%')
+            ->where('LENGTH(key) - LENGTH(REPLACE(key, ?, "")) >= ?', ['.', 2])
+            ->order('prefix');
+    }
 }
