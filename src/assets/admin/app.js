@@ -25,6 +25,7 @@ netteForms.initOnLoad();
 
 let loaderId = null;
 let editor = undefined;
+const editors = {};
 
 naja.addEventListener('start', (event) => {
     loader.hide(loaderId);
@@ -44,6 +45,8 @@ naja.redirectHandler.addEventListener('redirect', (event) => {
 naja.addEventListener('success', (event) => {
     netteForms.initOnLoad();
     initSystem();
+});
+naja.addEventListener('complete', (event) => {
     loader.hide(loaderId);
 });
 let globalSearchTimeout;
@@ -147,7 +150,6 @@ function initDatagrid() {
     });
 }
 
-const editors = {};
 function generateUniqueId() {
     return Date.now() + Math.floor(Math.random() * 10000);
 }

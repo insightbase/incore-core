@@ -41,7 +41,9 @@ body.contentdetail .card {
   position: relative;
   cursor: default;
   transition: none;
-  animation: .2s ease-out slideIn; }
+  animation: .2s ease-out slideIn;
+  min-height: 100px;
+}
 
 body.contentdetail .card.draggable:hover {
   border-color: #e2e8f0;
