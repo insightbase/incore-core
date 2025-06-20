@@ -59,7 +59,9 @@ class TranslateMainMenuFactory implements MainMenuModule
      */
     public function isActive(MainMenuItem $mainMenuItem, Presenter $presenter): bool
     {
-        return false;
+        if(!($presenter instanceof TranslatePresenter)) {
+            return false;
+        }
         $keys = explode('.', $presenter->key);
         $lastKey = Arrays::last(explode('.', $mainMenuItem->getParams()['key']));
         return in_array($lastKey, $keys);
