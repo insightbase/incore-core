@@ -445,6 +445,10 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		            }
 
 		            if($value !== null){
+		                $translateLanguage = $manager->getRepository(TranslateLanguage::class)->findOneBy([
+		                    'translate' => $translate,
+		                    'language' => $language,
+		                ]);
 		                if($translateLanguage === null) {
 		                    $translateLanguage = new TranslateLanguage();
 		                    $translateLanguage->setLanguage($language);
