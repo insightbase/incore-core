@@ -423,38 +423,40 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'home_googleAnalyticsConfigure' => 'Nastavit Google Analytics',
 		'header_log' => 'Log změn',
 		'content_fieldTypeDropzone' => 'Dropzone',
+		'input_defaultType' => 'Výchozí typ',
+		'input_hasContent' => 'Obsahuje obsah',
+		'input_enabledCreateForAdmin' => 'Povolit vytváření/mazání pro admina',
+		'content_fieldTypeCheckbox' => 'Checkbox',
+		'content_fieldTypeTextArea' => 'TextArea',
+		'content_emptyName' => 'Nový článek',
 	];
 
 
 	public function load(\Doctrine\Persistence\ObjectManager $manager): void
 	{
 		$language = $this->getReference(LanguageFixtures::LANG_CS, Language::class);
-        foreach($this->translates as $key => $value){
-            $translate = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
-            if($translate === null){
-                $translate = new Translate();
-                $translate->setKey($key);
-                $translate->source = 'admin';
-                $manager->persist($translate);
-            }
+		        foreach($this->translates as $key => $value){
+		            $translate = $manager->getRepository(Translate::class)->findOneBy(['key' => $key]);
+		            if($translate === null){
+		                $translate = new Translate();
+		                $translate->setKey($key);
+		                $translate->source = 'admin';
+		                $manager->persist($translate);
+		            }
 
-            if($value !== null){
-                $translateLanguage = $manager->getRepository(TranslateLanguage::class)->findOneBy([
-                    'language' => $language,
-                    'translate' => $translate,
-                ]);
-                if($translateLanguage === null) {
-                    $translateLanguage = new TranslateLanguage();
-                    $translateLanguage->setLanguage($language);
-                    $translateLanguage->setTranslate($translate);
-                    $translateLanguage->setValue($value);
-                }else{
-                    $translateLanguage->setValue($value);
-                }
-                $manager->persist($translateLanguage);
-            }
-        }
-        $manager->flush();
+		            if($value !== null){
+		                if($translateLanguage === null) {
+		                    $translateLanguage = new TranslateLanguage();
+		                    $translateLanguage->setLanguage($language);
+		                    $translateLanguage->setTranslate($translate);
+		                    $translateLanguage->setValue($value);
+		                }else{
+		                    $translateLanguage->setValue($value);
+		                }
+		                $manager->persist($translateLanguage);
+		            }
+		        }
+		        $manager->flush();
 	}
 
 
