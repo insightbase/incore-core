@@ -3,6 +3,7 @@
 namespace App\Model\Admin;
 
 use App\Model\Entity\ImageEntity;
+use App\Model\Enum\ImageTypeEnum;
 use App\Model\Model;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
@@ -47,7 +48,9 @@ readonly class Image implements Model
      */
     public function getToGrid():Selection
     {
-        return $this->getTable()->where('image_location.show_in_grid', true);
+        return $this->getTable()
+            ->where('type', ImageTypeEnum::Image->value)
+            ->where('image_location.show_in_grid', true);
     }
 
     /**

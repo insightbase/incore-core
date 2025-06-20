@@ -2,6 +2,7 @@
 
 namespace App\Model\DoctrineEntity;
 
+use App\Model\Enum\ImageTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -30,6 +31,9 @@ class Image implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $author = null;
+
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ImageTypeEnum::Image->value])]
+    public string $type = ImageTypeEnum::Image->value;
 
     #[ORM\ManyToOne(targetEntity: ImageLocation::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]

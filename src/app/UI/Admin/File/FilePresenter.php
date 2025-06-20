@@ -4,6 +4,7 @@ namespace App\UI\Admin\File;
 
 use App\Model\Admin\File;
 use App\Model\Admin\Setting;
+use App\Model\Enum\ImageTypeEnum;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\ParameterBag;
@@ -62,6 +63,7 @@ class FilePresenter extends Presenter
                     }
                     $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
                 }else{
+                    $fileRow->update(['type' => ImageTypeEnum::File]);
                     $file->move($this->parameterBag->uploadDir . '/' . $fileName);
                 }
                 $this->payload->file = $fileName;
