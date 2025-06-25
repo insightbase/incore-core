@@ -108,7 +108,11 @@
         {else}
             {label $input, class:"form-label max-w-32"/}
         {/if}
-        {var string $class = 'input'}
+        {if $input->control->attrs['type'] === 'password'}
+            {var string $class = ''}
+        {else}
+            {var string $class = 'input'}
+        {/if}
         {if $input->hasErrors()}
             {php $class .= ' border-danger'}
         {/if}
@@ -135,7 +139,19 @@
                 {elseif $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput}
                     {$input->getControlDropzone(null, $input)}
                 {else}
-                    {input $input, class:$class}
+                    {if $input->control->attrs['type'] === 'password'}
+                        <div class="input" data-toggle-password="true">
+                            {input $input, class:$class}
+                            <button class="btn btn-icon" data-toggle-password-trigger="true" type="button">
+                                <i class="ki-filled ki-eye text-gray-500 toggle-password-active:hidden">
+                                </i>
+                                <i class="ki-filled ki-eye-slash text-gray-500 hidden toggle-password-active:block">
+                                </i>
+                            </button>
+                        </div>
+                    {else}
+                        {input $input, class:$class}
+                    {/if}
                 {/if}
                 {if array_key_exists('name', $control->attrs) && !str_starts_with($control->attrs['name'], 'language')}
                     {if array_key_exists(App\UI\Accessory\Admin\Form\Form::LANG_CHANGE_ATTRIBUTE, $control->attrs) && $control->attrs[App\UI\Accessory\Admin\Form\Form::LANG_CHANGE_ATTRIBUTE]}
