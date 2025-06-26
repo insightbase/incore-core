@@ -108,7 +108,7 @@
         {else}
             {label $input, class:"form-label max-w-32"/}
         {/if}
-        {if $input->control->attrs['type'] === 'password'}
+        {if array_key_exists('type', $input->control->attrs) && $input->control->attrs['type'] === 'password'}
             {var string $class = ''}
         {else}
             {var string $class = 'input'}
