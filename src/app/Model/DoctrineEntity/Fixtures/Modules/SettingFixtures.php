@@ -38,6 +38,7 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
                 ->setName('Obecné')
                 ->setPresenter('Setting')
                 ->setParent($setting)
+                ->setPosition(12)
             ;
             $manager->persist($settingSetting);
             $manager->flush();
@@ -66,6 +67,7 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
                 ->setName('Moduly')
                 ->setPresenter('Module')
                 ->setParent($setting)
+                ->setPosition(13)
             ;
             $manager->persist($settingModule);
             $manager->flush();
@@ -95,6 +97,7 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
                 ->setName('Favicon')
                 ->setPresenter('Favicon')
                 ->setParent($setting)
+                ->setPosition(14)
             ;
             $manager->persist($settingFavicon);
             $manager->flush();
