@@ -5,6 +5,7 @@ namespace App\UI\Admin\Role\DataGrid;
 use App\Component\Datagrid\DefaultIconEnum;
 use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
+use App\Component\Datagrid\Entity\DeleteMenuEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
 use App\Component\Translator\Translator;
 use Nette\Database\Table\ActiveRow;
@@ -34,13 +35,9 @@ readonly class DefaultEntityFactory
         $entity->addMenu(
             (new MenuEntity($this->translator->translate('menu_authorization'), 'authorization'))
                 ->setIcon('ki-filled ki-key')
-                ->setShowCallback(function (ActiveRow $row): bool {
-                    return !$row['is_systemic'];
-                })
         );
         $entity->addMenu(
-            (new MenuEntity($this->translator->translate('menu_delete'), 'delete'))
-                ->setIcon(DefaultIconEnum::Delete->value)
+            (new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete'))
                 ->setShowCallback(function (ActiveRow $row): bool {
                     return !$row['is_systemic'];
                 })

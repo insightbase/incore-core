@@ -25,6 +25,9 @@ class Permission implements Entity
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     public Privilege $privilege;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    public bool $active = true;
+
     public function setRole(Role $role): self
     {
         $this->role = $role;

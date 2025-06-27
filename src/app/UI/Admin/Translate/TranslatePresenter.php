@@ -60,24 +60,6 @@ class TranslatePresenter extends Presenter
     {
         parent::startup();
 
-        foreach($this->translateModel->getFirstKey('front') as $key){
-            $menu = $this->submenuFactory
-                ->addMenu($this->translator->translate($key['prefix']), 'default')
-                ->addParam('source', 'front')
-                ->addParam('key', $key['prefix'])
-            ;
-            if($key['prefix'] === $this->key){
-                $menu->setIsPrimary();
-            }
-        };
-        $menu = $this->submenuFactory
-            ->addMenu($this->translator->translate('menu_front'), 'default')
-            ->addParam('source', 'front')
-            ->addParam('key', '')
-        ;
-        if($this->key === '' && $this->source === 'front' && $this->getAction() === 'default'){
-            $menu->setIsPrimary();
-        }
         if($this->getUser()->isInRole(RoleEnum::SUPER_ADMIN->value)) {
             $this->submenuFactory->addMenu($this->translator->translate('menu_admin'), 'default')
                 ->addParam('source', 'admin')

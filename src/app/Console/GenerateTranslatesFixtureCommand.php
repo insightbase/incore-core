@@ -74,10 +74,18 @@ class GenerateTranslatesFixtureCommand extends Command
             }
         
             if($value !== null){
-                $translateLanguage = new TranslateLanguage();
-                $translateLanguage->setLanguage($language);
-                $translateLanguage->setTranslate($translate);
-                $translateLanguage->setValue($value);
+                $translateLanguage = $manager->getRepository(TranslateLanguage::class)->findOneBy([
+                    \'translate\' => $translate,
+                    \'language\' => $language,
+                ]);
+                if($translateLanguage === null) {
+                    $translateLanguage = new TranslateLanguage();
+                    $translateLanguage->setLanguage($language);
+                    $translateLanguage->setTranslate($translate);
+                    $translateLanguage->setValue($value);
+                }else{
+                    $translateLanguage->setValue($value);
+                }
                 $manager->persist($translateLanguage);
             }
         }

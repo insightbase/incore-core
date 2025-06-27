@@ -53,9 +53,11 @@ readonly class RoleFacade
                     'module_id' => $module->id,
                     'privilege_id' => $privilegeId,
                 ]);
+            }elseif($permission->active === 0){
+                $permission->update(['active' => true]);
             }
         }
-        $this->permissionModel->getByRoleAndModuleAndNotPrivilegesId($role, $module, $data->privileges)->delete();
+        $this->permissionModel->getByRoleAndModuleAndNotPrivilegesId($role, $module, $data->privileges)->update(['active' => false]);
         $this->logFacade->create(LogActionEnum::SetAuthorization, 'role', $role->id);
     }
 

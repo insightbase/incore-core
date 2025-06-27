@@ -187,37 +187,6 @@ textarea {
     line-height: normal !important;
 }
 
-.modal, .modal-content {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-}
-
-.modal-content{
-    max-width: 1200px;
-}
-
-.datagrid-inline-edit.modal.open {
-    z-index: 90;
-    width: 600px;
-    height: 100vh;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-}
-
-.datagrid-inline-edit.modal.open .modal-content {
-    max-width: 600px !important;
-    width: 100% !important;
-}
-
-.modal-body {
-    padding-top: 1.75rem !important;
-    height: 400px;
-    overflow-y: auto;
-}
 
 .fieldset {
     padding-block: 1.5rem !important;
@@ -295,3 +264,19 @@ form.max-w-2xl{
 }
 
 
+.modal.open {
+    display: grid !important;
+    align-items: center !important;
+}
+
+.modal-footer {
+    padding-inline-start: 1.25rem;
+    padding-inline-end: 1.25rem;
+    padding-block-start: .625rem;
+    padding-block-end: .625rem;
+    outline: none;
+}
+.max-w-\[1000px\] {
+    max-width: 1000px;
+    width: 100%;
+}

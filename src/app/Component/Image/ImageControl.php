@@ -66,12 +66,12 @@ class ImageControl extends Control
         return '/images/' . $previewName;
     }
 
-    public function getPreviewFile(int $fileId, int $width, int $height):string
+    public function getPreviewFile(int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly):string
     {
         $image = $this->getImage($fileId);
-        $previewName = $this->imageFacade->getPreviewName($image, $width, $height);
+        $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
         if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-            $this->imageFacade->generatePreview($image, $width, $height)?->save($this->parameterBag->previewDir . '/' . $previewName);
+            $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName);
         }
         return '/images/' . $previewName;
     }

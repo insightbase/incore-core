@@ -25,6 +25,7 @@ netteForms.initOnLoad();
 
 let loaderId = null;
 let editor = undefined;
+const editors = {};
 
 naja.addEventListener('start', (event) => {
     loader.hide(loaderId);
@@ -43,11 +44,9 @@ naja.redirectHandler.addEventListener('redirect', (event) => {
 });
 naja.addEventListener('success', (event) => {
     netteForms.initOnLoad();
-    initDatagrid();
-    initFlashes();
-    initDropzone();
-    initEditorJs();
-    initSortable();
+    initSystem();
+});
+naja.addEventListener('complete', (event) => {
     loader.hide(loaderId);
 });
 let globalSearchTimeout;
@@ -64,10 +63,27 @@ if (formLanguageSelect) {
     });
 }
 
-initSortable();
+function initSystem(){
+    initConfirmDelete();
+    initSortable();
+    initDatagrid();
+    initEditorJs();
+    initDropzone();
+    initFlashes();
+}
+initSystem();
+
+function initConfirmDelete(){
+    Array.from(document.getElementsByClassName('confirmDelete')).forEach((element) => {
+        element.addEventListener('click', function(event){
+            event.preventDefault();
+            document.getElementsByClassName('confirmDeleteLink')[0].setAttribute('href', element.getAttribute('href'));
+        });
+    });
+}
+
 function initSortable() {
-    const container = document.querySelector('.draggable-zone');
-    if (container !== null) {
+    Array.from(document.querySelectorAll('.draggable-zone')).forEach((container) => {
         new Draggable.Sortable(container, {
             draggable: '.draggable',
             handle: '.draggable-handle'
@@ -75,9 +91,9 @@ function initSortable() {
             .on('sortable:stop', () => {
                 const sortedIds = getSortedIds(container);
                 let url = container.getAttribute('data-url-sort').replace('xxxxxx', sortedIds.join(','));
-                naja.makeRequest('GET', url, {}, { history: false })
+                naja.makeRequest('GET', url, {}, {history: false})
             });
-    }
+    });
 }
 function getSortedIds(container) {
     let ret = [];
@@ -132,14 +148,11 @@ function initDatagrid() {
         });
     });
 }
-initDatagrid();
 
-const editors = {};
 function generateUniqueId() {
     return Date.now() + Math.floor(Math.random() * 10000);
 }
 
-initEditorJs();
 function initEditorJs() {
     Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
         const editorDiv = document.createElement('div');
@@ -305,8 +318,20 @@ function initDropzone() {
             });
         }
     });
+    Array.from(document.getElementsByClassName('avatarContainer')).forEach((element, index) => {
+        const inputChanged = element.getElementsByClassName('avatarInput')[0];
+        const input = element.getElementsByTagName('input')[0];
+        inputChanged.addEventListener('change', function(event){
+            const file = event.target.files[0];
+            const url = inputChanged.getAttribute('data-upload-url');
+            const formData = new FormData();
+            formData.append('file', file);
+            naja.makeRequest('POST', url, formData, {history: false}).then(function(payload){
+                input.value = Number(payload.imageId);
+            });
+        });
+    });
 }
-initDropzone();
 
 function initFlashes() {
     const flashes = document.getElementsByClassName('flashes')[0];
@@ -314,7 +339,6 @@ function initFlashes() {
         toast.show({ type: element.getAttribute('data-toast'), message: element.innerHTML })
     });
 }
-initFlashes();
 
 document.addEventListener('DOMContentLoaded', function () {
     

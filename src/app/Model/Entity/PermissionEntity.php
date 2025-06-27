@@ -14,6 +14,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read int $module_id
  * @property-read PrivilegeEntity $privilege
  * @property-read int $privilege_id
+ * @property-read bool $active
  */
 class PermissionEntity extends ActiveRow
 {

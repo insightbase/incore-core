@@ -41,7 +41,9 @@ body.contentdetail .card {
   position: relative;
   cursor: default;
   transition: none;
-  animation: .2s ease-out slideIn; }
+  animation: .2s ease-out slideIn;
+  min-height: 100px;
+}
 
 body.contentdetail .card.draggable:hover {
   border-color: #e2e8f0;
@@ -108,13 +110,15 @@ body.contentdetail .card .type-download h2::before {
 
 body.contentdetail .card .blockItem-value-show {
   display: block;
-  margin: .5rem 0;
+  margin: .375rem 0;
+  padding: .5rem;
   font-size: .875rem;
   line-height: 1.5; }
 
 body.contentdetail .card .blockItem-value-edit {
   display: none;
-  margin: .5rem 0;
+  margin: .375rem 0;
+  padding: .5rem;
   font-size: .875rem;
   line-height: 1.5; }
 
@@ -135,7 +139,6 @@ body.contentdetail .card .blockItem-value-edit span, body.contentdetail .card .b
 
 body.contentdetail .card .office-detail-value .day {
   gap: .5rem;
-  margin: .375rem 0;
   background: #f8fafc;
   border-radius: 4px; }
 
@@ -148,7 +151,7 @@ body.contentdetail .card .office-detail-value .officeOpen {
   font-weight: 500;
   color: #059669; }
 
-body.contentdetail .card .input {
+body.contentdetail .card .input:not(.checkbox) {
   margin: .25rem 0;
   font-size: .875rem;
   padding: .375rem .75rem;
@@ -156,17 +159,20 @@ body.contentdetail .card .input {
   background: #fff;
   border: 1px solid #e2e8f0;
   transition: border-color .15s,box-shadow .15s; }
+body.contentdetail .card .input.inactive:not(.checkbox){
+  border-color: white;
+}
 
 body.contentdetail .card .menu a, body.contentdetail .card ul li {
   display: flex;
   border-radius: 4px; }
 
-body.contentdetail .card .input:focus {
+body.contentdetail .card .input:not(.checkbox):focus {
   border-color: #94a3b8;
   box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.1);
   outline: 0; }
 
-body.contentdetail .card .input:hover, body.contentdetail .card .menu a:hover {
+body.contentdetail .card .input:not(.checkbox):hover, body.contentdetail .card .menu a:hover {
   border-color: #cbd5e1; }
 
 body.contentdetail .card ul {

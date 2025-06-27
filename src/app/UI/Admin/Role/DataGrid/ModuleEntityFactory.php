@@ -33,7 +33,7 @@ readonly class ModuleEntityFactory
                 ->setRelation('permission')
                 ->setRef(['privilege'])
                 ->setGetRelationCallback(function (ActiveRow $activeRow) use ($role): Selection {
-                    return $activeRow->related('permission')->where('role_id', $role->id);
+                    return $activeRow->related('permission')->where('role_id', $role->id)->where('active', true);
                 })
         );
 

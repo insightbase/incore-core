@@ -19,19 +19,30 @@ class MainMenuItem
     private array $subs = [];
 
     /**
+     * @var MainMenuItem[]
+     */
+    private array $subMenu = [];
+
+    /**
      * @param ModuleEntity $module
      * @param string $action
      * @param string $title
      * @param MainMenuSubFactory $mainMenuSubFactory
      */
     public function __construct(
-        private readonly ActiveRow          $module,
-        private readonly string             $action,
-        private readonly string             $title,
-        private readonly MainMenuSubFactory $mainMenuSubFactory,
-        private readonly User               $userSecurity,
+        private readonly ActiveRow           $module,
+        private readonly string              $action,
+        private readonly string              $title,
+        private readonly MainMenuSubFactory  $mainMenuSubFactory,
+        private readonly User                $userSecurity,
     )
     {
+    }
+
+    public function addSubMenu(MainMenuItem $mainMenuItem):self
+    {
+        $this->subMenu[] = $mainMenuItem;
+        return $this;
     }
 
     public function addSub(string $action,string $title,array $params):MainMenuSub
@@ -81,5 +92,10 @@ class MainMenuItem
             }
         }
         return $subs;
+    }
+
+    public function getSubMenu(): array
+    {
+        return $this->subMenu;
     }
 }

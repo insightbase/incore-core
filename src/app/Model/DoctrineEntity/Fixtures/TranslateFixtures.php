@@ -346,7 +346,6 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'menu_detail' => 'Detail',
 		'content_typeText' => 'Text',
 		'content_typeTextArea' => 'Textarea',
-		'input_perex' => 'Perex',
 		'input_date' => 'Datum',
 		'error_systemNameAlreadyExists' => 'Takový systémový název už existuje',
 		'flash_contentGroupUpdated' => 'Skupina upravena',
@@ -418,6 +417,18 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'header_translateNew' => 'Nový klíč',
 		'input_key' => 'Klíč',
 		'flash_keyCreated' => 'Klíč vytvořen',
+		'datagrid.confirmDelete' => 'Potvrzení smazání',
+		'datagrid.cancel' => 'Zrušit',
+		'datagrid.confirm' => 'ANO smazat',
+		'home_googleAnalyticsConfigure' => 'Nastavit Google Analytics',
+		'header_log' => 'Log změn',
+		'content_fieldTypeDropzone' => 'Dropzone',
+		'input_defaultType' => 'Výchozí typ',
+		'input_hasContent' => 'Obsahuje obsah',
+		'input_enabledCreateForAdmin' => 'Povolit vytváření/mazání pro admina',
+		'content_fieldTypeCheckbox' => 'Checkbox',
+		'content_fieldTypeTextArea' => 'TextArea',
+		'content_emptyName' => 'Nový článek',
 	];
 
 
@@ -434,10 +445,18 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		            }
 
 		            if($value !== null){
-		                $translateLanguage = new TranslateLanguage();
-		                $translateLanguage->setLanguage($language);
-		                $translateLanguage->setTranslate($translate);
-		                $translateLanguage->setValue($value);
+		                $translateLanguage = $manager->getRepository(TranslateLanguage::class)->findOneBy([
+		                    'translate' => $translate,
+		                    'language' => $language,
+		                ]);
+		                if($translateLanguage === null) {
+		                    $translateLanguage = new TranslateLanguage();
+		                    $translateLanguage->setLanguage($language);
+		                    $translateLanguage->setTranslate($translate);
+		                    $translateLanguage->setValue($value);
+		                }else{
+		                    $translateLanguage->setValue($value);
+		                }
 		                $manager->persist($translateLanguage);
 		            }
 		        }

@@ -41,6 +41,7 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
                 ->setName('Uživatelé')
                 ->setPresenter('User')
                 ->setParent($users)
+                ->setPosition(15)
             ;
             $manager->persist($usersUsers);
             $manager->flush();
@@ -91,6 +92,7 @@ class UserFixtures extends Fixture implements FixtureInterface, DependentFixture
                 ->setName('Role')
                 ->setPresenter('Role')
                 ->setParent($users)
+                ->setPosition(16)
             ;
             $manager->persist($usersRole);
             $manager->flush();
