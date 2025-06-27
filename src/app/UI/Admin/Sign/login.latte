@@ -4,17 +4,12 @@
     <div class="flex items-center justify-center grow bg-center bg-no-repeat page-bg">
         <div class="card max-w-[370px] w-full">
             {form formLogin, class: 'card-body flex flex-col gap-5 p-10'}
-                <div>
+                <div class="mb-2.5">
                     {if $setting?->logo_id === null}
                         <img alt="Metronic" class="block h-8 mx-auto" src="/{$metronicDir}/admin/assets/media/brand-logos/logo.svg"/>
                     {else}
                         {control image, $setting?->logo_id, 288, 24, 'block h-8 mx-auto'}
                     {/if}
-                </div>
-                <div class="text-center mb-2.5">
-                    <h3 class="text-lg font-medium text-gray-900 leading-none mb-2.5">
-                        {_'header_login'}
-                    </h3>
                 </div>
                 <div class="flex flex-col gap-1">
                     {label email, class: 'form-label font-normal text-gray-900' /}
