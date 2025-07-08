@@ -139,7 +139,7 @@
                 {elseif $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput}
                     {$input->getControlDropzone(null, $input)}
                 {else}
-                    {if $input->control->attrs['type'] === 'password'}
+                    {if array_key_exists('type', $input->control->attrs) && $input->control->attrs['type'] === 'password'}
                         <div class="input" data-toggle-password="true">
                             {input $input, class:$class}
                             <button class="btn btn-icon" data-toggle-password-trigger="true" type="button">
