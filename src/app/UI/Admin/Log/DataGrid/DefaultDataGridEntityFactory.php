@@ -31,6 +31,7 @@ readonly class DefaultDataGridEntityFactory
                 return $action->translate($this->translator);
             })
         );
+        $dataGridEntity->addColumn(new ColumnEntity('target_id', $this->translator->translate('column_targetId')));
 
         return $dataGridEntity;
     }

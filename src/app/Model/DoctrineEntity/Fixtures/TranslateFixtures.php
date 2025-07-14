@@ -23,7 +23,6 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'changePassword_sendAgain' => 'Poslat znovu',
 		'forgotPasword_input_email' => 'Email',
 		'forgotPasword_input_emailForReset' => 'Email pro resetování hesla',
-		'header_login' => 'Přihlášení',
 		'login_forgotPassword' => 'Zapomenuté heslo',
 		'changePassword_changed' => 'Heslo změněno',
 		'changePassword_done' => 'Hotovo - heslo bylo změněno',
@@ -429,6 +428,10 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'content_fieldTypeCheckbox' => 'Checkbox',
 		'content_fieldTypeTextArea' => 'TextArea',
 		'content_emptyName' => 'Nový článek',
+		'column_targetId' => 'Ovlivněné ID',
+		'input_type_select' => 'Výběr hodnot',
+		'flash_userDeleted' => 'Uživatel smazán',
+		'flash_userCannotByDeleted' => 'Tento uživatel nemůže být smazán',
 	];
 
 
