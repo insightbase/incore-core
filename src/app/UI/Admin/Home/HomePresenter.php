@@ -51,11 +51,12 @@ final class HomePresenter extends Nette\Application\UI\Presenter
     public function actionDefault(): void
     {
         $this->template->recentActivities = $this->logModel->getRecent(15);
+        $this->template->analyticsError = false;
 
         $serviceAccount = $this->settingModel->getDefault()?->google_service_account;
         $gaServiceId = $this->settingModel->getDefault()?->ga_service_id;
 
-        if($gaServiceId === null){
+        if($gaServiceId === null || $serviceAccount === null){
             $this->template->notConfigured = true;
         }else {
             $this->template->notConfigured = false;
@@ -63,11 +64,7 @@ final class HomePresenter extends Nette\Application\UI\Presenter
             $dateFrom = new Nette\Utils\DateTime()->modify('-1 week');
 
             try {
-                if ($serviceAccount !== null) {
-                    putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->parameterBag->uploadDir . '/' . $serviceAccount->saved_name);
-                } else {
-                    putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->parameterBag->rootDir . '/vendor/incore/core/src/assets/files/eternal-algebra-454907-j8-c35c210234e2.json');
-                }
+                putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->parameterBag->uploadDir . '/' . $serviceAccount->saved_name);
                 $client = new BetaAnalyticsDataClient();
 
                 $request = (new RunReportRequest())
