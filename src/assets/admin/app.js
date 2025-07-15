@@ -132,7 +132,8 @@ function initDatagrid() {
     Array.from(document.getElementsByClassName('inlineEditOpenModal')).forEach((element) => {
         element.addEventListener('click', function () {
             let td = element.parentElement;
-            let urlRefresh = td.getAttribute('data-inline-edit-url-refresh');
+            let dataHolder = td.getElementsByClassName('dataHolder')[0];
+            let urlRefresh = dataHolder.getAttribute('data-inline-edit-url-refresh');
             naja.makeRequest('GET', urlRefresh, {}, { history: false });
         });
     });
@@ -233,9 +234,10 @@ function inlineEdit(event) {
     elementText = element.getElementsByClassName('text')[0];
     element.removeEventListener('click', inlineEdit);
 
-    let value = element.getAttribute('data-value');
+    let dataHolder = element.getElementsByClassName('dataHolder')[0];
+    let value = dataHolder.getAttribute('data-value');
     const escaped = value.replace(/"/g, '&quot;');
-    elementText.innerHTML = element.getAttribute('data-inline-input').replace('xxxx', escaped);
+    elementText.innerHTML = dataHolder.getAttribute('data-inline-input').replace('xxxx', escaped);
     var input = element.getElementsByClassName('input')[0];
 
     let saveEditor = element.getElementsByClassName('saveEditor');
@@ -244,7 +246,7 @@ function inlineEdit(event) {
         saveEditor.addEventListener('click', function (event) {
             event.preventDefault();
             editors[input.getAttribute('data-for-editor-id')].save().then((outputData) => {
-                let url = element.getAttribute('data-inline-edit-url').replace('xxxx', JSON.stringify(outputData));
+                let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', JSON.stringify(outputData));
                 naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
             });
         });
@@ -253,7 +255,7 @@ function inlineEdit(event) {
     input.selectionStart = input.selectionEnd = input.value.length;
 
     input.addEventListener('blur', function () {
-        let url = element.getAttribute('data-inline-edit-url').replace('xxxx', input.value);
+        let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', input.value);
         naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
     });
 

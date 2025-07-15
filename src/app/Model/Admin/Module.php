@@ -47,10 +47,18 @@ readonly class Module implements Model
     public function getByPresenter(string $presenterName, string $action = 'default'): ?ActiveRow
     {
         $presenterName = str_replace('Admin:', '', $presenterName);
-        return $this->getTable()
+
+        $module =  $this->getTable()
             ->where('presenter', $presenterName)
             ->where('action', $action)
             ->fetch();
+        if($module === null && $action !== 'default') {
+            $module =  $this->getTable()
+                ->where('presenter', $presenterName)
+                ->where('action', 'default')
+                ->fetch();
+        };
+        return $module;
     }
 
     /**

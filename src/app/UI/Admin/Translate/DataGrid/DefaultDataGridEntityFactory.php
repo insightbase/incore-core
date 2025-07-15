@@ -91,7 +91,7 @@ readonly class DefaultDataGridEntityFactory
                         $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
                         $cache->remove($id[1]);
 
-                        return new ReturnInlineEditCallback(redraw: true);
+                        return new ReturnInlineEditCallback(redrawOneColumn: true);
                     })
                     ->setInlineEditInputCallback(function(ActiveRow $row):Html {
                         if($row['type'] === TranslateTypeEnum::Html->value) {
