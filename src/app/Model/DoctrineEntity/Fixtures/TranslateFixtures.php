@@ -432,6 +432,9 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_type_select' => 'Výběr hodnot',
 		'flash_userDeleted' => 'Uživatel smazán',
 		'flash_userCannotByDeleted' => 'Tento uživatel nemůže být smazán',
+		'home_googleAnalyticsError' => 'Chyba v získávání dat z Google Analytics',
+		'header_analytics' => 'Google Analytics',
+		'flash_setting_analyticsUpdated' => 'Google Analytics nastaveno',
 	];
 
 
