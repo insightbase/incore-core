@@ -55,4 +55,16 @@ readonly class SettingFacade
         $sender->send();
         $this->logFacade->create(LogActionEnum::TestEmail, 'setting');
     }
+
+    public function updateAnalytics(ActiveRow|null $setting, Form\AnalyticsFormData $data):void
+    {
+        $updateData = (array) $data;
+        if (null === $setting) {
+            $setting = $this->settingModel->insert($updateData);
+            $this->logFacade->create(LogActionEnum::Created, 'setting', $setting->id);
+        } else {
+            $setting->update($updateData);
+            $this->logFacade->create(LogActionEnum::Updated, 'setting', $setting->id);
+        }
+    }
 }

@@ -12,4 +12,8 @@ class Template extends BaseTemplate
      * @var GaGraphItem[]
      */
     public array $dataAccessGraph;
+    /**
+     * @var true
+     */
+    public bool $analyticsError = false;
 }

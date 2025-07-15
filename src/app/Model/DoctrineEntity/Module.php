@@ -32,6 +32,9 @@ class Module implements Entity
     #[ORM\Column(type: 'integer')]
     public string $position;
 
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => 'default'])]
+    public string $action = 'default';
+
     public function setSystemName(string $systemName): self
     {
         $this->system_name = $systemName;
@@ -75,6 +78,12 @@ class Module implements Entity
     public function setPosition(string $position): self
     {
         $this->position = $position;
+        return $this;
+    }
+
+    public function setAction(string $action): self
+    {
+        $this->action = $action;
         return $this;
     }
 }

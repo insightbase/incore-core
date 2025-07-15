@@ -3,6 +3,7 @@
 namespace App\UI\Admin\Setting\Form;
 
 use App\Component\Translator\Translator;
+use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
@@ -13,6 +14,22 @@ readonly class FormFactory
         private \App\UI\Accessory\Admin\Form\FormFactory $formFactory,
         private Translator                               $translator,
     ) {}
+
+    /**
+     * @param ?SettingEntity $setting
+     * @return Form
+     */
+    public function createAnalytics(?ActiveRow $setting):Form
+    {
+        $form = $this->formFactory->create();
+
+        $form->addText('ga_service_id', $this->translator->translate('input_settingGoogleAnalyticsServiceId'))
+            ->setDefaultValue($setting?->ga_service_id)
+            ->setNullable();
+        $form->addSubmit('send', $this->translator->translate('send_send'));
+
+        return $form;
+    }
 
     public function createTestEmail(): Form
     {
@@ -81,8 +98,6 @@ readonly class FormFactory
 
         $form->addGroup($this->translator->translate('field_googleAnalytics'));
         $form->addDropzoneFile('google_service_account_id', $this->translator->translate('input_settingGoogleServiceAccount'))
-            ->setNullable();
-        $form->addText('ga_service_id', $this->translator->translate('input_settingGoogleAnalyticsServiceId'))
             ->setNullable();
 
         $form->addGroup();

@@ -44,18 +44,21 @@ readonly class Module implements Model
     /**
      * @return ?ModuleEntity
      */
-    public function getByPresenter(string $presenterName): ?ActiveRow
+    public function getByPresenter(string $presenterName, string $action = 'default'): ?ActiveRow
     {
         $presenterName = str_replace('Admin:', '', $presenterName);
-        return $this->getTable()->where('presenter', $presenterName)->fetch();
+        return $this->getTable()
+            ->where('presenter', $presenterName)
+            ->where('action', $action)
+            ->fetch();
     }
 
     /**
      * @return ModuleEntity[]
      */
-    public function getTree(string $presenterName): array
+    public function getTree(string $presenterName, string $action): array
     {
-        $module = $this->getByPresenter($presenterName);
+        $module = $this->getByPresenter($presenterName, $action);
         if (null === $module) {
             return [];
         }

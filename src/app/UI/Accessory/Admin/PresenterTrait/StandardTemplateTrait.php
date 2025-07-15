@@ -109,13 +109,13 @@ trait StandardTemplateTrait
             $this->template->menuModules = $moduleModel->getToMenu();
             $this->template->moduleModel = $moduleModel;
             $this->template->languages = $languages = $languageModel->getToTranslate();
-            $this->template->moduleTree = $moduleTree = $moduleModel->getTree($this->getName());
+            $this->template->moduleTree = $moduleTree = $moduleModel->getTree($this->getName(), $this->getAction());
             $this->template->mainMenuFactory = $this->mainMenuFactory;
             $this->template->setting = $settingModel->getDefault();
             $this->template->metronicDir = $parameterBag->metronicDir;
             $showSubmenuDropdown = false;
             foreach($submenuFactory->getSubMenus() as $subMenuItem){
-                if($subMenuItem->isShowInDropdown() && $this->user->isAllowed(Arrays::last($moduleTree)->system_name, $subMenuItem->getAction())){
+                if($subMenuItem->isShowInDropdown() && $this->user->isAllowed(Arrays::last($moduleTree)?->system_name, $subMenuItem->getAction())){
                     $showSubmenuDropdown = true;
                     break;
                 }

@@ -20,6 +20,7 @@ use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\Row;
 use Google\Analytics\Data\V1beta\RunReportRequest;
+use Google\ApiCore\ApiException;
 use Nette;
 use Nette\Database\Table\ActiveRow;
 
@@ -54,49 +55,58 @@ final class HomePresenter extends Nette\Application\UI\Presenter
         $serviceAccount = $this->settingModel->getDefault()?->google_service_account;
         $gaServiceId = $this->settingModel->getDefault()?->ga_service_id;
 
-        if($serviceAccount === null || $gaServiceId === null){
+        if($gaServiceId === null){
             $this->template->notConfigured = true;
         }else {
             $this->template->notConfigured = false;
 
             $dateFrom = new Nette\Utils\DateTime()->modify('-1 week');
 
-            putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->parameterBag->uploadDir . '/' . $serviceAccount->saved_name);
-            $client = new BetaAnalyticsDataClient();
+            try {
+                if ($serviceAccount !== null) {
+                    putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->parameterBag->uploadDir . '/' . $serviceAccount->saved_name);
+                } else {
+                    putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $this->parameterBag->rootDir . '/vendor/incore/core/src/assets/files/eternal-algebra-454907-j8-c35c210234e2.json');
+                }
+                $client = new BetaAnalyticsDataClient();
 
-            $request = (new RunReportRequest())
-                ->setProperty('properties/' . $gaServiceId)
-                ->setDateRanges([
-                    new DateRange([
-                        'start_date' => $dateFrom->format('Y-m-d'),
-                        'end_date' => 'today',
+                $request = (new RunReportRequest())
+                    ->setProperty('properties/' . $gaServiceId)
+                    ->setDateRanges([
+                        new DateRange([
+                            'start_date' => $dateFrom->format('Y-m-d'),
+                            'end_date' => 'today',
+                        ]),
+                    ])
+                    ->setDimensions([new Dimension([
+                        'name' => 'date',
                     ]),
-                ])
-                ->setDimensions([new Dimension([
-                    'name' => 'date',
-                ]),
-                ])
-                ->setMetrics([new Metric([
-                    'name' => 'activeUsers',
-                ])
-                ]);
-            $response = $client->runReport($request);
-            $rows = $response->getRows();
+                    ])
+                    ->setMetrics([new Metric([
+                        'name' => 'activeUsers',
+                    ])
+                    ]);
+                $response = $client->runReport($request);
+                $rows = $response->getRows();
 
-            $data = [];
-            $date = clone $dateFrom;
-            while($date->format('j.n.Y') !== new Nette\Utils\DateTime()->format('j.n.Y')){
+                $data = [];
+                $date = clone $dateFrom;
+                while($date->format('j.n.Y') !== new Nette\Utils\DateTime()->format('j.n.Y')){
+                    $data[$date->format('Y-m-d')] = new GaGraphItem(clone $date, 0);
+                    $date->modify('+1 day');
+                }
                 $data[$date->format('Y-m-d')] = new GaGraphItem(clone $date, 0);
-                $date->modify('+1 day');
-            }
-            $data[$date->format('Y-m-d')] = new GaGraphItem(clone $date, 0);
 
-            /** @var Row $row */
-            foreach ($rows as $row) {
-                $googleDate = Nette\Utils\DateTime::createFromFormat('Ymd', $row->getDimensionValues()[0]->getValue());
-                $data[$googleDate->format('Y-m-d')]->count = (int)$row->getMetricValues()[0]->getValue();
+                /** @var Row $row */
+                foreach ($rows as $row) {
+                    $googleDate = Nette\Utils\DateTime::createFromFormat('Ymd', $row->getDimensionValues()[0]->getValue());
+                    $data[$googleDate->format('Y-m-d')]->count = (int)$row->getMetricValues()[0]->getValue();
+                }
+                $this->template->dataAccessGraph = $data;
+            }catch(ApiException $e){
+                $this->template->notConfigured = true;
+                $this->template->analyticsError = true;
             }
-            $this->template->dataAccessGraph = $data;
         }
     }
 

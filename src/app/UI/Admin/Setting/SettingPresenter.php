@@ -8,6 +8,7 @@ use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
+use App\UI\Admin\Setting\Form\AnalyticsFormData;
 use App\UI\Admin\Setting\Form\EditFormData;
 use App\UI\Admin\Setting\Form\FormFactory;
 use App\UI\Admin\Setting\Form\TestEmailFormData;
@@ -32,6 +33,17 @@ class SettingPresenter extends Presenter
         private readonly SubmenuFactory $submenuFactory,
     ) {
         parent::__construct();
+    }
+
+    protected function createComponentFormAnalytics():Form
+    {
+        $form = $this->formFactory->createAnalytics($this->setting);
+        $form->onSuccess[] = function(Form $form, AnalyticsFormData $data):void{
+            $this->settingFacade->updateAnalytics($this->setting, $data);
+            $this->flashMessage($this->translator->translate('flash_setting_analyticsUpdated'));
+            $this->redirect('this');
+        };
+        return $form;
     }
 
     protected function createComponentFormTestEmail(): Form
