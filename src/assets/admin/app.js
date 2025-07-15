@@ -70,6 +70,7 @@ function initSystem(){
     initEditorJs();
     initDropzone();
     initFlashes();
+    initMenu();
 }
 initSystem();
 
@@ -374,3 +375,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 });
+
+function initMenu(){
+    document.querySelectorAll('[data-role="toggle"]').forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menuItem = toggle.closest('[data-menu-item-toggle="accordion"]');
+            const rootMenu = toggle.closest('[data-kt-menu="true"]');
+
+            if (rootMenu && menuItem) {
+                const ktMenu = KTMenu.getInstance(rootMenu);
+                if (ktMenu) {
+                    ktMenu.toggle(menuItem); // použij Metronic API správně
+                }
+            }
+        });
+    });
+}
