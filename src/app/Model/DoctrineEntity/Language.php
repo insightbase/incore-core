@@ -35,6 +35,12 @@ class Language implements Entity
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     public bool $active = true;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $drop_core_id = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => null])]
+    public ?\DateTime $drop_core_last_call_date = null;
+
     public function setName(string $name): self
     {
         $this->name = $name;

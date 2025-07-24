@@ -60,13 +60,13 @@ readonly class DefaultDataGridEntityFactory
             (new MenuEntity($this->translator->translate('menu_edit'), 'edit'))
                 ->setIcon(DefaultIconEnum::Edit->value)
         );
-//        $dataGridEntity->addMenu(
-//            (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
-//                ->setIcon('ki-filled ki-geolocation')
-//                ->setShowCallback(function (ActiveRow $row): bool {
-//                    return !$row['is_default'];
-//                })
-//        );
+        $dataGridEntity->addMenu(
+            (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
+                ->setIcon('ki-filled ki-geolocation')
+                ->setShowCallback(function (ActiveRow $row): bool {
+                    return !$row['is_default'];
+                })
+        );
         $dataGridEntity->addMenu(
             (new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete'))
         );

@@ -12,10 +12,15 @@ use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
+use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
+use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
+use App\UI\Admin\Language\Exception\LanguageNotFoundException;
+use App\UI\Admin\Language\Exception\TranslateInProgressException;
 use App\UI\Admin\Language\Form\NewFormData;
 use GuzzleHttp\Client;
 use Nette\Application\LinkGenerator;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 
 readonly class LanguageFacade
@@ -92,9 +97,14 @@ readonly class LanguageFacade
     /**
      * @param LanguageEntity $language
      * @return void
+     * @throws TranslateInProgressException
      */
     public function translate(ActiveRow $language):void
     {
+        if($language->drop_core_id !== null){
+            throw new TranslateInProgressException();
+        }
+
         $defaultLanguage = $this->languageModel->getDefault();
 
         $json = [];
@@ -109,9 +119,8 @@ readonly class LanguageFacade
             'inputLocale' => $defaultLanguage->url,
             'outputLocale' => $language->url,
             'model' => 'thinking',
-//                'callback' => $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]),
-//            'callback' => null,
-            'callback' => 'https://ad83-178-255-168-143.ngrok-free.app/admin/language-callback/translate/2',
+            'callback' => $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]),
+            'mode' => 'async',
             'value' => $json,
         ]);
 
@@ -125,6 +134,54 @@ readonly class LanguageFacade
             ],
             'body' => $body,
         ]);
-        dumpe((string)$response->getBody());
+
+        $response = Json::decode((string)$response->getBody(), true);
+        $language->update([
+            'drop_core_id' => $response['id'],
+            'drop_core_last_call_date' => new DateTime(),
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param array $post
+     * @return void
+     * @throws LanguageCallbackIdNotFoundException
+     * @throws LanguageIsDefaultException
+     * @throws LanguageNotFoundException
+     * @throws \Nette\Utils\JsonException
+     */
+    public function processDropCoreCallback(int $id, array $post):void
+    {
+        $language = $this->languageModel->get($id);
+        if($language === null){
+            throw new LanguageNotFoundException();
+        }
+        if($language->is_default){
+            throw new LanguageIsDefaultException();
+        }
+        if($language->drop_core_id !== $post['id']){
+            throw new LanguageCallbackIdNotFoundException();
+        }
+
+        $json = Json::decode($post['value'], true);
+        foreach($json as $key => $text){
+            $translate = $this->translateModel->getByKey($key);
+            if($translate !== null){
+                $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
+                if($translateLanguage === null){
+                    $this->translateLanguageModel->insert([
+                        'value' => $text,
+                        'language_id' => $language->id,
+                        'translate_id' => $translate->id,
+                    ]);
+                }else{
+                    $translateLanguage->update(['value' => $text]);
+                }
+            }
+        }
+        $language->update([
+            'drop_core_id' => null,
+        ]);
     }
 }

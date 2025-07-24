@@ -43,14 +43,21 @@ class LanguagePresenter extends Presenter
         parent::__construct();
     }
 
-    public function actionTranslate(int $id):void
+    #[NoReturn] public function actionTranslate(int $id):void
     {
         $this->exist($id);
         if($this->language->is_default){
             $this->flashMessage($this->translator->translate('flash_languageIsDefault'), 'error');
             $this->redirect('default');
         }
-        $this->languageFacade->translate($this->language);
+        try {
+            $this->languageFacade->translate($this->language);
+        } catch (Exception\TranslateInProgressException $e) {
+            $this->flashMessage($this->translator->translate('flash_translationInProgress'));
+            $this->redirect('default');
+        }
+        $this->flashMessage($this->translator->translate('flash_translationInProgress'));
+        $this->redirect('default');
     }
 
     public function actionEdit(int $id): void
