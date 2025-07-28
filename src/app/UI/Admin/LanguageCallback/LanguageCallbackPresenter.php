@@ -10,6 +10,7 @@ use App\UI\Admin\Language\LanguageFacade;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
+use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
 class LanguageCallbackPresenter extends Presenter
@@ -23,7 +24,9 @@ class LanguageCallbackPresenter extends Presenter
 
     #[NoReturn] public function actionTranslate(int $id):void
     {
-        $post = $this->getHttpRequest()->getPost();
+        $this->getHttpResponse()->setContentType('application/json');
+        $raw = $this->getHttpRequest()->getRawBody();
+        $post = Json::decode($raw, true);
 
         if($post['valid']) {
             try {
