@@ -20,6 +20,7 @@ use App\UI\Admin\Language\Form\NewFormData;
 use GuzzleHttp\Client;
 use Nette\Application\LinkGenerator;
 use Nette\Database\Table\ActiveRow;
+use Nette\Http\Url;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 
@@ -115,11 +116,19 @@ readonly class LanguageFacade
             }
         }
 
+        $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
+        if(array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)){
+            $callback = new Url($callback);
+            $callback->setUser('insightbase.cz');
+            $callback->setPassword('test-insightbase.cz');
+            $callback = (string)$callback;
+        }
+
         $body = Json::encode([
             'inputLocale' => $defaultLanguage->url,
             'outputLocale' => $language->url,
             'model' => 'thinking',
-            'callback' => $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]),
+            'callback' => $callback,
             'mode' => 'async',
             'value' => $json,
         ]);
