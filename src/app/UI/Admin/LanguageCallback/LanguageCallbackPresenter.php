@@ -30,25 +30,29 @@ class LanguageCallbackPresenter extends Presenter
         $raw = $this->getHttpRequest()->getRawBody();
         $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
         FileSystem::write($tempFile, $raw);
-        $post = Json::decode($raw, true);
-
-        if($post['valid']) {
-            try {
-                $this->languageFacade->processDropCoreCallback($id, $post);
-                $status = 'success';
-            } catch (LanguageCallbackIdNotFoundException $e) {
-                $status = 'error';
-                $this->payload->error = 'token id not found';
-            } catch (LanguageIsDefaultException $e) {
-                $status = 'error';
-                $this->payload->error = 'language id default';
-            } catch (LanguageNotFoundException $e) {
-                $status = 'error';
-                $this->payload->error = 'language not found';
-            } catch (JsonException $e) {
-                $status = 'error';
-                $this->payload->error = 'json translate error';
+        try {
+            $post = Json::decode($raw, true);
+            if($post['valid']) {
+                try {
+                    $this->languageFacade->processDropCoreCallback($id, $post);
+                    $status = 'success';
+                } catch (LanguageCallbackIdNotFoundException $e) {
+                    $status = 'error';
+                    $this->payload->error = 'token id not found';
+                } catch (LanguageIsDefaultException $e) {
+                    $status = 'error';
+                    $this->payload->error = 'language id default';
+                } catch (LanguageNotFoundException $e) {
+                    $status = 'error';
+                    $this->payload->error = 'language not found';
+                } catch (JsonException $e) {
+                    $status = 'error';
+                    $this->payload->error = 'json translate error';
+                }
             }
+        } catch (JsonException $e) {
+            FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+            $status = 'error';
         }
 
         $this->payload->status = $status;
