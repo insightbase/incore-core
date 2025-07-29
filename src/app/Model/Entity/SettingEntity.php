@@ -29,6 +29,8 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?int $google_service_account_id
  * @property-read ?string $ga_service_id
  * @property-read ?int $max_image_resolution
+ * @property-read ?string $basic_auth_user
+ * @property-read ?string $basic_auth_password
  */
 class SettingEntity extends ActiveRow
 {

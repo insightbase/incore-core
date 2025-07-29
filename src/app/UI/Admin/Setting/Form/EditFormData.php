@@ -18,4 +18,6 @@ class EditFormData
     public ?string $recaptcha_site_key;
     public ?int $max_image_resolution;
     public ?int $google_service_account_id;
+    public ?string $basic_auth_password;
+    public ?string $basic_auth_user;
 }

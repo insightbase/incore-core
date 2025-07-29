@@ -8,21 +8,26 @@ use App\Component\Translator\Translator;
 use App\Event\EventFacade;
 use App\Event\Language\ChangeDefaultEvent;
 use App\Model\Admin\Language;
+use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
+use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
 use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
 use App\UI\Admin\Language\Exception\LanguageNotFoundException;
 use App\UI\Admin\Language\Exception\TranslateInProgressException;
 use App\UI\Admin\Language\Form\NewFormData;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Nette\Application\LinkGenerator;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Url;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 readonly class LanguageFacade
 {
@@ -34,6 +39,7 @@ readonly class LanguageFacade
         private LinkGenerator $linkGenerator,
         private Translate $translateModel,
         private TranslateLanguage $translateLanguageModel,
+        private Setting $settingModel,
     ) {}
 
     public function create(NewFormData $data): void
@@ -98,7 +104,11 @@ readonly class LanguageFacade
     /**
      * @param LanguageEntity $language
      * @return void
+     * @throws BasicAuthNotSetException
      * @throws TranslateInProgressException
+     * @throws GuzzleException
+     * @throws InvalidLinkException
+     * @throws JsonException
      */
     public function translate(ActiveRow $language):void
     {
@@ -117,10 +127,14 @@ readonly class LanguageFacade
         }
 
         $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
+        $setting = $this->settingModel->getDefault();
         if(array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)){
+            if($setting?->basic_auth_user === null || $setting?->basic_auth_password === null){
+                throw new BasicAuthNotSetException();
+            }
             $callback = new Url($callback);
-            $callback->setUser('insightbase.cz');
-            $callback->setPassword('test-insightbase.cz');
+            $callback->setUser($setting->basic_auth_user);
+            $callback->setPassword($setting->basic_auth_password);
             $callback = (string)$callback;
         }
 

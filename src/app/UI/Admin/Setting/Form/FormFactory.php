@@ -100,6 +100,12 @@ readonly class FormFactory
         $form->addDropzoneFile('google_service_account_id', $this->translator->translate('input_settingGoogleServiceAccount'))
             ->setNullable();
 
+        $form->addGroup($this->translator->translate('field_basicAuth'));
+        $form->addText('basic_auth_user', $this->translator->translate('input_basicAuthUser'))
+            ->setNullable();
+        $form->addText('basic_auth_password', $this->translator->translate('input_basicAuthPassword'))
+            ->setNullable();
+
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));
 

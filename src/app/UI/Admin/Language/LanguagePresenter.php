@@ -12,6 +12,7 @@ use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Admin\Language\DataGrid\DefaultDataGridEntityFactory;
+use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Form\EditFormData;
 use App\UI\Admin\Language\Form\FormFactory;
 use App\UI\Admin\Language\Form\LanguageSettingFormData;
@@ -55,6 +56,9 @@ class LanguagePresenter extends Presenter
         } catch (Exception\TranslateInProgressException $e) {
             $this->flashMessage($this->translator->translate('flash_translationInProgress'));
             $this->redirect('default');
+        } catch(BasicAuthNotSetException $e){
+            $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'));
+            $this->redirect('Setting:default');
         }
         $this->flashMessage($this->translator->translate('flash_translationInProgress'));
         $this->redirect('default');
