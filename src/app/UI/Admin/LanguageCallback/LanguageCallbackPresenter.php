@@ -10,6 +10,7 @@ use App\UI\Admin\Language\LanguageFacade;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -17,6 +18,7 @@ class LanguageCallbackPresenter extends Presenter
 {
     public function __construct(
         private readonly LanguageFacade $languageFacade,
+        private readonly ParameterBag   $parameterBag,
     )
     {
         parent::__construct();
@@ -26,6 +28,8 @@ class LanguageCallbackPresenter extends Presenter
     {
         $this->getHttpResponse()->setContentType('application/json');
         $raw = $this->getHttpRequest()->getRawBody();
+        $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
+        FileSystem::write($tempFile, $raw);
         $post = Json::decode($raw, true);
 
         if($post['valid']) {
