@@ -141,7 +141,7 @@ readonly class LanguageFacade
         $body = Json::encode([
             'inputLocale' => $defaultLanguage->url,
             'outputLocale' => $language->url,
-            'model' => 'thinking',
+            'model' => 'flash',
             'callback' => $callback,
             'mode' => 'async',
             'value' => $json,
