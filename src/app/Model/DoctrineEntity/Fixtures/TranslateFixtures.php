@@ -435,6 +435,11 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'home_googleAnalyticsError' => 'Chyba v získávání dat z Google Analytics',
 		'header_analytics' => 'Google Analytics',
 		'flash_setting_analyticsUpdated' => 'Google Analytics nastaveno',
+		'flash_translationInProgress' => 'Texty byly odeslány k překladu',
+		'flash_basicAuthNotSet' => 'Váš web vyžaduje Basic Authentication, pro funkci překladu musíte nastavit přístup v nastavení',
+		'field_basicAuth' => 'Basic Authentication',
+		'input_basicAuthUser' => 'Uživatel',
+		'input_basicAuthPassword' => 'Heslo',
 	];
 
 
