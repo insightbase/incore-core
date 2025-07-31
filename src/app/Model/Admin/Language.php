@@ -96,4 +96,12 @@ readonly class Language implements Model
     {
         return $this->getTable()->where('host', $host)->fetch();
     }
+
+    /**
+     * @return Selection<LanguageEntity>
+     */
+    public function getToFront():Selection
+    {
+        return $this->getTable()->where('active', true);
+    }
 }

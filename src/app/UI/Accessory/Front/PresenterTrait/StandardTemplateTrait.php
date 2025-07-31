@@ -8,6 +8,7 @@ use App\Component\Front\FaviconControl\FaviconControlFactory;
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
 use App\Component\Translator\Translator;
+use App\Model\Admin\Language;
 use App\Model\Admin\Setting;
 use App\UI\Front\BaseTemplate;
 use Nette\Application\Attributes\Persistent;
@@ -41,12 +42,13 @@ trait StandardTemplateTrait
         return $this->faviconControlFactory->create();
     }
 
-    public function injectStandardTemplate(Setting $settingModel):void{
-        $this->onRender[] = function ():void{
+    public function injectStandardTemplate(Setting $settingModel, Language $languageModel):void{
+        $this->onRender[] = function () use ($languageModel):void{
             $this->template->setTranslator($this->translator);
             $this->template->setting = $this->setting;
             $this->template->imageControl = $this->imageControlFactory->create();
             $this->template->fileControl = $this->fileControlFactory->create();
+            $this->template->languages = $languageModel->getToFront();
         };
         $this->onStartup[] = function () use ($settingModel):void{
             $this->setting = $settingModel->getDefault();
