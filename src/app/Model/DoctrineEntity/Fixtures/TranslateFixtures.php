@@ -440,6 +440,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'field_basicAuth' => 'Basic Authentication',
 		'input_basicAuthUser' => 'Uživatel',
 		'input_basicAuthPassword' => 'Heslo',
+		'flash_anotherTranslationInProgress' => 'Překlad tohoto jazyka probíhá. Prosím počktejte.',
 	];
 
 

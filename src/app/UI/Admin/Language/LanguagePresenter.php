@@ -54,7 +54,7 @@ class LanguagePresenter extends Presenter
         try {
             $this->languageFacade->translate($this->language);
         } catch (Exception\TranslateInProgressException $e) {
-            $this->flashMessage($this->translator->translate('flash_translationInProgress'));
+            $this->flashMessage($this->translator->translate('flash_anotherTranslationInProgress'), 'error');
             $this->redirect('default');
         } catch(BasicAuthNotSetException $e){
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');

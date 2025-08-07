@@ -12,6 +12,7 @@ use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
+use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
@@ -26,6 +27,7 @@ use Nette\Application\UI\InvalidLinkException;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Url;
 use Nette\Utils\DateTime;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -40,6 +42,7 @@ readonly class LanguageFacade
         private Translate $translateModel,
         private TranslateLanguage $translateLanguageModel,
         private Setting $settingModel,
+        private ParameterBag $parameterBag,
     ) {}
 
     public function create(NewFormData $data): void
@@ -112,9 +115,9 @@ readonly class LanguageFacade
      */
     public function translate(ActiveRow $language):void
     {
-//        if($language->drop_core_id !== null){
-//            throw new TranslateInProgressException();
-//        }
+        if($language->drop_core_id !== null){
+            throw new TranslateInProgressException();
+        }
 
         $defaultLanguage = $this->languageModel->getDefault();
 
@@ -163,6 +166,13 @@ readonly class LanguageFacade
             'drop_core_id' => $response['id'],
             'drop_core_last_call_date' => new DateTime(),
         ]);
+
+        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
+        FileSystem::write($tempFile, Json::encode([
+            'drop_core_id' => $response['id'],
+            'callback' => $url,
+            'body' => $body,
+        ]));
     }
 
     /**
