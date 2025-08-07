@@ -112,9 +112,9 @@ readonly class LanguageFacade
      */
     public function translate(ActiveRow $language):void
     {
-        if($language->drop_core_id !== null){
-            throw new TranslateInProgressException();
-        }
+//        if($language->drop_core_id !== null){
+//            throw new TranslateInProgressException();
+//        }
 
         $defaultLanguage = $this->languageModel->getDefault();
 
