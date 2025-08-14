@@ -38,6 +38,7 @@ use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
 use Nette\DI\Container;
 use Nette\Http\Url;
+use Nette\Utils\Arrays;
 use Nette\Utils\DateTime;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -156,7 +157,7 @@ readonly class LanguageFacade
             /** @var ContactFormRow $contactFormRowModel */
             $contactFormRowModel = $this->container->getByType(ContactFormRow::class);
             foreach($contactFormRowModel->getAll() as $contactFormRow){
-                $json['contact_form_' . $contactFormRow->id] = $contactFormRow->name;
+                $json['contactForm_' . $contactFormRow->id] = $contactFormRow->name;
             }
         }
 
@@ -240,12 +241,12 @@ readonly class LanguageFacade
             $contactFormRowLanguageModel = $this->container->getByType(ContactFormRowLanguage::class);
         }
 
-        $json = Json::decode($post['value'], true);
+        $json = Json::decode($post['value'], true)[0];
         foreach($json as $key => $text){
             $key = explode('_', $key);
-            $type = $key[0];
-            unset($key[count($key) - 1]);
+            $type = Arrays::pick($key, 0);
             $key = implode('_', $key);
+
             if($type === 'translate'){
                 $translate = $this->translateModel->getByKey($key);
                 if($translate !== null){
@@ -261,13 +262,27 @@ readonly class LanguageFacade
                     }
                 }
             }elseif($type === 'enumeration' && $enumerationRowLanguageModel !== null){
-                $id = explode('_', $key)[1];
-                $enumerationRowLanguage = $enumerationRowLanguageModel->getByEnumerationRowIdAndLanguage((int)$id, $language);
-                $enumerationRowLanguage->update(['name' => $text]);
-            }elseif($type === 'contact_form' && $contactFormRowLanguageModel !== null){
-                $id = explode('_', $key)[1];
-                $contactFormRowLanguage = $contactFormRowLanguageModel->getByContactFormRowIdAndLanguage((int)$id, $language);
-                $contactFormRowLanguage->update(['name' => $text]);
+                $enumerationRowLanguage = $enumerationRowLanguageModel->getByEnumerationRowIdAndLanguage((int)$key, $language);
+                if($enumerationRowLanguage === null){
+                    $enumerationRowLanguageModel->insert([
+                        'name' => $text,
+                        'language_id' => $language->id,
+                        'enumeration_row_id' => (int)$key,
+                    ]);
+                }else {
+                    $enumerationRowLanguage->update(['name' => $text]);
+                }
+            }elseif($type === 'contactForm' && $contactFormRowLanguageModel !== null){
+                $contactFormRowLanguage = $contactFormRowLanguageModel->getByContactFormRowIdAndLanguage((int)$key, $language);
+                if($contactFormRowLanguage === null){
+                    $contactFormRowLanguageModel->insert([
+                        'name' => $text,
+                        'contact_form_row_id' => (int)$key,
+                        'language_id' => $language->id,
+                    ]);
+                }else {
+                    $contactFormRowLanguage->update(['name' => $text]);
+                }
             }
         }
         $language->update([
