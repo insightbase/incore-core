@@ -2,12 +2,21 @@
 
 namespace App\UI\Admin\Language;
 
+use App\Component\Front\ContactFormComponent\ContactFormControl;
+use App\Component\Front\EnumerationControl\EnumerationControl;
 use App\Component\Log\LogActionEnum;
 use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
 use App\Event\EventFacade;
 use App\Event\Language\ChangeDefaultEvent;
+use App\Model\Admin\ContactForm;
+use App\Model\Admin\ContactFormRow;
+use App\Model\Admin\ContactFormRowLanguage;
+use App\Model\Admin\Enumeration;
+use App\Model\Admin\EnumerationRow;
+use App\Model\Admin\EnumerationRowLanguage;
 use App\Model\Admin\Language;
+use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
@@ -24,7 +33,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
+use Nette\DI\Container;
 use Nette\Http\Url;
 use Nette\Utils\DateTime;
 use Nette\Utils\FileSystem;
@@ -43,6 +55,9 @@ readonly class LanguageFacade
         private TranslateLanguage $translateLanguageModel,
         private Setting $settingModel,
         private ParameterBag $parameterBag,
+        private Module $moduleModel,
+        private Container $container,
+        private Storage $storage,
     ) {}
 
     public function create(NewFormData $data): void
@@ -125,11 +140,28 @@ readonly class LanguageFacade
         foreach($this->translateModel->getNotAdmin() as $translate){
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
             if($translateLanguage !== null) {
-                $json[$translate->key] = $translateLanguage->value;
+                $json['translate_' . $translate->key] = $translateLanguage->value;
+            }
+        }
+
+        if($this->moduleModel->getBySystemName('enumeration') !== null){
+            /** @var EnumerationRow $enumerationRowModel */
+            $enumerationRowModel = $this->container->getByType(EnumerationRow::class);
+            foreach($enumerationRowModel->getAll() as $enumerationRow){
+                $json['enumeration_' . $enumerationRow->id] = $enumerationRow->name;
+            }
+        }
+
+        if($this->moduleModel->getBySystemName('forms') !== null){
+            /** @var ContactFormRow $contactFormRowModel */
+            $contactFormRowModel = $this->container->getByType(ContactFormRow::class);
+            foreach($contactFormRowModel->getAll() as $contactFormRow){
+                $json['contact_form_' . $contactFormRow->id] = $contactFormRow->name;
             }
         }
 
         $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
+        $callback = 'https://webhook.site/eb8af708-362b-45ec-9f0e-cc7186f96716';
         $setting = $this->settingModel->getDefault();
         if(array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)){
             if($setting?->basic_auth_user === null || $setting?->basic_auth_password === null){
@@ -170,7 +202,8 @@ readonly class LanguageFacade
         $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
         FileSystem::write($tempFile, Json::encode([
             'drop_core_id' => $response['id'],
-            'callback' => $url,
+            'callback' => $callback,
+            'url' => $url,
             'body' => $body,
         ]));
     }
@@ -197,24 +230,70 @@ readonly class LanguageFacade
             throw new LanguageCallbackIdNotFoundException();
         }
 
+        $enumerationRowLanguageModel = null;
+        if($this->moduleModel->getBySystemName('enumeration') !== null) {
+            /** @var EnumerationRowLanguage $enumerationRowLanguageModel */
+            $enumerationRowLanguageModel = $this->container->getByType(EnumerationRowLanguage::class);
+        }
+        $contactFormRowLanguageModel = null;
+        if($this->moduleModel->getBySystemName('forms') !== null) {
+            /** @var ContactFormRowLanguage $contactFormRowLanguageModel */
+            $contactFormRowLanguageModel = $this->container->getByType(ContactFormRowLanguage::class);
+        }
+
         $json = Json::decode($post['value'], true);
         foreach($json as $key => $text){
-            $translate = $this->translateModel->getByKey($key);
-            if($translate !== null){
-                $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
-                if($translateLanguage === null){
-                    $this->translateLanguageModel->insert([
-                        'value' => $text,
-                        'language_id' => $language->id,
-                        'translate_id' => $translate->id,
-                    ]);
-                }else{
-                    $translateLanguage->update(['value' => $text]);
+            $key = explode('_', $key);
+            $type = $key[0];
+            unset($key[count($key) - 1]);
+            $key = implode('_', $key);
+            if($type === 'translate'){
+                $translate = $this->translateModel->getByKey($key);
+                if($translate !== null){
+                    $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
+                    if($translateLanguage === null){
+                        $this->translateLanguageModel->insert([
+                            'value' => $text,
+                            'language_id' => $language->id,
+                            'translate_id' => $translate->id,
+                        ]);
+                    }else{
+                        $translateLanguage->update(['value' => $text]);
+                    }
                 }
+            }elseif($type === 'enumeration' && $enumerationRowLanguageModel !== null){
+                $id = explode('_', $key)[1];
+                $enumerationRowLanguage = $enumerationRowLanguageModel->getByEnumerationRowIdAndLanguage((int)$id, $language);
+                $enumerationRowLanguage->update(['name' => $text]);
+            }elseif($type === 'contact_form' && $contactFormRowLanguageModel !== null){
+                $id = explode('_', $key)[1];
+                $contactFormRowLanguage = $contactFormRowLanguageModel->getByContactFormRowIdAndLanguage((int)$id, $language);
+                $contactFormRowLanguage->update(['name' => $text]);
             }
         }
         $language->update([
             'drop_core_id' => null,
         ]);
+
+        $cacheTranslate = new Cache($this->storage, Translator::CACHE_NAMESPACE);
+        $cacheTranslate->remove($language->id);
+
+        if($enumerationRowLanguageModel !== null){
+            $cache = new Cache($this->storage, EnumerationControl::CACHE_NAMESPACE);
+            /** @var Enumeration $enumerationModel */
+            $enumerationModel = $this->container->getByType(Enumeration::class);
+            foreach($enumerationModel->getAll() as $enumeration) {
+                $cache->clean([Cache::Tags => ['enumerationType' => $enumeration->internal_name]]);
+            }
+        }
+
+        if($contactFormRowLanguageModel !== null){
+            $cache = new Cache($this->storage, ContactFormControl::CACHE_NAMESPACE_ROW);
+            /** @var ContactForm $contactFormModel */
+            $contactFormModel = $this->container->getByType(ContactForm::class);
+            foreach($contactFormModel->getAll() as $contactForm) {
+                $cache->remove('contactFormRow-' . $contactForm->id . '-' . $language->id);
+            }
+        }
     }
 }
