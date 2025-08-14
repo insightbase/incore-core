@@ -161,7 +161,6 @@ readonly class LanguageFacade
         }
 
         $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
-        $callback = 'https://webhook.site/eb8af708-362b-45ec-9f0e-cc7186f96716';
         $setting = $this->settingModel->getDefault();
         if(array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)){
             if($setting?->basic_auth_user === null || $setting?->basic_auth_password === null){
