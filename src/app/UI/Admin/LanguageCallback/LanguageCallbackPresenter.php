@@ -26,9 +26,8 @@ class LanguageCallbackPresenter extends Presenter
 
     #[NoReturn] public function actionTranslate(int $id):void
     {
-        $raw = '{"valid":true,"id":"KLxCQYSyjWH8xCodKfhr","value":"[\n  {\n    \"translate_layout.title.sub\": \"Test text\",\n    \"enumeration_1\": \"test\",\n    \"contactForm_1\": \"First name\",\n    \"contactForm_2\": \"Last name\",\n    \"contactForm_3\": \"Email\"\n  }\n]"}';
-//        $this->getHttpResponse()->setContentType('application/json');
-//        $raw = $this->getHttpRequest()->getRawBody();
+        $this->getHttpResponse()->setContentType('application/json');
+        $raw = $this->getHttpRequest()->getRawBody();
         $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
         FileSystem::write($tempFile, $raw);
         try {
