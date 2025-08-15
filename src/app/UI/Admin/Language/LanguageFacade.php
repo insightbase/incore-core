@@ -241,7 +241,7 @@ readonly class LanguageFacade
             $contactFormRowLanguageModel = $this->container->getByType(ContactFormRowLanguage::class);
         }
 
-        $json = Json::decode($post['value'], true)[0];
+        $json = Json::decode($post['value'], true);
         foreach($json as $key => $text){
             $key = explode('_', $key);
             $type = Arrays::pick($key, 0);
