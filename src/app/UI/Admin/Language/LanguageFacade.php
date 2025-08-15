@@ -242,6 +242,10 @@ readonly class LanguageFacade
         }
 
         $json = Json::decode($post['value'], true);
+        $firstKey = Arrays::firstKey($json);
+        if($firstKey === '0' || $firstKey === 0){
+            $json = $json[0];
+        }
         foreach($json as $key => $text){
             $key = explode('_', $key);
             $type = Arrays::pick($key, 0);
