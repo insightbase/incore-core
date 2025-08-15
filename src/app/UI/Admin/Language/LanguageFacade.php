@@ -173,7 +173,7 @@ readonly class LanguageFacade
             $callback = (string)$callback;
         }
 
-        $body = Json::encode([
+        $body = Json::encode($bodyArray = [
             'inputLocale' => $defaultLanguage->url,
             'outputLocale' => $language->url,
             'model' => 'flash',
@@ -204,7 +204,7 @@ readonly class LanguageFacade
             'drop_core_id' => $response['id'],
             'callback' => $callback,
             'url' => $url,
-            'body' => $body,
+            'body' => $bodyArray,
         ]));
     }
 
