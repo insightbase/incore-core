@@ -13,6 +13,8 @@ use App\Model\Admin\ContactForm;
 use App\Model\Admin\ContactFormRow;
 use App\Model\Admin\ContactFormRowLanguage;
 use App\Model\Admin\Enumeration;
+use App\Model\Admin\EnumerationItemValue;
+use App\Model\Admin\EnumerationItemValueLanguage;
 use App\Model\Admin\EnumerationRow;
 use App\Model\Admin\EnumerationRowLanguage;
 use App\Model\Admin\Language;
@@ -151,6 +153,12 @@ readonly class LanguageFacade
             foreach($enumerationRowModel->getAll() as $enumerationRow){
                 $json['enumeration_' . $enumerationRow->id] = $enumerationRow->name;
             }
+
+            /** @var EnumerationItemValue $enumerationItemValueModel */
+            $enumerationItemValueModel = $this->container->getByType(EnumerationItemValue::class);
+            foreach($enumerationItemValueModel->getAll() as $enumerationItemValue){
+                $json['enumerationItemValue_' . $enumerationItemValue->id] = $enumerationItemValue->value;
+            }
         }
 
         if($this->moduleModel->getBySystemName('forms') !== null){
@@ -231,9 +239,12 @@ readonly class LanguageFacade
         }
 
         $enumerationRowLanguageModel = null;
+        $enumerationItemValueLanguageModel = null;
         if($this->moduleModel->getBySystemName('enumeration') !== null) {
             /** @var EnumerationRowLanguage $enumerationRowLanguageModel */
             $enumerationRowLanguageModel = $this->container->getByType(EnumerationRowLanguage::class);
+            /** @var EnumerationItemValueLanguage $enumerationItemValueLanguageModel */
+            $enumerationItemValueLanguageModel = $this->container->getByType(EnumerationItemValueLanguage::class);
         }
         $contactFormRowLanguageModel = null;
         if($this->moduleModel->getBySystemName('forms') !== null) {
@@ -275,6 +286,17 @@ readonly class LanguageFacade
                     ]);
                 }else {
                     $enumerationRowLanguage->update(['name' => $text]);
+                }
+            }elseif($type === 'enumerationItemValue' && $enumerationItemValueLanguageModel !== null){
+                $enumerationItemValueLanguage = $enumerationItemValueLanguageModel->getByEnumerationItemValueIdAndLanguage((int)$key, $language);
+                if($enumerationItemValueLanguage === null){
+                    $enumerationItemValueLanguageModel->insert([
+                        'value' => $text,
+                        'language_id' => $language->id,
+                        'enumeration_item_value_id' => (int)$key,
+                    ]);
+                }else {
+                    $enumerationItemValueLanguage->update(['value' => $text]);
                 }
             }elseif($type === 'contactForm' && $contactFormRowLanguageModel !== null){
                 $contactFormRowLanguage = $contactFormRowLanguageModel->getByContactFormRowIdAndLanguage((int)$key, $language);
