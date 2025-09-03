@@ -31,6 +31,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?int $max_image_resolution
  * @property-read ?string $basic_auth_user
  * @property-read ?string $basic_auth_password
+ * @property-read bool $translate_expand_keys
  */
 class SettingEntity extends ActiveRow
 {

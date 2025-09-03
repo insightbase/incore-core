@@ -66,6 +66,7 @@ readonly class FormFactory
         $form->addDropzoneImage(DropzoneImageLocationEnum::SettingShareImage, 'shareimage_id', $this->translator->translate('input_shareimage'))
             ->setNullable()
         ;
+        $form->addCheckbox('translate_expand_keys', $this->translator->translate('input_translate_expand_keys'));
 
         $form->addGroup($this->translator->translate('field_email'));
         $form->addEmail('email', $this->translator->translate('input_email'))

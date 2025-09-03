@@ -69,4 +69,8 @@ class Setting implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $basic_auth_password = null;
+
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
+    public bool $translate_expand_keys = true;
+
 }

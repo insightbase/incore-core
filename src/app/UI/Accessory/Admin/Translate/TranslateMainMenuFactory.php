@@ -4,6 +4,7 @@ namespace App\UI\Accessory\Admin\Translate;
 
 use App\Component\Translator\Translator;
 use App\Model\Admin\Module;
+use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
 use App\Model\Enum\RoleEnum;
 use App\UI\Accessory\Admin\MainMenu\MainMenuItem;
@@ -25,6 +26,7 @@ class TranslateMainMenuFactory implements MainMenuModule
         private readonly MainMenuItemFactory $mainMenuItemFactory,
         private readonly Translator          $translator,
         private readonly User                $userSecurity,
+        private readonly Setting             $settingModel,
     )
     {
         $this->module = $this->moduleModel->getBySystemName('translates');
@@ -38,15 +40,17 @@ class TranslateMainMenuFactory implements MainMenuModule
     public function getMainMenus(): array
     {
         $ret = [];
-        foreach($this->translateModel->getFirstKey('front') as $key){
-            $ret[] = $menu = $this->mainMenuItemFactory->create($this->module, 'default', $this->translator->translate($key['prefix']))
-                ->addParam('source', 'front')
-                ->addParam('key', $key['prefix']);
-            foreach($this->translateModel->getSecondKey('front', $key['prefix']) as $key2){
-                $menu->addSubMenu($this->mainMenuItemFactory->create($this->module, 'default', $this->translator->translate($key2['prefix']))
+        $setting = $this->settingModel->getDefault();
+        if($setting?->translate_expand_keys) {
+            foreach ($this->translateModel->getFirstKey('front') as $key) {
+                $ret[] = $menu = $this->mainMenuItemFactory->create($this->module, 'default', $this->translator->translate($key['prefix']))
                     ->addParam('source', 'front')
-                    ->addParam('key', $key2['prefix']))
-                ;
+                    ->addParam('key', $key['prefix']);
+                foreach ($this->translateModel->getSecondKey('front', $key['prefix']) as $key2) {
+                    $menu->addSubMenu($this->mainMenuItemFactory->create($this->module, 'default', $this->translator->translate($key2['prefix']))
+                        ->addParam('source', 'front')
+                        ->addParam('key', $key2['prefix']));
+                }
             }
         }
         $ret[] = $this->mainMenuItemFactory->create($this->module, 'default', $this->translator->translate('menu_front'))
