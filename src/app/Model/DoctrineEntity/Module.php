@@ -35,6 +35,9 @@ class Module implements Entity
     #[ORM\Column(type: 'string', length: 255, options: ['default' => 'default'])]
     public string $action = 'default';
 
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
+    public bool $active = true;
+
     public function setSystemName(string $systemName): self
     {
         $this->system_name = $systemName;

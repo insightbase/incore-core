@@ -30,7 +30,11 @@ readonly class Module implements Model
      */
     public function getToMenu(?ActiveRow $parent = null): Selection
     {
-        return $this->getTable()->where('parent_id', $parent?->id)->order('position');
+        return $this->getTable()
+            ->where('parent_id', $parent?->id)
+            ->where('active', true)
+            ->order('position')
+            ;
     }
 
     /**

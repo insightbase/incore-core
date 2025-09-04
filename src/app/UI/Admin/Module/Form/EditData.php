@@ -9,4 +9,5 @@ class EditData
     public ?string $presenter;
     public ?string $icon;
     public ?int $parent_id;
+    public bool $active;
 }

@@ -16,6 +16,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?int $parent_id
  * @property-read string $position
  * @property-read string $action
+ * @property-read bool $active
  */
 class ModuleEntity extends ActiveRow
 {

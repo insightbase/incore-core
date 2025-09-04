@@ -36,6 +36,7 @@ readonly class FormFactory
         $form->addSelect('parent_id', $this->translator->translate('input_parent'), $modules)
             ->setPrompt('prompt_selectModule')
         ;
+        $form->addCheckbox('active', $this->translator->translate('input_active'));
 
         $form->addSubmit('send', $this->translator->translate('input_update'));
 
