@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UI\Accessory\Admin\Form\Controls;
+namespace App\UI\Accessory\Admin\Form\Controls\EditorJs;
 
 interface EditorJsInputFactory
 {

@@ -168,33 +168,47 @@ function initEditorJs() {
             data = JSON.parse(element.value);
         }
 
+        let types = element.getAttribute('data-type').split(";");;
+
+        const tools = {};
+
+        if (types.includes("raw")) {
+            tools.raw = EditorJsRaw;
+        }
+        if (types.includes("paragraph")) {
+            tools.paragraph = {
+                class: EditorJsParagraph,
+                config: {
+                    placeholder: 'Add paragraph',
+                    preserveBlank: true,
+                }
+            };
+        }
+        if (types.includes("list")) {
+            tools.list = {
+                class: EditorJsList,
+                inlineToolbar: true,
+            };
+        }
+        if (types.includes("header")) {
+            tools.header = {
+                class: EditorJsHeader,
+                inlineToolbar: true,
+                config: {
+                    placeholder: 'Add list',
+                    levels: [2, 3, 4],
+                    defaultLevel: 2
+                }
+            };
+        }
+        if (types.includes("table")) {
+            tools.table = EditorJsTable;
+        }
+
         editors[id] = new EditorJS({
             holder: editorDiv,
             data: data,
-            tools: {
-                raw: EditorJsRaw,
-                paragraph: {
-                    class: EditorJsParagraph,
-                    config: {
-                        placeholder: 'Add paragraph',
-                        preserveBlank: true,
-                    }
-                },
-                list: {
-                    class: EditorJsList,
-                    inlineToolbar: true,
-                },
-                header: {
-                    class: EditorJsHeader,
-                    inlineToolbar: true,
-                    config: {
-                        placeholder: 'Add list',
-                        levels: [2, 3, 4],
-                        defaultLevel: 2
-                    }
-                },
-                table: EditorJsTable
-            }
+            tools: tools
         });
         editorDiv.setAttribute('data-editor-id', id);
         element.setAttribute('data-for-editor-id', id);

@@ -9,10 +9,9 @@ use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
-use App\UI\Accessory\Admin\Form\Controls\EditorJsInput;
-use App\UI\Accessory\Admin\Form\Controls\EditorJsInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput;
+use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInputFactory;
 use Nette;
-use Nette\Forms\Container;
 
 class Form extends Nette\Application\UI\Form
 {
