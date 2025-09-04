@@ -6,6 +6,7 @@ use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Entity\DateTimeColumnEntity;
 use App\Component\Datagrid\Entity\UserColumnEntityFactory;
+use App\Component\Datagrid\SortDirEnum;
 use App\Component\Log\LogActionEnum;
 use App\Component\Translator\Translator;
 use Nette\Database\Table\ActiveRow;
@@ -22,7 +23,11 @@ readonly class DefaultDataGridEntityFactory
     public function create():DataGridEntity
     {
         $dataGridEntity = new DataGridEntity();
-        $dataGridEntity->addColumn(new ColumnEntity('table', $this->translator->translate('column_module'), true));
+
+        $dataGridEntity->setDefaultOrder('created');
+        $dataGridEntity->setDefaultOrderDir(SortDirEnum::DESC);
+
+        $dataGridEntity->addColumn(new ColumnEntity('table', $this->translator->translate('column_module')));
         $dataGridEntity->addColumn(new DateTimeColumnEntity('created', $this->translator->translate('column_date')));
         $dataGridEntity->addColumn($this->userColumnEntityFactory->create('user_id', $this->translator->translate('column_user')));
         $dataGridEntity->addColumn(new ColumnEntity('action', $this->translator->translate('column_action'))
