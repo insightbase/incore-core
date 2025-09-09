@@ -383,6 +383,19 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<!-- End of Main -->
 {/if}
 
+    {embed basicModal, 'form-help'}
+        {block title}
+            {_'header_formHelp'}
+            {embed languageSelect}{/embed}
+        {/block}
+        {block body}
+            {snippet editFormHelpForm}
+                {embed basicForm, editFormHelpForm}
+				{/embed}
+            {/snippet}
+        {/block}
+    {/embed}
+
 	{embed basicModal, 'image-update'}
 		{block title}{_'header_editImage'}{/block}
 		{block body}

@@ -51,18 +51,6 @@ naja.addEventListener('complete', (event) => {
 });
 let globalSearchTimeout;
 
-let formLanguageSelect = document.getElementsByClassName('formLanguageSelect')[0];
-if (formLanguageSelect) {
-    formLanguageSelect.addEventListener('change', function () {
-        Array.from(document.querySelectorAll('[langchange]')).forEach((element) => {
-            element.style.display = 'none';
-        });
-        Array.from(document.querySelectorAll('[data-language-id="' + formLanguageSelect.value + '"]')).forEach((element) => {
-            element.style.display = 'inline';
-        });
-    });
-}
-
 function initSystem(){
     initConfirmDelete();
     initSortable();

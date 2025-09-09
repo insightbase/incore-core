@@ -13,11 +13,16 @@ use App\Component\Translator\Translator;
 use App\Core\Admin\Authenticator;
 use App\Core\Admin\AuthorizatorFactory;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;
+use App\Model\Admin\FormHelp;
+use App\Model\Admin\FormHelpLanguage;
 use App\Model\Admin\Image;
 use App\Model\Admin\Language;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
 use App\UI\Accessory\Admin\Form\Form;
+use App\UI\Accessory\Admin\Form\FormFacade;
+use App\UI\Accessory\Admin\Form\FormHelpData;
+use App\UI\Accessory\Admin\Form\FormHelpFactory;
 use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Accessory\ParameterBag;
@@ -51,6 +56,47 @@ trait StandardTemplateTrait
     public ImageFacade $imageFacade;
     #[Inject]
     public Image $imageModel;
+    #[Inject]
+    public FormHelpFactory $formHelpFactory;
+    #[Inject]
+    public FormHelp $formHelpModel;
+    #[Inject]
+    public FormFacade $formFacade;
+    #[Inject]
+    public FormHelpLanguage $formHelpLanguageModel;
+    #[Inject]
+    public Language $languageModel;
+
+    protected function createComponentEditFormHelpForm():Form
+    {
+        $form = $this->formHelpFactory->createEdit();
+        $form->onSuccess[] = function(Form $form, FormHelpData $data):void{
+            $this->formFacade->update($data, $this->getName(),$form);
+            $this->redirect('this');
+        };
+        return  $form;
+    }
+
+    public function handleFormHelp(string $inputHtmlId):void{
+        $formHelp = $this->formHelpModel->getByPresenterAndInputHtmlId($this->getName(), $inputHtmlId);
+        $defaults = [
+            'input_html_id' => $inputHtmlId,
+        ];
+        if($formHelp !== null){
+            $defaults = $defaults + $formHelp->toArray();
+        }
+        /** @var Form $form */
+        $form = $this->getComponent('editFormHelpForm')->setDefaults($defaults);
+        if($formHelp !== null) {
+            foreach ($this->languageModel->getToTranslateNotDefault() as $language) {
+                $formHelpLanguage = $this->formHelpLanguageModel->getByFormHelpAndLanguage($formHelp, $language);
+                $form->setTranslates($language, [
+                    'label_help' => $formHelpLanguage?->label_help,
+                ]);
+            }
+        }
+        $this->redrawControl('editFormHelpForm');
+    }
 
     #[Requires(ajax: true)]
     #[NoReturn] public function handleUpdateEditImageForm(int $imageId):void

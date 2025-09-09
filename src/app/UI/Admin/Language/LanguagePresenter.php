@@ -35,7 +35,6 @@ class LanguagePresenter extends Presenter
         private readonly DefaultDataGridEntityFactory     $defaultDataGridEntityFactory,
         private readonly FormFactory                      $formFactory,
         private readonly DataGridFactory                  $dataGridFactory,
-        private readonly Language                         $languageModel,
         private readonly SubmenuFactory                   $submenuFactory,
         private readonly LanguageFacade                   $languageFacade,
         private readonly \App\Model\Admin\LanguageSetting $languageSettingModel,

@@ -106,7 +106,17 @@
         {if $input instanceof Nette\Forms\Controls\Checkbox}
             {label $input:, class:"form-label max-w-32"/}
         {else}
-            {label $input, class:"form-label max-w-32"/}
+            <label class="form-label max-w-32" n:name="$input">
+                <span>
+                    {$input->getCaption()}
+                    {if $input->getForm()->showHelp}
+                        {if $presenter->getUser()->isInRole(App\Model\Enum\RoleEnum::SUPER_ADMIN->value)}
+                            <a href="{plink 'formHelp!', $input->getHtmlId()}" data-modal-toggle="#form-help" data-naja-history="off" class="ajax"><i class="ki-filled ki-pencil"></i></a>
+                        {/if}
+                        <div class="text-gray-500">{$input->getForm()->getHelpLabel($input->getHtmlId())}</div>
+                    {/if}
+                </span>
+            </label>
         {/if}
         {if array_key_exists('type', $input->control->attrs) && $input->control->attrs['type'] === 'password'}
             {var string $class = ''}
@@ -198,8 +208,16 @@
         {if ($input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input->getOption(type) === 'file') && ($input->getName() === 'avatar' || str_contains($input->getName(), 'avatar'))}
             <div class="flex items-center flex-wrap gap-2.5 avatarContainer">
                 {input $input, class: 'hidden'}
-                <label class="form-label max-w-56">
-                    {$input->caption}
+                <label class="form-label max-w-32" n:name="$input">
+                <span>
+                    {$input->getCaption()}
+                    {if $input->getForm()->showHelp}
+                        {if $presenter->getUser()->isInRole(App\Model\Enum\RoleEnum::SUPER_ADMIN->value)}
+                            <a href="{plink 'formHelp!', $input->getHtmlId()}" data-modal-toggle="#form-help" data-naja-history="off" class="ajax"><i class="ki-filled ki-pencil"></i></a>
+                        {/if}
+                        <div class="text-gray-500">{$input->getForm()->getHelpLabel($input->getHtmlId())}</div>
+                    {/if}
+                </span>
                 </label>
                 <div class="flex items-center justify-between flex-wrap grow gap-2.5">
                     <span class="text-2sm text-gray-700">
@@ -232,8 +250,16 @@
         {* Checkbox s switch stylem *}
         {elseif $input instanceof Nette\Forms\Controls\Checkbox}
             <div class="flex items-center flex-wrap gap-2.5">
-                <label class="form-label max-w-56">
-                    {$input->caption}
+                <label class="form-label max-w-32" n:name="$input">
+                <span>
+                    {$input->getCaption()}
+                    {if $input->getForm()->showHelp}
+                        {if $presenter->getUser()->isInRole(App\Model\Enum\RoleEnum::SUPER_ADMIN->value)}
+                            <a href="{plink 'formHelp!', $input->getHtmlId()}" data-modal-toggle="#form-help" data-naja-history="off" class="ajax"><i class="ki-filled ki-pencil"></i></a>
+                        {/if}
+                        <div class="text-gray-500">{$input->getForm()->getHelpLabel($input->getHtmlId())}</div>
+                    {/if}
+                </span>
                 </label>
                 <div class="grow">
                     <label class="switch">
@@ -247,8 +273,16 @@
         {* Select dropdown *}
         {elseif $input->getOption(type) === 'select'}
             <div class="flex items-center flex-wrap gap-2.5">
-                <label class="form-label max-w-56">
-                    {$input->caption}
+                <label class="form-label max-w-32" n:name="$input">
+                <span>
+                    {$input->getCaption()}
+                    {if $input->getForm()->showHelp}
+                        {if $presenter->getUser()->isInRole(App\Model\Enum\RoleEnum::SUPER_ADMIN->value)}
+                            <a href="{plink 'formHelp!', $input->getHtmlId()}" data-modal-toggle="#form-help" data-naja-history="off" class="ajax"><i class="ki-filled ki-pencil"></i></a>
+                        {/if}
+                        <div class="text-gray-500">{$input->getForm()->getHelpLabel($input->getHtmlId())}</div>
+                    {/if}
+                </span>
                 </label>
                 <div class="grow">
                     {input $input, class: "select"}
@@ -257,8 +291,16 @@
         {* CheckboxList *}
         {elseif $input instanceof Nette\Forms\Controls\CheckboxList}
             <div class="flex items-center flex-wrap gap-2.5">
-                <label class="form-label max-w-56">
-                    {$input->caption}
+                <label class="form-label max-w-32" n:name="$input">
+                <span>
+                    {$input->getCaption()}
+                    {if $input->getForm()->showHelp}
+                        {if $presenter->getUser()->isInRole(App\Model\Enum\RoleEnum::SUPER_ADMIN->value)}
+                            <a href="{plink 'formHelp!', $input->getHtmlId()}" data-modal-toggle="#form-help" data-naja-history="off" class="ajax"><i class="ki-filled ki-pencil"></i></a>
+                        {/if}
+                        <div class="text-gray-500">{$input->getForm()->getHelpLabel($input->getHtmlId())}</div>
+                    {/if}
+                </span>
                 </label>
                 <div class="grow">
                     {foreach $input->items as $key => $label}
@@ -270,7 +312,17 @@
         {else}
             <div class="w-full">
                 <div class="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                    {label $input, class: "form-label flex items-center gap-1 max-w-56"/}
+                <label class="form-label flex items-center gap-1 max-w-56" n:name="$input">
+                <span>
+                    {$input->getCaption()}
+                    {if $input->getForm()->showHelp}
+                        {if $presenter->getUser()->isInRole(App\Model\Enum\RoleEnum::SUPER_ADMIN->value)}
+                            <a href="{plink 'formHelp!', $input->getHtmlId()}" data-modal-toggle="#form-help" data-naja-history="off" class="ajax"><i class="ki-filled ki-pencil"></i></a>
+                        {/if}
+                        <div class="text-gray-500">{$input->getForm()->getHelpLabel($input->getHtmlId())}</div>
+                    {/if}
+                </span>
+                    </label>
                     {var string $class = 'input'}
                     {if $input->hasErrors()}
                         {php $class .= ' border-danger'}

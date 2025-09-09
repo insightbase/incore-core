@@ -2,6 +2,9 @@
 
 namespace App\UI\Accessory\Admin\Form;
 
+use App\Component\Translator\Translator;
+use App\Model\Admin\FormHelp;
+use App\Model\Admin\FormHelpLanguage;
 use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput;
@@ -17,6 +20,7 @@ use Nette\Forms\Container;
 class Form extends Nette\Application\UI\Form
 {
     public const string LANG_CHANGE_ATTRIBUTE = 'langChange';
+    public bool $showHelp = true;
 
     private array $defaultTranslates = [];
     public bool $sendByAjax = false {
@@ -31,10 +35,25 @@ class Form extends Nette\Application\UI\Form
         public readonly Language                   $languageModel,
         private readonly DropzoneFileInputFactory  $dropzoneFileInputFactory,
         private readonly ContainerFactory          $containerFactory,
+        private readonly FormHelp                  $formHelpModel,
+        private readonly FormHelpLanguage          $formHelpLanguageModel,
+        private readonly Translator                $translator,
         ?Nette\ComponentModel\IContainer           $parent = null,
         ?string                                    $name = null
     ) {
         parent::__construct($parent, $name);
+    }
+
+    public function getHelpLabel(string $inputHtmlId):?string
+    {
+        $formHelp = $this->formHelpModel->getByPresenterAndInputHtmlId($this->getPresenter()->getName(), $inputHtmlId);
+        if($formHelp !== null){
+            $formHelpLanguage = $this->formHelpLanguageModel->getByFormHelpAndLanguage($formHelp, $this->translator->getLanguage());
+            if($formHelpLanguage !== null && $formHelpLanguage->label_help !== null && $formHelpLanguage->label_help !== ''){
+                return $formHelpLanguage->label_help;
+            }
+        }
+        return $formHelp?->label_help;
     }
 
     public function addContainer(int|string $name): Nette\Forms\Container
