@@ -280,3 +280,25 @@ form.max-w-2xl{
     max-width: 1000px;
     width: 100%;
 }
+
+.flex.justify-end.mt-6 .btn.btn-primary {
+    margin-bottom: 3rem;
+}
+
+.codex-editor {
+    border: 1px solid !important;
+    border-color: var(--tw-gray-400) !important;
+    border-radius: .375rem !important;
+    padding-inline-start: .75rem !important;
+    padding-inline-end: .75rem !important;
+    padding-block: .5rem;
+}
+
+.codex-editor__redactor {
+    padding-bottom: 0px !important;
+}
+
+.ce-block__content,
+.ce-toolbar__content {
+    margin-inline: unset !important;
+}

@@ -129,7 +129,7 @@
         {if $input instanceof Nette\Forms\Controls\Checkbox}
             {php $class .= ' checkbox'}
         {/if}
-        {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJsInput}
+        {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput}
             {php $class .= ' text editorJsText'}
         {/if}
         {if $input instanceof Nette\Forms\Controls\TextArea}
@@ -327,7 +327,7 @@
                     {if $input->hasErrors()}
                         {php $class .= ' border-danger'}
                     {/if}
-                    {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJsInput}
+                    {if $input instanceof App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput}
                         {php $class .= ' text editorJsText'}
                     {/if}
                     {if $input instanceof Nette\Forms\Controls\TextArea}

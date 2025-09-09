@@ -156,33 +156,47 @@ function initEditorJs() {
             data = JSON.parse(element.value);
         }
 
+        let types = element.getAttribute('data-type').split(";");;
+
+        const tools = {};
+
+        if (types.includes("raw")) {
+            tools.raw = EditorJsRaw;
+        }
+        if (types.includes("paragraph")) {
+            tools.paragraph = {
+                class: EditorJsParagraph,
+                config: {
+                    placeholder: 'Add paragraph',
+                    preserveBlank: true,
+                }
+            };
+        }
+        if (types.includes("list")) {
+            tools.list = {
+                class: EditorJsList,
+                inlineToolbar: true,
+            };
+        }
+        if (types.includes("header")) {
+            tools.header = {
+                class: EditorJsHeader,
+                inlineToolbar: true,
+                config: {
+                    placeholder: 'Add list',
+                    levels: [2, 3, 4],
+                    defaultLevel: 2
+                }
+            };
+        }
+        if (types.includes("table")) {
+            tools.table = EditorJsTable;
+        }
+
         editors[id] = new EditorJS({
             holder: editorDiv,
             data: data,
-            tools: {
-                raw: EditorJsRaw,
-                paragraph: {
-                    class: EditorJsParagraph,
-                    config: {
-                        placeholder: 'Add paragraph',
-                        preserveBlank: true,
-                    }
-                },
-                list: {
-                    class: EditorJsList,
-                    inlineToolbar: true,
-                },
-                header: {
-                    class: EditorJsHeader,
-                    inlineToolbar: true,
-                    config: {
-                        placeholder: 'Add list',
-                        levels: [2, 3, 4],
-                        defaultLevel: 2
-                    }
-                },
-                table: EditorJsTable
-            }
+            tools: tools
         });
         editorDiv.setAttribute('data-editor-id', id);
         element.setAttribute('data-for-editor-id', id);
@@ -269,6 +283,8 @@ function initDropzone() {
                 url: element.getAttribute('data-upload-url'),
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
+                chunking: true,
+                chunkSize: 2000000,
             });
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
