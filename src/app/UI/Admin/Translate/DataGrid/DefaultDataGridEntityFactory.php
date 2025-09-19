@@ -15,6 +15,7 @@ use App\Model\Admin\Language;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Enum\TranslateTypeEnum;
+use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsTypeEnum;
 use Nette\Application\Application;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
@@ -96,7 +97,11 @@ readonly class DefaultDataGridEntityFactory
                     ->setInlineEditInputCallback(function(ActiveRow $row):Html {
                         if($row['type'] === TranslateTypeEnum::Html->value) {
                             $container = Html::el('span');
-                            $container->addHtml(Html::el('input')->type('text')->class('input editorJsText')->value('xxxx'));
+                            $types = [];
+                            foreach(EditorJsTypeEnum::cases() as $type){
+                                $types[] = $type->value;
+                            }
+                            $container->addHtml(Html::el('input')->type('text')->class('input editorJsText')->value('xxxx')->addAttributes(['data-type' => implode(';', $types)]));
                             $container->addHtml(Html::el('a')->class('btn btn-sm btn-primary saveEditor')->setText('Uložit'));
                             return $container;
                         }else{
