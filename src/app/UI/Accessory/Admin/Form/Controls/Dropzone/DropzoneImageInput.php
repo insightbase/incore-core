@@ -84,10 +84,27 @@ class DropzoneImageInput extends TextInput
             ->addHtml(Html::el('div')->class('ms-4')->addHtml($image))
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
+        $dropzone->setAttribute('data-chunksize', $this->convertToBytes(ini_get('upload_max_filesize')));
 
         $container->addHtml($input->getControl()->style('display: none'));
         $container->addHtml($dropzone);
 
         return $container;
+    }
+
+    function convertToBytes(string $value):float {
+        $value = trim($value);
+        $lastChar = strtolower($value[strlen($value)-1]);
+        $number = (int)$value;
+
+        switch($lastChar) {
+            case 'g':
+                $number *= 1024;
+            case 'm':
+                $number *= 1024;
+            case 'k':
+                $number *= 1024;
+        }
+        return $number;
     }
 }

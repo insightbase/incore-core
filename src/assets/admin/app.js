@@ -284,7 +284,7 @@ function initDropzone() {
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
                 chunking: true,
-                chunkSize: 2000000,
+                chunkSize: element.getAttribute('data-chunksize'),
             });
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
@@ -311,6 +311,8 @@ function initDropzone() {
                 url: element.getAttribute('data-upload-url'),
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
+                chunking: true,
+                chunkSize: element.getAttribute('data-chunksize'),
             });
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
