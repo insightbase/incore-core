@@ -203,11 +203,6 @@ function initEditorJs() {
         editorDiv.setAttribute('data-language-id', element.getAttribute('data-language-id'));
         if (element.getAttribute('langchange') !== null) {
             editorDiv.toggleAttribute('langchange');
-            if (formLanguageSelect) {
-                if (formLanguageSelect.value !== element.getAttribute('data-language-id')) {
-                    editorDiv.style.display = 'none';
-                }
-            }
         }
     });
     Array.from(document.getElementsByTagName('form')).forEach((element) => {
