@@ -284,6 +284,7 @@ function initDropzone() {
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
                     element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
+                    element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
                 } else {
                     uploadedImageIds[dzKey].push(response.imageId);
                 }
@@ -291,6 +292,7 @@ function initDropzone() {
             dropzone.on('queuecomplete', (file, response) => {
                 if (element.getAttribute('data-multiple') != null) {
                     element.parentElement.getElementsByTagName('input')[0].value = uploadedImageIds[dzKey].join(';');
+                    element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
         }
@@ -312,6 +314,7 @@ function initDropzone() {
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
                     element.parentElement.getElementsByTagName('input')[0].value = Number(response.fileId);
+                    element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
                 } else {
                     uploadedFileIds[dzKey].push(response.fileId);
                 }
@@ -319,6 +322,7 @@ function initDropzone() {
             dropzone.on('queuecomplete', (file, response) => {
                 if (element.getAttribute('data-multiple') != null) {
                     element.parentElement.getElementsByTagName('input')[0].value = uploadedFileIds[dzKey].join(';');
+                    element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
         }
