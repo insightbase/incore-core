@@ -58,5 +58,13 @@ class ImageLocationFixtures extends Fixture
             $manager->persist($content);
             $manager->flush();
         }
+
+        $blog = $manager->getRepository(ImageLocation::class)->findOneBy(['location' => DropzoneImageLocationEnum::Blog->value]);
+        if(!$blog){
+            $blog = new ImageLocation();
+            $blog->location = DropzoneImageLocationEnum::Blog->value;
+            $manager->persist($blog);
+            $manager->flush();
+        }
     }
 }
