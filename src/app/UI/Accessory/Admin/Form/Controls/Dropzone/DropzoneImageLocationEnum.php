@@ -12,4 +12,5 @@ enum DropzoneImageLocationEnum:string
     case Enumeration = 'enumeration';
     case Content = 'content';
     case ContentGallery = 'contentGallery';
+    case Blog = 'blog';
 }
