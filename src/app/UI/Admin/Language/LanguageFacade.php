@@ -12,6 +12,11 @@ use App\Event\Language\ChangeDefaultEvent;
 use App\Model\Admin\ContactForm;
 use App\Model\Admin\ContactFormRow;
 use App\Model\Admin\ContactFormRowLanguage;
+use App\Model\Admin\ContentBlockItemText;
+use App\Model\Admin\ContentFieldValue;
+use App\Model\Admin\ContentFieldValueLanguage;
+use App\Model\Admin\ContentValue;
+use App\Model\Admin\ContentValueItem;
 use App\Model\Admin\Enumeration;
 use App\Model\Admin\EnumerationItemValue;
 use App\Model\Admin\EnumerationItemValueLanguage;
@@ -169,6 +174,58 @@ readonly class LanguageFacade
             }
         }
 
+        if($this->moduleModel->getBySystemName('content') !== null){
+            /** @var ContentBlockItemText $contentBlockItemTextModel */
+            $contentBlockItemTextModel = $this->container->getByType(ContentBlockItemText::class);
+            /** @var ContentValue $contentValueModel */
+            $contentValueModel = $this->container->getByType(ContentValue::class);
+            /** @var ContentValueItem $contentValueItemModel */
+            $contentValueItemModel = $this->container->getByType(ContentValueItem::class);
+
+            foreach($contentValueModel->getByLanguage($defaultLanguage) as $contentValue){
+                $contentValueLng = $contentValueModel->getByContentBlockIdAndContentIdAndLanguageId($contentValue->content_block_id, $contentValue->content_id, $language->id);
+                if($contentValueLng === null){
+                    $data = $contentValue->toArray();
+                    unset($data['id']);
+                    $data['language_id'] = $language->id;
+                    $contentValueLng = $contentValueModel->insert($data);
+                }
+
+                foreach($contentValueItemModel->getByContentValue($contentValue) as $contentValueItem){
+                    $contentValueItemLng = $contentValueItemModel->getByContentValueAndContentBlockItem($contentValueLng, $contentValueItem->content_block_item);
+                    if($contentValueItemLng === null){
+                        $contentValueItemLng = $contentValueItemModel->insert([
+                            'content_value_id' => $contentValueLng->id,
+                            'content_block_item_id' => $contentValueItem->content_block_item_id,
+                        ]);
+                    }
+
+                    $contentBlockItemText = $contentBlockItemTextModel->getByContentValueItem($contentValueItem);
+                    if($contentBlockItemText !== null){
+                        $contentBlockItemTextLng = $contentBlockItemTextModel->getByContentValueItem($contentValueItemLng);
+                        if($contentBlockItemTextLng === null){
+                            $data = $contentBlockItemText->toArray();
+                            unset($data['id']);
+                            $data['content_value_item_id'] = $contentValueItemLng->id;
+                            $contentBlockItemTextLng = $contentBlockItemTextModel->insert($data);
+                        }
+
+                        $json['contentBlockItemText_' . $contentBlockItemTextLng->id] = $contentBlockItemText->text;
+                    }
+                }
+            }
+
+            foreach($contentBlockItemTextModel->getByLanguage($language) as $contentBlockItemText){
+                $json['contentBlockItemText_' . $contentBlockItemText->id] = $contentBlockItemText->text;
+            }
+
+            /** @var ContentFieldValue $contentFieldValueModel */
+            $contentFieldValueModel = $this->container->getByType(ContentFieldValue::class);
+            foreach($contentFieldValueModel->getTable() as $contentFieldValue){
+                $json['contentFieldValue_' . $contentFieldValue->id] = $contentFieldValue->value;
+            }
+        }
+
         $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
         $setting = $this->settingModel->getDefault();
         if(array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)){
@@ -252,6 +309,14 @@ readonly class LanguageFacade
             $contactFormRowLanguageModel = $this->container->getByType(ContactFormRowLanguage::class);
         }
 
+        $contentBlockItemTextModel = null;
+        if($this->moduleModel->getBySystemName('content') !== null) {
+            /** @var ContentBlockItemText $contentBlockItemTextModel */
+            $contentBlockItemTextModel = $this->container->getByType(ContentBlockItemText::class);
+            /** @var ContentFieldValueLanguage $contentFieldValueLanguageModel */
+            $contentFieldValueLanguageModel = $this->container->getByType(ContentFieldValueLanguage::class);
+        }
+
         $json = Json::decode($post['value'], true);
         $firstKey = Arrays::firstKey($json);
         if($firstKey === '0' || $firstKey === 0){
@@ -308,6 +373,20 @@ readonly class LanguageFacade
                     ]);
                 }else {
                     $contactFormRowLanguage->update(['name' => $text]);
+                }
+            }elseif($type === 'contentBlockItemText' && $contentBlockItemTextModel !== null){
+                $contentBlockItemText = $contentBlockItemTextModel->get((int)$key);
+                $contentBlockItemText?->update(['value' => $text]);
+            }elseif($type === 'contentFieldValue' && $contentBlockItemTextModel !== null){
+                $contentFieldValueLanguage = $contentFieldValueLanguageModel->getByContentIdAndLanguage((int)$key, $language);
+                if($contentFieldValueLanguage === null){
+                    $contentFieldValueLanguageModel->insert([
+                        'content_field_value_id' => (int)$key,
+                        'language_id' => $language->id,
+                        'value' => $text,
+                    ]);
+                }else{
+                    $contentFieldValueLanguage->update(['value' => $text]);
                 }
             }
         }
