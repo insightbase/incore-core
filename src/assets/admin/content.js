@@ -28,9 +28,14 @@ function initBLockItemValueEdit() {
                 }
             });
         });
+        Array.from(document.getElementsByTagName('textarea')).forEach((input) => {
+            input.addEventListener('change', function () {
+                blockItemValueEdit(input);
+            });
+        });
     });
 }
 function blockItemValueEdit(input){
-    let url = input.getAttribute('data-url-change').replace('xxxx', input.value);
+    let url = input.getAttribute('data-url-change').replace('xxxx', encodeURIComponent(input.value));
     naja.makeRequest('GET', url, {}, {history: false});
 }
