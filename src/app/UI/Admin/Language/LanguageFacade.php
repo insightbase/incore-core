@@ -248,6 +248,14 @@ readonly class LanguageFacade
         ]);
 
         $url = 'https://drop-core.web.app/api/gen/translate';
+
+        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
+        FileSystem::write($tempFile, Json::encode([
+            'callback' => $callback,
+            'url' => $url,
+            'body' => $bodyArray,
+        ]));
+
         $client = new Client();
         $response = $client->request('POST', $url, [
             'headers' => [
@@ -264,7 +272,6 @@ readonly class LanguageFacade
             'drop_core_last_call_date' => new DateTime(),
         ]);
 
-        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
         FileSystem::write($tempFile, Json::encode([
             'drop_core_id' => $response['id'],
             'callback' => $callback,
