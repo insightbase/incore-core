@@ -200,7 +200,10 @@ readonly class LanguageFacade
                         $contentValueItemLng = $contentValueItemModel->insert([
                             'content_value_id' => $contentValueLng->id,
                             'content_block_item_id' => $contentValueItem->content_block_item_id,
+                            'content_value_item_base_language_id' => $contentValueItem->id,
                         ]);
+                    }else{
+                        $contentValueItemLng->update(['content_value_item_base_language_id' => $contentValueItem->id]);
                     }
 
                     $contentBlockItemText = $contentBlockItemTextModel->getByContentValueItem($contentValueItem);
