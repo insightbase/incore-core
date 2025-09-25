@@ -3,6 +3,7 @@
 namespace App\UI\Admin\Language;
 
 use App\Component\Front\ContactFormComponent\ContactFormControl;
+use App\Component\Front\ContentControl\ContentControl;
 use App\Component\Front\EnumerationControl\EnumerationControl;
 use App\Component\Log\LogActionEnum;
 use App\Component\Log\LogFacade;
@@ -12,6 +13,7 @@ use App\Event\Language\ChangeDefaultEvent;
 use App\Model\Admin\ContactForm;
 use App\Model\Admin\ContactFormRow;
 use App\Model\Admin\ContactFormRowLanguage;
+use App\Model\Admin\Content;
 use App\Model\Admin\ContentBlockItemText;
 use App\Model\Admin\ContentFieldValue;
 use App\Model\Admin\ContentFieldValueLanguage;
@@ -23,6 +25,7 @@ use App\Model\Admin\EnumerationItemValueLanguage;
 use App\Model\Admin\EnumerationRow;
 use App\Model\Admin\EnumerationRowLanguage;
 use App\Model\Admin\Language;
+use App\Model\Admin\LanguageTranslate;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
@@ -48,27 +51,32 @@ use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
 use Nette\DI\Container;
 use Nette\Http\Url;
+use Nette\Security\User;
 use Nette\Utils\Arrays;
 use Nette\Utils\DateTime;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
-readonly class LanguageFacade
+class LanguageFacade
 {
+    private int $bachLimit = 50;
+
     public function __construct(
-        private Language    $languageModel,
-        private Translator  $translator,
-        private LogFacade   $logFacade,
-        private EventFacade $eventFacade,
-        private LinkGenerator $linkGenerator,
-        private Translate $translateModel,
-        private TranslateLanguage $translateLanguageModel,
-        private Setting $settingModel,
-        private ParameterBag $parameterBag,
-        private Module $moduleModel,
-        private Container $container,
-        private Storage $storage,
+        private readonly Language          $languageModel,
+        private readonly Translator        $translator,
+        private readonly LogFacade         $logFacade,
+        private readonly EventFacade       $eventFacade,
+        private readonly LinkGenerator     $linkGenerator,
+        private readonly Translate         $translateModel,
+        private readonly TranslateLanguage $translateLanguageModel,
+        private readonly Setting           $settingModel,
+        private readonly ParameterBag      $parameterBag,
+        private readonly Module            $moduleModel,
+        private readonly Container         $container,
+        private readonly Storage           $storage,
+        private readonly LanguageTranslate $languageTranslateModel,
+        private readonly User              $userSecurity,
     ) {}
 
     public function create(NewFormData $data): void
@@ -141,10 +149,6 @@ readonly class LanguageFacade
      */
     public function translate(ActiveRow $language):void
     {
-        if($language->drop_core_id !== null){
-            throw new TranslateInProgressException();
-        }
-
         $defaultLanguage = $this->languageModel->getDefault();
 
         $json = [];
@@ -252,58 +256,64 @@ readonly class LanguageFacade
             }
         }
 
-        $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
-        $setting = $this->settingModel->getDefault();
-        if(array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)){
-            if($setting?->basic_auth_user === null || $setting?->basic_auth_password === null){
-                throw new BasicAuthNotSetException();
+        $chunks = array_chunk($json, $this->bachLimit, true);
+
+        foreach($chunks as $shortJson) {
+            $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
+            $setting = $this->settingModel->getDefault();
+            if (array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
+                if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
+                    throw new BasicAuthNotSetException();
+                }
+                $callback = new Url($callback);
+                $callback->setUser($setting->basic_auth_user);
+                $callback->setPassword($setting->basic_auth_password);
+                $callback = (string)$callback;
             }
-            $callback = new Url($callback);
-            $callback->setUser($setting->basic_auth_user);
-            $callback->setPassword($setting->basic_auth_password);
-            $callback = (string)$callback;
+
+            $body = Json::encode($bodyArray = [
+                'inputLocale' => $defaultLanguage->url,
+                'outputLocale' => $language->url,
+                'model' => 'flash',
+                'callback' => $callback,
+                'mode' => 'async',
+                'value' => $shortJson,
+            ]);
+
+            $url = 'https://drop-core.web.app/api/gen/translate';
+
+            $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
+            FileSystem::write($tempFile, Json::encode([
+                'callback' => $callback,
+                'url' => $url,
+                'body' => $bodyArray,
+            ]));
+
+            $client = new Client();
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
+                    'store' => 'incore',
+                    'content-type' => 'application/json',
+                ],
+                'body' => $body,
+            ]);
+
+            $response = Json::decode((string)$response->getBody(), true);
+            $this->languageTranslateModel->insert([
+                'drop_core_id' => $response['id'],
+                'user_id' => $this->userSecurity->getId(),
+                'language' => $language->id,
+                'datetime' => new DateTime(),
+            ]);
+
+            FileSystem::write($tempFile, Json::encode([
+                'drop_core_id' => $response['id'],
+                'callback' => $callback,
+                'url' => $url,
+                'body' => $bodyArray,
+            ]));
         }
-
-        $body = Json::encode($bodyArray = [
-            'inputLocale' => $defaultLanguage->url,
-            'outputLocale' => $language->url,
-            'model' => 'flash',
-            'callback' => $callback,
-            'mode' => 'async',
-            'value' => $json,
-        ]);
-
-        $url = 'https://drop-core.web.app/api/gen/translate';
-
-        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
-        FileSystem::write($tempFile, Json::encode([
-            'callback' => $callback,
-            'url' => $url,
-            'body' => $bodyArray,
-        ]));
-
-        $client = new Client();
-        $response = $client->request('POST', $url, [
-            'headers' => [
-                'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
-                'store' => 'incore',
-                'content-type' => 'application/json',
-            ],
-            'body' => $body,
-        ]);
-
-        $response = Json::decode((string)$response->getBody(), true);
-        $language->update([
-            'drop_core_id' => $response['id'],
-            'drop_core_last_call_date' => new DateTime(),
-        ]);
-
-        FileSystem::write($tempFile, Json::encode([
-            'drop_core_id' => $response['id'],
-            'callback' => $callback,
-            'url' => $url,
-            'body' => $bodyArray,
-        ]));
     }
 
     /**
@@ -324,7 +334,8 @@ readonly class LanguageFacade
         if($language->is_default){
             throw new LanguageIsDefaultException();
         }
-        if($language->drop_core_id !== $post['id']){
+        $languageTranslate = $this->languageTranslateModel->getByDropCoreId($post['id']);
+        if($languageTranslate === null){
             throw new LanguageCallbackIdNotFoundException();
         }
 
@@ -457,9 +468,7 @@ readonly class LanguageFacade
                 }
             }
         }
-        $language->update([
-            'drop_core_id' => null,
-        ]);
+        $languageTranslate->update(['finished' => new DateTime()]);
 
         $cacheTranslate = new Cache($this->storage, Translator::CACHE_NAMESPACE);
         $cacheTranslate->remove($language->id);
@@ -479,6 +488,18 @@ readonly class LanguageFacade
             $contactFormModel = $this->container->getByType(ContactForm::class);
             foreach($contactFormModel->getAll() as $contactForm) {
                 $cache->remove('contactFormRow-' . $contactForm->id . '-' . $language->id);
+            }
+        }
+
+        if($contentBlockItemTextModel !== null){
+            $cache = new Cache($this->storage, ContentControl::CACHE_NAMESPACE);
+
+            /** @var Content $contentModel */
+            $contentModel = $this->container->getByType(Content::class);
+            foreach($contentModel->getTable() as $content) {
+                $cache->getStorage()->clean([
+                    Cache::Tags => ['content_id_' . $content->id],
+                ]);
             }
         }
     }
