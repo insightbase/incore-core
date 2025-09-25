@@ -188,7 +188,10 @@ readonly class LanguageFacade
                     $data = $contentValue->toArray();
                     unset($data['id']);
                     $data['language_id'] = $language->id;
+                    $data['content_value_base_language_id'] = $contentValue->id;
                     $contentValueLng = $contentValueModel->insert($data);
+                }else{
+                    $contentValueLng->update(['content_value_base_language_id' => $contentValue->id]);
                 }
 
                 foreach($contentValueItemModel->getByContentValue($contentValue) as $contentValueItem){
