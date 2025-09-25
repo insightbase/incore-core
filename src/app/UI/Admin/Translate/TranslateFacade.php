@@ -13,7 +13,6 @@ use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\TranslateEntity;
 use App\UI\Accessory\ParameterBag;
-use App\UI\Admin\Translate\Form\FormTranslateData;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;

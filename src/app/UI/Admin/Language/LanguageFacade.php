@@ -28,7 +28,10 @@ use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
+use App\Model\Enum\EnumerationFormTypeEnum;
+use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\ParameterBag;
+use App\UI\Admin\Content\Form\BlockItem\EditorJs;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
@@ -148,7 +151,11 @@ readonly class LanguageFacade
         foreach($this->translateModel->getNotAdmin() as $translate){
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
             if($translateLanguage !== null) {
-                $json['translate_' . $translate->key] = $translateLanguage->value;
+                $value = $translateLanguage->value;
+                if($translateLanguage->translate->type === TranslateTypeEnum::Html->value){
+                    $value = Json::decode($value, true);
+                }
+                $json['translate_' . $translate->key] = $value;
             }
         }
 
@@ -162,7 +169,11 @@ readonly class LanguageFacade
             /** @var EnumerationItemValue $enumerationItemValueModel */
             $enumerationItemValueModel = $this->container->getByType(EnumerationItemValue::class);
             foreach($enumerationItemValueModel->getAll() as $enumerationItemValue){
-                $json['enumerationItemValue_' . $enumerationItemValue->id] = $enumerationItemValue->value;
+                $value = $enumerationItemValue->value;
+                if($enumerationItemValue->enumeration_row->type === EnumerationFormTypeEnum::EditorJs->value){
+                    $value = Json::decode($value, true);
+                }
+                $json['enumerationItemValue_' . $enumerationItemValue->id] = $value;
             }
         }
 
@@ -181,6 +192,8 @@ readonly class LanguageFacade
             $contentValueModel = $this->container->getByType(ContentValue::class);
             /** @var ContentValueItem $contentValueItemModel */
             $contentValueItemModel = $this->container->getByType(ContentValueItem::class);
+            /** @var EditorJs $editorJsBlockItem */
+            $editorJsBlockItem = $this->container->getByType(EditorJs::class);
 
             foreach($contentValueModel->getByLanguage($defaultLanguage) as $contentValue){
                 $contentValueLng = $contentValueModel->getByContentBlockIdAndContentIdAndLanguageId($contentValue->content_block_id, $contentValue->content_id, $language->id);
@@ -216,19 +229,26 @@ readonly class LanguageFacade
                             $contentBlockItemTextLng = $contentBlockItemTextModel->insert($data);
                         }
 
-                        $json['contentBlockItemText_' . $contentBlockItemTextLng->id] = $contentBlockItemText->text;
+                        $text = $contentBlockItemText->text;
+                        if($contentValueItem->content_block_item->type === $editorJsBlockItem->getSystemName()){
+                            $text = Json::decode($text, true);
+                        }
+
+                        $json['contentBlockItemText_' . $contentBlockItemTextLng->id] = $text;
                     }
                 }
             }
 
-            foreach($contentBlockItemTextModel->getByLanguage($language) as $contentBlockItemText){
-                $json['contentBlockItemText_' . $contentBlockItemText->id] = $contentBlockItemText->text;
-            }
-
             /** @var ContentFieldValue $contentFieldValueModel */
             $contentFieldValueModel = $this->container->getByType(ContentFieldValue::class);
+            /** @var \App\UI\Admin\Content\Form\FieldType\EditorJs $editorJsFieldType */
+            $editorJsFieldType = $this->container->getByType(\App\UI\Admin\Content\Form\FieldType\EditorJs::class);
             foreach($contentFieldValueModel->getTable() as $contentFieldValue){
-                $json['contentFieldValue_' . $contentFieldValue->id] = $contentFieldValue->value;
+                $value = $contentFieldValue->value;
+                if($contentFieldValue->content_field->type === $editorJsFieldType->getSystemName()){
+                    $value = Json::decode($value, true);
+                }
+                $json['contentFieldValue_' . $contentFieldValue->id] = $value;
             }
         }
 
@@ -328,6 +348,8 @@ readonly class LanguageFacade
             $contentBlockItemTextModel = $this->container->getByType(ContentBlockItemText::class);
             /** @var ContentFieldValueLanguage $contentFieldValueLanguageModel */
             $contentFieldValueLanguageModel = $this->container->getByType(ContentFieldValueLanguage::class);
+            /** @var EnumerationItemValue $enumerationItemValueModel */
+            $enumerationItemValueModel = $this->container->getByType(EnumerationItemValue::class);
         }
 
         $json = Json::decode($post['value'], true);
@@ -342,6 +364,9 @@ readonly class LanguageFacade
 
             if($type === 'translate'){
                 $translate = $this->translateModel->getByKey($key);
+                if($translate->type === TranslateTypeEnum::Html->value){
+                    $text = Json::encode($text);
+                }
                 if($translate !== null){
                     $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
                     if($translateLanguage === null){
@@ -367,13 +392,21 @@ readonly class LanguageFacade
                 }
             }elseif($type === 'enumerationItemValue' && $enumerationItemValueLanguageModel !== null){
                 $enumerationItemValueLanguage = $enumerationItemValueLanguageModel->getByEnumerationItemValueIdAndLanguage((int)$key, $language);
+
                 if($enumerationItemValueLanguage === null){
+                    $enumerationItemValue = $enumerationItemValueModel->get((int)$key);
+                    if($enumerationItemValue->enumeration_row->type === EnumerationFormTypeEnum::EditorJs->value){
+                        $text = Json::encode($text);
+                    }
                     $enumerationItemValueLanguageModel->insert([
                         'value' => $text,
                         'language_id' => $language->id,
                         'enumeration_item_value_id' => (int)$key,
                     ]);
                 }else {
+                    if($enumerationItemValueLanguage->enumeration_item_value->enumeration_row->type === EnumerationFormTypeEnum::EditorJs->value){
+                        $text = Json::encode($text);
+                    }
                     $enumerationItemValueLanguage->update(['value' => $text]);
                 }
             }elseif($type === 'contactForm' && $contactFormRowLanguageModel !== null){
@@ -389,16 +422,37 @@ readonly class LanguageFacade
                 }
             }elseif($type === 'contentBlockItemText' && $contentBlockItemTextModel !== null){
                 $contentBlockItemText = $contentBlockItemTextModel->get((int)$key);
-                $contentBlockItemText?->update(['value' => $text]);
+                if($contentBlockItemText !== null){
+                    /** @var EditorJs $editorJsBlockItem */
+                    $editorJsBlockItem = $this->container->getByType(EditorJs::class);
+                    if($contentBlockItemText->content_value_item->content_block_item->type === $editorJsBlockItem->getSystemName()){
+                        $text = Json::encode($text);
+                    }
+                    $contentBlockItemText?->update(['value' => $text]);
+                }
             }elseif($type === 'contentFieldValue' && $contentBlockItemTextModel !== null){
+                /** @var \App\UI\Admin\Content\Form\FieldType\EditorJs $editorJsFieldType */
+                $editorJsFieldType = $this->container->getByType(\App\UI\Admin\Content\Form\FieldType\EditorJs::class);
+
                 $contentFieldValueLanguage = $contentFieldValueLanguageModel->getByContentIdAndLanguage((int)$key, $language);
                 if($contentFieldValueLanguage === null){
+                    /** @var ContentFieldValue $contentFieldValueModel */
+                    $contentFieldValueModel = $this->container->getByType(ContentFieldValue::class);
+                    $contentFieldValue = $contentFieldValueModel->get((int)$key);
+                    if($contentFieldValue->content_field->type === $editorJsFieldType->getSystemName()){
+                        $text = Json::encode($text);
+                    }
+
                     $contentFieldValueLanguageModel->insert([
                         'content_field_value_id' => (int)$key,
                         'language_id' => $language->id,
                         'value' => $text,
                     ]);
                 }else{
+                    if($contentFieldValueLanguage->content_field_value->content_field->type === $editorJsFieldType->getSystemName()){
+                        $text = Json::encode($text);
+                    }
+
                     $contentFieldValueLanguage->update(['value' => $text]);
                 }
             }
