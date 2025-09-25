@@ -386,7 +386,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
     {embed basicModal, 'form-help'}
         {block title}
             {_'header_formHelp'}
-            {embed languageSelect}{/embed}
+            {embed languageSelect, defaultId: $presenter->getParameter('languageId')}{/embed}
         {/block}
         {block body}
             {snippet editFormHelpForm}

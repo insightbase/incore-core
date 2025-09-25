@@ -47,15 +47,21 @@ function initForms() {
 
     Array.from(document.getElementsByClassName('formLanguageSelect')).forEach((formLanguageSelect) => {
         formLanguageSelect.addEventListener('change', function () {
-            Array.from(document.querySelectorAll('[langchange]')).forEach((element) => {
-                element.style.display = 'none';
-            });
-            Array.from(document.querySelectorAll('[data-language-id="' + formLanguageSelect.value + '"]')).forEach((element) => {
-                element.style.display = 'inline';
-            });
+            updateFormLanguageSelect(formLanguageSelect.value);
         });
+        updateFormLanguageSelect(formLanguageSelect.value);
     });
 }
+
+function updateFormLanguageSelect(value){
+    Array.from(document.querySelectorAll('[langchange]')).forEach((element) => {
+        element.style.display = 'none';
+    });
+    Array.from(document.querySelectorAll('[data-language-id="' + value + '"]')).forEach((element) => {
+        element.style.display = 'inline';
+    });
+}
+
 // přepíše <options> v <select>
 function updateSelectbox(select, items) {
     select.innerHTML = ''; // odstraníme vše
