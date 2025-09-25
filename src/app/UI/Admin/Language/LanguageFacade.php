@@ -303,7 +303,7 @@ class LanguageFacade
             $this->languageTranslateModel->insert([
                 'drop_core_id' => $response['id'],
                 'user_id' => $this->userSecurity->getId(),
-                'language' => $language->id,
+                'language_id' => $language->id,
                 'datetime' => new DateTime(),
             ]);
 
