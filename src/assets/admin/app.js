@@ -147,6 +147,9 @@ function initEditorJs() {
     Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
         const editorDiv = document.createElement('div');
         editorDiv.classList.add('editorJsHolder');
+        if (element.classList.contains('hidden')) {
+            editorDiv.classList.add('hidden');
+        }
         element.after(editorDiv);
 
         const id = generateUniqueId();
