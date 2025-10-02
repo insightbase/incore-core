@@ -14,6 +14,7 @@ use App\Model\Admin\ContactForm;
 use App\Model\Admin\ContactFormRow;
 use App\Model\Admin\ContactFormRowLanguage;
 use App\Model\Admin\Content;
+use App\Model\Admin\ContentBlockItemGallery;
 use App\Model\Admin\ContentBlockItemText;
 use App\Model\Admin\ContentFieldValue;
 use App\Model\Admin\ContentFieldValueLanguage;
@@ -35,6 +36,7 @@ use App\Model\Enum\EnumerationFormTypeEnum;
 use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Content\Form\BlockItem\EditorJs;
+use App\UI\Admin\Content\Form\BlockItem\Gallery;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
@@ -198,6 +200,10 @@ class LanguageFacade
             $contentValueItemModel = $this->container->getByType(ContentValueItem::class);
             /** @var EditorJs $editorJsBlockItem */
             $editorJsBlockItem = $this->container->getByType(EditorJs::class);
+            /** @var Gallery $galleryBlockItem */
+            $galleryBlockItem = $this->container->getByType(Gallery::class);
+            /** @var ContentBlockItemGallery $contentBlockItemGalleryModel */
+            $contentBlockItemGalleryModel = $this->container->getByType(ContentBlockItemGallery::class);
 
             foreach($contentValueModel->getByLanguage($defaultLanguage) as $contentValue){
                 $contentValueLng = $contentValueModel->getByContentBlockIdAndContentIdAndLanguageId($contentValue->content_block_id, $contentValue->content_id, $language->id);
@@ -221,6 +227,20 @@ class LanguageFacade
                         ]);
                     }else{
                         $contentValueItemLng->update(['content_value_item_base_language_id' => $contentValueItem->id]);
+                    }
+
+                    if($contentValueItem->content_block_item->type === $galleryBlockItem->getSystemName()){
+                        $contentBlockItemGalleryItems = $contentBlockItemGalleryModel->getByContentValueItem($contentValueItem);
+                        $contentBlockItemGalleryItemsLng = $contentBlockItemGalleryModel->getByContentValueItem($contentValueItemLng);
+
+                        if($contentBlockItemGalleryItems->count('*') > 0 && $contentBlockItemGalleryItemsLng->count('*') === 0) {
+                            foreach ($contentBlockItemGalleryModel->getByContentValueItem($contentValueItem) as $contentBlockItemGallery) {
+                                $data = $contentBlockItemGallery->toArray();
+                                unset($data['id']);
+                                $data['content_value_item_id'] = $contentValueItemLng->id;
+                                $contentBlockItemGalleryModel->insert($data);
+                            }
+                        }
                     }
 
                     $contentBlockItemText = $contentBlockItemTextModel->getByContentValueItem($contentValueItem);
