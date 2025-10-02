@@ -326,6 +326,7 @@ class LanguageFacade
                 'user_id' => $this->userSecurity->getId(),
                 'language_id' => $language->id,
                 'datetime' => new DateTime(),
+                'request' => $body,
             ]);
 
             FileSystem::write($tempFile . '_' . $iterator, Json::encode([

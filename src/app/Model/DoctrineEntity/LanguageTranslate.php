@@ -28,4 +28,7 @@ class LanguageTranslate implements Entity
 
     #[ORM\Column(type: 'datetime', nullable: true, options: ['default' => null])]
     public ?\DateTime $finished = null;
+
+    #[ORM\Column(type: 'text')]
+    public string $request;
 }
