@@ -386,7 +386,7 @@ class LanguageFacade
             $enumerationItemValueModel = $this->container->getByType(EnumerationItemValue::class);
         }
 
-        $json = Json::decode($post['value'], true);
+        $json = $post['value'];
         $firstKey = Arrays::firstKey($json);
         if($firstKey === '0' || $firstKey === 0){
             $json = $json[0];

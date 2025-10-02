@@ -36,7 +36,7 @@ class LanguageCallbackPresenter extends Presenter
         }
 
         if($this->getParameter('file') !== null){
-            $raw = $this->parameterBag->tempDir . '/' . $this->getParameter('file');
+            $raw = FileSystem::read($this->parameterBag->tempDir . '/' . $this->getParameter('file'));
         }else {
             $this->getHttpResponse()->setContentType('application/json');
             $raw = $this->getHttpRequest()->getRawBody();
@@ -71,7 +71,7 @@ class LanguageCallbackPresenter extends Presenter
                 }
             }
         } catch (JsonException $e) {
-            FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+            FileSystem::write($tempFile . '_error', $e->getMessage());
             $status = 'error';
             $this->payload->error = 'json translate error';
         }
