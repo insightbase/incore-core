@@ -26,12 +26,13 @@ class LanguageCallbackPresenter extends Presenter
 
     #[NoReturn] public function actionTranslate(int $id):void
     {
+        $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
+
         if($this->getParameter('file') !== null){
             $raw = $this->parameterBag->tempDir . '/' . $this->getParameter('file');
         }else {
             $this->getHttpResponse()->setContentType('application/json');
             $raw = $this->getHttpRequest()->getRawBody();
-            $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
             FileSystem::write($tempFile, $raw);
         }
         try {
