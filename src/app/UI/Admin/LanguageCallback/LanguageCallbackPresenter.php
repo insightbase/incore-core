@@ -27,6 +27,13 @@ class LanguageCallbackPresenter extends Presenter
     #[NoReturn] public function actionTranslate(int $id):void
     {
         $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
+        $i = 0;
+        if(file_exists($tempFile)){
+            while(file_exists($tempFile . '_' . $i)){
+                $i++;
+            }
+            $tempFile = $tempFile . '_' . $i;
+        }
 
         if($this->getParameter('file') !== null){
             $raw = $this->parameterBag->tempDir . '/' . $this->getParameter('file');
