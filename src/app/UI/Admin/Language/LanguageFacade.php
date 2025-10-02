@@ -278,6 +278,8 @@ class LanguageFacade
 
         $chunks = array_chunk($json, $this->bachLimit, true);
 
+        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
+        $iterator = 0;
         foreach($chunks as $shortJson) {
             $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
             $setting = $this->settingModel->getDefault();
@@ -302,8 +304,7 @@ class LanguageFacade
 
             $url = 'https://drop-core.web.app/api/gen/translate';
 
-            $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
-            FileSystem::write($tempFile, Json::encode([
+            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
                 'callback' => $callback,
                 'url' => $url,
                 'body' => $bodyArray,
@@ -327,12 +328,14 @@ class LanguageFacade
                 'datetime' => new DateTime(),
             ]);
 
-            FileSystem::write($tempFile, Json::encode([
+            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
                 'drop_core_id' => $response['id'],
                 'callback' => $callback,
                 'url' => $url,
                 'body' => $bodyArray,
             ]));
+
+            $iterator++;
         }
     }
 
