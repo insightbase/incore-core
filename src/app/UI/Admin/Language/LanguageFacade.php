@@ -302,7 +302,7 @@ class LanguageFacade
                 'value' => $shortJson,
             ]);
 
-            $url = 'https://drop-core.web.app/api/gen/translate';
+            $url = 'https://core.inbs.cz/api/gen/translate';
 
             FileSystem::write($tempFile . '_' . $iterator, Json::encode([
                 'callback' => $callback,
