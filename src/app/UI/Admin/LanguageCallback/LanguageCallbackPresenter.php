@@ -44,6 +44,15 @@ class LanguageCallbackPresenter extends Presenter
         }
         try {
             $post = Json::decode($raw, true);
+
+            if(!$post['valid']){
+                if(array_key_exists('error', $post) && array_key_exists('message', $post['error']) && $post['error']['message'] === 'socket hang up'){
+                    if(array_key_exists('config', $post['error']) && array_key_exists('data', $post['error']['config'])){
+                        $post = Json::decode($post['error']['config']['data'], true);
+                    }
+                }
+            }
+
             if($post['valid']) {
                 try {
                     $this->languageFacade->processDropCoreCallback($id, $post);
