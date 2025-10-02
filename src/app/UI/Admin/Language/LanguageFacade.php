@@ -62,7 +62,7 @@ use Nette\Utils\JsonException;
 
 class LanguageFacade
 {
-    private int $bachLimit = 50;
+    private int $bachLimit = 40;
 
     public function __construct(
         private readonly Language          $languageModel,
