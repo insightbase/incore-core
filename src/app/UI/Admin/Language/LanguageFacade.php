@@ -462,7 +462,7 @@ class LanguageFacade
                     if($contentBlockItemText->content_value_item->content_block_item->type === $editorJsBlockItem->getSystemName()){
                         $text = Json::encode($text);
                     }
-                    $contentBlockItemText?->update(['value' => $text]);
+                    $contentBlockItemText?->update(['text' => $text]);
                 }
             }elseif($type === 'contentFieldValue' && $contentBlockItemTextModel !== null){
                 /** @var \App\UI\Admin\Content\Form\FieldType\EditorJs $editorJsFieldType */
