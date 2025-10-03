@@ -112,6 +112,10 @@ readonly class DefaultDataGridEntityFactory
         }
         if($this->application->getPresenter()->getName() !== 'Admin:Performance') {
             $entity->addMenu(
+                (new MenuEntity($this->translator->translate('menu_update'), 'edit'))
+                    ->setIcon(DefaultIconEnum::Edit->value)
+            );
+            $entity->addMenu(
                 (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
                     ->setIcon(DefaultIconEnum::Edit->value)
             );

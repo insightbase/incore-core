@@ -32,6 +32,7 @@ use App\Model\Admin\Setting;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\LanguageEntity;
+use App\Model\Entity\TranslateEntity;
 use App\Model\Enum\EnumerationFormTypeEnum;
 use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\ParameterBag;
@@ -155,14 +156,7 @@ class LanguageFacade
 
         $json = [];
         foreach($this->translateModel->getNotAdmin() as $translate){
-            $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
-            if($translateLanguage !== null) {
-                $value = $translateLanguage->value;
-                if($translateLanguage->translate->type === TranslateTypeEnum::Html->value){
-                    $value = Json::decode($value, true);
-                }
-                $json['translate_' . $translate->key] = $value;
-            }
+            $this->addTranslateToJson($translate, $json, $defaultLanguage);
         }
 
         if($this->moduleModel->getBySystemName('enumeration') !== null){
@@ -276,68 +270,7 @@ class LanguageFacade
             }
         }
 
-        $chunks = array_chunk($json, $this->bachLimit, true);
-
-        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
-        $iterator = 0;
-        foreach($chunks as $shortJson) {
-            $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
-            $setting = $this->settingModel->getDefault();
-            if (array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
-                if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
-                    throw new BasicAuthNotSetException();
-                }
-                $callback = new Url($callback);
-                $callback->setUser($setting->basic_auth_user);
-                $callback->setPassword($setting->basic_auth_password);
-                $callback = (string)$callback;
-            }
-
-            $body = Json::encode($bodyArray = [
-                'inputLocale' => $defaultLanguage->url,
-                'outputLocale' => $language->url,
-                'model' => 'flash',
-                'callback' => $callback,
-                'mode' => 'async',
-                'value' => $shortJson,
-            ]);
-
-            $url = 'https://core.inbs.cz/api/gen/translate';
-
-            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
-                'callback' => $callback,
-                'url' => $url,
-                'body' => $bodyArray,
-            ]));
-
-            $client = new Client();
-            $response = $client->request('POST', $url, [
-                'headers' => [
-                    'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
-                    'store' => 'incore',
-                    'content-type' => 'application/json',
-                ],
-                'body' => $body,
-            ]);
-
-            $response = Json::decode((string)$response->getBody(), true);
-            $this->languageTranslateModel->insert([
-                'drop_core_id' => $response['id'],
-                'user_id' => $this->userSecurity->getId(),
-                'language_id' => $language->id,
-                'datetime' => new DateTime(),
-                'request' => $body,
-            ]);
-
-            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
-                'drop_core_id' => $response['id'],
-                'callback' => $callback,
-                'url' => $url,
-                'body' => $bodyArray,
-            ]));
-
-            $iterator++;
-        }
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
     }
 
     /**
@@ -525,6 +458,107 @@ class LanguageFacade
                     Cache::Tags => ['content_id_' . $content->id],
                 ]);
             }
+        }
+    }
+
+    private function addTranslateToJson(ActiveRow $translate, array &$json, ActiveRow $defaultLanguage):void{
+        $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
+        if($translateLanguage !== null) {
+            $value = $translateLanguage->value;
+            if($translateLanguage->translate->type === TranslateTypeEnum::Html->value){
+                $value = Json::decode($value, true);
+            }
+            $json['translate_' . $translate->key] = $value;
+        }
+    }
+
+    /**
+     * @param TranslateEntity $translate
+     * @param LanguageEntity $language
+     * @return void
+     */
+    public function translateTranslate(ActiveRow $translate, ActiveRow $language):void
+    {
+        $defaultLanguage = $this->languageModel->getDefault();
+        $json = [];
+        $this->addTranslateToJson($translate, $json, $defaultLanguage);
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param array $json
+     * @param LanguageEntity $defaultLanguage
+     * @param LanguageEntity $language
+     * @return void
+     * @throws BasicAuthNotSetException
+     * @throws GuzzleException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
+    private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language):void
+    {
+        $chunks = array_chunk($json, $this->bachLimit, true);
+
+        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
+        $iterator = 0;
+        foreach($chunks as $shortJson) {
+            $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
+            $setting = $this->settingModel->getDefault();
+            if (array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
+                if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
+                    throw new BasicAuthNotSetException();
+                }
+                $callback = new Url($callback);
+                $callback->setUser($setting->basic_auth_user);
+                $callback->setPassword($setting->basic_auth_password);
+                $callback = (string)$callback;
+            }
+
+            $body = Json::encode($bodyArray = [
+                'inputLocale' => $defaultLanguage->url,
+                'outputLocale' => $language->url,
+                'model' => 'flash',
+                'callback' => $callback,
+                'mode' => 'async',
+                'value' => $shortJson,
+            ]);
+
+            $url = 'https://core.inbs.cz/api/gen/translate';
+
+            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
+                'callback' => $callback,
+                'url' => $url,
+                'body' => $bodyArray,
+            ]));
+
+            $client = new Client();
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
+                    'store' => 'incore',
+                    'content-type' => 'application/json',
+                ],
+                'body' => $body,
+            ]);
+
+            $response = Json::decode((string)$response->getBody(), true);
+            $this->languageTranslateModel->insert([
+                'drop_core_id' => $response['id'],
+                'user_id' => $this->userSecurity->getId(),
+                'language_id' => $language->id,
+                'datetime' => new DateTime(),
+                'request' => $body,
+            ]);
+
+            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
+                'drop_core_id' => $response['id'],
+                'callback' => $callback,
+                'url' => $url,
+                'body' => $bodyArray,
+            ]));
+
+            $iterator++;
         }
     }
 }

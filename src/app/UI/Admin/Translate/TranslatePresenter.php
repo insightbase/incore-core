@@ -11,6 +11,7 @@ use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
+use App\UI\Admin\Language\LanguageFacade;
 use App\UI\Admin\Translate\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Admin\Translate\Form\FormFactory;
 use App\UI\Admin\Translate\Form\FormNewData;
@@ -35,12 +36,13 @@ class TranslatePresenter extends Presenter
     public string $key = '';
 
     public function __construct(
-        private readonly DataGridFactory $dataGridFactory,
+        private readonly DataGridFactory              $dataGridFactory,
         private readonly DefaultDataGridEntityFactory $defaultDataGridEntityFactory,
-        private readonly Translate $translateModel,
-        private readonly FormFactory $formFactory,
-        private readonly TranslateFacade $translateFacade,
-        private readonly SubmenuFactory $submenuFactory,
+        private readonly Translate                    $translateModel,
+        private readonly FormFactory                  $formFactory,
+        private readonly TranslateFacade              $translateFacade,
+        private readonly SubmenuFactory               $submenuFactory,
+        private readonly LanguageFacade               $languageFacade,
     ) {
         parent::__construct();
     }
@@ -80,7 +82,18 @@ class TranslatePresenter extends Presenter
         $this->redirect('default');
     }
 
-    public function actionTranslate(int $id): void
+    #[NoReturn]
+    public function actionTranslate(int $id):void
+    {
+        $this->exist($id);
+        foreach($this->languageModel->getToTranslateNotDefault() as $language) {
+            $this->languageFacade->translateTranslate($this->translate, $language);
+        }
+        $this->flashMessage($this->translator->translate('flash_sendToTranslate'));
+        $this->redirect('default');
+    }
+
+    public function actionEdit(int $id): void
     {
         $this->exist($id);
         $this->template->translate = $this->translate;
