@@ -338,3 +338,6 @@ body.contentdetail .card.dragging .menu {
 body.contentdetail .card.dragging .menu .draggable-handle {
   cursor: grabbing;
   background: #e2e8f0; }
+body.contentdetail .blockItem-value-show .imageContainer, body.contentdetail .blockItem-value-edit .imageContainer{
+    display: inline-block;
+}
