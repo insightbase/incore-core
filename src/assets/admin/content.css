@@ -200,6 +200,10 @@ body.contentdetail .card ul li a:hover {
 
 body.contentdetail .card ul li a i {
   font-size: .75rem; }
+body.contentdetail .card ul li span{
+    display: flex;
+    align-items: center;
+}
 
 body.contentdetail .card .menu {
   position: absolute;
