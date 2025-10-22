@@ -3,12 +3,13 @@
 namespace App\UI\Accessory\Admin\Form\Controls\Slug;
 
 use Nette\Forms\Controls\TextBase;
+use Nette\Forms\Controls\TextInput;
 use Nette\Utils\Html;
 
-class SlugInput extends TextBase
+class SlugInput extends TextInput
 {
     public function __construct(
-        private ?TextBase $sourceInput,
+        private ?TextInput $sourceInput,
         ?string $caption = null
     )
     {
@@ -22,7 +23,7 @@ class SlugInput extends TextBase
         return $input;
     }
 
-    public function setSourceInput(?TextBase $sourceInput): self
+    public function setSourceInput(?TextInput $sourceInput): self
     {
         $this->sourceInput = $sourceInput;
         return $this;
