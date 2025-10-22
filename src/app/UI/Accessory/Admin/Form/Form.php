@@ -14,6 +14,8 @@ use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInput;
+use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInputFactory;
 use Nette;
 
 class Form extends Nette\Application\UI\Form
@@ -37,10 +39,16 @@ class Form extends Nette\Application\UI\Form
         private readonly FormHelp                  $formHelpModel,
         private readonly FormHelpLanguage          $formHelpLanguageModel,
         private readonly Translator                $translator,
+        private readonly SlugInputFactory          $slugInputFactory,
         ?Nette\ComponentModel\IContainer           $parent = null,
         ?string                                    $name = null
     ) {
         parent::__construct($parent, $name);
+    }
+
+    public function addSlug(string $name, ?Nette\Forms\Controls\TextBase $sourceInput, ?string $label = null):SlugInput
+    {
+        return $this[$name] = $this->slugInputFactory->create($sourceInput, $label);
     }
 
     public function getHelpLabel(string $inputHtmlId):?string
