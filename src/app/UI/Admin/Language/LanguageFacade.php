@@ -740,13 +740,11 @@ class LanguageFacade
         $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
 
         $contentLanguageDefault = $contentLanguageModel->getByContentIdAndLanguageId($contentLanguage->content_id, $defaultLanguage->id);
-        $value = [];
         if($contentLanguageDefault !== null){
             if($contentLanguageDefault->title !== null){
                 $json['performance_content_' . $contentLanguage->content_id . '_title'] = $contentLanguageDefault->title;
             }
             if($contentLanguageDefault->description !== null){
-                $value['description'] = $contentLanguageDefault->description;
                 $json['performance_content_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
             }
         }
