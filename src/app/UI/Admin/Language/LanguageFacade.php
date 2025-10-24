@@ -743,11 +743,11 @@ class LanguageFacade
         $value = [];
         if($contentLanguageDefault !== null){
             if($contentLanguageDefault->title !== null){
-                $json['performance_content_' . $contentLanguage->id . '_title'] = $contentLanguageDefault->title;
+                $json['performance_content_' . $contentLanguage->content_id . '_title'] = $contentLanguageDefault->title;
             }
             if($contentLanguageDefault->description !== null){
                 $value['description'] = $contentLanguageDefault->description;
-                $json['performance_content_' . $contentLanguage->id . '_description'] = $contentLanguageDefault->description;
+                $json['performance_content_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
             }
         }
     }
