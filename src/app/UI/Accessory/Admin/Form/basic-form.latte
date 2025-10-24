@@ -123,6 +123,9 @@
         {else}
             {var string $class = 'input'}
         {/if}
+        {if $input->getControlPart()->getAttribute('class') !== null}
+            {php $class .= ' ' . $input->getControlPart()->getAttribute('class')}
+        {/if}
         {if $input->hasErrors()}
             {php $class .= ' border-danger'}
         {/if}

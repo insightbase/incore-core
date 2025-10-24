@@ -1,12 +1,5 @@
 import naja from 'naja';
 import Dropzone from "dropzone";
-import EditorJS from '@editorjs/editorjs';
-import EditorJsRaw from '@editorjs/raw';
-import EditorJsList from '@editorjs/list';
-import EditorJsParagraph from '@editorjs/paragraph';
-import EditorJsHeader from '@editorjs/header';
-import EditorJsTable from '@editorjs/table';
-import List from '@editorjs/list';
 // import './../../frontend/assets/js/core.bundle';
 // import './../../frontend/assets/css/styles.css';
 // import './../../frontend/assets/js/widgets/general';
@@ -19,13 +12,14 @@ import './app.css';
 import './content.css';
 import netteForms from 'nette-forms';
 import './content.js';
+import { initEditorJs } from './editorJs';
+import './performance'
 
 naja.initialize();
 netteForms.initOnLoad();
 
 let loaderId = null;
-let editor = undefined;
-const editors = {};
+window.editors = {};
 
 naja.addEventListener('start', (event) => {
     loader.hide(loaderId);
@@ -139,83 +133,6 @@ function initDatagrid() {
     });
 }
 
-function generateUniqueId() {
-    return Date.now() + Math.floor(Math.random() * 10000);
-}
-
-function initEditorJs() {
-    Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
-        const editorDiv = document.createElement('div');
-        editorDiv.classList.add('editorJsHolder');
-        element.after(editorDiv);
-
-        const id = generateUniqueId();
-
-        let data = '';
-        if (element.value !== '') {
-            data = JSON.parse(element.value);
-        }
-
-        let types = element.getAttribute('data-type').split(";");;
-
-        const tools = {};
-
-        if (types.includes("raw")) {
-            tools.raw = EditorJsRaw;
-        }
-        if (types.includes("paragraph")) {
-            tools.paragraph = {
-                class: EditorJsParagraph,
-                config: {
-                    placeholder: 'Add paragraph',
-                    preserveBlank: true,
-                }
-            };
-        }
-        if (types.includes("list")) {
-            tools.list = {
-                class: EditorJsList,
-                inlineToolbar: true,
-            };
-        }
-        if (types.includes("header")) {
-            tools.header = {
-                class: EditorJsHeader,
-                inlineToolbar: true,
-                config: {
-                    placeholder: 'Add list',
-                    levels: [2, 3, 4],
-                    defaultLevel: 2
-                }
-            };
-        }
-        if (types.includes("table")) {
-            tools.table = EditorJsTable;
-        }
-
-        editors[id] = new EditorJS({
-            holder: editorDiv,
-            data: data,
-            tools: tools
-        });
-        editorDiv.setAttribute('data-editor-id', id);
-        element.setAttribute('data-for-editor-id', id);
-        editorDiv.setAttribute('data-language-id', element.getAttribute('data-language-id'));
-        if (element.getAttribute('langchange') !== null) {
-            editorDiv.toggleAttribute('langchange');
-        }
-    });
-    Array.from(document.getElementsByTagName('form')).forEach((element) => {
-        element.onsubmit = function (event) {
-            Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
-                editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
-                    elementEditor.value = JSON.stringify(data);
-                })
-            });
-        };
-    });
-}
-
 function truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 }
@@ -242,7 +159,7 @@ function inlineEdit(event) {
         saveEditor = saveEditor[0];
         saveEditor.addEventListener('click', function (event) {
             event.preventDefault();
-            editors[input.getAttribute('data-for-editor-id')].save().then((outputData) => {
+            window.editors[input.getAttribute('data-for-editor-id')].save().then((outputData) => {
                 let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', JSON.stringify(outputData));
                 naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
             });

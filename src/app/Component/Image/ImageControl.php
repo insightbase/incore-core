@@ -63,7 +63,7 @@ class ImageControl extends Control
             }
             FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
         }
-        return '/images/' . $previewName;
+        return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
 
     public function getPreviewFile(int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly):string
@@ -73,7 +73,7 @@ class ImageControl extends Control
         if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
             $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName);
         }
-        return '/images/' . $previewName;
+        return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
 
     /**
@@ -109,7 +109,7 @@ class ImageControl extends Control
             if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
                 $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height, $type);
             }
-            $ret['imageFile'] = '/images/' . $previewName;
+            $ret['imageFile'] = $this->parameterBag->previewWwwDir . '/' . $previewName;;
         }
         $ret['width'] = $width;
         $ret['height'] = $height;

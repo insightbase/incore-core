@@ -15,6 +15,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read int $language_id
  * @property-read DateTime $datetime
  * @property-read ?DateTime $finished
+ * @property-read string $request
  */
 class LanguageTranslateEntity extends ActiveRow
 {

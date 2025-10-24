@@ -26,12 +26,33 @@ class LanguageCallbackPresenter extends Presenter
 
     #[NoReturn] public function actionTranslate(int $id):void
     {
-        $this->getHttpResponse()->setContentType('application/json');
-        $raw = $this->getHttpRequest()->getRawBody();
         $tempFile = $this->parameterBag->tempDir . '/language_callback_' . time();
-        FileSystem::write($tempFile, $raw);
+        $i = 0;
+        if(file_exists($tempFile)){
+            while(file_exists($tempFile . '_' . $i)){
+                $i++;
+            }
+            $tempFile = $tempFile . '_' . $i;
+        }
+
+        if($this->getParameter('file') !== null){
+            $raw = FileSystem::read($this->parameterBag->tempDir . '/' . $this->getParameter('file'));
+        }else {
+            $this->getHttpResponse()->setContentType('application/json');
+            $raw = $this->getHttpRequest()->getRawBody();
+            FileSystem::write($tempFile, $raw);
+        }
         try {
             $post = Json::decode($raw, true);
+
+            if(!$post['valid']){
+                if(array_key_exists('error', $post) && array_key_exists('message', $post['error']) && $post['error']['message'] === 'socket hang up'){
+                    if(array_key_exists('config', $post['error']) && array_key_exists('data', $post['error']['config'])){
+                        $post = Json::decode($post['error']['config']['data'], true);
+                    }
+                }
+            }
+
             if($post['valid']) {
                 try {
                     $this->languageFacade->processDropCoreCallback($id, $post);
@@ -39,27 +60,27 @@ class LanguageCallbackPresenter extends Presenter
                 } catch (LanguageCallbackIdNotFoundException $e) {
                     $status = 'error';
                     $this->payload->error = 'token id not found';
-                    FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
                 } catch (LanguageIsDefaultException $e) {
                     $status = 'error';
                     $this->payload->error = 'language id default';
-                    FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
                 } catch (LanguageNotFoundException $e) {
                     $status = 'error';
                     $this->payload->error = 'language not found';
-                    FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
                 } catch (JsonException $e) {
                     $status = 'error';
                     $this->payload->error = 'json translate error';
-                    FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
                 }catch (\Exception $e){
                     $status = 'error';
                     $this->payload->error = $e->getMessage();
-                    FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
                 }
             }
         } catch (JsonException $e) {
-            FileSystem::write($tempFile, $raw . ', error: ' . $e->getMessage());
+            FileSystem::write($tempFile . '_error', $e->getMessage());
             $status = 'error';
             $this->payload->error = 'json translate error';
         }

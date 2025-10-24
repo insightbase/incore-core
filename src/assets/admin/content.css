@@ -200,6 +200,10 @@ body.contentdetail .card ul li a:hover {
 
 body.contentdetail .card ul li a i {
   font-size: .75rem; }
+body.contentdetail .card ul li span{
+    display: flex;
+    align-items: center;
+}
 
 body.contentdetail .card .menu {
   position: absolute;
@@ -338,3 +342,6 @@ body.contentdetail .card.dragging .menu {
 body.contentdetail .card.dragging .menu .draggable-handle {
   cursor: grabbing;
   background: #e2e8f0; }
+body.contentdetail .blockItem-value-show .imageContainer, body.contentdetail .blockItem-value-edit .imageContainer{
+    display: inline-block;
+}

@@ -10,13 +10,18 @@ use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
 use App\Event\EventFacade;
 use App\Event\Language\ChangeDefaultEvent;
+use App\Model\Admin\Blog;
+use App\Model\Admin\BlogLanguage;
+use App\Model\Admin\BlogTag;
 use App\Model\Admin\ContactForm;
 use App\Model\Admin\ContactFormRow;
 use App\Model\Admin\ContactFormRowLanguage;
 use App\Model\Admin\Content;
+use App\Model\Admin\ContentBlockItemGallery;
 use App\Model\Admin\ContentBlockItemText;
 use App\Model\Admin\ContentFieldValue;
 use App\Model\Admin\ContentFieldValueLanguage;
+use App\Model\Admin\ContentLanguage;
 use App\Model\Admin\ContentValue;
 use App\Model\Admin\ContentValueItem;
 use App\Model\Admin\Enumeration;
@@ -28,13 +33,22 @@ use App\Model\Admin\Language;
 use App\Model\Admin\LanguageTranslate;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
+use App\Model\Admin\Tag;
+use App\Model\Admin\TagLanguage;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use App\Model\Entity\ContentLanguageEntity;
 use App\Model\Entity\LanguageEntity;
+use App\Model\Entity\TranslateEntity;
 use App\Model\Enum\EnumerationFormTypeEnum;
 use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\ParameterBag;
+use App\UI\Admin\Accessory\Blog\BlogContentTypeEnum;
+use App\UI\Admin\Accessory\Blog\BlogDto;
+use App\UI\Admin\Blog\BlogFacade;
+use App\UI\Admin\Blog\Form\Entity\InputEntity;
 use App\UI\Admin\Content\Form\BlockItem\EditorJs;
+use App\UI\Admin\Content\Form\BlockItem\Gallery;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
@@ -60,7 +74,7 @@ use Nette\Utils\JsonException;
 
 class LanguageFacade
 {
-    private int $bachLimit = 50;
+    private int $bachLimit = 40;
 
     public function __construct(
         private readonly Language          $languageModel,
@@ -153,14 +167,7 @@ class LanguageFacade
 
         $json = [];
         foreach($this->translateModel->getNotAdmin() as $translate){
-            $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
-            if($translateLanguage !== null) {
-                $value = $translateLanguage->value;
-                if($translateLanguage->translate->type === TranslateTypeEnum::Html->value){
-                    $value = Json::decode($value, true);
-                }
-                $json['translate_' . $translate->key] = $value;
-            }
+            $this->addTranslateToJson($translate, $json, $defaultLanguage);
         }
 
         if($this->moduleModel->getBySystemName('enumeration') !== null){
@@ -198,6 +205,10 @@ class LanguageFacade
             $contentValueItemModel = $this->container->getByType(ContentValueItem::class);
             /** @var EditorJs $editorJsBlockItem */
             $editorJsBlockItem = $this->container->getByType(EditorJs::class);
+            /** @var Gallery $galleryBlockItem */
+            $galleryBlockItem = $this->container->getByType(Gallery::class);
+            /** @var ContentBlockItemGallery $contentBlockItemGalleryModel */
+            $contentBlockItemGalleryModel = $this->container->getByType(ContentBlockItemGallery::class);
 
             foreach($contentValueModel->getByLanguage($defaultLanguage) as $contentValue){
                 $contentValueLng = $contentValueModel->getByContentBlockIdAndContentIdAndLanguageId($contentValue->content_block_id, $contentValue->content_id, $language->id);
@@ -221,6 +232,20 @@ class LanguageFacade
                         ]);
                     }else{
                         $contentValueItemLng->update(['content_value_item_base_language_id' => $contentValueItem->id]);
+                    }
+
+                    if($contentValueItem->content_block_item->type === $galleryBlockItem->getSystemName()){
+                        $contentBlockItemGalleryItems = $contentBlockItemGalleryModel->getByContentValueItem($contentValueItem);
+                        $contentBlockItemGalleryItemsLng = $contentBlockItemGalleryModel->getByContentValueItem($contentValueItemLng);
+
+                        if($contentBlockItemGalleryItems->count('*') > 0 && $contentBlockItemGalleryItemsLng->count('*') === 0) {
+                            foreach ($contentBlockItemGalleryModel->getByContentValueItem($contentValueItem) as $contentBlockItemGallery) {
+                                $data = $contentBlockItemGallery->toArray();
+                                unset($data['id']);
+                                $data['content_value_item_id'] = $contentValueItemLng->id;
+                                $contentBlockItemGalleryModel->insert($data);
+                            }
+                        }
                     }
 
                     $contentBlockItemText = $contentBlockItemTextModel->getByContentValueItem($contentValueItem);
@@ -254,66 +279,47 @@ class LanguageFacade
                 }
                 $json['contentFieldValue_' . $contentFieldValue->id] = $value;
             }
-        }
 
-        $chunks = array_chunk($json, $this->bachLimit, true);
+            /** @var ContentLanguage $contentLanguageModel */
+            $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
 
-        foreach($chunks as $shortJson) {
-            $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
-            $setting = $this->settingModel->getDefault();
-            if (array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
-                if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
-                    throw new BasicAuthNotSetException();
-                }
-                $callback = new Url($callback);
-                $callback->setUser($setting->basic_auth_user);
-                $callback->setPassword($setting->basic_auth_password);
-                $callback = (string)$callback;
+            $defaultLanguage = $this->languageModel->getDefault();
+            $json = [];
+
+            foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
+                $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
             }
-
-            $body = Json::encode($bodyArray = [
-                'inputLocale' => $defaultLanguage->url,
-                'outputLocale' => $language->url,
-                'model' => 'flash',
-                'callback' => $callback,
-                'mode' => 'async',
-                'value' => $shortJson,
-            ]);
-
-            $url = 'https://drop-core.web.app/api/gen/translate';
-
-            $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
-            FileSystem::write($tempFile, Json::encode([
-                'callback' => $callback,
-                'url' => $url,
-                'body' => $bodyArray,
-            ]));
-
-            $client = new Client();
-            $response = $client->request('POST', $url, [
-                'headers' => [
-                    'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
-                    'store' => 'incore',
-                    'content-type' => 'application/json',
-                ],
-                'body' => $body,
-            ]);
-
-            $response = Json::decode((string)$response->getBody(), true);
-            $this->languageTranslateModel->insert([
-                'drop_core_id' => $response['id'],
-                'user_id' => $this->userSecurity->getId(),
-                'language_id' => $language->id,
-                'datetime' => new DateTime(),
-            ]);
-
-            FileSystem::write($tempFile, Json::encode([
-                'drop_core_id' => $response['id'],
-                'callback' => $callback,
-                'url' => $url,
-                'body' => $bodyArray,
-            ]));
         }
+
+        if($this->moduleModel->getBySystemName('tag') !== null){
+            /** @var Tag $tagModel */
+            $tagModel = $this->container->getByType(Tag::class);
+
+            foreach($tagModel->getTable() as $tag){
+                $json['tag_' . $tag->id] = $tag->name;
+            }
+        }
+
+        if($this->moduleModel->getBySystemName('blog') !== null){
+            /** @var Blog $blogModel */
+            $blogModel = $this->container->getByType(Blog::class);
+
+            foreach($blogModel->getTable() as $blog){
+                $content = BlogDto::fromArray(Json::decode($blog->content, true));
+                foreach($content->content as $key => $value){
+                    if($value->type === BlogContentTypeEnum::String){
+                        $json['blog_' . $blog->id . '_' . $key] = $value->value;
+                    }
+                    if($value->type === BlogContentTypeEnum::EditorJs){
+                        $json['blog_' . $blog->id . '_' . $key] = Json::decode($value->value);
+                    }
+                }
+                $json['blog_' . $tag->id . '_name'] = $blog->name;
+                $json['blog_' . $tag->id . '_slug'] = $blog->slug;
+            }
+        }
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
     }
 
     /**
@@ -361,9 +367,31 @@ class LanguageFacade
             $contentFieldValueLanguageModel = $this->container->getByType(ContentFieldValueLanguage::class);
             /** @var EnumerationItemValue $enumerationItemValueModel */
             $enumerationItemValueModel = $this->container->getByType(EnumerationItemValue::class);
+            /** @var ContentLanguage $contentLanguageModel */
+            $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
+        }
+        $tagModel = null;
+        if($this->moduleModel->getBySystemName('tag') !== null) {
+            /** @var Tag $tagModel */
+            $tagModel = $this->container->getByType(Tag::class);
+            /** @var TagLanguage $tagLanguageModel */
+            $tagLanguageModel = $this->container->getByType(TagLanguage::class);
+            /** @var BlogFacade $blogFacade */
+            $blogFacade = $this->container->getByType(BlogFacade::class);
+            /** @var BlogTag $blogTagModel */
+            $blogTagModel = $this->container->getByType(BlogTag::class);
+        }
+        $blogModel = null;
+        if($this->moduleModel->getBySystemName('blog') !== null) {
+            /** @var Blog $blogModel */
+            $blogModel = $this->container->getByType(Blog::class);
+            /** @var BlogLanguage $blogLanguageModel */
+            $blogLanguageModel = $this->container->getByType(BlogLanguage::class);
         }
 
-        $json = Json::decode($post['value'], true);
+        $blogsUpdated = [];
+
+        $json = $post['value'];
         $firstKey = Arrays::firstKey($json);
         if($firstKey === '0' || $firstKey === 0){
             $json = $json[0];
@@ -439,7 +467,7 @@ class LanguageFacade
                     if($contentBlockItemText->content_value_item->content_block_item->type === $editorJsBlockItem->getSystemName()){
                         $text = Json::encode($text);
                     }
-                    $contentBlockItemText?->update(['value' => $text]);
+                    $contentBlockItemText?->update(['text' => $text]);
                 }
             }elseif($type === 'contentFieldValue' && $contentBlockItemTextModel !== null){
                 /** @var \App\UI\Admin\Content\Form\FieldType\EditorJs $editorJsFieldType */
@@ -465,6 +493,86 @@ class LanguageFacade
                     }
 
                     $contentFieldValueLanguage->update(['value' => $text]);
+                }
+            }elseif($type === 'tag' && $tagModel !== null){
+                $tag = $tagModel->get((int)$key);
+                if($tag !== null){
+                    $tagLanguage = $tagLanguageModel->getByTagAndLanguage($tag, $language);
+                    if($tagLanguage === null){
+                        $tagLanguageModel->insert([
+                            'tag_id' => $tag->id,
+                            'language_id' => $language->id,
+                            'name' => $text,
+                        ]);
+                    }else{
+                        $tagLanguage->update(['name' => $text]);
+                    }
+
+                    foreach($blogTagModel->getByTag($tag) as $blogTag){
+                        $blogFacade->refreshContent($blogTag->blog);
+                    }
+                }
+            }elseif($type === 'blog' && $blogModel !== null){
+                $id = explode('_', $key);
+                if(!in_array($id[0], $blogsUpdated)) {
+                    $blog = $blogModel->get((int)$id[0]);
+                    if ($blog !== null) {
+                        $blogLanguage = $blogLanguageModel->getByBlogAndLanguage($blog, $language);
+                        if ($blogLanguage !== null) {
+                            $content = BlogDto::fromArray(Json::decode($blogLanguage->content, true));
+                        } else {
+                            $content = BlogDto::fromArray(Json::decode($blog->content, true));
+                        }
+
+                        $content->name = $json['blog_' . $blog->id . '_name'];
+                        $content->slug = $blogLanguageModel->generateSlug($json['blog_' . $blog->id . '_slug'], $blog,$language,$blogLanguage);
+                        foreach ($content->content as $key1 => $contentValue) {
+                            if ($contentValue->type === BlogContentTypeEnum::String) {
+                                $contentValue->value = $json['blog_' . $blog->id . '_' . $key1];
+                                $content->content[$key1] = $contentValue;
+                            }
+                            if ($contentValue->type === BlogContentTypeEnum::EditorJs) {
+                                $contentValue->value = Json::encode($json['blog_' . $blog->id . '_' . $key1]);
+                                $content->content[$key1] = $contentValue;
+                            }
+                        }
+
+                        if ($blogLanguage !== null) {
+                            $blogLanguageModel->insert([
+                                'name' => $content->name,
+                                'slug' => $content->slug,
+                                'content' => Json::encode($content),
+                                'language_id' => $language->id,
+                                'blog_id' => $blog->id,
+                            ]);
+                        }else {
+                            $blogLanguage->update([
+                                'name' => $content->name,
+                                'slug' => $content->slug,
+                                'content' => Json::encode($content),
+                            ]);
+                        }
+                    }
+                    $blogsUpdated[] = $blog->id;
+                }
+            }elseif($type === 'performanceContent'){
+                $id = explode('_', $key);
+                $contentLanguage = $contentLanguageModel->getByContentIdAndLanguageId((int)$id[0], $language->id);
+
+                $data = [];
+                if($id[1] === 'title'){
+                    $data['title'] = $text;
+                }
+                if($id[1] === 'description'){
+                    $data['description'] = $text;
+                }
+
+                if($contentLanguage === null){
+                    $data['language_id'] = $language->id;
+                    $data['content_id'] = (int)$key[0];
+                    $contentLanguageModel->insert($data);
+                }else{
+                    $contentLanguage->update($data);
                 }
             }
         }
@@ -500,6 +608,144 @@ class LanguageFacade
                 $cache->getStorage()->clean([
                     Cache::Tags => ['content_id_' . $content->id],
                 ]);
+            }
+        }
+    }
+
+    private function addTranslateToJson(ActiveRow $translate, array &$json, ActiveRow $defaultLanguage):void{
+        $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
+        if($translateLanguage !== null) {
+            $value = $translateLanguage->value;
+            if($translateLanguage->translate->type === TranslateTypeEnum::Html->value){
+                $value = Json::decode($value, true);
+            }
+            $json['translate_' . $translate->key] = $value;
+        }
+    }
+
+    /**
+     * @param TranslateEntity $translate
+     * @param LanguageEntity $language
+     * @return void
+     */
+    public function translateTranslate(ActiveRow $translate, ActiveRow $language):void
+    {
+        $defaultLanguage = $this->languageModel->getDefault();
+        $json = [];
+        $this->addTranslateToJson($translate, $json, $defaultLanguage);
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param array $json
+     * @param LanguageEntity $defaultLanguage
+     * @param LanguageEntity $language
+     * @return void
+     * @throws BasicAuthNotSetException
+     * @throws GuzzleException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
+    private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language):void
+    {
+        $chunks = array_chunk($json, $this->bachLimit, true);
+
+        $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
+        $iterator = 0;
+        foreach($chunks as $shortJson) {
+            $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
+            $setting = $this->settingModel->getDefault();
+            if (array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
+                if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
+                    throw new BasicAuthNotSetException();
+                }
+                $callback = new Url($callback);
+                $callback->setUser($setting->basic_auth_user);
+                $callback->setPassword($setting->basic_auth_password);
+                $callback = (string)$callback;
+            }
+
+            $body = Json::encode($bodyArray = [
+                'inputLocale' => $defaultLanguage->url,
+                'outputLocale' => $language->url,
+                'model' => 'flash',
+                'callback' => $callback,
+                'mode' => 'async',
+                'value' => $shortJson,
+            ]);
+
+            $url = 'https://core.inbs.cz/api/gen/translate';
+
+            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
+                'callback' => $callback,
+                'url' => $url,
+                'body' => $bodyArray,
+            ]));
+
+            $client = new Client();
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
+                    'store' => 'incore',
+                    'content-type' => 'application/json',
+                ],
+                'body' => $body,
+            ]);
+
+            $response = Json::decode((string)$response->getBody(), true);
+            $this->languageTranslateModel->insert([
+                'drop_core_id' => $response['id'],
+                'user_id' => $this->userSecurity->getId(),
+                'language_id' => $language->id,
+                'datetime' => new DateTime(),
+                'request' => $body,
+            ]);
+
+            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
+                'drop_core_id' => $response['id'],
+                'callback' => $callback,
+                'url' => $url,
+                'body' => $bodyArray,
+            ]));
+
+            $iterator++;
+        }
+    }
+
+    public function translatePerformancesContent(ActiveRow $language):void
+    {
+        /** @var ContentLanguage $contentLanguageModel */
+        $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
+
+        $defaultLanguage = $this->languageModel->getDefault();
+        $json = [];
+
+        foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
+            $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
+        }
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param ContentLanguageEntity $contentLanguage
+     * @param array $json
+     * @param LanguageEntity $defaultLanguage
+     * @return void
+     */
+    private function addPerformanceContentToJson(ActiveRow $contentLanguage, array &$json, ActiveRow $defaultLanguage):void
+    {
+        /** @var ContentLanguage $contentLanguageModel */
+        $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
+
+        $contentLanguageDefault = $contentLanguageModel->getByContentIdAndLanguageId($contentLanguage->content_id, $defaultLanguage->id);
+        if($contentLanguageDefault !== null){
+            if($contentLanguageDefault->title !== null){
+                $json['performanceContent_' . $contentLanguage->content_id . '_title'] = $contentLanguageDefault->title;
+            }
+            if($contentLanguageDefault->description !== null){
+                $json['performanceContent_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
             }
         }
     }

@@ -20,6 +20,16 @@ naja.addEventListener('success', (event) => {
 
 initForms();
 function initForms() {
+    //najdu vsechny co generuji slug
+    document.querySelectorAll('input[data-source-input]').forEach((element) => {
+        var sourceInput = document.getElementById(element.getAttribute('data-source-input'));
+        if(slugify(sourceInput.value) === element.value || element.value === '') {
+            sourceInput.addEventListener('keyup', function (event) {
+                element.value = slugify(sourceInput.value);
+            });
+        }
+    });
+
 // najdeme na stránce všechny podřízené selectboxy
     document.querySelectorAll('select[data-depends]').forEach((childSelect) => {
         let parentSelect = childSelect.form[childSelect.dataset.depends]; // nadřízený <select>
@@ -71,4 +81,15 @@ function updateSelectbox(select, items) {
         el.innerText = items[id];
         select.appendChild(el);
     }
+}
+
+function slugify(text) {
+    return text
+        .toString()
+        .normalize('NFD')                  // rozloží diakritiku
+        .replace(/[\u0300-\u036f]/g, '')   // odstraní diakritiku
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')       // nahradí vše kromě písmen/číslic pomlčkou
+        .replace(/^-+|-+$/g, '');          // odstraní pomlčky na začátku/konci
 }
