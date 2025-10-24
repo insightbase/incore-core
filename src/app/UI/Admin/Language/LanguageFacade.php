@@ -555,7 +555,7 @@ class LanguageFacade
                     }
                     $blogsUpdated[] = $blog->id;
                 }
-            }elseif($type === 'performance_content'){
+            }elseif($type === 'performanceContent'){
                 $id = explode('_', $key);
                 $contentLanguage = $contentLanguageModel->getByContentIdAndLanguageId((int)$id[0], $language->id);
 
@@ -742,10 +742,10 @@ class LanguageFacade
         $contentLanguageDefault = $contentLanguageModel->getByContentIdAndLanguageId($contentLanguage->content_id, $defaultLanguage->id);
         if($contentLanguageDefault !== null){
             if($contentLanguageDefault->title !== null){
-                $json['performance_content_' . $contentLanguage->content_id . '_title'] = $contentLanguageDefault->title;
+                $json['performanceContent_' . $contentLanguage->content_id . '_title'] = $contentLanguageDefault->title;
             }
             if($contentLanguageDefault->description !== null){
-                $json['performance_content_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
+                $json['performanceContent_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
             }
         }
     }
