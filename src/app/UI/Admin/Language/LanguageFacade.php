@@ -382,7 +382,7 @@ class LanguageFacade
             $blogTagModel = $this->container->getByType(BlogTag::class);
         }
         $blogModel = null;
-        if($this->moduleModel->get('blog') !== null) {
+        if($this->moduleModel->getBySystemName('blog') !== null) {
             /** @var Blog $blogModel */
             $blogModel = $this->container->getByType(Blog::class);
             /** @var BlogLanguage $blogLanguageModel */
