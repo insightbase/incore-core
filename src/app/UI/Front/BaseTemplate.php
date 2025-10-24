@@ -23,4 +23,8 @@ class BaseTemplate extends Template
      * @var Selection<LanguageEntity>
      */
     public Selection $languages;
+    /**
+     * @var ActiveRow
+     */
+    public ActiveRow $defaultLanguage;
 }

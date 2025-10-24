@@ -49,6 +49,7 @@ trait StandardTemplateTrait
             $this->template->imageControl = $this->imageControlFactory->create();
             $this->template->fileControl = $this->fileControlFactory->create();
             $this->template->languages = $languageModel->getToFront();
+            $this->template->defaultLanguage = $languageModel->getDefault();
         };
         $this->onStartup[] = function () use ($settingModel):void{
             $this->setting = $settingModel->getDefault();
