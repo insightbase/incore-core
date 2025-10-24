@@ -252,7 +252,7 @@ function inlineEdit(event) {
     input.selectionStart = input.selectionEnd = input.value.length;
 
     input.addEventListener('blur', function () {
-        let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', input.value);
+        let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', encodeURIComponent(input.value));
         naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
     });
 
