@@ -21,6 +21,7 @@ use App\Model\Admin\ContentBlockItemGallery;
 use App\Model\Admin\ContentBlockItemText;
 use App\Model\Admin\ContentFieldValue;
 use App\Model\Admin\ContentFieldValueLanguage;
+use App\Model\Admin\ContentLanguage;
 use App\Model\Admin\ContentValue;
 use App\Model\Admin\ContentValueItem;
 use App\Model\Admin\Enumeration;
@@ -36,6 +37,7 @@ use App\Model\Admin\Tag;
 use App\Model\Admin\TagLanguage;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use App\Model\Entity\ContentLanguageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\TranslateEntity;
 use App\Model\Enum\EnumerationFormTypeEnum;
@@ -277,6 +279,16 @@ class LanguageFacade
                 }
                 $json['contentFieldValue_' . $contentFieldValue->id] = $value;
             }
+
+            /** @var ContentLanguage $contentLanguageModel */
+            $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
+
+            $defaultLanguage = $this->languageModel->getDefault();
+            $json = [];
+
+            foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
+                $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
+            }
         }
 
         if($this->moduleModel->getBySystemName('tag') !== null){
@@ -355,6 +367,8 @@ class LanguageFacade
             $contentFieldValueLanguageModel = $this->container->getByType(ContentFieldValueLanguage::class);
             /** @var EnumerationItemValue $enumerationItemValueModel */
             $enumerationItemValueModel = $this->container->getByType(EnumerationItemValue::class);
+            /** @var ContentLanguage $contentLanguageModel */
+            $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
         }
         $tagModel = null;
         if($this->moduleModel->getBySystemName('tag') !== null) {
@@ -541,6 +555,25 @@ class LanguageFacade
                     }
                     $blogsUpdated[] = $blog->id;
                 }
+            }elseif($type === 'performance_content'){
+                $id = explode('_', $key);
+                $contentLanguage = $contentLanguageModel->getByContentIdAndLanguageId((int)$id[0], $language->id);
+
+                $data = [];
+                if($id[1] === 'title'){
+                    $data['title'] = $text;
+                }
+                if($id[1] === 'description'){
+                    $data['description'] = $text;
+                }
+
+                if($contentLanguage === null){
+                    $data['language_id'] = $language->id;
+                    $data['content_id'] = (int)$key[0];
+                    $contentLanguageModel->insert($data);
+                }else{
+                    $contentLanguage->update($data);
+                }
             }
         }
         $languageTranslate->update(['finished' => new DateTime()]);
@@ -677,6 +710,45 @@ class LanguageFacade
             ]));
 
             $iterator++;
+        }
+    }
+
+    public function translatePerformancesContent(ActiveRow $language):void
+    {
+        /** @var ContentLanguage $contentLanguageModel */
+        $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
+
+        $defaultLanguage = $this->languageModel->getDefault();
+        $json = [];
+
+        foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
+            $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
+        }
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param ContentLanguageEntity $contentLanguage
+     * @param array $json
+     * @param LanguageEntity $defaultLanguage
+     * @return void
+     */
+    private function addPerformanceContentToJson(ActiveRow $contentLanguage, array &$json, ActiveRow $defaultLanguage):void
+    {
+        /** @var ContentLanguage $contentLanguageModel */
+        $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
+
+        $contentLanguageDefault = $contentLanguageModel->getByContentIdAndLanguageId($contentLanguage->content_id, $defaultLanguage->id);
+        $value = [];
+        if($contentLanguageDefault !== null){
+            if($contentLanguageDefault->title !== null){
+                $json['performance_content_' . $contentLanguage->id . '_title'] = $contentLanguageDefault->title;
+            }
+            if($contentLanguageDefault->description !== null){
+                $value['description'] = $contentLanguageDefault->description;
+                $json['performance_content_' . $contentLanguage->id . '_description'] = $contentLanguageDefault->description;
+            }
         }
     }
 }
