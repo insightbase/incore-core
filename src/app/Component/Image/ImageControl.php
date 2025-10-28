@@ -69,9 +69,17 @@ class ImageControl extends Control
     public function getPreviewFile(int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly):string
     {
         $image = $this->getImage($fileId);
-        $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
-        if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-            $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName);
+        $suffix = Arrays::last(explode('.', $image->saved_name));
+        if($suffix === 'svg'){
+            $previewName = $this->imageFacade->getPreviewName($image);
+            if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
+                FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
+            }
+        }else {
+            $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
+            if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
+                $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName);
+            }
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
