@@ -75,9 +75,18 @@ class GenerateDBCommand extends Command
 
         $driverChain = new MappingDriverChain();
         foreach ($classes as $class) {
-            $driver = new AttributeDriver([dirname((new \ReflectionClass($class))->getFileName())]);
-            $driverChain->addDriver($driver, $class);
+            $rc = new \ReflectionClass($class);
+            $ns = $rc->getNamespaceName();
+            $dir = \dirname($rc->getFileName());
+            $namespaces[$ns][] = $dir;
         }
+
+        foreach ($namespaces as $ns => $dirs) {
+            $dirs = array_values(array_unique($dirs));
+            $driver = new \Doctrine\ORM\Mapping\Driver\AttributeDriver($dirs);
+            $driverChain->addDriver($driver, $ns); // <- TADY MUSÍ BÝT NAMESPACE
+        }
+
         $config->setMetadataDriverImpl($driverChain);
 
         $connection = DriverManager::getConnection($dbParams, $config);
