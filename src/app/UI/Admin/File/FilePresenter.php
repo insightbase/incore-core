@@ -63,7 +63,6 @@ class FilePresenter extends Presenter
                     }
                     $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
                 }else{
-                    $fileRow->update(['type' => ImageTypeEnum::File]);
                     $file->move($this->parameterBag->uploadDir . '/' . $fileName);
                 }
                 $this->payload->file = $fileName;
