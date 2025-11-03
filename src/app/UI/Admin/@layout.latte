@@ -336,6 +336,9 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 						<div class="flex flex-col justify-center gap-2 w-full">
 							<h1 class="text-xl font-medium leading-none text-gray-900 max-w-2xl flex items-center justify-between">
 								{include h1}
+                                {ifset h1After}
+                                    {include h1After}
+                                {/ifset}
 							</h1>
 						</div>
 						<div class="flex items-center gap-2.5" n:if="count($submenuFactory->getSubMenus()) > 0">
