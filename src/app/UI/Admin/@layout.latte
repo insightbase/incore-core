@@ -342,7 +342,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
                             {/ifset}
                         </div>
 						<div class="flex items-center gap-2.5" n:if="count($submenuFactory->getSubMenus()) > 0">
-							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()">
+							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{if $subMenuItem->isCustomLink()}{$subMenuItem->getAction()}{else}{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}{/if}" target="{$subMenuItem->getTarget()}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()">
                                 <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
 								{$subMenuItem->getName()}
 							</a>
