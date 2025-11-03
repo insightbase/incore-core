@@ -343,9 +343,11 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
                         </div>
 						<div class="flex items-center gap-2.5" n:if="count($submenuFactory->getSubMenus()) > 0">
 							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()">
+                                <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
 								{$subMenuItem->getName()}
 							</a>
 							<button n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn btn-sm', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" n:if="$subMenuItem->getModalId() !== null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()" data-modal-toggle="#{$subMenuItem->getModalId()}">
+                                <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
 								{$subMenuItem->getName()}
 							</button>
 							<div class="dropdown" data-dropdown="true" data-dropdown-placement="bottom-end" data-dropdown-placement-rtl="bottom-start" data-dropdown-trigger="click" n:if="$showSubmenuDropdown">
@@ -356,11 +358,13 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 								<div class="dropdown-content menu-default w-full max-w-[220px] hidden" style="opacity: 0;">
 									<div class="menu-item" data-dropdown-dismiss="true" n:foreach="$submenuFactory->getSubMenus() as $subMenuItem">
 										<a class="menu-link" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && $subMenuItem->isShowInDropdown()">
+                                            <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
 											{$subMenuItem->getName()}
 										</a>
 										<button class="menu-link" n:if="$subMenuItem->getModalId() !== null && $user->isAllowed(last($moduleTree)->system_name, $subMenuItem->getAction()) && $subMenuItem->isShowInDropdown()" data-modal-toggle="#{$subMenuItem->getModalId()}">
 											<span class="menu-title">
-											 {$subMenuItem->getName()}
+                                                <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
+											    {$subMenuItem->getName()}
 											</span>
 										</button>
 									</div>

@@ -8,6 +8,7 @@ class SubMenuItem
     private ?string $modalId = null;
     private array $params = [];
     private bool $showInDropdown = false;
+    private ?string $icon = null;
 
     public function __construct(
         private string $name,
@@ -81,6 +82,17 @@ class SubMenuItem
     public function setShowInDropdown(bool $showInDropdown = true): self
     {
         $this->showInDropdown = $showInDropdown;
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(?string $icon): self
+    {
+        $this->icon = $icon;
         return $this;
     }
 }
