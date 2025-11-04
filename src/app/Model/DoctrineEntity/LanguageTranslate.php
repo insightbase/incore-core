@@ -12,8 +12,8 @@ class LanguageTranslate implements Entity
     #[ORM\Column(type: 'integer')]
     public int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    public string $drop_core_id;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    public ?string $drop_core_id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
