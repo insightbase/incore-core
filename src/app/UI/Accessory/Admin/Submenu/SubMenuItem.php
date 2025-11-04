@@ -9,6 +9,8 @@ class SubMenuItem
     private array $params = [];
     private bool $showInDropdown = false;
     private ?string $icon = null;
+    private string $target = '_self';
+    private bool $customLink = false;
 
     public function __construct(
         private string $name,
@@ -93,6 +95,28 @@ class SubMenuItem
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
+        return $this;
+    }
+
+    public function getTarget(): string
+    {
+        return $this->target;
+    }
+
+    public function setTarget(string $target): self
+    {
+        $this->target = $target;
+        return $this;
+    }
+
+    public function isCustomLink(): bool
+    {
+        return $this->customLink;
+    }
+
+    public function setCustomLink(bool $customLink = true): self
+    {
+        $this->customLink = $customLink;
         return $this;
     }
 }

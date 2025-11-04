@@ -13,7 +13,8 @@ import './content.css';
 import netteForms from 'nette-forms';
 import './content.js';
 import { initEditorJs } from './editorJs';
-import './performance'
+import './performance';
+import './tabs';
 
 naja.initialize();
 netteForms.initOnLoad();
