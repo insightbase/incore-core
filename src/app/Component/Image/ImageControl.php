@@ -36,7 +36,7 @@ class ImageControl extends Control
     public function existImage(int $id):bool
     {
         $cache = new Cache($this->storage, 'image');
-        $image = $cache->load('id_' . $id, function() use ($id):?string{
+        $image = ImageDto::fromJson($cache->load('id_' . $id, function() use ($id):?string{
             $image = $this->imageModel->get($id);
             if($image === null){
                 return null;
@@ -44,7 +44,7 @@ class ImageControl extends Control
             return json_encode(new ImageDto(
                 saved_name: $image->saved_name,
             ));
-        });
+        }));
         return file_exists($this->parameterBag->uploadDir . '/' . $image->saved_name);
     }
 
