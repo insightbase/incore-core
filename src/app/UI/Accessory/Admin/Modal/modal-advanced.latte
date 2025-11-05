@@ -1,13 +1,13 @@
 {define modalAdvanced, 
     string $modalId,
-    string $maxWidth = '500px',
+    string $maxWidth = '640px',
     string $topPosition = '10%',
     string $width = '100%',
     bool $showHeader = true,
     bool $showFooter = false
 }
     <div class="modal" data-modal="true" id="{$modalId}">
-        <div class="modal-content" style="max-width: {$maxWidth}; top: {$topPosition}; width: {$width};">
+        <div class="modal-content" style="max-width: {$maxWidth}; top: {$topPosition|noescape}; width: {$width|noescape}">
             {if $showHeader}
                 <div class="modal-header">
                     <h3 class="modal-title">
