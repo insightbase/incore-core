@@ -334,7 +334,8 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 				<!-- Container -->
 				<div class="container-fixed">
                     <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
-						<div class="flex gap-6">
+						<div class="flex gap-8">
+							{* tady je potřeba url zpátky *}
 							<a href="#" class="flex items-center justify-center text-xl text-gray-600">
 								<i class="ki-filled ki-left"></i>
 							</a>
@@ -343,7 +344,9 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 									{include h1}
 								</h1>
 								{ifset h1After}
-									{include h1After}
+									<div class="text-sm">
+										{include h1After}
+									</div>
 								{/ifset}
 							</div>
 						</div>
