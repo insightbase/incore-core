@@ -67,6 +67,9 @@ readonly class FormFactory
             ->setNullable()
         ;
         $form->addCheckbox('translate_expand_keys', $this->translator->translate('input_translate_expand_keys'));
+        $form->addText('title', $this->translator->translate('input_title'))
+            ->setRequired()
+        ;
 
         $form->addGroup($this->translator->translate('field_email'));
         $form->addEmail('email', $this->translator->translate('input_email'))
