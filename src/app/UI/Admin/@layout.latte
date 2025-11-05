@@ -336,9 +336,11 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
                     <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
 						<div class="flex gap-8">
 							{* tady je potřeba url zpátky *}
-							<a href="#" class="flex items-center justify-center text-xl text-gray-600">
-								<i class="ki-filled ki-left"></i>
-							</a>
+                            {ifset $urlBack}
+                                <a href="{$urlBack}" class="flex items-center justify-center text-xl text-gray-600" n:if="$urlBack !== null">
+                                    <i class="ki-filled ki-left"></i>
+                                </a>
+                            {/ifset}
 							<div class="flex flex-col justify-center gap-2">
 								<h1 class="text-xl font-semibold leading-none text-gray-900 max-w-2xl flex items-center justify-between">
 									{include h1}
