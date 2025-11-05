@@ -393,10 +393,12 @@
             </ul>
 
             <div class="tabs mb-5 no-border" data-tabs="true">
+                {var int $groupCount = 0}
                 <button n:class="'tab', $iterator->isFirst() ? 'active'" data-tab-toggle="#{$key|webalize}" n:foreach="$form->getGroups() as $key => $group" n:if="$key !== 0">
                     {$key}
+                    {php $groupCount++}
                 </button>
-                <button n:class="tab" data-tab-toggle="#translates">
+                <button n:class="tab, $groupCount === 0 ? 'active'" data-tab-toggle="#translates">
                     {_'group_translates'}
                 </button>
             </div>
@@ -407,11 +409,13 @@
                     </div>
                 </div>
             </div>
-            <div class="hidden" id="translates">
+            <div n:class="$groupCount > 0 ? 'hidden'" id="translates">
                 <div class="w-full">
                     <div class="tabs mb-5 no-border" data-tabs="true">
                         <button n:class="'tab', $iterator->isFirst() ? 'active'" data-tab-toggle="#translates_{$key|webalize}" n:foreach="$form->getGroupLanguages() as $key => $group">
-                            {control image, $group->getLanguage()->flag_id, 16,16, class: 'rounded-full', type: Nette\Utils\Image::OrBigger}
+                            {if $group->getLanguage()->flag_id !== null}
+                                {control image, $group->getLanguage()->flag_id, 16,16, class: 'rounded-full', type: Nette\Utils\Image::OrBigger}
+                            {/if}
                             {$key}
                         </button>
                     </div>
