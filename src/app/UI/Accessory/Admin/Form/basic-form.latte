@@ -384,3 +384,50 @@
         {/foreach}
     </select>
 {/define}
+
+{define tabsForm, $form}
+    <form n:name=$form n:class="'flex flex-col gap-6 max-w-2xl', $form->sendByAjax ? 'ajax'">
+        <div>
+            <ul class="errors" n:ifcontent>
+                <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
+            </ul>
+
+            <div class="tabs mb-5 no-border" data-tabs="true">
+                <button n:class="'tab', $iterator->isFirst() ? 'active'" data-tab-toggle="#{$key|webalize}" n:foreach="$form->getGroups() as $key => $group" n:if="$key !== 0">
+                    {$key}
+                </button>
+                <button n:class="tab" data-tab-toggle="#translates">
+                    {_'group_translates'}
+                </button>
+            </div>
+            <div n:class="!$iterator->isFirst() ? 'hidden'" id="{$key|webalize}" n:foreach="$form->getGroups() as $key => $group" n:if="$key !== 0">
+                <div class="card w-full">
+                    <div class="card-body">
+                        {embed controls, $group->getControls()}{/embed}
+                    </div>
+                </div>
+            </div>
+            <div class="hidden" id="translates">
+                <div class="w-full">
+                    <div class="tabs mb-5 no-border" data-tabs="true">
+                        <button n:class="'tab', $iterator->isFirst() ? 'active'" data-tab-toggle="#translates_{$key|webalize}" n:foreach="$form->getGroupLanguages() as $key => $group">
+                            {control image, $group->getLanguage()->flag_id, 16,16, class: 'rounded-full', type: Nette\Utils\Image::OrBigger}
+                            {$key}
+                        </button>
+                    </div>
+                    <div n:class="!$iterator->isFirst() ? 'hidden'" id="translates_{$key|webalize}" n:foreach="$form->getGroupLanguages() as $key => $group">
+                        <div class="card w-full">
+                            <div class="card-body">
+                                {embed controls, $group->getControls()}{/embed}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <fieldset class="{$group->getOption('class')}" n:attr="$group->getOptions()" n:foreach="$form->getGroups() as $key => $group" n:if="$key === 0">
+                <legend>{$group->getOption('label')}</legend>
+                {embed controls, $group->getControls()}{/embed}
+            </fieldset>
+        </div>
+    </form>
+{/define}

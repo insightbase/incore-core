@@ -13,8 +13,17 @@ class Container extends \Nette\Forms\Container
     public function __construct(
         private readonly DropzoneImageInputFactory $dropzoneImageInputFactory,
         private readonly EditorJsInputFactory      $editorJsInputFactory,
+        private readonly ContainerFactory          $containerFactory,
     )
     {
+    }
+
+    public function addContainer(string|int $name): self
+    {
+        $control = $this->containerFactory->create();
+        $control->currentGroup = $this->currentGroup;
+        $this->currentGroup?->add($control);
+        return $this[$name] = $control;
     }
 
     public function addDropzoneImage(DropzoneImageLocationEnum $locationEnum, string $name, string $label): DropzoneImageInput
