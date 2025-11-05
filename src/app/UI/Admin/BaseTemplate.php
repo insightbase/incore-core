@@ -25,6 +25,7 @@ class BaseTemplate extends Template
     public array $flashes;
     public string $basicFormFile;
     public string $basicModalFile;
+    public string $modalAdvancedFile;
     public ImageFacade $imageFacade;
 
     /**

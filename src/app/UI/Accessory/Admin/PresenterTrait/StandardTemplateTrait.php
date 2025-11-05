@@ -151,6 +151,7 @@ trait StandardTemplateTrait
             $this->template->layoutFile = dirname(__FILE__).'/../../../Admin/@layout.latte';
             $this->template->basicFormFile = dirname(__FILE__).'/../Form/basic-form.latte';
             $this->template->basicModalFile = dirname(__FILE__).'/../Modal/basic-modal.latte';
+            $this->template->modalAdvancedFile = dirname(__FILE__).'/../Modal/modal-advanced.latte';
             $this->template->imageFacade = $imageFacade;
             $this->template->menuModules = $moduleModel->getToMenu();
             $this->template->moduleModel = $moduleModel;

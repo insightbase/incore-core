@@ -1,0 +1,34 @@
+{define modalAdvanced, 
+    string $modalId,
+    string $maxWidth = '500px',
+    string $topPosition = '10%',
+    string $width = '100%',
+    bool $showHeader = true,
+    bool $showFooter = false
+}
+    <div class="modal" data-modal="true" id="{$modalId}">
+        <div class="modal-content" style="max-width: {$maxWidth}; top: {$topPosition}; width: {$width};">
+            {if $showHeader}
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        {block title}{/block}
+                    </h3>
+                    <button class="btn btn-xs btn-icon btn-light" data-modal-dismiss="true">
+                        <i class="ki-outline ki-cross">
+                        </i>
+                    </button>
+                </div>
+            {/if}
+            
+            <div class="modal-body">
+                {block body}{/block}
+            </div>
+            
+            {if $showFooter}
+                <div class="modal-footer">
+                    {block footer}{/block}
+                </div>
+            {/if}
+        </div>
+    </div>
+{/define}
