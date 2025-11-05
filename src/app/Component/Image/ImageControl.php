@@ -35,6 +35,9 @@ class ImageControl extends Control
 
     public function existImage(int $id):bool
     {
+        if($id === 0){
+            return false;
+        }
         $cache = new Cache($this->storage, 'image');
         $image = ImageDto::fromJson($cache->load('id_' . $id, function() use ($id):?string{
             $image = $this->imageModel->get($id);
