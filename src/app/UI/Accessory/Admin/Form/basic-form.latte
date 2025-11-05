@@ -193,7 +193,7 @@
     </div>
     <div n:foreach="$controls as $input"
             n:if="$input->getOption(type) === button && $input->getOption(repeater) === null"
-            class="flex justify-end mt-6"
+            class="flex justify-end mt-10"
     >
         {input $input, class:"btn btn-primary"}
         {inputError $input}
