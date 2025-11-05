@@ -148,7 +148,9 @@
                 {/foreach}
             {else}
                 {if $input instanceof Nette\Forms\Controls\Checkbox}
-                    {input $input:, class:$class}
+                    <span class="switch">
+                        {input $input:, class:$class}
+                    </span>
                 {elseif $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput}
                     {$input->getControlDropzone(null, $input)}
                 {else}
