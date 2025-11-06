@@ -14,6 +14,7 @@ class EditFormData
     public ?string $smtp_host;
     public ?string $smtp_username;
     public ?string $smtp_password;
+    public string $title;
     public ?string $recaptcha_secret_key;
     public ?string $recaptcha_site_key;
     public ?int $max_image_resolution;

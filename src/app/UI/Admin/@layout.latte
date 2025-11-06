@@ -36,7 +36,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 
 	<script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/draggable.bundle.js"></script>
 
-	<title>{ifset title}{include title|stripHtml} | {/ifset}inCore</title>
+	<title>{if $setting?->title === null}Incore{else}{$setting?->title}{/if}</title>
 </head>
 <body n:class="'antialiased flex h-full text-base text-gray-700', Nette\Utils\Strings::lower(str_replace('Admin:', '', $presenter->getName())) . $presenter->getAction(), $presenter->isLinkCurrent('Sign:*') ? 'dark:bg-coal-500', !$presenter->isLinkCurrent('Sign:*') ? '[--tw-page-bg:#fefefe] [--tw-page-bg-dark:var(--tw-coal-500)] demo1 sidebar-fixed header-fixed bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark]'">
 <!-- Theme Mode -->
@@ -336,9 +336,11 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
                     <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
 						<div class="flex gap-8">
 							{* tady je potřeba url zpátky *}
-							<a href="#" class="flex items-center justify-center text-xl text-gray-600">
-								<i class="ki-filled ki-left"></i>
-							</a>
+                            {ifset $urlBack}
+                                <a href="{$urlBack}" class="flex items-center justify-center text-xl text-gray-600" n:if="$urlBack !== null">
+                                    <i class="ki-filled ki-left"></i>
+                                </a>
+                            {/ifset}
 							<div class="flex flex-col justify-center gap-2">
 								<h1 class="text-xl font-semibold leading-none text-gray-900 max-w-2xl flex items-center justify-between">
 									{include h1}

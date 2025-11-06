@@ -29,6 +29,10 @@ class Form extends Nette\Application\UI\Form
             return $this->sendByAjax;
         }
     }
+    /**
+     * @var GroupLanguage[]
+     */
+    private array $groupLanguages = [];
 
     public function __construct(
         private readonly DropzoneImageInputFactory $dropzoneInputFactory,
@@ -44,6 +48,35 @@ class Form extends Nette\Application\UI\Form
         ?string                                    $name = null
     ) {
         parent::__construct($parent, $name);
+    }
+
+    /**
+     * @return GroupLanguage[]
+     */
+    public function getGroupLanguages():array
+    {
+        return $this->groupLanguages;
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @param bool $setAsCurrent
+     * @return GroupLanguage
+     */
+    public function addGroupLanguage(Nette\Database\Table\ActiveRow $language, bool $setAsCurrent = true): GroupLanguage
+    {
+        $group = new GroupLanguage();
+        $group->setLanguage($language);
+        $group->setOption('label', $language->name);
+        $group->setOption('visual', true);
+
+        if ($setAsCurrent) {
+            $this->setCurrentGroup($group);
+        }
+
+        return !is_scalar($language->name) || isset($this->groupLanguages[$language->name])
+            ? $this->groupLanguages[] = $group
+            : $this->groupLanguages[$language->name] = $group;
     }
 
     public function addSlug(string $name, ?Nette\Forms\Controls\TextBase $sourceInput, ?string $label = null):SlugInput

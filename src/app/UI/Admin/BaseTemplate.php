@@ -63,4 +63,5 @@ class BaseTemplate extends Template
      * @var ?UserEntity
      */
     public?ActiveRow $loggedUser = null;
+    public ?string $urlBack = null;
 }
