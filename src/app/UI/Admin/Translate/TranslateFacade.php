@@ -87,18 +87,38 @@ readonly class TranslateFacade
             }
             $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
         }
+        foreach (Finder::findDirectories('*')->in($this->parameterBag->appDir) as $incoreModule) {
+            if(str_ends_with($incoreModule->getPathname(), 'app/UI')) {
+                $moduleName = 'admin';
+                $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
+                if (!array_key_exists($moduleName, $extractorKeys)) {
+                    $extractorKeys[$moduleName] = new MessageCatalogue('cs');
+                }
+                $extractor->extract($incoreModule->getPathname() . '/Admin', $extractorKeys[$moduleName]);
+            }
+        }
         $this->updateTranslates($extractorKeys, 'admin');
+
+
         $extractorKeys = [];
 
         foreach (Finder::findDirectories('*')->in($this->parameterBag->appDir) as $incoreModule) {
-            $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
-            $moduleName = 'front';
-            if (!array_key_exists($moduleName, $extractorKeys)) {
-                $extractorKeys[$moduleName] = new MessageCatalogue('cs');
+            if(str_ends_with($incoreModule->getPathname(), 'app/UI')) {
+                $moduleName = 'front';
+                $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
+                if (!array_key_exists($moduleName, $extractorKeys)) {
+                    $extractorKeys[$moduleName] = new MessageCatalogue('cs');
+                }
+                $extractor->extract($incoreModule->getPathname() . '/Front', $extractorKeys[$moduleName]);
+            }else{
+                $moduleName = 'front';
+                $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
+                if (!array_key_exists($moduleName, $extractorKeys)) {
+                    $extractorKeys[$moduleName] = new MessageCatalogue('cs');
+                }
+                $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
             }
-            $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
         }
-
         $this->updateTranslates($extractorKeys, 'front');
 
         $this->logFacade->create(LogActionEnum::Translate, 'translate');
