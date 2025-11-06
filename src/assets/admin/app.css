@@ -1,3 +1,44 @@
+html {
+  scrollbar-gutter: stable;
+}
+
+.no-border {
+  border: 0;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.mr-3 {
+  padding-right: 0.75rem;
+}
+
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+
+.switch input[type="checkbox"]:checked {
+  background-image: unset !important;
+}
+
+.color-dark {
+  color: var(--tw-dark);
+}
+
+.max-w-32 {
+  max-width: 264px !important;
+  width: 100%;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem !important;
+}
+
 div.imageContainer {
     position: relative;
     a.imageUpdate {
@@ -301,4 +342,23 @@ form.max-w-2xl{
 .ce-block__content,
 .ce-toolbar__content {
     margin-inline: unset !important;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    opacity: 0;
+}
+
+.accordion-content:not(.hidden) {
+    opacity: 1;
+}
+
+.accordion-toggle i {
+    transition: transform 0.4s ease-in-out;
+}
+
+.accordion-toggle.accordion-active i {
+    transform: rotate(180deg);
 }

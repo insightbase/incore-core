@@ -444,19 +444,35 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- Scripts -->
 <script src="/incore/admin.bundle.js?v={$webpackVersion}"></script>
 <script>
-    document.querySelectorAll('[data-accordion-toggle]').forEach(element => {
-		element.addEventListener('click', function(e) {
-			e.preventDefault();
-			
-			const targetSelector = this.getAttribute('data-accordion-toggle');
-			const targetContent = document.querySelector(targetSelector);
-			
-			if (targetContent) {
-			targetContent.classList.toggle('hidden');
-			this.classList.toggle('accordion-active');
-			}
-		});
+document.querySelectorAll('[data-accordion-toggle]').forEach(element => {
+    element.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetSelector = this.getAttribute('data-accordion-toggle');
+        const targetContent = document.querySelector(targetSelector);
+        
+        if (targetContent) {
+            const isHidden = targetContent.classList.contains('hidden');
+            
+            if (isHidden) {
+                targetContent.classList.remove('hidden');
+                targetContent.style.maxHeight = targetContent.scrollHeight + 'px';
+            } else {
+                targetContent.style.maxHeight = '0';
+                targetContent.classList.add('hidden');
+            }
+            
+            this.classList.toggle('accordion-active');
+        }
     });
+});
+
+window.addEventListener('resize', () => {
+    document.querySelectorAll('[data-accordion-item] .accordion-content:not(.hidden)').forEach(content => {
+        content.style.maxHeight = content.scrollHeight + 'px';
+    });
+});
+
 </script>
 {block scripts}
 
