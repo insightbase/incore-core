@@ -343,3 +343,31 @@ form.max-w-2xl{
 .ce-toolbar__content {
     margin-inline: unset !important;
 }
+
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+    visibility: hidden;
+}
+
+.accordion-content:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+}
+
+.accordion-toggle {
+    transition: transform 0.3s ease;
+    contain: layout style paint;
+    cursor: pointer;
+}
+
+.accordion-active i {
+    transform: rotate(180deg);
+}
+
+.accordion-toggle i {
+    transition: transform 0.3s ease;
+}

@@ -443,36 +443,67 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- End of Page -->
 <!-- Scripts -->
 <script src="/incore/admin.bundle.js?v={$webpackVersion}"></script>
-<script>
-document.querySelectorAll('[data-accordion-toggle]').forEach(element => {
-    element.addEventListener('click', function(e) {
+<script n:syntax="off">
+   const accordionManager = {
+    activeAnimations: new Set(),
+    
+    init() {
+        document.querySelectorAll('[data-accordion-toggle]').forEach(element => {
+            element.addEventListener('click', (e) => this.handleClick(e));
+        });
+    },
+    
+    handleClick(e) {
         e.preventDefault();
+        const toggle = e.currentTarget;
+        const targetSelector = toggle.getAttribute('data-accordion-toggle');
+        const content = document.querySelector(targetSelector);
         
-        const targetSelector = this.getAttribute('data-accordion-toggle');
-        const targetContent = document.querySelector(targetSelector);
-        
-        if (targetContent) {
-            const isHidden = targetContent.classList.contains('hidden');
-            
-            if (isHidden) {
-                targetContent.classList.remove('hidden');
-                targetContent.style.maxHeight = targetContent.scrollHeight + 'px';
-            } else {
-                targetContent.style.maxHeight = '0';
-                targetContent.classList.add('hidden');
-            }
-            
-            this.classList.toggle('accordion-active');
+        if (!content || this.activeAnimations.has(targetSelector)) {
+            return;
         }
-    });
-});
+        
+        this.activeAnimations.add(targetSelector);
+        const isHidden = content.classList.contains('hidden');
+        
+        if (isHidden) {
+            this.open(toggle, content, targetSelector);
+        } else {
+            this.close(toggle, content, targetSelector);
+        }
+    },
+    
+    open(toggle, content, selector) {
+        content.classList.remove('hidden');
+        toggle.classList.add('accordion-active');
+        
+        void content.offsetHeight;
+        const scrollHeight = content.scrollHeight;
+        content.style.maxHeight = scrollHeight + 'px';
+        
+        setTimeout(() => {
+            content.style.maxHeight = 'none';
+            this.activeAnimations.delete(selector);
+        }, 400);
+    },
+    
+    close(toggle, content, selector) {
+        const scrollHeight = content.scrollHeight;
+        content.style.maxHeight = scrollHeight + 'px';
+        
+        void content.offsetHeight;
+        
+        content.style.maxHeight = '0px';
+        toggle.classList.remove('accordion-active');
+        
+        setTimeout(() => {
+            content.classList.add('hidden');
+            this.activeAnimations.delete(selector);
+        }, 400);
+    }
+};
 
-window.addEventListener('resize', () => {
-    document.querySelectorAll('[data-accordion-item] .accordion-content:not(.hidden)').forEach(content => {
-        content.style.maxHeight = content.scrollHeight + 'px';
-    });
-});
-
+document.addEventListener('DOMContentLoaded', () => accordionManager.init());
 </script>
 {block scripts}
 
