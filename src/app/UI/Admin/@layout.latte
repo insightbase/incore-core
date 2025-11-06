@@ -443,6 +443,21 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 <!-- End of Page -->
 <!-- Scripts -->
 <script src="/incore/admin.bundle.js?v={$webpackVersion}"></script>
+<script>
+    document.querySelectorAll('[data-accordion-toggle]').forEach(element => {
+		element.addEventListener('click', function(e) {
+			e.preventDefault();
+			
+			const targetSelector = this.getAttribute('data-accordion-toggle');
+			const targetContent = document.querySelector(targetSelector);
+			
+			if (targetContent) {
+			targetContent.classList.toggle('hidden');
+			this.classList.toggle('accordion-active');
+			}
+		});
+    });
+</script>
 {block scripts}
 
 {/block}
