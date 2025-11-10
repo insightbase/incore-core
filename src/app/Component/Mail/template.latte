@@ -1,0 +1,52 @@
+{templateType App\Component\Mail\Template}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$setting?->title}</title>
+</head>
+
+<body style="margin:0; padding:0; font-family: Arial, Arial, sans-serif; background-color:#F4F7F8;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"
+       style="background-color:#F4F7F8; font-family: Arial, Arial, sans-serif; padding-top: 65px">
+    <tr>
+        <td align="center">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"
+                   style="max-width: 650px; background-color:#F4F7F8; border-radius: 8px; font-family: Arial, Arial, sans-serif;">
+                <tr>
+                    <td align="center">
+                        <img src="{=rtrim($linkGenerator->link('Front:Home:default'), '/')}{$imageControl->getOriginal((int)$setting?->logo_id)}" alt="{$setting?->title}" width="260" style="max-width: 100%; height: auto; display: block; border: 0;">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"
+       style="background-color:#F4F7F8; padding: 30px 15px; font-family: Arial, Arial, sans-serif;">
+    <tr>
+        <td align="center">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"
+                   style="max-width: 650px; background-color:#ffffff; border-radius: 8px; padding: 45px 40px; font-family: Arial, Arial, sans-serif;">
+                <tr>
+                    <td
+                            style="color: #000000; font-size: 24px; font-weight: normal; padding-bottom: 10px; text-align: left; font-family: Arial, Arial, sans-serif;">
+                        {$email->subject}
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                            style="background-color: #F4F7F8; border-radius: px; padding: 20px; font-size: 16px; color: #4D5E80; font-family: Arial, Arial, sans-serif; border: 1px solid #B5BFD2; word-wrap: break-word;">
+                       {$email->text}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

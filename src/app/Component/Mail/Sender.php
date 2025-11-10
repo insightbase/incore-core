@@ -3,6 +3,7 @@
 namespace App\Component\Mail;
 
 use App\Component\EncryptFacade;
+use App\Component\Image\ImageControlFactory;
 use App\Component\Mail\Exception\SystemNameNotFoundException;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Email;
@@ -34,15 +35,16 @@ class Sender
     private array $address = [];
 
     public function __construct(
-        private readonly string          $systemName,
-        private readonly Email           $emailModel,
-        private readonly EmailLog        $emailLogModel,
-        private readonly ParameterBag    $parameterBag,
-        private readonly Setting         $settingModel,
-        private readonly EncryptFacade   $encryptFacade,
-        private readonly LinkGenerator   $linkGenerator,
-        private readonly TemplateFactory $templateFactory,
-        private readonly Translator      $translator,
+        private readonly string              $systemName,
+        private readonly Email               $emailModel,
+        private readonly EmailLog            $emailLogModel,
+        private readonly ParameterBag        $parameterBag,
+        private readonly Setting             $settingModel,
+        private readonly EncryptFacade       $encryptFacade,
+        private readonly LinkGenerator       $linkGenerator,
+        private readonly TemplateFactory     $templateFactory,
+        private readonly Translator          $translator,
+        private readonly ImageControlFactory $imageControlFactory,
     ) {
         $this->message = new Message();
     }
@@ -93,15 +95,18 @@ class Sender
             throw new SystemNameNotFoundException()->setSystemName($this->systemName);
         }
 
+        $template = $this->templateFactory->createTemplate();
+        $template->getLatte()->addProvider('uiControl', $this->linkGenerator);
+        $template->setTranslator($this->translator);
+        $template->setting = $this->settingModel->getDefault();
+        $template->email = $email;
+        $template->imageControl = $this->imageControlFactory->create();
+        $template->linkGenerator = $this->linkGenerator;
         if($email->template !== null){
-            $template = $this->templateFactory->createTemplate();
-            $template->getLatte()->addProvider('uiControl', $this->linkGenerator);
-            $template->setTranslator($this->translator);
             $text = $template->renderToString($this->parameterBag->rootDir . '/' . $email->template);
         }else{
-            $text = $email->text;
+            $text = $template->renderToString(dirname(__FILE__) . '/template.latte');
         }
-
 
         foreach ($this->modifier as $modifier => $value) {
             $text = str_replace('%'.$modifier.'%', $value, $text);
