@@ -17,6 +17,7 @@ use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\Arrays;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Symfony\Component\Translation\Extractor\ChainExtractor;
 use Symfony\Component\Translation\MessageCatalogue;
@@ -88,7 +89,7 @@ readonly class TranslateFacade
             $extractor->extract($incoreModule->getPathname(), $extractorKeys[$moduleName]);
         }
         foreach (Finder::findDirectories('*')->in($this->parameterBag->appDir) as $incoreModule) {
-            if(str_ends_with($incoreModule->getPathname(), 'app/UI')) {
+            if(str_ends_with($incoreModule->getPathname(), 'app/UI') && is_dir($incoreModule->getPathname() . '/Admin')) {
                 $moduleName = 'admin';
                 $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
                 if (!array_key_exists($moduleName, $extractorKeys)) {
@@ -103,7 +104,7 @@ readonly class TranslateFacade
         $extractorKeys = [];
 
         foreach (Finder::findDirectories('*')->in($this->parameterBag->appDir) as $incoreModule) {
-            if(str_ends_with($incoreModule->getPathname(), 'app/UI')) {
+            if(str_ends_with($incoreModule->getPathname(), 'app/UI') && $incoreModule->getPathname() . '/Front') {
                 $moduleName = 'front';
                 $module = $this->moduleModel->getBySystemName($incoreModule->getBasename());
                 if (!array_key_exists($moduleName, $extractorKeys)) {

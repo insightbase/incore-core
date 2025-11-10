@@ -31,6 +31,9 @@ class Email implements Entity
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     public ?string $template = null;
 
+    #[Orm\Column(type: 'boolean')]
+    public bool $forAdmin = false;
+
     public function setSystemName(string $system_name): self
     {
         $this->system_name = $system_name;

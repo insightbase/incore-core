@@ -14,6 +14,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read string $subject
  * @property-read ?string $modifier
  * @property-read ?string $template
+ * @property-read bool $forAdmin
  */
 class EmailEntity extends ActiveRow
 {

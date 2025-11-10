@@ -43,6 +43,26 @@
                        {$email->text}
                     </td>
                 </tr>
+                <tr n:if="$email->forAdmin">
+                    <td style="padding-top: 45px; font-size: 16px; color: #4D5E80; font-family: Arial, Arial, sans-serif;">
+                        <strong style="display: block; margin-bottom: 5px;">{_'email.list'}</strong>
+                        {_'email.inAdmin'}
+                    </td>
+                </tr>
+                <tr n:if="$email->forAdmin">
+                    <td align="center" style="padding-top: 30px;">
+                        <a href="{$linkGenerator->link('Admin:Email:default')}"
+                           style="background-color: #3375F8; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; display: inline-block; min-width: 200px; width: 100%; max-width: 100%; box-sizing: border-box; text-align: center; font-family: Arial, Arial, sans-serif;">
+                            {_'email.toAdmin'}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                            style="font-size: 12px; color: #ACB7CD; padding: 30px 20px; text-align: center; font-family: Arial, Arial, sans-serif;">
+                        {_'email.generatted%url%', ['url' => $linkGenerator->link('Front:Home:default')]}
+                    </td>
+                </tr>
             </table>
         </td>
     </tr>
