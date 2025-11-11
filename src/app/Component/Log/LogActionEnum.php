@@ -51,6 +51,7 @@ enum LogActionEnum:string
             self::CreatedGroup => $translator->translate('action_createdGroup'),
             self::UpdatedGroup => $translator->translate('action_updatedGroup'),
             self::DeletedGroup => $translator->translate('action_deletedGroup'),
+            self::ChangeActiveAdmin => $translator->translate('action_changeActiveAdmin'),
         };
     }
 }
