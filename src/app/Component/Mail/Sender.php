@@ -8,6 +8,7 @@ use App\Component\Mail\Exception\SystemNameNotFoundException;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Email;
 use App\Model\Admin\EmailLog;
+use App\Model\Admin\Language;
 use App\Model\Admin\Setting;
 use App\UI\Accessory\ParameterBag;
 use Nette\Application\LinkGenerator;

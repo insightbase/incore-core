@@ -35,6 +35,9 @@ class Language implements Entity
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     public bool $active = true;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    public bool $active_admin = true;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $drop_core_id = null;
 

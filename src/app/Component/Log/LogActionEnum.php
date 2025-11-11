@@ -13,6 +13,7 @@ enum LogActionEnum:string
     case DeletedUnused = 'deletedUnused';
     case ChangeDefault = 'changeDefault';
     case ChangeActive = 'changeActive';
+    case ChangeActiveAdmin = 'changeActiveAdmin';
     case ChangePassword = 'changePassword';
     case SetAuthorization = 'setAuthorization';
     case TestEmail = 'testEmail';

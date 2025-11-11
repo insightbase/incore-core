@@ -59,7 +59,7 @@ readonly class Language implements Model
      */
     public function getToTranslate(): Selection
     {
-        return $this->getTable()->where('active', true);
+        return $this->getTable()->where('active_admin', true);
     }
 
     /**
@@ -102,6 +102,9 @@ readonly class Language implements Model
      */
     public function getToFront():Selection
     {
-        return $this->getTable()->where('active', true);
+        return $this->getTable()
+            ->where('active', true)
+            ->where('active_admin', true)
+        ;
     }
 }

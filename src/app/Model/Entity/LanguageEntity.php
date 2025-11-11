@@ -16,6 +16,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read bool $is_default
  * @property-read string $url
  * @property-read bool $active
+ * @property-read bool $active_admin
  * @property-read ?string $drop_core_id
  * @property-read ?DateTime $drop_core_last_call_date
  */

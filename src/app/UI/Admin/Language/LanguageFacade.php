@@ -154,6 +154,21 @@ class LanguageFacade
 
     /**
      * @param LanguageEntity $language
+     *
+     * @throws DefaultLanguageCannotByDeactivateException
+     */
+    public function changeActiveAdmin(ActiveRow $language): void
+    {
+        if ($language->active && $language->is_default) {
+            throw new DefaultLanguageCannotByDeactivateException($this->translator->translate('flash_default_language_cannot_be_deactivate'));
+        }
+
+        $language->update(['active_admin' => !$language->active_admin]);
+        $this->logFacade->create(LogActionEnum::ChangeActiveAdmin, 'language', $language->id);
+    }
+
+    /**
+     * @param LanguageEntity $language
      * @return void
      * @throws BasicAuthNotSetException
      * @throws TranslateInProgressException

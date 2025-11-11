@@ -27,14 +27,15 @@ readonly class DefaultDataGridEntityFactory
         $dataGridEntity = new DataGridEntity();
 
         $dataGridEntity
-            ->addColumn(new ColumnEntity('id', $this->translator->translate('id')))
             ->addColumn(
                 (new ColumnEntity('name', $this->translator->translate('column_name')))
                     ->setEnableSearchGlobal()
+                    ->setClassHeader('')
             )
             ->addColumn(
                 (new ColumnEntity('locale', $this->translator->translate('column_locale')))
                     ->setEnableSearchGlobal()
+                    ->setClassHeader('')
             )
             ->addColumn(
                 (new BooleanColumnEntity('is_default', $this->translator->translate('column_is_default')))
@@ -45,14 +46,24 @@ readonly class DefaultDataGridEntityFactory
                         }
                         $this->languageFacade->changeDefault($language);
                     })
+                    ->setClassHeader('')
             )
             ->addColumn(new ColumnEntity('url', $this->translator->translate('column_url')))
             ->addColumn(
-                (new BooleanColumnEntity('active', $this->translator->translate('column_is_active')))
+                (new BooleanColumnEntity('active', $this->translator->translate('column_language_is_active')))
                     ->setOnClickCallback(function (int $id): void {
                         $language = $this->languageModel->get($id);
                         $this->languageFacade->changeActive($language);
                     })
+                    ->setClassHeader('')
+            )
+            ->addColumn(
+                (new BooleanColumnEntity('active_admin', $this->translator->translate('column_is_activeAdmin')))
+                    ->setOnClickCallback(function (int $id): void {
+                        $language = $this->languageModel->get($id);
+                        $this->languageFacade->changeActiveAdmin($language);
+                    })
+                    ->setClassHeader('')
             )
         ;
 
