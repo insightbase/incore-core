@@ -40,7 +40,7 @@
                 <tr>
                     <td
                             style="background-color: #F4F7F8; border-radius: px; padding: 20px; font-size: 16px; color: #4D5E80; font-family: Arial, Arial, sans-serif; border: 1px solid #B5BFD2; word-wrap: break-word;">
-                       {$email->text}
+                       {$email->text|noescape}
                     </td>
                 </tr>
                 <tr n:if="$email->forAdmin">
