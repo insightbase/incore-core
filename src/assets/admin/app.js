@@ -93,17 +93,22 @@ function getSortedIds(container) {
 function initDatagrid() {
 
     Array.from(document.getElementsByClassName('globalSearch')).forEach((element) => {
+        let dataGrid = element.closest('.dataGrid');
         element.addEventListener('keyup', function (event) {
             if (event.key === 'Enter') {
                 clearTimeout(globalSearchTimeout);
                 let url = element.getAttribute('data-url').replace('xxxxxx', element.value);
                 naja.makeRequest('GET', url);
             } else {
-                console.log('event.key');
                 clearTimeout(globalSearchTimeout);
                 globalSearchTimeout = setTimeout(function () {
                     let url = element.getAttribute('data-url').replace('xxxxxx', element.value);
-                    naja.makeRequest('GET', url);
+                    naja.makeRequest('GET', url).then((payload) => {
+                        const input = dataGrid.getElementsByClassName('globalSearch')[0];
+                        const len = input.value.length;
+                        input.focus();
+                        input.setSelectionRange(len, len);
+                    });
                 }, 1000);
             }
         });
