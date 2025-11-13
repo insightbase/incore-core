@@ -23,6 +23,117 @@ netteForms.initOnLoad();
 let loaderId = null;
 window.editors = {};
 
+// Přepíšeme globální callback pro zobrazování chyb
+netteForms.showFormErrors = function (form, errors) {
+    var invalidClass = 'border-danger';
+    var hintAttr = 'data-nette-error';
+    var hintSelector = '.form-hint.text-danger[' + hintAttr + '="1"]';
+
+    if (!form) {
+        return;
+    }
+
+    // 1) Smazat staré označení a staré hlášky
+    form.querySelectorAll('.' + invalidClass).forEach(function (el) {
+        el.classList.remove(invalidClass);
+    });
+
+    form.querySelectorAll(hintSelector).forEach(function (el) {
+        if (el.parentNode) {
+            el.parentNode.removeChild(el);
+        }
+    });
+
+    form.querySelectorAll('.tab-error-indicator').forEach(function (el) {
+        el.remove();
+    });
+    form.querySelectorAll('[data-tab-toggle]').forEach(function (toggle) {
+        toggle.classList.remove('tab-has-error');
+    });
+
+    var tabsWithError = new Set();
+
+    // 2) Přidat classu a span ke každému chybovému prvku
+    errors.forEach(function (error) {
+        if (!error.element) {
+            return;
+        }
+
+        var el = error.element;
+
+        // classa na input
+        el.classList.add(invalidClass);
+
+        // span s hláškou
+        var span = document.createElement('span');
+        span.className = 'form-hint text-danger';
+        span.textContent = error.message;
+        span.setAttribute(hintAttr, '1'); // abychom je příště bezpečně smazali
+
+        // vložit hned za input
+        if (el.nextSibling) {
+            el.parentNode.insertBefore(span, el.nextSibling);
+        } else {
+            el.parentNode.appendChild(span);
+        }
+
+        // >>> NOVÉ: projdeme VŠECHNY nadřazené taby (vnořené)
+        var tab = el.closest('[data-form-tab]');
+        while (tab) {
+            var tabId = tab.getAttribute('id');
+            if (tabId && !tabsWithError.has(tabId)) {
+                tabsWithError.add(tabId);
+
+                // najdeme toggle pro tenhle tab
+                var toggle = form.querySelector('[data-tab-toggle="#' + tabId + '"]');
+                if (toggle) {
+                    // přidáme classu a vykřičník
+                    toggle.classList.add('tab-has-error');
+
+                    var badge = document.createElement('span');
+                    badge.className = 'tab-error-indicator';
+                    badge.textContent = '!'; // nebo "⚠" podle chuti
+
+                    toggle.appendChild(badge);
+                }
+            }
+
+            // posunout se na NADŘAZENÝ tab (vnořené taby)
+            tab = tab.parentElement ? tab.parentElement.closest('[data-form-tab]') : null;
+        }
+    });
+
+    // 3) Otevřít tab s první chybou (včetně všech nadřazených) + focusnout první chybné pole
+    if (errors.length && errors[0].element) {
+        var firstEl = errors[0].element;
+
+        // řetěz id vnořených tabů od NEJVRCHNĚJŠÍHO po NEJVNITŘNĚJŠÍ
+        var tabChain = [];
+        var t = firstEl.closest('[data-form-tab]');
+        while (t) {
+            var id = t.getAttribute('id');
+            if (id) {
+                // cpeme na začátek, aby pořadí bylo outer → inner
+                tabChain.unshift(id);
+            }
+            t = t.parentElement ? t.parentElement.closest('[data-form-tab]') : null;
+        }
+
+        // postupně otevřeme všechny taby v řetězu
+        tabChain.forEach(function (tabId) {
+            var toggle = form.querySelector('[data-tab-toggle="#' + tabId + '"]');
+            if (toggle) {
+                toggle.click();
+            }
+        });
+
+        if (typeof firstEl.focus === 'function') {
+            firstEl.focus();
+        }
+    }
+};
+
+
 naja.addEventListener('start', (event) => {
     loader.hide(loaderId);
     if (!event.detail.options.notShowLoader) {

@@ -402,14 +402,14 @@
                     {_'group_translates'}
                 </button>
             </div>
-            <div n:class="!$iterator->isFirst() ? 'hidden'" id="{$key|webalize}" n:foreach="$form->getGroups() as $key => $group" n:if="$key !== 0">
+            <div n:class="!$iterator->isFirst() ? 'hidden'" id="{$key|webalize}" data-form-tab n:foreach="$form->getGroups() as $key => $group" n:if="$key !== 0">
                 <div class="card w-full">
                     <div class="card-body">
                         {embed controls, $group->getControls()}{/embed}
                     </div>
                 </div>
             </div>
-            <div n:class="$groupCount > 0 ? 'hidden'" id="translates">
+            <div n:class="$groupCount > 0 ? 'hidden'" id="translates" data-form-tab>
                 <div class="w-full">
                     <div class="tabs mb-5 no-border" data-tabs="true">
                         <button n:class="'tab', $iterator->isFirst() ? 'active'" data-tab-toggle="#translates_{$key|webalize}" n:foreach="$form->getGroupLanguages() as $key => $group">
@@ -419,7 +419,7 @@
                             {$key}
                         </button>
                     </div>
-                    <div n:class="!$iterator->isFirst() ? 'hidden'" id="translates_{$key|webalize}" n:foreach="$form->getGroupLanguages() as $key => $group">
+                    <div n:class="!$iterator->isFirst() ? 'hidden'" data-form-tab id="translates_{$key|webalize}" n:foreach="$form->getGroupLanguages() as $key => $group">
                         <div class="card w-full">
                             <div class="card-body">
                                 {embed controls, $group->getControls()}{/embed}
