@@ -79,3 +79,7 @@ session:
 
 	# doba neaktivity po které session vyexpiruje
 	expiration: 14 days  # (string) výchozí je '3 hours'
+
+assets:
+	mapping:
+		admin: incore/public       # běžné soubory /www/assets/

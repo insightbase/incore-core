@@ -19,10 +19,6 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<meta charset="utf-8"/>
 	<meta content="follow, index" name="robots"/>
 	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-	<link href="/{$metronicDir}/admin/assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-	<link href="/{$metronicDir}/admin/assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
-	<link href="/{$metronicDir}/admin/assets/media/app/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
-	<link href="/{$metronicDir}/admin/assets/media/app/favicon.ico" rel="shortcut icon"/>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 	<link href="/{$metronicDir}/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
 	<script src="/{$metronicDir}/js/core.bundle.js"></script>
@@ -37,6 +33,22 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/draggable.bundle.js"></script>
 
 	<title>{if $setting?->title === null}Incore{else}{$setting?->title}{/if}</title>
+
+    <link n:asset="admin:favicon/apple-icon.png" rel="apple-touch-icon" />
+    <link n:asset="admin:favicon/apple-icon-57x57.png" rel="apple-touch-icon" sizes="57x57"/>
+    <link n:asset="admin:favicon/apple-icon-60x60.png" rel="apple-touch-icon" sizes="60x60"/>
+    <link n:asset="admin:favicon/apple-icon-72x72.png" rel="apple-touch-icon" sizes="72x72"/>
+    <link n:asset="admin:favicon/apple-icon-76x76.png" rel="apple-touch-icon" sizes="76x76"/>
+    <link n:asset="admin:favicon/apple-icon-114x114.png" rel="apple-touch-icon" sizes="114x114"/>
+    <link n:asset="admin:favicon/apple-icon-120x120.png" rel="apple-touch-icon" sizes="120x120"/>
+    <link n:asset="admin:favicon/apple-icon-144x144.png" rel="apple-touch-icon" sizes="144x144"/>
+    <link n:asset="admin:favicon/apple-icon-152x152.png" rel="apple-touch-icon" sizes="152x152"/>
+    <link n:asset="admin:favicon/apple-icon-180x180.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link n:asset="admin:favicon/favicon.ico" rel="icon"/>
+    <link n:asset="admin:favicon/favicon-16x16.png" rel="icon"  sizes="16x16"/>
+    <link n:asset="admin:favicon/favicon-32x32.png" rel="icon"  sizes="32x32"/>
+    <link n:asset="admin:favicon/favicon-96x96.png" rel="icon"  sizes="96x96"/>
+
 </head>
 <body n:class="'antialiased flex h-full text-base text-gray-700', Nette\Utils\Strings::lower(str_replace('Admin:', '', $presenter->getName())) . $presenter->getAction(), $presenter->isLinkCurrent('Sign:*') ? 'dark:bg-coal-500', !$presenter->isLinkCurrent('Sign:*') ? '[--tw-page-bg:#fefefe] [--tw-page-bg-dark:var(--tw-coal-500)] demo1 sidebar-fixed header-fixed bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark]'">
 <!-- Theme Mode -->

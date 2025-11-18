@@ -29,7 +29,9 @@ class SyncAssetsCommand extends Command
         FileSystem::copy($assetsDir . '/metronic', $wwwDir . '/' . $this->parameterBag->metronicDir);
         $output->writeln('<info>inCORE...</info>');
         FileSystem::delete($wwwDir . '/incore');
+        FileSystem::createDir($wwwDir . '/incore/public');
         FileSystem::copy($assetsDir . '/incore', $wwwDir . '/incore');
+        FileSystem::copy($assetsDir . '/admin/public', $wwwDir . '/incore/public');
 
         return self::SUCCESS;
 
