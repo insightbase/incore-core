@@ -82,4 +82,4 @@ session:
 
 assets:
 	mapping:
-		admin: incore/public       # běžné soubory /www/assets/
+		incore: incore/public       # běžné soubory /www/assets/
