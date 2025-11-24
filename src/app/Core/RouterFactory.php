@@ -32,7 +32,7 @@ final class RouterFactory
         if($languageByHost !== null){
             $langPrefix = sprintf('[<lang=%s>/]', $languageByHost->url);
         }else {
-            $languages = $this->languageModel->getToTranslate();
+            $languages = $this->languageModel->getToFront();
             $default = null;
             $langs = [];
             foreach ($languages as $language) {
