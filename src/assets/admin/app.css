@@ -48,6 +48,13 @@ div.imageContainer {
         bottom: 0;
     }
 }
+.dz-image a.imageUpdate{
+    background-color: white;
+    right: 10px;
+    bottom: 10px;
+    cursor: pointer;
+    position: absolute;
+}
 .editorJsText{
     display: none !important;
 }

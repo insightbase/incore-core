@@ -64,8 +64,12 @@ class DropzoneImageInput extends TextInput
             if(!$this->multiple){
                 $imageRow = $this->imageModel->get($input->getValue());
                 if ($imageRow !== null) {
-                    $image = Html::el('div')->class('dz-preview dz-file-preview')
+                    $image = Html::el('div')->class('dz-preview dz-processing dz-image-preview dz-success dz-complete');
+                    $image
                         ->addHtml(Html::el('div')->class('dz-image')->addHtml($imageControl->renderToString($input->getValue(), 100, 100)));
+                    if(!$this->isRequired()) {
+                        $image->addHtml(Html::el('a')->class('dropzoneRemoveFile')->setText('Remove file'));
+                    }
                 }
             }
         }
@@ -81,7 +85,7 @@ class DropzoneImageInput extends TextInput
         $dropzone = Html::el('div')
             ->setClass('dropzone dropzoneImage')
             ->setAttribute('data-upload-url', $this->linkGenerator->link('Admin:Image:upload', ['locationId' => $imageLocation->id]))
-            ->addHtml(Html::el('div')->class('ms-4')->addHtml($image))
+            ->addHtml($image)
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
         $dropzone->setAttribute('data-chunksize', $this->convertToBytes(ini_get('upload_max_filesize')));

@@ -317,8 +317,24 @@ function initDropzone() {
             });
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
+                    // ideálně ID obrázku vracej z backendu v JSONu
+                    const imageId = response.imageId; // např. { "imageId": 86 }
+
+                    const a = document.createElement('a');
+                    a.classList.add('imageUpdate');
+                    a.classList.add('ajax');
+                    a.href = '/admin/setting/?imageId=' + imageId + '&do=updateEditImageForm';
+                    a.setAttribute('data-modal-toggle', '#image-update');
+                    a.setAttribute('data-naja-history', 'off');
+                    a.innerHTML = '<i class="ki-filled ki-setting-2"></i>';
+
+                    file.previewElement.appendChild(a);
+
+                    naja.uiHandler.bindUI(a);
+
                     element.parentElement.getElementsByTagName('input')[0].value = Number(response.imageId);
                     element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
+
                 } else {
                     uploadedImageIds[dzKey].push(response.imageId);
                 }
@@ -329,7 +345,19 @@ function initDropzone() {
                     element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
+            dropzone.on('removedfile', (file) => {
+                element.parentElement.getElementsByTagName('input')[0].value = '';
+                element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
+            });
         }
+        Array.from(element.getElementsByClassName('dropzoneRemoveFile')).forEach(function(linkRemove){
+            linkRemove.addEventListener('click', function(event) {
+                event.preventDefault();
+                linkRemove.closest('.dz-preview').remove();
+                element.parentElement.getElementsByTagName('input')[0].value = '';
+                element.parentElement.getElementsByTagName('input')[0].dispatchEvent(new Event('change', { bubbles: true }));
+            });
+        });
     });
 
     let uploadedFileIds = {};
