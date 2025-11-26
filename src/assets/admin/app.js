@@ -278,7 +278,7 @@ function inlineEdit(event) {
         saveEditor.addEventListener('click', function (event) {
             event.preventDefault();
             window.editors[input.getAttribute('data-for-editor-id')].save().then((outputData) => {
-                let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', JSON.stringify(outputData));
+                let url = dataHolder.getAttribute('data-inline-edit-url').replace('xxxx', encodeURIComponent(JSON.stringify(outputData)));
                 naja.makeRequest('GET', url, {}, { history: false, notShowLoader: true });
             });
         });
