@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-11-28
+### Přidáno (Added)
+- Formuláře - přidán radioList
+
 ## 2025-11-26
 ### Opraveno (Fixed)
 - Překldy - opraven inline edit EditorJs, pokud obsahuje speciální znaky, které by mohly rozbít URL
