@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-01
+### Přidáno (Added)
+- Nastavení - přidána možnost nastavit title pro subpage. Na FE se potom přidává za title na subpages
+
 ## 2025-11-28
 ### Přidáno (Added)
 - Formuláře - přidán radioList

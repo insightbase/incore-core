@@ -70,6 +70,9 @@ readonly class FormFactory
         $form->addText('title', $this->translator->translate('input_title'))
             ->setRequired()
         ;
+        $form->addText('title_subpage', $this->translator->translate('input_titleSubpage'))
+            ->setNullable()
+        ;
 
         $form->addGroup($this->translator->translate('field_email'));
         $form->addEmail('email', $this->translator->translate('input_email'))

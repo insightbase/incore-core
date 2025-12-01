@@ -19,6 +19,9 @@ class Setting implements Entity
     #[ORM\Column(type: 'string', length: 255, options: ['default' => 'Incore'])]
     public string $title;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    public ?string $title_subpage = null;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $email_sender = null;
 
