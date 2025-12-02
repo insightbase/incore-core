@@ -5,6 +5,7 @@
 - Nastavení - přidána možnost vložit placeholder
 ### Opraveno (Fixed)
 - generování DB pro novější verzi symfony
+- datagrid - sloupecek datum - opraveno pokud je nulovy
 
 ## 2025-12-01
 ### Přidáno (Added)
