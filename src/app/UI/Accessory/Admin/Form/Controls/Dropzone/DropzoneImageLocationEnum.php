@@ -9,6 +9,7 @@ enum DropzoneImageLocationEnum:string
     case UserAvatar = 'userAvatar';
     case SettingLogo = 'settingLogo';
     case SettingShareImage = 'settingShareImage';
+    case SettingPlaceholder = 'settingPlaceholder';
     case Enumeration = 'enumeration';
     case Content = 'content';
     case ContentGallery = 'contentGallery';

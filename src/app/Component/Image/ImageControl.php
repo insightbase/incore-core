@@ -5,6 +5,7 @@ namespace App\Component\Image;
 use App\Component\Image\Exception\ImageNotFoundException;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Image;
+use App\Model\Admin\Setting;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Requires;
@@ -29,6 +30,7 @@ class ImageControl extends Control
         private readonly Image        $imageModel,
         private readonly Translator   $translator,
         private readonly Storage      $storage,
+        private readonly Setting      $settingModel,
     )
     {
     }
@@ -69,7 +71,13 @@ class ImageControl extends Control
         }
     }
 
-    public function getOriginal(int $fileId):string{
+    public function getOriginal(?int $fileId):string{
+        if($fileId === null){
+            $fileId = $this->settingModel->getDefault()?->placeholder_id;
+        }
+        if($fileId === null){
+            return '';
+        }
         $image = $this->getImage($fileId);
         if($image === null){
             return '';
@@ -84,8 +92,14 @@ class ImageControl extends Control
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
 
-    public function getPreviewFile(int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly):string
+    public function getPreviewFile(?int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly):string
     {
+        if($fileId === null){
+            $fileId = $this->settingModel->getDefault()?->placeholder_id;
+        }
+        if($fileId === null){
+            return '';
+        }
         $image = $this->getImage($fileId);
         $suffix = Arrays::last(explode('.', $image->saved_name));
         if($suffix === 'svg'){
@@ -147,33 +161,48 @@ class ImageControl extends Control
         return $ret;
     }
 
-    public function renderOriginal(int $fileId, ?string $class = null, array $htmlAttributes = []):void
+    public function renderOriginal(?int $fileId, ?string $class = null, array $htmlAttributes = []):void
     {
-        $this->template->setTranslator($this->translator);
-        $this->template->render(dirname(__FILE__) . '/original.latte', [
-            'class' => $class,
-            'htmlAttributes' => $htmlAttributes,
-            'imageFile' => $this->getOriginal($fileId),
-        ]);
-    }
-
-    public function render(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = [], int $type = \Nette\Utils\Image::ShrinkOnly):void
-    {
-        $this->template->setTranslator($this->translator);
-        try {
-            $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes, $type));
-        } catch (ImageNotFoundException|UnknownImageFileException $e) {
-
+        if($fileId === null){
+            $fileId = $this->settingModel->getDefault()?->placeholder_id;
+        }
+        if($fileId !== null) {
+            $this->template->setTranslator($this->translator);
+            $this->template->render(dirname(__FILE__) . '/original.latte', [
+                'class' => $class,
+                'htmlAttributes' => $htmlAttributes,
+                'imageFile' => $this->getOriginal($fileId),
+            ]);
         }
     }
 
-    public function renderToString(int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = true):string
+    public function render(?int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = false, array $htmlAttributes = [], int $type = \Nette\Utils\Image::ShrinkOnly):void
     {
-        $this->template->setTranslator($this->translator);
-        try {
-            return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
-        } catch (ImageNotFoundException|UnknownImageFileException $e) {
-            return '';
+        if($fileId === null){
+            $fileId = $this->settingModel->getDefault()?->placeholder_id;
+        }
+        if($fileId !== null) {
+            $this->template->setTranslator($this->translator);
+            try {
+                $this->template->render(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting, $htmlAttributes, $type));
+            } catch (ImageNotFoundException|UnknownImageFileException $e) {
+
+            }
+        }
+    }
+
+    public function renderToString(?int $fileId, int $width, int $height, ?string $class = null, bool $showSetting = true):string
+    {
+        if($fileId === null){
+            $fileId = $this->settingModel->getDefault()?->placeholder_id;
+        }
+        if($fileId !== null) {
+            $this->template->setTranslator($this->translator);
+            try {
+                return $this->template->renderToString(dirname(__FILE__) . '/default.latte', $this->getParams($fileId, $width, $height, $class, $showSetting));
+            } catch (ImageNotFoundException|UnknownImageFileException $e) {
+                return '';
+            }
         }
     }
 }

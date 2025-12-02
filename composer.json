@@ -42,7 +42,8 @@
         "ext-dom": "*",
         "ext-iconv": "*",
         "symfony/translation": "^7.2",
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "symfony/var-exporter": "^7.0"
     },
     "repositories": [
         {

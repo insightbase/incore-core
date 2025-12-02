@@ -27,6 +27,14 @@ class ImageLocationFixtures extends Fixture
             $manager->flush();
         }
 
+        $settingPlaceholder = $manager->getRepository(ImageLocation::class)->findOneBy(['location' => DropzoneImageLocationEnum::SettingPlaceholder->value]);
+        if(!$settingPlaceholder){
+            $settingPlaceholder = new ImageLocation();
+            $settingPlaceholder->location = DropzoneImageLocationEnum::SettingPlaceholder->value;
+            $manager->persist($settingPlaceholder);
+            $manager->flush();
+        }
+
         $settingLogo = $manager->getRepository(ImageLocation::class)->findOneBy(['location' => DropzoneImageLocationEnum::SettingLogo->value]);
         if(!$settingLogo){
             $settingLogo = new ImageLocation();

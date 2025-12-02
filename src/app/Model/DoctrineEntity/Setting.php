@@ -64,6 +64,10 @@ class Setting implements Entity
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     public ?File $google_service_account = null;
 
+    #[ORM\ManyToOne(targetEntity: Image::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    public ?Image $placeholder = null;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $ga_service_id = null;
 
