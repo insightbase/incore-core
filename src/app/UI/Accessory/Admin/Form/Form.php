@@ -96,7 +96,7 @@ class Form extends Nette\Application\UI\Form
         return $formHelp?->label_help;
     }
 
-    public function addContainer(int|string $name): Nette\Forms\Container
+    public function addContainer(int|string $name): Container
     {
         $control = $this->containerFactory->create();
         $control->currentGroup = $this->currentGroup;

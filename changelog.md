@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-03
+### Přidáno (Added)
+- Formuláře - možnost nastavit toggle pro skupiny
+
 ## 2025-12-01
 ### Přidáno (Added)
 - Nastavení - přidána možnost vložit placeholder

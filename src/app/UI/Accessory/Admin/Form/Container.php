@@ -13,6 +13,9 @@ use Nette\Forms\Controls\TextBase;
 
 class Container extends \Nette\Forms\Container
 {
+    private bool $toggle = false;
+    private ?string $toggleCaption = null;
+
     public function __construct(
         private readonly DropzoneImageInputFactory $dropzoneImageInputFactory,
         private readonly EditorJsInputFactory      $editorJsInputFactory,
@@ -21,6 +24,8 @@ class Container extends \Nette\Forms\Container
     )
     {
     }
+
+
 
     public function addSlug(string $name, ?TextBase $sourceInput, ?string $label = null):SlugInput
     {
@@ -46,5 +51,21 @@ class Container extends \Nette\Forms\Container
         $input = $this->editorJsInputFactory->create($label);
         $input->getControlPrototype()->class('editorJsText');
         return $this[$name] = $input;
+    }
+
+    public function isToggle(): bool
+    {
+        return $this->toggle;
+    }
+
+    public function getToggleCaption(): ?string
+    {
+        return $this->toggleCaption;
+    }
+
+    public function setToggle(?string $caption, bool $toggle = false): void
+    {
+        $this->toggle = $toggle;
+        $this->toggleCaption = $caption;
     }
 }
