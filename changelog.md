@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-04
+### Opraveno (Fixed)
+- EditorJS - ovládací prvky vždy vlevo
+
 ## 2025-12-03
 ### Přidáno (Added)
 - Formuláře - možnost nastavit toggle pro skupiny

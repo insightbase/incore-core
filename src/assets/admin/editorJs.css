@@ -2,3 +2,6 @@
     font-weight: bold;
     font-size: 18px;
 }
+.ce-toolbar__actions{
+    right: 100% !important;
+}
