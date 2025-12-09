@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-09
+### Přidáno (Added)
+- endpoint pro upravení DB, presun logiky do facade
+
 ## 2025-12-04
 ### Opraveno (Fixed)
 - EditorJS - ovládací prvky vždy vlevo
