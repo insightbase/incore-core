@@ -74,7 +74,7 @@ class Sender
 
     private function getMailer():Mailer{
         $setting = $this->settingModel->getDefault();
-        if (null === $setting || null === $setting->email || null === $setting->smtp_host || null === $setting->smtp_username || null === $setting->smtp_password) {
+        if (null === $setting || null === $setting->smtp_host || null === $setting->smtp_username || null === $setting->smtp_password) {
             return new SendmailMailer();
         }
 

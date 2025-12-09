@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-12-04
+### Opraveno (Fixed)
+- Formuláře - opraveno řazení podle sloupečků
+### Přidáno (Added)
+- datagrid - sloupečky mají možnost změnit styl řazení
+
 ## 2025-12-09
 ### Přidáno (Added)
 - endpoint pro upravení DB, presun logiky do facade

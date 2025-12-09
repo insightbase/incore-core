@@ -78,9 +78,6 @@ readonly class FormFactory
         ;
 
         $form->addGroup($this->translator->translate('field_email'));
-        $form->addEmail('email', $this->translator->translate('input_email'))
-            ->setRequired()
-        ;
         $form->addEmail('email_sender', $this->translator->translate('input_email_sender'))
             ->setNullable()
         ;

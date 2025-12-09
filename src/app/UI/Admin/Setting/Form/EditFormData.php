@@ -10,7 +10,6 @@ class EditFormData
     public ?int $logo_dark_small_id;
     public ?int $shareimage_id;
     public ?int $placeholder_id;
-    public ?string $email;
     public ?string $email_sender;
     public ?string $smtp_host;
     public ?string $smtp_username;
