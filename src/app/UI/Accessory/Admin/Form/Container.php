@@ -11,6 +11,9 @@ use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInput;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyFactory;
+use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyInput;
+use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextBase;
 
 class Container extends \Nette\Forms\Container
@@ -24,8 +27,14 @@ class Container extends \Nette\Forms\Container
         private readonly ContainerFactory          $containerFactory,
         private readonly SlugInputFactory          $slugInputFactory,
         private readonly CopyInputFactory          $copyInputFactory,
+        private readonly TextAreaCopyFactory       $textAreaCopyFactory,
     )
     {
+    }
+
+    public function addTextAreaCopy(string $name, ?TextArea $sourceInput, ?string $label = null):TextAreaCopyInput
+    {
+        return $this[$name] = $this->textAreaCopyFactory->create($sourceInput, $label);
     }
 
     public function addCopy(string $name, ?TextBase $sourceInput, ?string $label = null):CopyInput
