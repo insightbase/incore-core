@@ -30,6 +30,20 @@ function initForms() {
         }
     });
 
+    //najdu vsechny co kopiruji text
+    document.querySelectorAll('input[data-source-copy-input]').forEach((element) => {
+        var sourceInput = document.getElementById(element.getAttribute('data-source-copy-input'));
+        sourceInput.addEventListener('beforeinput', () => {
+            sourceInput._wasSameBefore =
+                sourceInput.value === element.value;
+        });
+        sourceInput.addEventListener('input', function (event) {
+            if(sourceInput._wasSameBefore || element.value === '') {
+                element.value = sourceInput.value;
+            }
+        });
+    });
+
 // najdeme na stránce všechny podřízené selectboxy
     document.querySelectorAll('select[data-depends]').forEach((childSelect) => {
         let parentSelect = childSelect.form[childSelect.dataset.depends]; // nadřízený <select>

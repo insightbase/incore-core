@@ -7,6 +7,8 @@ use App\Model\Admin\FormHelp;
 use App\Model\Admin\FormHelpLanguage;
 use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
+use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInput;
+use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput;
@@ -44,6 +46,7 @@ class Form extends Nette\Application\UI\Form
         private readonly FormHelpLanguage          $formHelpLanguageModel,
         private readonly Translator                $translator,
         private readonly SlugInputFactory          $slugInputFactory,
+        private readonly CopyInputFactory          $copyInputFactory,
         ?Nette\ComponentModel\IContainer           $parent = null,
         ?string                                    $name = null
     ) {
@@ -77,6 +80,11 @@ class Form extends Nette\Application\UI\Form
         return !is_scalar($language->name) || isset($this->groupLanguages[$language->name])
             ? $this->groupLanguages[] = $group
             : $this->groupLanguages[$language->name] = $group;
+    }
+
+    public function addCopy(string $name, ?Nette\Forms\Controls\TextBase $sourceInput, ?string $label = null):CopyInput
+    {
+        return $this[$name] = $this->copyInputFactory->create($sourceInput, $label);
     }
 
     public function addSlug(string $name, ?Nette\Forms\Controls\TextBase $sourceInput, ?string $label = null):SlugInput
