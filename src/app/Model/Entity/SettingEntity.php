@@ -8,7 +8,6 @@ use Nette\Database\Table\ActiveRow;
 
 /**
  * @property-read int $id
- * @property-read string $email
  * @property-read string $title
  * @property-read ?string $title_subpage
  * @property-read ?string $email_sender
