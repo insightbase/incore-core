@@ -43,6 +43,18 @@ function initForms() {
             }
         });
     });
+    document.querySelectorAll('textArea[data-source-copy-input]').forEach((element) => {
+        var sourceInput = document.getElementById(element.getAttribute('data-source-copy-input'));
+        sourceInput.addEventListener('beforeinput', () => {
+            sourceInput._wasSameBefore =
+                sourceInput.value === element.value;
+        });
+        sourceInput.addEventListener('input', function (event) {
+            if(sourceInput._wasSameBefore || element.value === '') {
+                element.value = sourceInput.value;
+            }
+        });
+    });
 
 // najdeme na stránce všechny podřízené selectboxy
     document.querySelectorAll('select[data-depends]').forEach((childSelect) => {
