@@ -1,13 +1,13 @@
 # Changelog
 
+## 2025-12-15
+### Opraveno (Fixed)
+- Datagrid - opraven bug, pokud je sloupeček relace
+
 ## 2025-12-12
 ### Přidáno (Added)
 - core - formuláře - přidána možnost kopírovat obsah inputu
 - content - tagy - přidán slug a SEO
-
-## 2025-12-04
-### Opraveno (Fixed)
-- Datagrid - opraven bug, pokud je sloupeček relace
 
 ## 2025-12-04
 ### Opraveno (Fixed)
