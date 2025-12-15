@@ -2,6 +2,10 @@
 
 ## 2025-12-04
 ### Opraveno (Fixed)
+- Datagrid - opraven bug, pokud je sloupeček relace
+
+## 2025-12-04
+### Opraveno (Fixed)
 - Formuláře - opraveno řazení podle sloupečků
 ### Přidáno (Added)
 - datagrid - sloupečky mají možnost změnit styl řazení
