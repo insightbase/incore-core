@@ -2,6 +2,8 @@
 
 namespace App\UI\Accessory\Admin\Form;
 
+use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInput;
+use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
@@ -9,6 +11,9 @@ use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInput;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyFactory;
+use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyInput;
+use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextBase;
 
 class Container extends \Nette\Forms\Container
@@ -21,11 +26,21 @@ class Container extends \Nette\Forms\Container
         private readonly EditorJsInputFactory      $editorJsInputFactory,
         private readonly ContainerFactory          $containerFactory,
         private readonly SlugInputFactory          $slugInputFactory,
+        private readonly CopyInputFactory          $copyInputFactory,
+        private readonly TextAreaCopyFactory       $textAreaCopyFactory,
     )
     {
     }
 
+    public function addTextAreaCopy(string $name, ?TextArea $sourceInput, ?string $label = null):TextAreaCopyInput
+    {
+        return $this[$name] = $this->textAreaCopyFactory->create($sourceInput, $label);
+    }
 
+    public function addCopy(string $name, ?TextBase $sourceInput, ?string $label = null):CopyInput
+    {
+        return $this[$name] = $this->copyInputFactory->create($sourceInput, $label);
+    }
 
     public function addSlug(string $name, ?TextBase $sourceInput, ?string $label = null):SlugInput
     {

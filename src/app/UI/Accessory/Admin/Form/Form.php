@@ -7,6 +7,8 @@ use App\Model\Admin\FormHelp;
 use App\Model\Admin\FormHelpLanguage;
 use App\Model\Admin\Language;
 use App\Model\Entity\LanguageEntity;
+use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInput;
+use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput;
@@ -16,6 +18,8 @@ use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInput;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyFactory;
+use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyInput;
 use Nette;
 
 class Form extends Nette\Application\UI\Form
@@ -44,6 +48,8 @@ class Form extends Nette\Application\UI\Form
         private readonly FormHelpLanguage          $formHelpLanguageModel,
         private readonly Translator                $translator,
         private readonly SlugInputFactory          $slugInputFactory,
+        private readonly CopyInputFactory          $copyInputFactory,
+        private readonly TextAreaCopyFactory       $textAreaCopyFactory,
         ?Nette\ComponentModel\IContainer           $parent = null,
         ?string                                    $name = null
     ) {
@@ -77,6 +83,16 @@ class Form extends Nette\Application\UI\Form
         return !is_scalar($language->name) || isset($this->groupLanguages[$language->name])
             ? $this->groupLanguages[] = $group
             : $this->groupLanguages[$language->name] = $group;
+    }
+
+    public function addTextAreaCopy(string $name, ?Nette\Forms\Controls\TextArea $sourceInput, ?string $label = null):TextAreaCopyInput
+    {
+        return $this[$name] = $this->textAreaCopyFactory->create($sourceInput, $label);
+    }
+
+    public function addCopy(string $name, ?Nette\Forms\Controls\TextBase $sourceInput, ?string $label = null):CopyInput
+    {
+        return $this[$name] = $this->copyInputFactory->create($sourceInput, $label);
     }
 
     public function addSlug(string $name, ?Nette\Forms\Controls\TextBase $sourceInput, ?string $label = null):SlugInput
