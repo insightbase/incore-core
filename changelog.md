@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-04
+### Opraveno (Fixed)
+- datagrid - pokud je datovy typ "time" v DB, vraci spravny cas
+
 ## 2025-12-12
 ### Přidáno (Added)
 - core - formuláře - přidána možnost kopírovat obsah inputu
