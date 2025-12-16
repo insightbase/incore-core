@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-16
+### Opraveno (Fixed)
+- Datagrid - opraven bug, pokud je sloupeček relace
+
 ## 2025-12-04
 ### Opraveno (Fixed)
 - datagrid - pokud je datovy typ "time" v DB, vraci spravny cas
