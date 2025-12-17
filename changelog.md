@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-17
+### Opraveno (Fixed)
+- Datagrid - opraven filtr select
+
 ## 2025-12-16
 ### Opraveno (Fixed)
 - Datagrid - opraven bug, pokud je sloupeček relace
