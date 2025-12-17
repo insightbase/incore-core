@@ -3,6 +3,7 @@
 ## 2025-12-17
 ### Opraveno (Fixed)
 - Datagrid - opraven filtr select
+- Nastavení - přidán email, na který chodí formy
 
 ## 2025-12-16
 ### Opraveno (Fixed)

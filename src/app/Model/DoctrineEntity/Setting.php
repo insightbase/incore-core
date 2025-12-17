@@ -22,6 +22,9 @@ class Setting implements Entity
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $email_sender = null;
 
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => 'info@email.cz'])]
+    public string $email;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $recaptcha_secret_key = null;
 
