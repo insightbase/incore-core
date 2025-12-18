@@ -30,6 +30,18 @@ function initForms() {
         }
     });
 
+    //najdu vsechny co generuji slug v edit modu
+    document.querySelectorAll('input[data-source-input-editmode]').forEach((element) => {
+        element.addEventListener('change', function(event){
+            element.value = slugify(element.value);
+        });
+        element.addEventListener('paste', function(event){
+            event.preventDefault();
+            element.value = slugify((event.clipboardData || window.clipboardData).getData('text'));
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    });
+
     //najdu vsechny co kopiruji text
     document.querySelectorAll('input[data-source-copy-input]').forEach((element) => {
         var sourceInput = document.getElementById(element.getAttribute('data-source-copy-input'));

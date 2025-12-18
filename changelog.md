@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-18
+### Opraveno (Fixed)
+- Core - input slug - uprava chovani pokud neni navazan na input
+
 ## 2025-12-17
 ### Opraveno (Fixed)
 - Datagrid - opraven filtr select

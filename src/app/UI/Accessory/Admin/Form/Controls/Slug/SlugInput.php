@@ -19,7 +19,10 @@ class SlugInput extends TextInput
     public function getControl():Html
     {
         $input = parent::getControl();
-        $input->setAttribute('data-source-input', $this->sourceInput->getHtmlId());
+        $input->setAttribute('data-source-input', $this->sourceInput?->getHtmlId());
+        if($this->sourceInput === null){
+            $input->setAttribute('data-source-input-editMode', true);
+        }
         return $input;
     }
 

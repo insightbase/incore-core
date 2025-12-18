@@ -11,6 +11,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read string $title
  * @property-read ?string $title_subpage
  * @property-read ?string $email_sender
+ * @property-read string $email
  * @property-read ?string $recaptcha_secret_key
  * @property-read ?string $recaptcha_site_key
  * @property-read ?ImageEntity $shareimage
