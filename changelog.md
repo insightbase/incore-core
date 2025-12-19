@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-12-19
+### Přidáno (Added)
+- core - modul se dá propojit s číselníkem. Lze takto upravovat levé menu
+
 ## 2025-12-18
 ### Opraveno (Fixed)
 - Core - input slug - uprava chovani pokud neni navazan na input

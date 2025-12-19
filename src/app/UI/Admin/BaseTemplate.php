@@ -11,6 +11,7 @@ use App\Model\Entity\SettingEntity;
 use App\Model\Entity\UserEntity;
 use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
+use App\UI\Admin\Module\ModuleFacade;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Database\Table\ActiveRow;
@@ -64,4 +65,5 @@ class BaseTemplate extends Template
      */
     public?ActiveRow $loggedUser = null;
     public ?string $urlBack = null;
+    public ModuleFacade $moduleFacade;
 }

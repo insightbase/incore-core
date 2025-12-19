@@ -38,6 +38,10 @@ class Module implements Entity
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
     public bool $active = true;
 
+    #[ORM\ManyToOne(targetEntity: Enumeration::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    public ?Enumeration $enumeration = null;
+
     public function setSystemName(string $systemName): self
     {
         $this->system_name = $systemName;

@@ -66,25 +66,6 @@ readonly class Module implements Model
     }
 
     /**
-     * @return ModuleEntity[]
-     */
-    public function getTree(string $presenterName, string $action): array
-    {
-        $module = $this->getByPresenter($presenterName, $action);
-        if (null === $module) {
-            return [];
-        }
-
-        $tree = [$module->id => $module];
-        while (null !== $module->parent) {
-            $module = $module->parent;
-            $tree[$module->id] = $module;
-        }
-
-        return array_reverse($tree, true);
-    }
-
-    /**
      * @return Selection<ModuleEntity>
      */
     public function getToGrid(): Selection
@@ -121,5 +102,16 @@ readonly class Module implements Model
         }
 
         return $this->getTable()->where('id', $moduleIds);
+    }
+
+    /**
+     * @param int $id
+     * @return ?ModuleEntity
+     */
+    public function getByEnumerationId(int $id):?ActiveRow
+    {
+        return $this->getTable()
+            ->where('enumeration_id', $id)
+            ->fetch();
     }
 }

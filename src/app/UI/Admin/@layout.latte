@@ -143,7 +143,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 						<div class="menu flex flex-col grow gap-0.5" data-menu="true" data-menu-accordion-expand-all="false" id="sidebar_menu">
 							{foreach $menuModules as $module}
 								{var int $subCount = $moduleModel->getToMenu($module)->count('*') + count($mainMenuFactory->getMainMenus($module))}
-								<div n:if="$user->isAllowed($module->system_name, $module->action)" n:class="'menu-item', array_key_exists($module->id, $moduleTree) ? 'active show', $subCount > 0 ? 'menu-item-accordion'" n:attr="data-menu-item-toggle: ($subCount > 0 ? 'accordion'), data-menu-item-trigger: ($subCount > 0 ? 'click')">
+								<div n:if="$moduleFacade->isAllowed($module)" n:class="'menu-item', array_key_exists($module->id, $moduleTree) ? 'active show', $subCount > 0 ? 'menu-item-accordion'" n:attr="data-menu-item-toggle: ($subCount > 0 ? 'accordion'), data-menu-item-trigger: ($subCount > 0 ? 'click')">
 									<div class="menu-link flex items-center grow cursor-pointer border border-transparent gap-[10px] ps-[10px] pe-[10px] py-[6px]" tabindex="0">
 										<span class="menu-icon items-start text-gray-500 dark:text-gray-400 w-[20px]">
 											<i class="{$module->icon}"></i>
@@ -163,7 +163,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 									</div>
 									<div n:if="$subCount > 0" class="menu-accordion gap-0.5 ps-[10px] relative before:absolute before:start-[20px] before:top-0 before:bottom-0 before:border-s before:border-gray-200">
 										<div n:foreach="$moduleModel->getToMenu($module) as $subModule" n:class="'menu-item', array_key_exists($subModule->id, $moduleTree) ? 'active'">
-											<a n:if="$user->isAllowed($subModule->system_name, $subModule->action)" n:href="$subModule->presenter . ':' . $subModule->action" class="menu-link border border-transparent items-center grow menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg gap-[14px] ps-[10px] pe-[10px] py-[8px]">
+											<a n:if="$moduleFacade->isAllowed($subModule)" href="{$moduleFacade->getHref($subModule)}" class="menu-link border border-transparent items-center grow menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg gap-[14px] ps-[10px] pe-[10px] py-[8px]">
 												<span class="menu-bullet flex w-[6px] -start-[3px] rtl:start-0 relative before:absolute before:top-0 before:size-[6px] before:rounded-full rtl:before:translate-x-1/2 before:-translate-y-1/2 menu-item-active:before:bg-primary menu-item-hover:before:bg-primary">
 												</span>
 												<span class="menu-title text-2sm font-normal text-gray-800 menu-item-active:text-primary menu-item-active:font-semibold menu-link-hover:!text-primary">

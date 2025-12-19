@@ -27,6 +27,7 @@ use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\BaseTemplate;
+use App\UI\Admin\Module\ModuleFacade;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
@@ -137,10 +138,10 @@ trait StandardTemplateTrait
 
     public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade,
                                            Module $moduleModel, Language $languageModel, Authenticator $authenticator, Setting $settingModel,
-                                           AuthorizatorFactory $authorizatorFactory,
+                                           AuthorizatorFactory $authorizatorFactory, ModuleFacade $moduleFacade,
     ): void
     {
-        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel): void {
+        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel, $moduleFacade): void {
             $this->template->setTranslator($this->translator);
             if(file_exists($parameterBag->wwwDir.'/incore/version.txt')) {
                 $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir . '/incore/version.txt'));
@@ -156,10 +157,11 @@ trait StandardTemplateTrait
             $this->template->menuModules = $moduleModel->getToMenu();
             $this->template->moduleModel = $moduleModel;
             $this->template->languages = $languages = $languageModel->getToTranslate();
-            $this->template->moduleTree = $moduleTree = $moduleModel->getTree($this->getName(), $this->getAction());
+            $this->template->moduleTree = $moduleTree = $moduleFacade->getTree($this);
             $this->template->mainMenuFactory = $this->mainMenuFactory;
             $this->template->setting = $settingModel->getDefault();
             $this->template->metronicDir = $parameterBag->metronicDir;
+            $this->template->moduleFacade = $moduleFacade;
             $showSubmenuDropdown = false;
             foreach($submenuFactory->getSubMenus() as $subMenuItem){
                 if($subMenuItem->isShowInDropdown() && $this->user->isAllowed(Arrays::last($moduleTree)?->system_name, $subMenuItem->getAction())){
