@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-02
+### Opraveno (Fixed)
+- Datagrid - fix - pokud ma column relaci a je nulová hodnota
+
 ## 2025-12-19
 ### Přidáno (Added)
 - core - modul se dá propojit s číselníkem. Lze takto upravovat levé menu
