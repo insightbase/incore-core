@@ -248,7 +248,7 @@
     {/if}
 
     <div n:foreach="$controls as $input"
-            n:if="$input->getOption(type) === button && $input->getOption(repeater) === null"
+            n:if="$input instanceof Nette\Forms\Controls\SubmitButton && $input->getOption(repeater) === null"
             class="flex justify-end mt-6 mt-10"
     >
         {input $input, class:"btn btn-primary"}

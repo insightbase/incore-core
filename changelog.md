@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-07
+### Opraveno (Fixed)
+- Core - form - při renderu se do buttonů pod formulář vkládají jen submit button, nikoliv klasické buttony
+
 ## 2026-01-02
 ### Opraveno (Fixed)
 - Datagrid - fix - pokud ma column relaci a je nulová hodnota
