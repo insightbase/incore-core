@@ -393,3 +393,60 @@ form.max-w-2xl{
     color: #fff;
     font-weight: bold;
 }
+
+/* DataGrid Responsive Styles */
+.dataGrid .card-grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+.dataGrid .card-body {
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.dataGrid .overflow-x-auto {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100% !important;
+    position: relative !important;
+}
+
+.dataGrid table {
+    position: relative !important;
+}
+
+.dataGrid .sticky {
+    position: sticky !important;
+    right: 0 !important;
+    z-index: 15 !important;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Sticky header should match other th background */
+.dataGrid thead th.sticky {
+    position: sticky !important;
+    right: 0 !important;
+    background-color: #f9fafb !important;
+    z-index: 15 !important;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Sticky body cells keep white background */
+.dataGrid tbody td.sticky {
+    position: sticky !important;
+    right: 0 !important;
+    background-color: white !important;
+    z-index: 15 !important;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Dark mode */
+.dark .dataGrid thead th.sticky {
+    background-color: var(--tw-gray-800) !important;
+}
+
+.dark .dataGrid tbody td.sticky {
+    background-color: var(--tw-coal-600) !important;
+}
