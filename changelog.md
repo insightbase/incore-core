@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-13
+### Opraveno (Fixed)
+- core - nastavena timezone
+
 ## 2026-01-07
 ### Opraveno (Fixed)
 - Core - form - při renderu se do buttonů pod formulář vkládají jen submit button, nikoliv klasické buttony
