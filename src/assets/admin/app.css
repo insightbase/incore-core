@@ -450,3 +450,27 @@ form.max-w-2xl{
 .dark .dataGrid tbody td.sticky {
     background-color: var(--tw-coal-600) !important;
 }
+
+.menu-item-hover-parent:hover {
+    background-color: var(--tw-secondary-active) !important;
+    border-radius: 0.5rem !important;
+}
+.dark .menu-item-hover-parent:hover {
+    background-color: var(--tw-coal-300) !important;
+}
+.menu-item-hover-parent.active,
+.menu-item-hover-parent.menu-item-active {
+    background-color: var(--tw-secondary-active) !important;
+    border-radius: 0.5rem !important;
+}
+.dark .menu-item-hover-parent.active,
+.dark .menu-item-hover-parent.menu-item-active {
+    background-color: var(--tw-coal-300) !important;
+}
+.menu-item-hover-parent:hover .menu-title {
+    color: var(--tw-primary) !important;
+    font-weight: 500 !important;
+}
+.menu-item-hover-parent:hover .menu-bullet::before {
+    background-color: var(--tw-primary) !important;
+}

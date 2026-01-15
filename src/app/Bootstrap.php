@@ -35,6 +35,7 @@ class Bootstrap
             $this->configurator->setDebugMode('inCORE@'.($_SERVER['REMOTE_ADDR'] ?? php_uname('n')));
         }
         $this->configurator->enableTracy($this->rootDir.'/log');
+        $this->configurator->setTimeZone('Europe/Prague');
 
         $this->configurator->createRobotLoader()
             ->addDirectory(__DIR__)
