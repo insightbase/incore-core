@@ -3,6 +3,8 @@
 ## 2026-01-15
 ### Přidáno (Added)
 - core - možnost přepnout layout do verze kde je H1 až ve formu (tlačítka vravo nahoře)
+### Opraveno (Fixed)
+- core - front presenter trait - ošetření když není lang inicializovaný (ErrorPresenter)
 
 ## 2026-01-13
 ### Opraveno (Fixed)

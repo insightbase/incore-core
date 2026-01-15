@@ -51,7 +51,10 @@ trait StandardTemplateTrait
             $this->template->languages = $languageModel->getToFront();
             $this->template->defaultLanguage = $languageModel->getDefault();
         };
-        $this->onStartup[] = function () use ($settingModel):void{
+        $this->onStartup[] = function () use ($settingModel, $languageModel):void{
+            if(!isset($this->lang)){
+                $this->lang = $languageModel->getDefault()->url;
+            }
             $this->setting = $settingModel->getDefault();
             $this->translator->setLang($this->lang);
             $storage = $this->getUser()->getStorage();
