@@ -66,4 +66,5 @@ class BaseTemplate extends Template
     public?ActiveRow $loggedUser = null;
     public ?string $urlBack = null;
     public ModuleFacade $moduleFacade;
+    public bool $showH1;
 }

@@ -442,6 +442,28 @@
 
 {define tabsForm, $form}
     <form n:name=$form n:class="'flex flex-col gap-6 max-w-2xl', $form->sendByAjax ? 'ajax'">
+
+        <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
+            <div class="flex gap-8">
+                <a n:href="default" class="flex items-center justify-center text-xl text-gray-600">
+                    <i class="ki-filled ki-left"></i>
+                </a>
+                <div class="flex flex-col justify-center gap-2">
+                    <h1 class="text-xl font-semibold leading-none text-gray-900 max-w-2xl flex items-center justify-between">
+                        {include h1}
+                    </h1>
+{*                    <span class="text-sm text-gray-700">{_'header_articleEditText'}</span>*}
+                </div>
+            </div>
+            <div class="flex gap-8">
+                <a href="{$linkToPreview}" class="btn btn-secondary" target="_blank" n:ifset="$linkToPreview">
+                    <i class="ki-filled ki-eye"></i>{_'article_preview'}
+                </a>
+
+                <input n:name="send" class="btn btn-primary">
+            </div>
+        </div>
+
         <div>
             <ul class="errors" n:ifcontent>
                 <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>

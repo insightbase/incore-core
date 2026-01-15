@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-15
+### Přidáno (Added)
+- core - možnost přepnout layout do verze kde je H1 až ve formu (tlačítka vravo nahoře)
+
 ## 2026-01-13
 ### Opraveno (Fixed)
 - core - nastavena timezone

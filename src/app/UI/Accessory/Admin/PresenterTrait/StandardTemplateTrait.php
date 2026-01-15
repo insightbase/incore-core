@@ -187,6 +187,7 @@ trait StandardTemplateTrait
             if ($storage instanceof SessionStorage) {
                 $storage->setNamespace('admin');
             }
+            $this->template->showH1 = true;
         };
     }
 }
