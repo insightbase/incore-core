@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2026-01-15
+### Upraveno (Updated)
+- datagrid - nastavena fixní šířka pro sloupeček actions
+
+## 2026-01-15
 ### Přidáno (Added)
 - core - možnost přepnout layout do verze kde je H1 až ve formu (tlačítka vravo nahoře)
 ### Opraveno (Fixed)
