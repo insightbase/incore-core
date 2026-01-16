@@ -3,6 +3,8 @@
 ## 2026-01-15
 ### Upraveno (Updated)
 - datagrid - nastavena fixní šířka pro sloupeček actions
+### Přidáno (Added)
+- datagrid - customMenu - přidán title
 
 ## 2026-01-15
 ### Přidáno (Added)
