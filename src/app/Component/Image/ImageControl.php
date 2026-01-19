@@ -110,7 +110,7 @@ class ImageControl extends Control
         }else {
             $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
             if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
-                $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName);
+                $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName, 92);
             }
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
