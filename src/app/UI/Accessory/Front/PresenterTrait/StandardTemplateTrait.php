@@ -43,14 +43,6 @@ trait StandardTemplateTrait
     }
 
     public function injectStandardTemplate(Setting $settingModel, Language $languageModel):void{
-        $this->onRender[] = function () use ($languageModel):void{
-            $this->template->setTranslator($this->translator);
-            $this->template->setting = $this->setting;
-            $this->template->imageControl = $this->imageControlFactory->create();
-            $this->template->fileControl = $this->fileControlFactory->create();
-            $this->template->languages = $languageModel->getToFront();
-            $this->template->defaultLanguage = $languageModel->getDefault();
-        };
         $this->onStartup[] = function () use ($settingModel, $languageModel):void{
             if(!isset($this->lang)){
                 $this->lang = $languageModel->getDefault()->url;
@@ -61,6 +53,13 @@ trait StandardTemplateTrait
             if ($storage instanceof SessionStorage) {
                 $storage->setNamespace('front');
             }
+
+            $this->template->setTranslator($this->translator);
+            $this->template->setting = $this->setting;
+            $this->template->imageControl = $this->imageControlFactory->create();
+            $this->template->fileControl = $this->fileControlFactory->create();
+            $this->template->languages = $languageModel->getToFront();
+            $this->template->defaultLanguage = $languageModel->getDefault();
         };
     }
 }

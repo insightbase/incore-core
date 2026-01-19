@@ -3,6 +3,7 @@
 ## 2026-01-19
 ### Opraveno (Fixed)
 - core - form - u tabů opraven okraj pokud je zanořený a nemá toggle
+- core - front trait - definice promennych do sablon presunto do onStartup, aby si to mohl presenter prepsat
 
 ## 2026-01-15
 ### Upraveno (Updated)
