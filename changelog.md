@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-19
+### Opraveno (Fixed)
+- core - form - u tabů opraven okraj pokud je zanořený a nemá toggle
+
 ## 2026-01-15
 ### Upraveno (Updated)
 - datagrid - nastavena fixní šířka pro sloupeček actions

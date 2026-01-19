@@ -507,7 +507,7 @@
 
                         {var array $hasToggles = []}
                         {foreach  $group->getControls() as $input}
-                            {if $input->getParent() instanceof App\UI\Accessory\Admin\Form\Container && !in_array($input->getParent()->getToggleCaption(), $hasToggles)}
+                            {if $input->getParent() instanceof App\UI\Accessory\Admin\Form\Container && $input->getParent()->getToggleCaption() !== null && !in_array($input->getParent()->getToggleCaption(), $hasToggles)}
                                 {php $hasToggles[] = $input->getParent()->getToggleCaption()}
                             {/if}
                         {/foreach}
