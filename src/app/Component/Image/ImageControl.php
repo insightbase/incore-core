@@ -25,12 +25,12 @@ use Nette\Utils\UnknownImageFileException;
 class ImageControl extends Control
 {
     public function __construct(
-        private readonly ImageFacade  $imageFacade,
-        private readonly ParameterBag $parameterBag,
-        private readonly Image        $imageModel,
-        private readonly Translator   $translator,
-        private readonly Storage      $storage,
-        private readonly Setting      $settingModel,
+        protected readonly ImageFacade  $imageFacade,
+        protected readonly ParameterBag $parameterBag,
+        protected readonly Image        $imageModel,
+        protected readonly Translator   $translator,
+        protected readonly Storage      $storage,
+        protected readonly Setting      $settingModel,
     )
     {
     }
