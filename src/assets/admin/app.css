@@ -69,7 +69,7 @@ div.imageContainer {
     min-height: 120px !important;
     border: 2px dashed var(--tw-gray-300) !important;
     border-radius: 8px !important;
-    background-color: #f9fafb !important;
+    background-color: var(--tw-table-head-background-color) !important;
     transition: none !important;
     display: flex !important;
     align-items: center !important;
@@ -417,28 +417,22 @@ form.max-w-2xl{
     position: relative !important;
 }
 
-.dataGrid .sticky {
-    position: sticky !important;
-    right: 0 !important;
-    z-index: 15 !important;
-    box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
-}
-
-/* Sticky header should match other th background */
 .dataGrid thead th.sticky {
     position: sticky !important;
     right: 0 !important;
-    background-color: #f9fafb !important;
+    background-color: var(--tw-table-head-background-color);
     z-index: 15 !important;
-    box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
 }
 
-/* Sticky body cells keep white background */
 .dataGrid tbody td.sticky {
     position: sticky !important;
     right: 0 !important;
     background-color: white !important;
     z-index: 15 !important;
+    display: table-cell !important;
+}
+
+.dataGrid .sticky.has-shadow {
     box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
 }
 
@@ -473,4 +467,19 @@ form.max-w-2xl{
 }
 .menu-item-hover-parent:hover .menu-bullet::before {
     background-color: var(--tw-primary) !important;
+}
+
+tr:has(.menu-dropdown.show) {
+  position: relative;
+  z-index: 16;
+}
+
+.dataGrid table {
+    position: relative !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.dataGrid .sticky.has-shadow {
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
 }

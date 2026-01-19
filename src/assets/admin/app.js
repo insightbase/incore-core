@@ -15,6 +15,7 @@ import './content.js';
 import { initEditorJs } from './editorJs';
 import './performance';
 import './tabs';
+import './stickyTable';
 import './editorJs.css';
 
 naja.initialize();
