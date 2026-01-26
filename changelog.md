@@ -2,6 +2,10 @@
 
 ## 2026-01-19
 ### Opraveno (Fixed)
+- core - AI preklady quickfix
+
+## 2026-01-19
+### Opraveno (Fixed)
 - core - form - u tabů opraven okraj pokud je zanořený a nemá toggle
 - core - front trait - definice promennych do sablon presunto do onStartup, aby si to mohl presenter prepsat
 - core - imageControl - DI property jsou protected, pokud se dědí potomek aby byly dostupné

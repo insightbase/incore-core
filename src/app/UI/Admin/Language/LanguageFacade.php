@@ -299,7 +299,6 @@ class LanguageFacade
             $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
 
             $defaultLanguage = $this->languageModel->getDefault();
-            $json = [];
 
             foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
                 $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
