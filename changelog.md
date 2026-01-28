@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2026-01-19
+### Přidáno (Added)
+- n:nonce pro používání CSP
+
+## 2026-01-19
 ### Opraveno (Fixed)
 - core - AI preklady quickfix
 

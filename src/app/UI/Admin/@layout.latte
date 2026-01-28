@@ -22,12 +22,12 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 	<link href="/{$metronicDir}/admin/assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
-	<script src="/{$metronicDir}/js/core.bundle.js"></script>
+	<script src="/{$metronicDir}/js/core.bundle.js" n:nonce></script>
 	<link href="/{$metronicDir}/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
 	<link href="/{$metronicDir}/vendors/apexcharts/apexcharts.css" rel="stylesheet"/>
-	<script src="/{$metronicDir}/js/widgets/general.js"></script>
-	<script src="/{$metronicDir}/js/layouts/demo1.js"></script>
-	<script src="/{$metronicDir}/vendors/apexcharts/apexcharts.min.js"></script>
+	<script src="/{$metronicDir}/js/widgets/general.js" n:nonce></script>
+	<script src="/{$metronicDir}/js/layouts/demo1.js" n:nonce></script>
+	<script src="/{$metronicDir}/vendors/apexcharts/apexcharts.min.js" n:nonce></script>
 	<link href="/{$metronicDir}/css/styles.css" rel="stylesheet"/>
 	<link href="/custom/css/custom.css" rel="stylesheet"/>
 
@@ -53,7 +53,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 </head>
 <body n:class="'antialiased flex h-full text-base text-gray-700', Nette\Utils\Strings::lower(str_replace('Admin:', '', $presenter->getName())) . $presenter->getAction(), $presenter->isLinkCurrent('Sign:*') ? 'dark:bg-coal-500', !$presenter->isLinkCurrent('Sign:*') ? '[--tw-page-bg:#fefefe] [--tw-page-bg-dark:var(--tw-coal-500)] demo1 sidebar-fixed header-fixed bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark]'">
 <!-- Theme Mode -->
-<script>
+<script n:nonce>
 	const defaultThemeMode = 'light'; // light|dark|system
 	let themeMode;
 
@@ -460,8 +460,8 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 {/snippet}
 <!-- End of Page -->
 <!-- Scripts -->
-<script src="/incore/admin.bundle.js?v={$webpackVersion}"></script>
-<script n:syntax="off">
+<script src="/incore/admin.bundle.js?v={$webpackVersion}" n:nonce></script>
+<script n:syntax="off" n:nonce>
    const accordionManager = {
     activeAnimations: new Set(),
     
