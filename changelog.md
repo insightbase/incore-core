@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2026-01-19
+### Opraveno (Fixed)
+- generování .json pro favicon
+
+## 2026-01-19
 ### Přidáno (Added)
 - n:nonce pro používání CSP
 

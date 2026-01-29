@@ -72,14 +72,22 @@ class FaviconControl extends Control
                     if(file_exists($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name)) {
                         $json = FileSystem::read($this->parameterBag->uploadDir . '/' . $favicon->image->saved_name);
                         $json = preg_replace_callback(
-                            '~"src":\s*"\\\\/([^"]+)"~',
+                            '~("src"\s*:\s*")\s*\/?([^"]+?)\s*(")~',
                             function ($matches) {
-                                $image = $this->imageModel->getByOriginalName(basename($matches[1]));
-                                if ($image) {
-                                    return '"src": "\\' . $this->imageControlFactory->create()->getOriginal($image->id) . '"';
-                                } else {
-                                    return $matches[1];
+                                $path = trim($matches[2]);
+
+                                $image = $this->imageModel->getByOriginalName(basename($path));
+                                if (!$image) {
+                                    // nechat beze změny
+                                    return $matches[0];
                                 }
+
+                                $url = $this->imageControlFactory->create()->getOriginal($image->id);
+
+                                // url musí být validně escapované pro JSON string
+                                $urlEsc = addcslashes($url, "\\\"");
+
+                                return $matches[1] . $urlEsc . $matches[3];
                             },
                             $json
                         );
