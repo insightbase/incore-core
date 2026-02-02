@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-02
+### Přidáno (Added)
+- lokalizace jazyků
+
 ## 2026-01-19
 ### Opraveno (Fixed)
 - generování .json pro favicon

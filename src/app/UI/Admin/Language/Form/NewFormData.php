@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\Language\Form;
 
+#[\AllowDynamicProperties]
 class NewFormData
 {
     public string $name;

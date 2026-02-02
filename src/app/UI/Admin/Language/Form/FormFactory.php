@@ -3,12 +3,15 @@
 namespace App\UI\Admin\Language\Form;
 
 use App\Component\Translator\Translator;
+use App\Model\Admin\Language;
+use App\Model\Admin\LanguageLocale;
 use App\Model\Admin\LanguageSetting;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\LanguageSettingEntity;
 use App\Model\Enum\LanguageSettingTypeEnum;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
+use App\UI\Admin\Action\Form\NewActionLanguageData;
 use Nette\Database\Table\ActiveRow;
 
 readonly class FormFactory
@@ -17,6 +20,8 @@ readonly class FormFactory
         private \App\UI\Accessory\Admin\Form\FormFactory $formFactory,
         private Translator                               $translator,
         private LanguageSetting $languageSettingModel,
+        private Language $languageModel,
+        private LanguageLocale $languageLocaleModel,
     ) {}
 
     /**
@@ -55,7 +60,15 @@ readonly class FormFactory
         $form = $this->createBase();
         $form->addSubmit('send', $this->translator->translate('submit_edit'));
 
-        $form->setDefaults($language->toArray());
+        $defaults = $language->toArray();
+        foreach($this->languageModel->getToTranslateNotDefault() as $language1) {
+            $languageLocale = $this->languageLocaleModel->getByLanguageAndLocale($language, $language1);
+            if($languageLocale !== null) {
+                $defaults['language_' . $language1->id] = $languageLocale->toArray();
+            }
+        }
+
+        $form->setDefaults($defaults);
 
         return $form;
     }
@@ -64,6 +77,7 @@ readonly class FormFactory
     {
         $form = $this->formFactory->create();
 
+        $form->addGroup($this->translator->translate('group_languageGeneral'));
         $form->addText('name', $this->translator->translate('input_name'))
             ->setRequired()
         ;
@@ -79,6 +93,18 @@ readonly class FormFactory
         if($this->languageSettingModel->getSetting()->type === LanguageSettingTypeEnum::Host->value){
             $form->addText('host', $this->translator->translate('input_host'));
         }
+
+        foreach($this->languageModel->getToTranslateNotDefault() as $language) {
+            $form->addGroupLanguage($language);
+            $container = $form->addContainer('language_' . $language->id);
+            $container->setMappedType(LanguageData::class);
+            $container->setToggle($this->translator->translate('group_languageGeneral'));
+
+            $container->addText('name', $this->translator->translate('input_name'))
+                ->setNullable()
+            ;
+        }
+        $form->addGroup();
 
         return $form;
     }

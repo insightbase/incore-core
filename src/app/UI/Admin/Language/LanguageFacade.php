@@ -30,6 +30,7 @@ use App\Model\Admin\EnumerationItemValueLanguage;
 use App\Model\Admin\EnumerationRow;
 use App\Model\Admin\EnumerationRowLanguage;
 use App\Model\Admin\Language;
+use App\Model\Admin\LanguageLocale;
 use App\Model\Admin\LanguageTranslate;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
@@ -91,11 +92,25 @@ class LanguageFacade
         private readonly Storage           $storage,
         private readonly LanguageTranslate $languageTranslateModel,
         private readonly User              $userSecurity,
+        private readonly LanguageLocale    $languageLocaleModel,
     ) {}
 
     public function create(NewFormData $data): void
     {
-        $language = $this->languageModel->insert((array) $data);
+        $newData = (array) $data;
+        $languages = $this->languageModel->getToTranslateNotDefault()->fetchAll();
+        foreach($languages as $locale){
+            unset($newData['language_' . $locale->id]);
+        }
+        $language = $this->languageModel->insert($newData);
+        foreach($languages as $locale){
+            $languageLocaleData = (array)$data->{'language_' . $locale->id};
+            if($languageLocaleData['name'] !== null) {
+                $languageLocaleData['language_id'] = $language->id;
+                $languageLocaleData['locale_id'] = $locale->id;
+                $this->languageLocaleModel->insert($languageLocaleData);
+            }
+        }
         $this->logFacade->create(LogActionEnum::Created, 'language', $language->id);
     }
 
@@ -117,7 +132,26 @@ class LanguageFacade
      */
     public function update(ActiveRow $language, \App\UI\Admin\Language\Form\EditFormData $data): void
     {
-        $language->update((array) $data);
+        $updateData = (array) $data;
+        foreach($this->languageModel->getToTranslateNotDefault() as $locale){
+            unset($updateData['language_' . $locale->id]);
+            $languageLocale = $this->languageLocaleModel->getByLanguageAndLocale($language, $locale);
+            $languageLocaleData = (array)$data->{'language_' . $locale->id};
+            if($languageLocale === null){
+                if($languageLocaleData['name'] !== null) {
+                    $languageLocaleData['language_id'] = $language->id;
+                    $languageLocaleData['locale_id'] = $locale->id;
+                    $this->languageLocaleModel->insert($languageLocaleData);
+                }
+            }else{
+                if($languageLocaleData['name'] !== null) {
+                    $languageLocale->update($languageLocaleData);
+                }else{
+                    $languageLocale->delete();
+                }
+            }
+        }
+        $language->update($updateData);
         $this->logFacade->create(LogActionEnum::Updated, 'language', $language->id);
     }
 
@@ -331,6 +365,10 @@ class LanguageFacade
                 $json['blog_' . $tag->id . '_name'] = $blog->name;
                 $json['blog_' . $tag->id . '_slug'] = $blog->slug;
             }
+        }
+
+        foreach($this->languageModel->getTable() as $language1){
+            $json['language_' . $language1->id] = $language1->name;
         }
 
         $this->sendJsonToTranslate($json, $defaultLanguage, $language);
@@ -587,6 +625,24 @@ class LanguageFacade
                     $contentLanguageModel->insert($data);
                 }else{
                     $contentLanguage->update($data);
+                }
+            }elseif($type === 'language'){
+                $locale = $this->languageModel->get((int)$key);
+                if($locale !== null){
+                    if($locale->is_default){
+                        $locale->update(['name' => $text]);
+                    }else {
+                        $languageLocale = $this->languageLocaleModel->getByLanguageAndLocale($language, $locale);
+                        if ($languageLocale === null) {
+                            $this->languageLocaleModel->insert([
+                                'language_id' => $language->id,
+                                'locale_id' => $locale->id,
+                                'name' => $text,
+                            ]);
+                        } else {
+                            $languageLocale->update(['name' => $text]);
+                        }
+                    }
                 }
             }
         }

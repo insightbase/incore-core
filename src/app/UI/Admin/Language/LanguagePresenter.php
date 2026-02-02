@@ -66,6 +66,7 @@ class LanguagePresenter extends Presenter
     public function actionEdit(int $id): void
     {
         $this->exist($id);
+        $this->template->showH1 = false;
     }
 
     #[NoReturn]
@@ -92,7 +93,6 @@ class LanguagePresenter extends Presenter
         $this->submenuFactory->addMenu($this->translator->translate('menu_setting'), 'setting');
         $this->submenuFactory->addMenu($this->translator->translate('menu_newLanguage'), 'new')
             ->setIsPrimary()
-            ->setModalId('formNew')
         ;
     }
 
