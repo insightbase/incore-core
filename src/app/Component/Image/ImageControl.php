@@ -102,7 +102,7 @@ class ImageControl extends Control
             return '';
         }
         $image = $this->getImage($fileId);
-        $previewName = $this->imageFacade->getPreviewName($image);
+        $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
         if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
             return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
         }
