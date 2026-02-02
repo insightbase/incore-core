@@ -3,6 +3,7 @@
 ## 2026-02-02
 ### Přidáno (Added)
 - lokalizace jazyků
+- modul Statické stránky
 
 ## 2026-01-19
 ### Opraveno (Fixed)

@@ -1,0 +1,11 @@
+{templateType App\UI\Admin\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}
+    {_'header_staticPageNew'}
+{/block}
+
+{block content}
+    {embed tabsForm, formNew}{/embed}
+{/block}

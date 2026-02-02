@@ -1,0 +1,11 @@
+{templateType App\UI\Admin\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}
+    {_'header_staticPageEdit'}
+{/block}
+
+{block content}
+    {embed tabsForm, formEdit}{/embed}
+{/block}
