@@ -4,6 +4,8 @@
 ### Přidáno (Added)
 - lokalizace jazyků
 - modul Statické stránky
+### Opraveno (Fixed)
+- core - obrázky - opraven problém, kdy se obrázky generují rovnou při loadu stránky. Předěláno na endpoint
 
 ## 2026-01-19
 ### Opraveno (Fixed)

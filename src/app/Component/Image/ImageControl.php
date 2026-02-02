@@ -31,6 +31,7 @@ class ImageControl extends Control
         protected readonly Translator   $translator,
         protected readonly Storage      $storage,
         protected readonly Setting      $settingModel,
+        protected readonly LinkGenerator $linkGenerator,
     )
     {
     }
@@ -53,7 +54,7 @@ class ImageControl extends Control
         return file_exists($this->parameterBag->uploadDir . '/' . $image->saved_name);
     }
 
-    protected function getImage(int $id):?ImageDto{
+    public function getImage(int $id):?ImageDto{
         $cache = new Cache($this->storage, 'image');
         $image = $cache->load('id_' . $id, function() use ($id):?string{
             $image = $this->imageModel->get($id);
@@ -87,7 +88,7 @@ class ImageControl extends Control
             if(!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)){
                 return '';
             }
-            FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
+            return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId]);
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
@@ -101,17 +102,9 @@ class ImageControl extends Control
             return '';
         }
         $image = $this->getImage($fileId);
-        $suffix = Arrays::last(explode('.', $image->saved_name));
-        if($suffix === 'svg'){
-            $previewName = $this->imageFacade->getPreviewName($image);
-            if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
-                FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
-            }
-        }else {
-            $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
-            if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
-                $this->imageFacade->generatePreview($image, $width, $height, $type)?->save($this->parameterBag->previewDir . '/' . $previewName, 92);
-            }
+        $previewName = $this->imageFacade->getPreviewName($image);
+        if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
+            return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
@@ -147,9 +140,10 @@ class ImageControl extends Control
             $ret['svg'] = null;
             $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
             if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-                $ret['image'] = $this->imageFacade->generatePreview($image, $width, $height, $type);
+                $ret['imageFile'] = $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
+            }else {
+                $ret['imageFile'] = $this->parameterBag->previewWwwDir . '/' . $previewName;
             }
-            $ret['imageFile'] = $this->parameterBag->previewWwwDir . '/' . $previewName;;
         }
         $ret['width'] = $width;
         $ret['height'] = $height;
