@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-03
+### Opraveno (Fixed)
+- core - statické stránky - opravena editace SEO výchozího jazyka
+
 ## 2026-02-02
 ### Přidáno (Added)
 - lokalizace jazyků
