@@ -77,15 +77,16 @@ foreach($manager->getRepository(Language::class)->findAll() as $language){
 
 foreach($this->formHelpsData as $formHelpData) {
     $formHelp = $manager->getRepository(FormHelp::class)->findOneBy([
-        \'id\' => $formHelpData[\'id\'],
+        \'presenter\' => $formHelpData[\'presenter\'],
+        \'input\' => $formHelpData[\'input\'],
     ]);
     $languages = $formHelpData[\'languages\'];
     unset($formHelpData[\'languages\']);
     if($formHelp === null){
         $formHelp = new FormHelp();
-        $formHelp->presenter = $formHelpData[\'presenter\'];
-        $formHelp->input = $formHelpData[\'input\'];
     }
+    $formHelp->presenter = $formHelpData[\'presenter\'];
+    $formHelp->input = $formHelpData[\'input\'];
     $formHelp->label_help = $formHelpData[\'label_help\'];
     $manager->persist($formHelp);
     
