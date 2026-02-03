@@ -53,6 +53,7 @@ readonly class FormFactory
         $form->addGroup($this->translator->translate('field_general'));
         $form->addDropzoneImage(DropzoneImageLocationEnum::SettingLogo, 'logo_id', $this->translator->translate('input_logo'))
             ->setNullable()
+            ->setAcceptedFiles('image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif');
         ;
         $form->addDropzoneImage(DropzoneImageLocationEnum::SettingLogo, 'logo_small_id', $this->translator->translate('input_logo_small'))
             ->setNullable()

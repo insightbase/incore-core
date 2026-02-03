@@ -10,7 +10,49 @@ use App\Model\DoctrineEntity\Language;
 
 class FormHelpFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implements \Doctrine\Common\DataFixtures\FixtureInterface, \Doctrine\Common\DataFixtures\DependentFixtureInterface
 {
-	private array $formHelpsData = [];
+	private array $formHelpsData = [
+		[
+			'id' => 1,
+			'presenter' => 'Admin:Setting',
+			'input' => 'frm-formEdit-logo_id',
+			'label_help' => '136 x 22px',
+			'languages' => [
+				['label_help' => '', 'language_id' => 2, 'form_help_id' => 1],
+				['label_help' => '', 'language_id' => 5, 'form_help_id' => 1],
+			],
+		],
+		[
+			'id' => 2,
+			'presenter' => 'Admin:Setting',
+			'input' => 'frm-formEdit-logo_dark_id',
+			'label_help' => '136 x 22px',
+			'languages' => [
+				['label_help' => '', 'language_id' => 2, 'form_help_id' => 2],
+				['label_help' => '', 'language_id' => 5, 'form_help_id' => 2],
+			],
+		],
+		[
+			'id' => 3,
+			'presenter' => 'Admin:Setting',
+			'input' => 'frm-formEdit-logo_small_id',
+			'label_help' => '24 x 22px',
+			'languages' => [
+				['label_help' => '', 'language_id' => 2, 'form_help_id' => 3],
+				['label_help' => '', 'language_id' => 5, 'form_help_id' => 3],
+			],
+		],
+		[
+			'id' => 4,
+			'presenter' => 'Admin:Setting',
+			'input' => 'frm-formEdit-logo_dark_small_id',
+			'label_help' => '24 x 22px',
+			'languages' => [
+				['label_help' => '', 'language_id' => 2, 'form_help_id' => 4],
+				['label_help' => '', 'language_id' => 5, 'form_help_id' => 4],
+			],
+		],
+	];
+
 	private array $languages;
 
 

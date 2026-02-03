@@ -3,6 +3,9 @@
 ## 2026-02-03
 ### Opraveno (Fixed)
 - core - statické stránky - opravena editace SEO výchozího jazyka
+### Přidáno (Added)
+- core - dropzone - možnost omezit typy souborů
+- core - nastavení -přidány helpy k logům, hlavní logo může být jen obrázek (nikoliv svg)
 
 ## 2026-02-02
 ### Přidáno (Added)
