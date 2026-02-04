@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-04
+### Opraveno (Fixed)
+- datagrid - oprava filtru
+
 ## 2026-02-03
 ### Opraveno (Fixed)
 - core - statické stránky - opravena editace SEO výchozího jazyka
