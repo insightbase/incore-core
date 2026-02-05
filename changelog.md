@@ -5,6 +5,7 @@
 - editorJs - přidána možnost vytvořit odkaz na soubor
 ### Opraveno (Fixed)
 - statické stránky - přidáno truncate do menu
+- extrakce prekladu
 
 ## 2026-02-04
 ### Opraveno (Fixed)

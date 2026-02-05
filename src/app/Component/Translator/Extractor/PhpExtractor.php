@@ -158,8 +158,6 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
     {
         $tokenIterator = new \ArrayIterator($tokens);
 
-        preg_match_all("/'([^']+)'(?:\s*,\s*type:\s*([A-Za-z0-9\\\\_\\:\\\\]+(?:\:[A-Za-z0-9\\\\_\\:\\\\]+)*))/", FileSystem::read($filename), $matches);
-
         for ($key = 0; $key < $tokenIterator->count(); ++$key) {
             foreach ($this->sequences as $sequence) {
                 $message = '';
@@ -195,28 +193,44 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
                 }
 
                 if ($message) {
+
+                    $content = FileSystem::read($filename);
+                    // 1) najdi translate volání a vytáhni 1. argument = klíč a zbytek parametrů
+                    $reTranslate = '~\(\$this->filters->translate\)\(\s*([\'"])(?<key>[^\'"]+)\1(?:\s*,\s*(?<params>.*?))?\)~m';
+
+                    // 2) v params pak hledej type v libovolné syntaxi
+                    $reType = '~(?:\btype\s*:\s*|[\'"]type[\'"]\s*=>\s*)(?<type>[A-Za-z0-9_\\\\]+(?:::[A-Za-z0-9_\\\\]+)*)~';
+
                     $type = TranslateTypeEnum::Text;
-                    for($i = 0; $i < count($matches[1]); $i++){
-                        if($matches[1][$i] === $message){
+                    preg_match_all($reTranslate, $content, $m, PREG_SET_ORDER);
+                    foreach ($m as $hit) {
+                        $key1 = $hit['key'];
+                        $params = $hit['params'] ?? '';
 
-                            preg_match('/::([A-Za-z0-9_]+)/', $matches[2][$i], $matchesEnum);
-
-                            if (isset($matchesEnum[1])) {
-                                $enumName = $matchesEnum[1];
-                                foreach(TranslateTypeEnum::cases() as $value){
-                                    if($value->name === $enumName){
-                                        $type = $value;
-                                        break;
-                                    }
-                                }
-                            }
+                        if ($params && preg_match($reType, $params, $t)) {
+                            $type = $t['type'];
+                            [$enumClass, $caseName] = explode('::', $type, 2);
+                            $type = constant($enumClass . '::' . $caseName);
                         }
                     }
 
                     $catalog->set($message, $this->prefix.$message, $domain);
                     $metadata = $catalog->getMetadata($message, $domain) ?? [];
                     $normalizedFilename = preg_replace('{[\\\/]+}', '/', $filename);
-                    $metadata['sources'][] = $normalizedFilename.':'.$tokens[$key][2];
+                    if(!array_key_exists($key, $tokens)) {
+                        foreach($tokens as $token){
+                            if(is_array($token)){
+                                foreach($token as $t){
+                                    if(str_contains($t, $key)){
+                                        $metadata['sources'][] = $normalizedFilename . ':' . $token[2];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }else{
+                        $metadata['sources'][] = $normalizedFilename . ':' . $tokens[$key][2];
+                    }
                     $metadata['type'][] = $type;
                     $catalog->setMetadata($message, $metadata, $domain);
 
