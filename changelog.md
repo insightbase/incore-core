@@ -6,6 +6,7 @@
 ### Opraveno (Fixed)
 - statické stránky - přidáno truncate do menu
 - extrakce prekladu
+- checkbox když není nepovinný
 
 ## 2026-02-04
 ### Opraveno (Fixed)
