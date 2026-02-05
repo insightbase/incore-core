@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-05
+### Přidáno (Added)
+- editorJs - přidána možnost vytvořit odkaz na soubor
+
 ## 2026-02-04
 ### Opraveno (Fixed)
 - datagrid - oprava filtru

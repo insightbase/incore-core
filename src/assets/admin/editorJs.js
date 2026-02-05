@@ -6,7 +6,7 @@ import EditorJsHeader from '@editorjs/header';
 import EditorJsTable from '@editorjs/table';
 import List from '@editorjs/list';
 import naja from "naja";
-
+import UploadLinkInlineTool from './editorJs/uploadLinkInlineTool.js';
 let editor = undefined;
 
 export function initEditorJs() {
@@ -60,6 +60,13 @@ export function initEditorJs() {
         }
         if (types.includes("table")) {
             tools.table = EditorJsTable;
+        }
+
+        tools.uploadLink = {
+            class: UploadLinkInlineTool,
+            config: {
+                endpoint: element.getAttribute('data-upload-url'),
+            }
         }
 
         window.editors[id] = new EditorJS({
