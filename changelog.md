@@ -3,6 +3,8 @@
 ## 2026-02-05
 ### Přidáno (Added)
 - editorJs - přidána možnost vytvořit odkaz na soubor
+### Opraveno (Fixed)
+- statické stránky - přidáno truncate do menu
 
 ## 2026-02-04
 ### Opraveno (Fixed)
