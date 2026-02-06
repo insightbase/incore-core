@@ -172,7 +172,7 @@ readonly class TranslateFacade
     {
         $translate = $this->translateModel->insert([
             'key' => $data->key,
-            'source' => 'admin',
+            'source' => $data->source,
             'is_manual' => true,
         ]);
         $this->logFacade->create(LogActionEnum::Created, 'translate', $translate->id);

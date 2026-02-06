@@ -25,6 +25,8 @@ readonly class FormFactory
 
         $form->addText('key', $this->translator->translate('input_key'))
             ->setRequired();
+        $form->addSelect('source', $this->translator->translate('input_source'), ['admin' => 'Admin', 'front' => 'Front']);
+
         $form->addSubmit('send', $this->translator->translate('input_create'));
 
         return $form;
