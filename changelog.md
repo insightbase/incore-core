@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-12
+### Přidáno (Added)
+- datagrid - možnost nastavit callback pro zobrazování sloupečku
+
 ## 2026-02-06
 ### Přidáno (Added)
 - core - překlady - ruční přidání klíče - možnost nastavit zdroj
