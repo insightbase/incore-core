@@ -3,6 +3,7 @@
 ## 2026-02-12
 ### Přidáno (Added)
 - datagrid - možnost nastavit callback pro zobrazování sloupečku
+- datagrid - možnost nastavit beforeRender callbacky u sloupečku
 
 ## 2026-02-06
 ### Přidáno (Added)
