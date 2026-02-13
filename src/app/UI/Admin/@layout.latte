@@ -367,10 +367,10 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 									{include h1After}
 								{/ifset}
 							</div>
+							{ifset h1AfterAfter}
+								{include h1AfterAfter}
+							{/ifset}
 						</div>
-						{ifset h1AfterAfter}
-							{include h1AfterAfter}
-						{/ifset}
 						<div class="flex items-center gap-2.5" n:if="count($submenuFactory->getSubMenus()) > 0">
 							<a n:foreach="$submenuFactory->getSubMenus() as $subMenuItem" n:class="'btn', $subMenuItem->isPrimary() ? 'btn-primary', !$subMenuItem->isPrimary() ? 'btn-light'" href="{if $subMenuItem->isCustomLink()}{$subMenuItem->getAction()}{else}{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}{/if}" target="{$subMenuItem->getTarget()}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && !$subMenuItem->isShowInDropdown()">
                                 <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
