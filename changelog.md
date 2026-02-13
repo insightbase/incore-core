@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-13
+### Přidáno (Added)
+- core - layout - možnost přidat blok za H1 (h1AfterAfter)
+
 ## 2026-02-12
 ### Přidáno (Added)
 - datagrid - možnost nastavit callback pro zobrazování sloupečku
