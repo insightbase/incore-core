@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-16
+### Přidáno (Added)
+- form - možnost nastavit příjemce pro každý formulář zvlášť
+
 ## 2026-02-13
 ### Přidáno (Added)
 - core - layout - možnost přidat blok za H1 (h1AfterAfter)
