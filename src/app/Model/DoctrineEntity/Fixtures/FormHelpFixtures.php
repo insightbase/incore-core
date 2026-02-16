@@ -51,6 +51,16 @@ class FormHelpFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implement
 				['label_help' => '', 'language_id' => 5, 'form_help_id' => 4],
 			],
 		],
+		[
+			'id' => 5,
+			'presenter' => 'Admin:ContactForm',
+			'input' => 'frm-formEdit-receiver',
+			'label_help' => 'Více příjemců lze oddělit středníkem',
+			'languages' => [
+				['label_help' => '', 'language_id' => 2, 'form_help_id' => 5],
+				['label_help' => '', 'language_id' => 5, 'form_help_id' => 5],
+			],
+		],
 	];
 
 	private array $languages;

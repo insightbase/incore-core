@@ -206,6 +206,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'header_performanceStaticPages' => 'Statické stránky',
 		'menu_staticPage' => 'Statické stránky',
 		'column_keywords' => 'Keywords',
+		'input_source' => null,
+		'input_formReceiver' => 'Příjemce',
 	];
 
 
