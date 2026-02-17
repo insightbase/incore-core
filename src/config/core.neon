@@ -39,6 +39,7 @@ search:
       exclude:
           classes:
               - *Entity
+              - App\Model\DoctrineEntity\DirLocation
 
 application:
 	errorPresenter:
