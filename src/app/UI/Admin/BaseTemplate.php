@@ -30,9 +30,9 @@ class BaseTemplate extends Template
     public ImageFacade $imageFacade;
 
     /**
-     * @var Selection<ModuleEntity>
+     * @var ModuleEntity[]
      */
-    public Selection $menuModules;
+    public array $menuModules;
 
     /**
      * @var Selection<LanguageEntity>

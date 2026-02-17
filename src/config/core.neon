@@ -35,6 +35,7 @@ search:
           - App\Model\Model
           - App\Model\DoctrineEntity\Entity
           - Doctrine\Common\DataFixtures\FixtureInterface
+          - App\UI\Accessory\Admin\Modules\VisibilityVoter
     - in: '%vendorDir%/incore/core/src/app/Model'
       exclude:
           classes:

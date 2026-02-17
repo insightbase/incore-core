@@ -24,6 +24,7 @@ use App\UI\Accessory\Admin\Form\FormFacade;
 use App\UI\Accessory\Admin\Form\FormHelpData;
 use App\UI\Accessory\Admin\Form\FormHelpFactory;
 use App\UI\Accessory\Admin\MainMenu\MainMenuFactory;
+use App\UI\Accessory\Admin\Modules\ModuleVisibilityFacade;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\BaseTemplate;
@@ -138,10 +139,10 @@ trait StandardTemplateTrait
 
     public function injectStandardTemplate(ParameterBag $parameterBag, SubmenuFactory $submenuFactory, ImageFacade $imageFacade,
                                            Module $moduleModel, Language $languageModel, Authenticator $authenticator, Setting $settingModel,
-                                           AuthorizatorFactory $authorizatorFactory, ModuleFacade $moduleFacade,
+                                           AuthorizatorFactory $authorizatorFactory, ModuleFacade $moduleFacade, ModuleVisibilityFacade $moduleVisibilityFacade,
     ): void
     {
-        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel, $moduleFacade): void {
+        $this->onRender[] = function () use ($parameterBag, $submenuFactory, $imageFacade, $moduleModel, $languageModel, $settingModel, $moduleFacade, $moduleVisibilityFacade): void {
             $this->template->setTranslator($this->translator);
             if(file_exists($parameterBag->wwwDir.'/incore/version.txt')) {
                 $this->template->webpackVersion = md5(FileSystem::read($parameterBag->wwwDir . '/incore/version.txt'));
@@ -154,7 +155,7 @@ trait StandardTemplateTrait
             $this->template->basicModalFile = dirname(__FILE__).'/../Modal/basic-modal.latte';
             $this->template->modalAdvancedFile = dirname(__FILE__).'/../Modal/modal-advanced.latte';
             $this->template->imageFacade = $imageFacade;
-            $this->template->menuModules = $moduleModel->getToMenu();
+            $this->template->menuModules = $moduleVisibilityFacade->filter($moduleModel->getToMenu());
             $this->template->moduleModel = $moduleModel;
             $this->template->languages = $languages = $languageModel->getToTranslate();
             $this->template->moduleTree = $moduleTree = $moduleFacade->getTree($this);
