@@ -72,7 +72,7 @@ class ImageControl extends Control
         }
     }
 
-    public function getOriginal(?int $fileId):string{
+    public function getOriginal(?int $fileId, bool $generateThumb = false):string{
         if($fileId === null){
             $fileId = $this->settingModel->getDefault()?->placeholder_id;
         }
@@ -88,12 +88,16 @@ class ImageControl extends Control
             if(!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)){
                 return '';
             }
-            return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId]);
+            if($generateThumb){
+                FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
+            }else {
+                return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId]);
+            }
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }
 
-    public function getPreviewFile(?int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly):string
+    public function getPreviewFile(?int $fileId, int $width, int $height, int $type = \Nette\Utils\Image::ShrinkOnly, ?string $generatePreview = null):string
     {
         if($fileId === null){
             $fileId = $this->settingModel->getDefault()?->placeholder_id;
@@ -102,9 +106,27 @@ class ImageControl extends Control
             return '';
         }
         $image = $this->getImage($fileId);
-        $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
+        $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type, $generatePreview);
         if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
-            return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
+            if($generatePreview !== null){
+                $suffix = Arrays::last(explode('.', $image->saved_name));
+                if($suffix === 'svg'){
+                    $previewName = $this->imageFacade->getPreviewName($image);
+                    if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
+                        FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
+                    }
+                    return $this->parameterBag->previewWwwDir . '/' . $previewName;
+                }else{
+                    $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type, $generatePreview);
+                    if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
+                        $image = $this->imageFacade->generatePreview($image, $width, $height, $type, $generatePreview);
+                        $image?->save($this->parameterBag->previewDir . '/' . $previewName, 92);
+                    }
+                    return $this->parameterBag->previewWwwDir . '/' . $previewName;
+                }
+            }else {
+                return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
+            }
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
     }

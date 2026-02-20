@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-02-20
+### Přidáno (Added)
+- core - image - přidána možnost rovnou generovat preview a posílat url na thumb
+
+## 2026-02-17
+### Přidáno (Added)
+- core - entityGenerator - přidána možnost nastavit namespace/dir location pro entitu
+- core - možnost řídit zobrazování modulů
+
 ## 2026-02-16
 ### Přidáno (Added)
 - form - možnost nastavit příjemce pro každý formulář zvlášť
