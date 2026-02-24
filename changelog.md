@@ -1,8 +1,13 @@
 # Changelog
 
+## 2026-02-24
+### Opraveno (Fixed)
+- core - layout - oprava generování menu - bere se module předaný do MainMenuItemFactory
+
 ## 2026-02-20
 ### Přidáno (Added)
 - core - image - přidána možnost rovnou generovat preview a posílat url na thumb
+- core - faviconControl - nastaveno generování náhledů hned
 
 ## 2026-02-17
 ### Přidáno (Added)

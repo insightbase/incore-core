@@ -180,14 +180,14 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 										<div data-kt-menu="true">
 										{foreach $mainMenuFactory->getMainMenus($module) as $mainMenuModule}
 											<div n:foreach="$mainMenuModule->getMainMenus() as $mainMenuItem" n:class="'menu-item menu-item-hover-parent', $mainMenuModule->isActive($mainMenuItem, $presenter) ? 'active show', count($mainMenuItem->getSubMenu()) > 0 ? 'menu-item-accordion'" data-menu-item-toggle="accordion" style="display: flex; flex-direction: row; padding: 4px; gap: 4px;">
-												<a n:if="$user->isAllowed($module->system_name, $mainMenuItem->getAction()) && count($mainMenuItem->getSubMenu()) === 0" n:href="$module->presenter . ':' . $mainMenuItem->getAction(), ...$mainMenuItem->getParams()" class="menu-link border border-transparent items-center grow gap-[14px] ps-[10px] pe-[10px] py-[8px] pointer-events-none">
+												<a n:if="$user->isAllowed($mainMenuItem->getModule()->system_name, $mainMenuItem->getAction()) && count($mainMenuItem->getSubMenu()) === 0" n:href="$mainMenuItem->getModule()->presenter . ':' . $mainMenuItem->getAction(), ...$mainMenuItem->getParams()" class="menu-link border border-transparent items-center grow gap-[14px] ps-[10px] pe-[10px] py-[8px] pointer-events-none">
 													<span class="menu-bullet flex w-[6px] -start-[3px] rtl:start-0 relative before:absolute before:top-0 before:size-[6px] before:rounded-full rtl:before:translate-x-1/2 before:-translate-y-1/2 menu-item-active:before:bg-primary">
 													</span>
 													<span class="menu-title text-2sm font-normal me-1 menu-item-active:text-primary menu-item-active:font-medium">
 														{$mainMenuItem->getTitle()}
 													</span>
 												</a>
-												<a n:if="$user->isAllowed($module->system_name, $mainMenuItem->getAction()) && count($mainMenuItem->getSubMenu()) > 0" n:href="$module->presenter . ':' . $mainMenuItem->getAction(), ...$mainMenuItem->getParams()" class="menu-link border border-transparent items-center grow gap-[14px] ps-[10px] pe-[10px] py-[8px] pointer-events-none">
+												<a n:if="$user->isAllowed($mainMenuItem->getModule()->system_name, $mainMenuItem->getAction()) && count($mainMenuItem->getSubMenu()) > 0" n:href="$mainMenuItem->getModule()->presenter . ':' . $mainMenuItem->getAction(), ...$mainMenuItem->getParams()" class="menu-link border border-transparent items-center grow gap-[14px] ps-[10px] pe-[10px] py-[8px] pointer-events-none">
 													<span class="menu-bullet flex w-[6px] -start-[3px] rtl:start-0 relative before:absolute before:top-0 before:size-[6px] before:rounded-full rtl:before:translate-x-1/2 before:-translate-y-1/2 menu-item-active:before:bg-primary">
 													</span>
 													<span class="menu-title text-2sm font-normal me-1 menu-item-active:text-primary menu-item-active:font-medium">
@@ -201,8 +201,8 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 															</i>
 														</button>
 														<div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
-															<div class="menu-item" n:foreach="$mainMenuItem->getSubs() as $mainMenuSub" n:if="$presenter->getUser()->isAllowed($module->system_name, $mainMenuSub->getAction())">
-																<a n:class="'menu-link', $mainMenuSub->getClass(), $mainMenuSub->isConfirmDelete() ? 'confirmDelete'" {if $mainMenuSub->isConfirmDelete()}data-modal-toggle="#confirmDelete"{/if} n:href="$module->presenter . ':' . $mainMenuSub->getAction(), ...$mainMenuSub->getParams()">
+															<div class="menu-item" n:foreach="$mainMenuItem->getSubs() as $mainMenuSub" n:if="$presenter->getUser()->isAllowed($mainMenuItem->getModule()->system_name, $mainMenuSub->getAction())">
+																<a n:class="'menu-link', $mainMenuSub->getClass(), $mainMenuSub->isConfirmDelete() ? 'confirmDelete'" {if $mainMenuSub->isConfirmDelete()}data-modal-toggle="#confirmDelete"{/if} n:href="$mainMenuItem->getModule()->presenter . ':' . $mainMenuSub->getAction(), ...$mainMenuSub->getParams()">
 																	<span class="menu-icon" n:if="$mainMenuSub->getIcon() !== null">
 																		<i class="{$mainMenuSub->getIcon()}"></i>
 																	</span>
@@ -216,7 +216,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 												</div>
 												<div n:if="count($mainMenuItem->getSubMenu()) > 0" class="menu-accordion gap-1 relative before:absolute before:start-[32px] ps-[22px] before:top-0 before:bottom-0 before:border-s before:border-border">
 													<div n:class="'menu-item', $mainMenuModule->isActive($mainMenuItemSub, $presenter) ? 'active'" n:foreach="$mainMenuItem->getSubMenu() as $mainMenuItemSub">
-														<a n:href="$module->presenter . ':' . $mainMenuItemSub->getAction(), ...$mainMenuItemSub->getParams()" class="menu-link border border-transparent items-center grow menu-item-active:bg-accent/60 dark:menu-item-active:border-border menu-item-active:rounded-lg hover:bg-accent/60 hover:rounded-lg gap-[5px] ps-[10px] pe-[10px] py-[8px]" href="#" tabindex="0">
+														<a n:href="$mainMenuItem->getModule()->presenter . ':' . $mainMenuItemSub->getAction(), ...$mainMenuItemSub->getParams()" class="menu-link border border-transparent items-center grow menu-item-active:bg-accent/60 dark:menu-item-active:border-border menu-item-active:rounded-lg hover:bg-accent/60 hover:rounded-lg gap-[5px] ps-[10px] pe-[10px] py-[8px]" href="#" tabindex="0">
 															<span class="menu-bullet flex w-[6px] -start-[3px] rtl:start-0 relative before:absolute before:top-0 before:size-[6px] before:rounded-full rtl:before:translate-x-1/2 before:-translate-y-1/2 menu-item-active:before:bg-primary menu-item-hover:before:bg-primary">
 
 															</span>
