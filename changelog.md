@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-25
+### Opraveno (Fixed)
+- core - entity - sloupce které mají v sobě Enum jsou typu ENUM
+
 ## 2026-02-24
 ### Opraveno (Fixed)
 - core - layout - oprava generování menu - bere se module předaný do MainMenuItemFactory
