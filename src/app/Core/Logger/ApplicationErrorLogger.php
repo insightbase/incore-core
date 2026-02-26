@@ -13,7 +13,7 @@ class ApplicationErrorLogger
 {
     public function onError(Application $app, \Throwable $e): void
     {
-        if (!$e instanceof BadRequestException) {
+        if (Debugger::$productionMode && !$e instanceof BadRequestException) {
             Debugger::log($e, ILogger::EXCEPTION);
         }
     }
