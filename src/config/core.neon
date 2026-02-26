@@ -24,7 +24,7 @@ services:
     -
         create: App\Core\Admin\Authenticator
         autowired: self
-    applicationErrorLogger: App\Core\ApplicationErrorLogger
+    applicationErrorLogger: App\Core\Logger\ApplicationErrorLogger
 
 decorator:
     Nette\Application\Application:
