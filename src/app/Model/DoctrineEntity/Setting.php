@@ -83,4 +83,7 @@ class Setting implements Entity
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
     public bool $translate_expand_keys = true;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $discord_error_log_url = null;
+
 }

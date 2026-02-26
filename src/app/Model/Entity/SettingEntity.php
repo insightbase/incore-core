@@ -36,6 +36,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $basic_auth_user
  * @property-read ?string $basic_auth_password
  * @property-read bool $translate_expand_keys
+ * @property-read ?string $discord_error_log_url
  */
 class SettingEntity extends ActiveRow
 {

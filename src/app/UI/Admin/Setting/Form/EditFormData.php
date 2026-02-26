@@ -23,5 +23,6 @@ class EditFormData
     public ?int $google_service_account_id;
     public ?string $basic_auth_password;
     public ?string $basic_auth_user;
+    public ?string $discord_error_log_url;
     public bool $translate_expand_keys;
 }

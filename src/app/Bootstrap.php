@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Core\Logger\DiscordLogger;
+use App\UI\Admin\Setting\SettingFacade;
 use Nette\Bootstrap\Configurator;
 use Nette\DI\Container;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Tracy\Debugger;
 
 class Bootstrap
 {
@@ -41,6 +45,21 @@ class Bootstrap
             ->addDirectory(__DIR__)
             ->register()
         ;
+
+        $dir = (dirname(__FILE__));
+        if(str_contains($dir, '/vendor/')){
+            $webhookErrorLogUrlFile = $dir.'/../../../../../private/';
+        }else{
+            $webhookErrorLogUrlFile = $dir.'/../../../incore-app/private/';
+        }
+        $webhookErrorLogUrlFile .= SettingFacade::DISCORD_ERROR_LOG_URL;
+
+        if (Debugger::$productionMode && file_exists($webhookErrorLogUrlFile)) {
+            $webhook = FileSystem::read($webhookErrorLogUrlFile);
+
+            $logger = Debugger::getLogger();
+            Debugger::setLogger(new DiscordLogger($logger, $webhook));
+        }
     }
 
     protected function setupContainer(): void

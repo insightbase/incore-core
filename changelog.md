@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-02-26
+### Přidáno (Added)
+- core - logovani chyb na discord
+
 ## 2026-02-25
 ### Opraveno (Fixed)
 - core - entity - sloupce které mají v sobě Enum jsou typu ENUM

@@ -2,6 +2,7 @@ parameters:
     uploadDir: %appDir%/../files
     previewWwwDir: '/images'
     previewDir: %appDir%/../www%previewWwwDir%
+    privateDir: %appDir%/../private
     encryptionKey: 'LDN0RitjRxUdrhhuTXDVbo914sEcjmOy'
     autoGenerateEntities: false
     metronicDir: 'metronic'
@@ -14,7 +15,7 @@ services:
 
     authorizatorFactory: App\Core\Admin\AuthorizatorFactory
 
-    - App\UI\Accessory\ParameterBag(%wwwDir%, %rootDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%, %metronicDir%)
+    - App\UI\Accessory\ParameterBag(%wwwDir%, %rootDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%, %metronicDir%, %privateDir%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
 
     - App\Component\Translator\Extractor\LatteExtractor
