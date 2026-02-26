@@ -24,6 +24,12 @@ services:
     -
         create: App\Core\Admin\Authenticator
         autowired: self
+    applicationErrorLogger: App\Core\ApplicationErrorLogger
+
+decorator:
+    Nette\Application\Application:
+        setup:
+            - '$onError[]' = [@applicationErrorLogger, onError]
 
 search:
     - in: '%vendorDir%/incore'
