@@ -80,15 +80,26 @@ class DiscordLogger implements ILogger
 
         $payload = json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-        $ch = curl_init($this->webhookUrl);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_TIMEOUT => 2,
-        ]);
-        curl_exec($ch);
-        curl_close($ch);
+        $opts = [
+            'http' => [
+                'method'  => 'POST',
+                'header'  => "Content-Type: application/json\r\n",
+                'content' => $payload,
+                'timeout' => 2,
+            ],
+        ];
+
+        @\file_get_contents($this->webhookUrl, false, \stream_context_create($opts));
+
+//        $ch = curl_init($this->webhookUrl);
+//        curl_setopt_array($ch, [
+//            CURLOPT_RETURNTRANSFER => true,
+//            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+//            CURLOPT_POST => true,
+//            CURLOPT_POSTFIELDS => $payload,
+//            CURLOPT_TIMEOUT => 2,
+//        ]);
+//        curl_exec($ch);
+//        curl_close($ch);
     }
 }
