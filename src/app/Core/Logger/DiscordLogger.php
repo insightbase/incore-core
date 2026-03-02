@@ -62,6 +62,11 @@ class DiscordLogger implements ILogger
             'fields' => [
                 [
                     'name' => 'URL',
+                    'value' => $_SERVER['HTTP_HOST'],
+                    'inline' => true,
+                ],
+                [
+                    'name' => 'URL',
                     'value' => $_SERVER['REQUEST_URI'] ?? $_SERVER['argv'][0] ?? 'CLI',
                     'inline' => true,
                 ],
