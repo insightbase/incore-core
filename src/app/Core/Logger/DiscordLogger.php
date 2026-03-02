@@ -61,6 +61,11 @@ class DiscordLogger implements ILogger
             'timestamp' => gmdate('c'),
             'fields' => [
                 [
+                    'name' => 'URL',
+                    'value' => $_SERVER['REQUEST_URI'] ?? $_SERVER['argv'][0] ?? 'CLI',
+                    'inline' => true,
+                ],
+                [
                     'name' => 'Level',
                     'value' => 'ERROR (500)',
                     'inline' => true,
