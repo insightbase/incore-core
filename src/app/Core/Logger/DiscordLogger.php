@@ -53,7 +53,6 @@ class DiscordLogger implements ILogger
 
         // zkrácený trace, aby to Discord sežral
         $traceLines = explode("\n", $trace);
-        $traceShort = implode("\n", array_slice($traceLines, 0, 8));
 
         $url = isset($_SERVER['HTTP_HOST'])
             ? ($_SERVER['HTTPS'] ?? '' === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['REQUEST_URI'] ?? '')
@@ -62,7 +61,7 @@ class DiscordLogger implements ILogger
         $embed = [
             'title' => mb_substr($message, 0, 200),
             'description' => sprintf("`%s:%d`", $file, $line),
-            'timestamp' => gmdate('c'),
+            'timestamp' => gmdate('Y-m-d\TH:i:s\Z'),
             'fields' => [
                 [
                     'name' => 'URL',
@@ -70,19 +69,9 @@ class DiscordLogger implements ILogger
                     'inline' => true,
                 ],
                 [
-                    'name' => 'URL',
-                    'value' => $_SERVER['REQUEST_URI'] ?? $_SERVER['argv'][0] ?? 'CLI',
-                    'inline' => true,
-                ],
-                [
                     'name' => 'Level',
                     'value' => 'ERROR (500)',
                     'inline' => true,
-                ],
-                [
-                    'name' => 'Trace',
-                    'value' => $traceShort ? "```" . mb_substr($traceShort, 0, 1800) . "```" : '_no trace_',
-                    'inline' => false,
                 ],
             ],
         ];
@@ -97,23 +86,13 @@ class DiscordLogger implements ILogger
         $opts = [
             'http' => [
                 'method'  => 'POST',
-                'header'  => "Content-Type: application/json\r\n",
+                'header'  => "Content-Type: application/json\r\nContent-Length: " . \strlen($payload) . "\r\n",
                 'content' => $payload,
-                'timeout' => 2,
+                'timeout' => 5,
+                'ignore_errors' => true,
             ],
         ];
 
-        @\file_get_contents($this->webhookUrl, false, \stream_context_create($opts));
-
-//        $ch = curl_init($this->webhookUrl);
-//        curl_setopt_array($ch, [
-//            CURLOPT_RETURNTRANSFER => true,
-//            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-//            CURLOPT_POST => true,
-//            CURLOPT_POSTFIELDS => $payload,
-//            CURLOPT_TIMEOUT => 2,
-//        ]);
-//        curl_exec($ch);
-//        curl_close($ch);
+        $result = @\file_get_contents($this->webhookUrl, false, \stream_context_create($opts));
     }
 }
