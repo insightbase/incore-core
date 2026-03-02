@@ -55,6 +55,10 @@ class DiscordLogger implements ILogger
         $traceLines = explode("\n", $trace);
         $traceShort = implode("\n", array_slice($traceLines, 0, 8));
 
+        $url = isset($_SERVER['HTTP_HOST'])
+            ? ($_SERVER['HTTPS'] ?? '' === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['REQUEST_URI'] ?? '')
+            : 'CLI';
+
         $embed = [
             'title' => mb_substr($message, 0, 200),
             'description' => sprintf("`%s:%d`", $file, $line),
@@ -62,7 +66,7 @@ class DiscordLogger implements ILogger
             'fields' => [
                 [
                     'name' => 'URL',
-                    'value' => $_SERVER['HTTP_HOST'],
+                    'value' => $url,
                     'inline' => true,
                 ],
                 [
