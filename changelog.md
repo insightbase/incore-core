@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-03-03
+### Opraveno (Fixed)
+- core - preview - opraveno ukončení presenteru
+
 ## 2026-02-26
 ### Přidáno (Added)
 - core - logovani chyb na discord
