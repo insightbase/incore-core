@@ -35,6 +35,22 @@ readonly class FormFactory
     /**
      * @param TranslateEntity $translate
      */
+    public function createEditKey(ActiveRow $translate): Form
+    {
+        $form = $this->formFactory->create();
+
+        $form->addText('key', $this->translator->translate('input_key'))
+            ->setRequired()
+            ->setDefaultValue($translate->key);
+
+        $form->addSubmit('send', $this->translator->translate('submit_editKey'));
+
+        return $form;
+    }
+
+    /**
+     * @param TranslateEntity $translate
+     */
     public function createTranslate(ActiveRow $translate): Form
     {
         $form = $this->formFactory->create();

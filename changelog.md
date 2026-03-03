@@ -3,6 +3,8 @@
 ## 2026-03-03
 ### Opraveno (Fixed)
 - core - preview - opraveno ukončení presenteru
+### Přidáno (Added)
+- core - translates - změna klíčů překladů - jen v dev modu
 
 ## 2026-02-26
 ### Přidáno (Added)

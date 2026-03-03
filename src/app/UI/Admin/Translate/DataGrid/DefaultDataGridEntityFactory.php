@@ -16,6 +16,7 @@ use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsTypeEnum;
+use App\UI\Accessory\ParameterBag;
 use Nette\Application\Application;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
@@ -33,6 +34,7 @@ readonly class DefaultDataGridEntityFactory
         private EditorJsFacade $editorJsFacade,
         private Application $application,
         private Storage $storage,
+        private ParameterBag $parameterBag,
     ) {}
 
     public function create(): DataGridEntity
@@ -119,6 +121,13 @@ readonly class DefaultDataGridEntityFactory
                 (new MenuEntity($this->translator->translate('menu_translate'), 'translate'))
                     ->setIcon(DefaultIconEnum::Edit->value)
             );
+
+            if ($this->parameterBag->debugMode) {
+                $entity->addMenu(
+                    (new MenuEntity($this->translator->translate('menu_editKey'), 'editKey'))
+                        ->setIcon(DefaultIconEnum::Edit->value)
+                );
+            }
 
             $entity->addFilter(
                 (new FilterEntity($this->translator->translate('filter_onlyNotTranslated'), FilterTypeEnum::Checkbox))

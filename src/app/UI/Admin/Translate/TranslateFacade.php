@@ -177,4 +177,65 @@ readonly class TranslateFacade
         ]);
         $this->logFacade->create(LogActionEnum::Created, 'translate', $translate->id);
     }
+
+    /**
+     * @param TranslateEntity $translate
+     */
+    public function renameKey(ActiveRow $translate, string $newKey): void
+    {
+        $oldKey = $translate->key;
+
+        $translate->update(['key' => $newKey]);
+
+        $this->replaceKeyInFilesystem($oldKey, $newKey);
+
+        $cache = new Cache($this->storage, Translator::CACHE_NAMESPACE);
+        foreach ($this->languageModel->getToTranslate() as $language) {
+            $cache->remove($language->id);
+        }
+
+        $this->logFacade->create(LogActionEnum::Translate, 'translate_rename_key', $translate->id);
+    }
+
+    private function replaceKeyInFilesystem(string $oldKey, string $newKey): void
+    {
+        $dirs = [];
+
+        $monorepoRoot = dirname($this->parameterBag->rootDir);
+
+        if (is_dir($monorepoRoot . '/incore-core')) {
+            foreach (Finder::findDirectories('incore-*')->in($monorepoRoot) as $dir) {
+                $dirs[] = $dir->getPathname();
+            }
+        } else {
+            $dirs[] = $this->parameterBag->appDir;
+        }
+
+        foreach ($dirs as $dir) {
+            $this->replaceInFiles($dir, '*.latte', $oldKey, $newKey);
+            $this->replaceInFiles($dir, '*.php', $oldKey, $newKey);
+        }
+    }
+
+    private function replaceInFiles(string $directory, string $filePattern, string $oldKey, string $newKey): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        foreach (Finder::findFiles($filePattern)->from($directory) as $file) {
+            $content = FileSystem::read($file->getPathname());
+
+            $quotedOld = preg_quote($oldKey, '~');
+
+            $pattern = '~([\'"])' . $quotedOld . '\\1~';
+            $newContent = preg_replace_callback($pattern, function (array $match) use ($newKey): string {
+                return $match[1] . $newKey . $match[1];
+            }, $content);
+
+            if ($newContent !== $content) {
+                FileSystem::write($file->getPathname(), $newContent);
+            }
+        }
+    }
 }
