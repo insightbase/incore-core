@@ -461,11 +461,11 @@ form.max-w-2xl{
 .dark .menu-item-hover-parent.menu-item-active {
     background-color: var(--tw-coal-300) !important;
 }
-.menu-item-hover-parent:hover .menu-title {
+.menu-item-hover-parent:hover > .menu-link .menu-title {
     color: var(--tw-primary) !important;
     font-weight: 500 !important;
 }
-.menu-item-hover-parent:hover .menu-bullet::before {
+.menu-item-hover-parent:hover > .menu-link .menu-bullet::before {
     background-color: var(--tw-primary) !important;
 }
 
