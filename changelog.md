@@ -1,4 +1,7 @@
 # Changelog
+## 2026-03-10
+### Opraveno (Fixed)
+- content - detail - editorJS se nemusí upravovat v modal okně
 
 ## 2026-03-03
 ### Opraveno (Fixed)

@@ -18,11 +18,11 @@ import './tabs';
 import './stickyTable';
 import './editorJs.css';
 
+let loaderId = null;
+if (!window.editors) window.editors = {};
+
 naja.initialize();
 netteForms.initOnLoad();
-
-let loaderId = null;
-window.editors = {};
 
 // Přepíšeme globální callback pro zobrazování chyb
 netteForms.showFormErrors = function (form, errors) {

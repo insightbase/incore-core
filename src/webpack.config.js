@@ -13,8 +13,16 @@ module.exports = {
         path: path.join(__dirname, 'assets/incore'),
         filename: '[name].bundle.js'
     },
+    resolve: {
+        extensions: ['.js', '.ts', '.json']
+    },
     module: {
         rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.css$/,
                 use: ['style-loader','css-loader']
