@@ -2,6 +2,8 @@
 ## 2026-03-10
 ### Opraveno (Fixed)
 - content - detail - editorJS se nemusí upravovat v modal okně
+### Přidáno (Added)
+- update db script
 
 ## 2026-03-03
 ### Opraveno (Fixed)

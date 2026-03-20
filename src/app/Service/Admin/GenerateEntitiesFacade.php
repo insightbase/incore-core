@@ -25,7 +25,7 @@ readonly class GenerateEntitiesFacade
 
     public function generate(OutputInterface $output): void
     {
-        $output->writeln('<info>Delete entities</info>');
+        $output?->writeln('<info>Delete entities</info>');
 
         $ignoreDirs = ['.idea', 'build'];
 
@@ -37,7 +37,7 @@ readonly class GenerateEntitiesFacade
             }
         }
 
-        $output->writeln('<info>Generate entities</info>');
+        $output?->writeln('<info>Generate entities</info>');
         $reflection = new \ReflectionClass($this->container);
         $property = $reflection->getProperty('wiring');
         $property->setAccessible(true);
