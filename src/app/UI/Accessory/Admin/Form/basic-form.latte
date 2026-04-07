@@ -133,6 +133,8 @@
         {/if}
         {if $input instanceof Nette\Forms\Controls\TextArea}
             {php $class .= ' textarea'}
+            {php $input->setHtmlAttribute('rows', 4)}
+            {php $input->setHtmlAttribute('style', 'min-height: 100px;')}
         {/if}
         {if $input->getOption(type) === 'select'}
             {php $class .= ' select'}
@@ -392,6 +394,8 @@
                     {/if}
                     {if $input instanceof Nette\Forms\Controls\TextArea}
                         {php $class .= ' textarea'}
+                        {php $input->setHtmlAttribute('rows', 4)}
+                        {php $input->setHtmlAttribute('style', 'min-height: 100px;')}
                     {/if}
 
                     {input $input, class: $class}
