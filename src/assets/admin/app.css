@@ -1,5 +1,6 @@
 @import "dashboard.css";
 @import "menu.css";
+@import url(inputs.css);
 
 html {
   scrollbar-gutter: stable;
@@ -491,3 +492,4 @@ tr:has(.menu-dropdown.show) {
 .w-12 {
     width: 3rem;
 }
+
