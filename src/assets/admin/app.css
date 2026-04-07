@@ -486,3 +486,8 @@ tr:has(.menu-dropdown.show) {
 .dataGrid .sticky.has-shadow {
     box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
 }
+
+
+.w-12 {
+    width: 3rem;
+}
