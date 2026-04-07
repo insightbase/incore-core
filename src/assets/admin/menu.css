@@ -1,0 +1,4 @@
+.menu-item.menu-item-hover-parent{
+    flex-direction: unset !important;
+    align-items: center;
+}
