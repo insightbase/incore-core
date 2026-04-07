@@ -17,7 +17,6 @@
     flex-wrap: wrap;
     gap: .35rem !important;
     align-items: center !important;
-    background-color: var(--tw-light-active);
 }
 
 .choices__input {
@@ -47,7 +46,7 @@
 
 body .choices[data-type*=select-one] .choices__inner,
 body .choices[data-type*=select-multiple] .choices__inner {
-    background-color: #eef5ff !important;
+    background-color: var(--tw-light-active) !important;
 }
 
 .choices__input {
