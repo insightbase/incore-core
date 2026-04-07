@@ -44,6 +44,12 @@
     color: #181c32 !important;
 }
 
+
+body .choices[data-type*=select-one] .choices__inner,
+body .choices[data-type*=select-multiple] .choices__inner {
+    background-color: #eef5ff !important;
+}
+
 .choices__input {
     background-color: unset !important;
 }
