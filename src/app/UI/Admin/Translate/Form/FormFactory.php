@@ -25,7 +25,25 @@ readonly class FormFactory
 
         $form->addText('key', $this->translator->translate('input_key'))
             ->setRequired();
+        $form->addSelect('source', $this->translator->translate('input_source'), ['admin' => 'Admin', 'front' => 'Front']);
+
         $form->addSubmit('send', $this->translator->translate('input_create'));
+
+        return $form;
+    }
+
+    /**
+     * @param TranslateEntity $translate
+     */
+    public function createEditKey(ActiveRow $translate): Form
+    {
+        $form = $this->formFactory->create();
+
+        $form->addText('key', $this->translator->translate('input_key'))
+            ->setRequired()
+            ->setDefaultValue($translate->key);
+
+        $form->addSubmit('send', $this->translator->translate('submit_editKey'));
 
         return $form;
     }

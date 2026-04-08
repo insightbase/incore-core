@@ -1,4 +1,73 @@
 # Changelog
+## 2026-03-10
+### Opraveno (Fixed)
+- content - detail - editorJS se nemusí upravovat v modal okně
+### Přidáno (Added)
+- update db script
+
+## 2026-03-03
+### Opraveno (Fixed)
+- core - preview - opraveno ukončení presenteru
+### Přidáno (Added)
+- core - translates - změna klíčů překladů - jen v dev modu
+
+## 2026-02-26
+### Přidáno (Added)
+- core - logovani chyb na discord
+
+## 2026-02-25
+### Opraveno (Fixed)
+- core - entity - sloupce které mají v sobě Enum jsou typu ENUM
+
+## 2026-02-24
+### Opraveno (Fixed)
+- core - layout - oprava generování menu - bere se module předaný do MainMenuItemFactory
+
+## 2026-02-20
+### Přidáno (Added)
+- core - image - přidána možnost rovnou generovat preview a posílat url na thumb
+- core - faviconControl - nastaveno generování náhledů hned
+
+## 2026-02-17
+### Přidáno (Added)
+- core - entityGenerator - přidána možnost nastavit namespace/dir location pro entitu
+- core - možnost řídit zobrazování modulů
+
+## 2026-02-16
+### Přidáno (Added)
+- form - možnost nastavit příjemce pro každý formulář zvlášť
+
+## 2026-02-13
+### Přidáno (Added)
+- core - layout - možnost přidat blok za H1 (h1AfterAfter)
+
+## 2026-02-12
+### Přidáno (Added)
+- datagrid - možnost nastavit callback pro zobrazování sloupečku
+- datagrid - možnost nastavit beforeRender callbacky u sloupečku
+
+## 2026-02-06
+### Přidáno (Added)
+- core - překlady - ruční přidání klíče - možnost nastavit zdroj
+
+## 2026-02-05
+### Přidáno (Added)
+- editorJs - přidána možnost vytvořit odkaz na soubor
+### Opraveno (Fixed)
+- statické stránky - přidáno truncate do menu
+- extrakce prekladu
+- checkbox když není nepovinný
+
+## 2026-02-04
+### Opraveno (Fixed)
+- datagrid - oprava filtru
+
+## 2026-02-03
+### Opraveno (Fixed)
+- core - statické stránky - opravena editace SEO výchozího jazyka
+### Přidáno (Added)
+- core - dropzone - možnost omezit typy souborů
+- core - nastavení -přidány helpy k logům, hlavní logo může být jen obrázek (nikoliv svg)
 
 ## 2026-04-08
 ### Opraveno (Fixed)

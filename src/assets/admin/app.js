@@ -18,11 +18,11 @@ import './tabs';
 import './stickyTable';
 import './editorJs.css';
 
+let loaderId = null;
+if (!window.editors) window.editors = {};
+
 naja.initialize();
 netteForms.initOnLoad();
-
-let loaderId = null;
-window.editors = {};
 
 // Přepíšeme globální callback pro zobrazování chyb
 netteForms.showFormErrors = function (form, errors) {
@@ -309,13 +309,20 @@ function initDropzone() {
             let dzKey = `dropzone-${index}`;
             uploadedImageIds[dzKey] = [];
 
-            let dropzone = new Dropzone(element, {
+            let options = {
                 url: element.getAttribute('data-upload-url'),
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
                 chunking: true,
                 chunkSize: element.getAttribute('data-chunksize'),
-            });
+            };
+
+            let acceptedFiles = element.getAttribute('data-accepted-files');
+            if(acceptedFiles !== null){
+                options.acceptedFiles = element.getAttribute('data-accepted-files');
+            }
+
+            let dropzone = new Dropzone(element, options);
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
                     // ideálně ID obrázku vracej z backendu v JSONu

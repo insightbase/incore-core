@@ -43,6 +43,7 @@ class PreviewPresenter extends Presenter
                 $image = Image::fromFile($this->parameterBag->previewDir . '/' . $previewName);
                 $image->send();
             }
+            $this->terminate();
         }
 
         if($suffix === 'svg'){
@@ -61,5 +62,6 @@ class PreviewPresenter extends Presenter
             }
             $image->send();
         }
+        $this->terminate();
     }
 }

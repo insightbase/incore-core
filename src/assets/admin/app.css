@@ -1,3 +1,7 @@
+@import "dashboard.css";
+@import "menu.css";
+@import url(inputs.css);
+
 html {
   scrollbar-gutter: stable;
 }
@@ -461,11 +465,11 @@ form.max-w-2xl{
 .dark .menu-item-hover-parent.menu-item-active {
     background-color: var(--tw-coal-300) !important;
 }
-.menu-item-hover-parent:hover .menu-title {
+.menu-item-hover-parent:hover > .menu-link .menu-title {
     color: var(--tw-primary) !important;
     font-weight: 500 !important;
 }
-.menu-item-hover-parent:hover .menu-bullet::before {
+.menu-item-hover-parent:hover > .menu-link .menu-bullet::before {
     background-color: var(--tw-primary) !important;
 }
 
@@ -483,3 +487,9 @@ tr:has(.menu-dropdown.show) {
 .dataGrid .sticky.has-shadow {
     box-shadow: -2px 0 4px rgba(0,0,0,0.1) !important;
 }
+
+
+.w-12 {
+    width: 3rem;
+}
+

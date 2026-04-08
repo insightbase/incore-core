@@ -21,6 +21,8 @@ class DropzoneImageInput extends TextInput
         }
     }
 
+    public ?string $acceptedFiles = null;
+
     public function __construct(
         private readonly Nette\Application\LinkGenerator $linkGenerator,
         private readonly ImageControlFactory             $imageControlFactory,
@@ -89,6 +91,7 @@ class DropzoneImageInput extends TextInput
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
         $dropzone->setAttribute('data-chunksize', $this->convertToBytes(ini_get('upload_max_filesize')));
+        $dropzone->setAttribute('data-accepted-files', $this->acceptedFiles);
 
         $container->addHtml($input->getControl()->style('display: none'));
         $container->addHtml($dropzone);
@@ -110,5 +113,11 @@ class DropzoneImageInput extends TextInput
                 $number *= 1024;
         }
         return $number;
+    }
+
+    public function setAcceptedFiles(?string $acceptedFiles): self
+    {
+        $this->acceptedFiles = $acceptedFiles;
+        return $this;
     }
 }

@@ -51,7 +51,7 @@ class FaviconControl extends Control
             $tag->setAttribute('content', $faviconDto->content);
         }
         if($faviconDto->imageId !== null){
-            $tag->setAttribute($faviconDto->image_to_attribute, $this->imageControlFactory->create()->getOriginal($faviconDto->imageId));
+            $tag->setAttribute($faviconDto->image_to_attribute, $this->imageControlFactory->create()->getOriginal($faviconDto->imageId, true));
         }
 
         return $tag;
@@ -82,7 +82,7 @@ class FaviconControl extends Control
                                     return $matches[0];
                                 }
 
-                                $url = $this->imageControlFactory->create()->getOriginal($image->id);
+                                $url = $this->imageControlFactory->create()->getOriginal($image->id, true);
 
                                 // url musí být validně escapované pro JSON string
                                 $urlEsc = addcslashes($url, "\\\"");

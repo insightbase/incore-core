@@ -89,6 +89,7 @@ readonly class StaticPageFacade
         }
         $defaultLanguage= $this->languageModel->getDefault();
         $updateData = array_merge($updateData, (array)$data->{'language_' . $defaultLanguage->id});
+        $updateData = array_merge($updateData, (array)$data->{'language_' . $defaultLanguage->id}->{'seo_language_' . $defaultLanguage->id});
         unset($updateData['seo_language_' . $defaultLanguage->id]);
         $staticPage->update($updateData);
 

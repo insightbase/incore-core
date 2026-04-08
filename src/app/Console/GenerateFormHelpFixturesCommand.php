@@ -77,30 +77,33 @@ foreach($manager->getRepository(Language::class)->findAll() as $language){
 
 foreach($this->formHelpsData as $formHelpData) {
     $formHelp = $manager->getRepository(FormHelp::class)->findOneBy([
-        \'id\' => $formHelpData[\'id\'],
+        \'presenter\' => $formHelpData[\'presenter\'],
+        \'input\' => $formHelpData[\'input\'],
     ]);
     $languages = $formHelpData[\'languages\'];
     unset($formHelpData[\'languages\']);
     if($formHelp === null){
         $formHelp = new FormHelp();
-        $formHelp->presenter = $formHelpData[\'presenter\'];
-        $formHelp->input = $formHelpData[\'input\'];
     }
+    $formHelp->presenter = $formHelpData[\'presenter\'];
+    $formHelp->input = $formHelpData[\'input\'];
     $formHelp->label_help = $formHelpData[\'label_help\'];
     $manager->persist($formHelp);
     
     foreach($languages as $formHelpLanguageData){
-        $formHelpLanguage = $manager->getRepository(FormHelpLanguage::class)->findOneBy([
-            \'form_help\' => $formHelp,
-            \'language\' => $this->languages[$formHelpLanguageData[\'language_id\']],
-        ]);
-        if($formHelpLanguage === null){
-            $formHelpLanguage = new FormHelpLanguage();
-            $formHelpLanguage->form_help = $formHelp;
-            $formHelpLanguage->language = $this->languages[$formHelpLanguageData[\'language_id\']];
+        if(array_key_exists($formHelpLanguageData[\'language_id\'], $this->languages)){
+            $formHelpLanguage = $manager->getRepository(FormHelpLanguage::class)->findOneBy([
+                \'form_help\' => $formHelp,
+                \'language\' => $this->languages[$formHelpLanguageData[\'language_id\']],
+            ]);
+            if($formHelpLanguage === null){
+                $formHelpLanguage = new FormHelpLanguage();
+                $formHelpLanguage->form_help = $formHelp;
+                $formHelpLanguage->language = $this->languages[$formHelpLanguageData[\'language_id\']];
+            }
+            $formHelpLanguage->label_help = $formHelpLanguageData[\'label_help\'];
+            $manager->persist($formHelpLanguage);
         }
-        $formHelpLanguage->label_help = $formHelpLanguageData[\'label_help\'];
-        $manager->persist($formHelpLanguage);
     }
 }
 $manager->flush();

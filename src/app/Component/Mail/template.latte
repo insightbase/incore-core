@@ -18,7 +18,7 @@
                    style="max-width: 650px; background-color:#F4F7F8; border-radius: 8px; font-family: Arial, Arial, sans-serif;">
                 <tr>
                     <td align="center">
-                        <img src="{=rtrim($linkGenerator->link('Front:Home:default'), '/')}{$imageControl->getOriginal((int)$setting?->logo_id)}" alt="{$setting?->title}" width="260" style="max-width: 100%; height: auto; display: block; border: 0;">
+                        <img src="{=rtrim($linkGenerator->link('Front:Home:default'), '/')}{$imageControl->getOriginal((int)$setting?->logo_id, true)}" alt="{$setting?->title}" width="260" style="max-width: 100%; height: auto; display: block; border: 0;">
                     </td>
                 </tr>
             </table>

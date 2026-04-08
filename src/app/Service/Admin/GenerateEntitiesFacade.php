@@ -2,6 +2,7 @@
 
 namespace App\Service\Admin;
 
+use App\Model\DoctrineEntity\DirLocation;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\ORM\Mapping\Table;
 use Nette\Database\Table\ActiveRow;
@@ -24,7 +25,7 @@ readonly class GenerateEntitiesFacade
 
     public function generate(OutputInterface $output): void
     {
-        $output->writeln('<info>Delete entities</info>');
+        $output?->writeln('<info>Delete entities</info>');
 
         $ignoreDirs = ['.idea', 'build'];
 
@@ -36,7 +37,7 @@ readonly class GenerateEntitiesFacade
             }
         }
 
-        $output->writeln('<info>Generate entities</info>');
+        $output?->writeln('<info>Generate entities</info>');
         $reflection = new \ReflectionClass($this->container);
         $property = $reflection->getProperty('wiring');
         $property->setAccessible(true);
@@ -44,6 +45,16 @@ readonly class GenerateEntitiesFacade
         foreach (array_keys($services) as $class) {
             $reflection = new \ReflectionClass($class);
             if ($reflection->getAttributes(Table::class)) {
+
+                $namespaceLocation = 'App\Model\Entity';
+                $customLocation = '';
+
+                if ($reflection->getAttributes(DirLocation::class)) {
+                    /** @var DirLocation $dirLocation */
+                    $dirLocation = $reflection->getAttributes(DirLocation::class)[0]->newInstance();
+                    $namespaceLocation .= '\\' . $dirLocation->dir;
+                    $customLocation = $dirLocation->dir . '/';
+                }
 //                $output->writeln($reflection->getShortName());
                 $module = '';
                 foreach (explode('/', $reflection->getFileName()) as $dir) {
@@ -56,7 +67,7 @@ readonly class GenerateEntitiesFacade
                 $file = new PhpFile();
                 $file->setStrictTypes();
 
-                $namespace = $file->addNamespace('App\Model\Entity');
+                $namespace = $file->addNamespace($namespaceLocation);
                 $namespace->addUse(ActiveRow::class);
                 $class = $namespace->addClass($className = $reflection->getShortName() . 'Entity');
                 $class->setExtends(ActiveRow::class);
@@ -70,9 +81,11 @@ readonly class GenerateEntitiesFacade
                 }
 
                 if(str_ends_with($module, '.php')){
-                    FileSystem::write($this->parameterBag->appDir . '/Model/Entity/' . $className . '.php', $file);
+                    FileSystem::createDir($this->parameterBag->appDir . '/Model/Entity/' . $customLocation);
+                    FileSystem::write($this->parameterBag->appDir . '/Model/Entity/' . $customLocation . $className . '.php', $file);
                 }else {
-                    FileSystem::write($this->parameterBag->appDir . '/../../' . $module . '/src/app/Model/Entity/' . $className . '.php', $file);
+                    FileSystem::createDir($this->parameterBag->appDir . '/../../' . $module . '/src/app/Model/Entity/' . $customLocation);
+                    FileSystem::write($this->parameterBag->appDir . '/../../' . $module . '/src/app/Model/Entity/' . $customLocation . $className . '.php', $file);
                 }
             }
         }

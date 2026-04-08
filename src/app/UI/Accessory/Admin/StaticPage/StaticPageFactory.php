@@ -11,6 +11,7 @@ use App\UI\Accessory\Admin\MainMenu\MainMenuModule;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 use Nette\Security\User;
+use Nette\Utils\Strings;
 
 class StaticPageFactory implements MainMenuModule
 {
@@ -36,7 +37,7 @@ class StaticPageFactory implements MainMenuModule
     {
         $ret = [];
         foreach($this->staticPageModel->getTable() as $staticPage){
-            $ret[] = $this->mainMenuItemFactory->create($this->module, 'edit', $staticPage->name)
+            $ret[] = $this->mainMenuItemFactory->create($this->module, 'edit', Strings::truncate($staticPage->name, 25))
                 ->addParam('id', $staticPage->id)
             ;
         }

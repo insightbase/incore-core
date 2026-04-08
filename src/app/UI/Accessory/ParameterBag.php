@@ -16,5 +16,6 @@ class ParameterBag
         public string $encryptionKey,
         public bool $autoGenerateEntities,
         public string $metronicDir,
+        public string $privateDir,
     ) {}
 }

@@ -20,6 +20,7 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\DI\Container;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 readonly class GenerateDbFacade
@@ -102,7 +103,7 @@ readonly class GenerateDbFacade
         $cache->clean([$cache::All => true]);
 
         if($this->parameterBag->autoGenerateEntities) {
-            $this->generateEntitiesFacade->generate($output);
+            $this->generateEntitiesFacade->generate($output ?? new NullOutput());
         }
     }
 

@@ -10,16 +10,21 @@ use App\Component\Mail\SenderFactory;
 use App\Component\Mail\SystemNameEnum;
 use App\Model\Admin\Setting;
 use App\Model\Entity\SettingEntity;
+use App\UI\Accessory\ParameterBag;
 use Nette\Database\Table\ActiveRow;
 use Nette\Mail\SendException;
+use Nette\Utils\FileSystem;
 
-readonly class SettingFacade
+class SettingFacade
 {
+    public const string DISCORD_ERROR_LOG_URL = 'discordErrorLogUrl';
+
     public function __construct(
-        private Setting $settingModel,
-        private SenderFactory $senderFactory,
-        private EncryptFacade $encryptFacade,
-        private LogFacade $logFacade,
+        private readonly Setting       $settingModel,
+        private readonly SenderFactory $senderFactory,
+        private readonly EncryptFacade $encryptFacade,
+        private readonly LogFacade     $logFacade,
+        private readonly ParameterBag  $parameterBag,
     ) {}
 
     /**
@@ -37,9 +42,20 @@ readonly class SettingFacade
         if (null === $setting) {
             $setting = $this->settingModel->insert($updateData);
             $this->logFacade->create(LogActionEnum::Created, 'setting', $setting->id);
+            $discordUpdated = $setting->discord_error_log_url !== null;
         } else {
+            $oldSetting = clone $setting;
             $setting->update($updateData);
             $this->logFacade->create(LogActionEnum::Updated, 'setting', $setting->id);
+            $discordUpdated = $oldSetting->discord_error_log_url !== $setting->discord_error_log_url;
+        }
+
+        if($discordUpdated){
+            if($setting->discord_error_log_url !== null){
+                FileSystem::write($this->parameterBag->privateDir . '/' . self::DISCORD_ERROR_LOG_URL, $setting->discord_error_log_url);
+            }else{
+                FileSystem::delete($this->parameterBag->privateDir . '/' . self::DISCORD_ERROR_LOG_URL);
+            }
         }
     }
 

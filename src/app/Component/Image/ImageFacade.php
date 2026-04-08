@@ -84,16 +84,21 @@ readonly class ImageFacade
      * @param ImageDto $image
      * @param int|null $width
      * @param int|null $height
+     * @param int $type
+     * @param string|null $suffix
      * @return string
      */
-    public function getPreviewName(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly): string
+    public function getPreviewName(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly, ?string $suffix = null): string
     {
         if($width === null && $height === null){
             return 'null_null_' . $image->saved_name;
         }else {
+            if($suffix === null){
+                $suffix = 'webp';
+            }
             $name = explode('.', $image->saved_name);
             unset($name[count($name) - 1]);
-            $name = implode('.', $name) . '.webp';
+            $name = implode('.', $name) . '.' . $suffix;
             return (null === $width ? 'null' : $width) . '_' . (null === $height ? 'null' : $height) . '_' . (string)$type . '_' .$name;
         }
     }
@@ -107,7 +112,7 @@ readonly class ImageFacade
      * @throws \Nette\Utils\UnknownImageFileException
      * @throws \Exception
      */
-    public function generatePreview(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly): ?Image
+    public function generatePreview(ImageDto $image, ?int $width = null, ?int $height = null, int $type = \Nette\Utils\Image::ShrinkOnly, ?string $suffix = null): ?Image
     {
         if (!file_exists($this->parameterBag->uploadDir.'/'.$image->saved_name)) {
             return null;
@@ -127,7 +132,7 @@ readonly class ImageFacade
         $container->saveAlpha(true);
         $container->place($imageNette, '50%', '50%');
         FileSystem::createDir($this->parameterBag->previewDir);
-        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height, $type), 100);
+        $container->save($this->parameterBag->previewDir.'/'.$this->getPreviewName($image, $width, $height, $type, $suffix), 100);
 
         return $container;
     }

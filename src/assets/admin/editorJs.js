@@ -6,11 +6,29 @@ import EditorJsHeader from '@editorjs/header';
 import EditorJsTable from '@editorjs/table';
 import List from '@editorjs/list';
 import naja from "naja";
+import UploadLinkInlineTool from './editorJs/uploadLinkInlineTool.js';
+import ImageGallery from '@kiberpro/editorjs-gallery';
+import Sortable from 'sortablejs';
+import FAQ from './editorJs/faq';
+import Citation from './editorJs/citation';
+import SpotifyTool from './editorJs/spotifyTool';
+import YouTubeTool from './editorJs/youTubeTool';
+import AnchorTune from './editorJs/AnchorTune.ts';
+import HighlightTune from './editorJs/HighlightTune';
+import ImageWithReplace from './editorJs/ImageWithReplace';
+import AudioTool from '@furison-tech/editorjs-audio';
+import Partner from './editorJs/Partner.js';
+
 
 let editor = undefined;
+if (!window.editors) window.editors = {};
 
 export function initEditorJs() {
     Array.from(document.getElementsByClassName('editorJsText')).forEach((element) => {
+        if (element.hasAttribute('data-for-editor-id')) {
+            return;
+        }
+
         const editorDiv = document.createElement('div');
         editorDiv.classList.add('editorJsHolder');
         if (element.classList.contains('hidden')) {
@@ -60,6 +78,28 @@ export function initEditorJs() {
         }
         if (types.includes("table")) {
             tools.table = EditorJsTable;
+        }
+        if (types.includes("image")) {
+            tools.image = {
+                class: ImageWithReplace,
+                    config: {
+                    endpoints: {
+                        byFile: element.getAttribute('data-upload-url'), // Your backend file uploader endpoint
+                    }
+                },
+            }
+        }
+        if (types.includes("faq")) {
+            tools.faq = {
+                class: FAQ,
+            }
+        }
+
+        tools.uploadLink = {
+            class: UploadLinkInlineTool,
+            config: {
+                endpoint: element.getAttribute('data-upload-url'),
+            }
         }
 
         window.editors[id] = new EditorJS({

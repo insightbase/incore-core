@@ -13,6 +13,7 @@ use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Admin\Language\LanguageFacade;
 use App\UI\Admin\Translate\DataGrid\DefaultDataGridEntityFactory;
+use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Translate\Form\FormFactory;
 use App\UI\Admin\Translate\Form\FormNewData;
 use App\UI\Admin\Translate\Form\FormTranslateData;
@@ -43,6 +44,7 @@ class TranslatePresenter extends Presenter
         private readonly TranslateFacade              $translateFacade,
         private readonly SubmenuFactory               $submenuFactory,
         private readonly LanguageFacade               $languageFacade,
+        private readonly ParameterBag                 $parameterBag,
     ) {
         parent::__construct();
     }
@@ -91,6 +93,27 @@ class TranslatePresenter extends Presenter
         }
         $this->flashMessage($this->translator->translate('flash_sendToTranslate'));
         $this->redirect('default');
+    }
+
+    public function actionEditKey(int $id): void
+    {
+        if (!$this->parameterBag->debugMode) {
+            $this->error('', 403);
+        }
+        $this->exist($id);
+        $this->template->translate = $this->translate;
+    }
+
+    protected function createComponentFormEditKey(): Form
+    {
+        $form = $this->formFactory->createEditKey($this->translate);
+        $form->onSuccess[] = function (Form $form, \stdClass $data): void {
+            $this->translateFacade->renameKey($this->translate, $data->key);
+            $this->flashMessage($this->translator->translate('flash_keyRenamed'));
+            $this->redirect('default');
+        };
+
+        return $form;
     }
 
     public function actionEdit(int $id): void
