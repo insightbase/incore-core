@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-04-08
+### Opraveno (Fixed)
+- enumeration - oprava invalidace cache při smazání položky z číselníku
+
 ## 2026-02-02
 ### Přidáno (Added)
 - lokalizace jazyků
