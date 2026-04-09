@@ -1,6 +1,6 @@
 @import "dashboard.css";
 @import "menu.css";
-@import url(inputs.css);
+@import "inputs.css";
 
 html {
   scrollbar-gutter: stable;

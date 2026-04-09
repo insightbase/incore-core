@@ -34,6 +34,12 @@ export default class FAQ {
     render() {
         const w = document.createElement('div');
         w.className = 'faq-block';
+        w.style.cssText = 'border: 1px solid #F1F1F4; padding: 12px; gap: 12px; border-radius: 6px;';
+
+        // FAQ Title
+        const title = document.createElement('span');
+        title.style.cssText = 'color: #4B5675; font-weight: 500; font-size: 16px; letter-spacing: -1px;';
+        title.textContent = 'FAQ';
 
         const list = document.createElement('div');
         list.className = 'faq-block__list';
@@ -49,9 +55,20 @@ export default class FAQ {
 
         const addBtn = document.createElement('button');
         addBtn.type = 'button';
-        addBtn.textContent = 'Přidat otázku';
         addBtn.className = 'faq-block__add';
         addBtn.disabled = this.readOnly;
+        addBtn.setAttribute('data-empty', 'false');
+        
+        const plusIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        plusIcon.setAttribute('width', '20');
+        plusIcon.setAttribute('height', '20');
+        plusIcon.setAttribute('viewBox', '0 0 20 20');
+        plusIcon.setAttribute('fill', 'none');
+        plusIcon.innerHTML = `<path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+        
+        const btnText = document.createTextNode('Přidat otázku');
+        addBtn.append(plusIcon, btnText);
+        
         addBtn.addEventListener('click', () => {
             list.appendChild(this._createItem({ question: '', answer: '' }, true));
         });
@@ -60,32 +77,107 @@ export default class FAQ {
 
         const style = document.createElement('style');
         style.textContent = `
-      .faq-block { display: grid; gap: .75rem; }
-      .faq-block__item { border: 1px solid #e5e7eb; border-radius: .5rem; padding: .75rem; display: grid; gap: .5rem; background: #fff; }
-      .faq-block__row { display: grid; gap: .25rem; }
-      .faq-block__label { font-size: .8rem; color: #6b7280; }
-      .faq-block__input, .faq-block__answer {
-        width: 100%; padding: .5rem .75rem; border: 1px solid #e5e7eb; border-radius: .5rem; font: inherit; box-sizing: border-box;
+      .faq-block { display: grid; }
+      .faq-block__item { 
+        background: var(--tw-card-background-color); 
+        border: var(--tw-card-border); 
+        border-radius: 0.5rem; 
+        margin-bottom: 1rem; 
+        transition: all 0.2s ease;
       }
-      .faq-block__answer { min-height: 96px; }
-      .faq-block__answer[contenteditable="true"]:empty:before { content: attr(data-placeholder); color: #9ca3af; }
-      .faq-block__itemActions { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
-      .faq-block__moveHint { font-size: .75rem; color: #9ca3af; user-select: none; }
-      .faq-block__remove { background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; }
-      .faq-block__remove:disabled { opacity: .6; }
-      .faq-block__btn { padding: .35rem .6rem; border-radius: .5rem; border: 1px solid #e5e7eb; background: #f9fafb; cursor: pointer; font: inherit; }
-      .faq-block__add { padding: .45rem .8rem; border-radius: .6rem; border: 1px solid #d1d5db; background: #f3f4f6; cursor: pointer; }
-      .faq-block__list { display: grid; gap: .75rem; }
-      .faq-block__controls { display: flex; justify-content: flex-start; }
-      .faq-block [disabled] { background: #f9fafb; cursor: not-allowed; }
-      .faq-block__answer a{ text-decoration: underline; }
+      .faq-block__header {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .faq-block__drag-icon {
+        color: var(--tw-gray-400);
+        cursor: grab;
+        flex-shrink: 0;
+      }
+      .faq-block__input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        outline: none;
+        font-family: inherit;
+      }
+      .faq-block__input::placeholder {
+        color: var(--tw-gray-400);
+      }
+      .faq-block__arrow {
+        transition: transform 0.2s ease;
+        color: var(--tw-gray-600);
+        flex-shrink: 0;
+      }
+      .faq-block__arrow.rotate {
+        transform: rotate(180deg);
+      }
+      .faq-block__content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .faq-block__content.show {
+        max-height: 500px;
+      }
+      .faq-block__answer {
+        color: var(--tw-gray-600);
+        background: var(--tw-light-active);
+        border-radius: 0.5rem;
+        outline: none;
+      }
+      .faq-block__answer[contenteditable="true"]:empty:before { 
+        content: attr(data-placeholder); 
+        color: var(--tw-gray-400); 
+      }
+      .faq-block__itemActions { 
+        display: flex; 
+        justify-content: flex-end; 
+        align-items: center; 
+        gap: 0.5rem; 
+        padding: 0 1.5rem 1rem 1.5rem;
+      }
+      .faq-block__remove { 
+        background: var(--tw-danger-light); 
+        border: 1px solid var(--tw-danger-clarity); 
+        color: var(--tw-danger); 
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .faq-block__remove:hover {
+        background: var(--tw-danger);
+        color: var(--tw-danger-inverse);
+      }
+      .faq-block__remove:disabled { opacity: 0.6; cursor: not-allowed; }
+      .faq-block__add { 
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--tw-gray-600);
+        font-size: 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.75rem 0;
+      }
+      .faq-block__add:hover {
+        color: var(--tw-gray-700);
+      }
+      .faq-block__list { display: grid; gap: 0; }
+      .faq-block__controls { display: flex; justify-content: flex-start; margin-top: 0.5rem; }
+      .faq-block [disabled] { cursor: not-allowed; }
+      .faq-block__answer a { text-decoration: underline; }
       /* Plovoucí bublina */
-      .faq-bubble { position: absolute; z-index: 9999; display:none; background:#111827; color:#fff; border-radius:.5rem; padding:.25rem; box-shadow:0 8px 20px rgba(0,0,0,.2); }
-      .faq-bubble__btn { border:none; background:transparent; color:inherit; padding:.35rem .45rem; border-radius:.4rem; font:inherit; cursor:pointer; }
-      .faq-bubble__btn:hover { background: rgba(255,255,255,.1); }
+      .faq-bubble { position: absolute; z-index: 9999; display:none; background: var(--tw-tooltip-background-color); color:#fff; border-radius:0.5rem; padding:0.25rem; box-shadow: var(--tw-tooltip-box-shadow); }
+      .faq-bubble__btn { border:none; background:transparent; color:inherit; padding:0.35rem 0.45rem; border-radius:0.4rem; font:inherit; cursor:pointer; }
+      .faq-bubble__btn:hover { background: rgba(255,255,255,0.1); }
     `;
 
-        w.append(style, list, controls);
+        w.append(style, title, list, controls);
 
         this.nodes.wrapper = w;
         this.nodes.list = list;
@@ -100,44 +192,88 @@ export default class FAQ {
     _createItem(data = { question: '', answer: '' }, focus = false) {
         const item = document.createElement('div');
         item.className = 'faq-block__item';
-        item.style.position = 'relative'; // pro bublinu
+        item.style.cssText = 'position: relative; border-color: #F1F1F4;';
 
-        // Otázka
-        const rowQ = document.createElement('div');
-        rowQ.className = 'faq-block__row';
+        // Header with drag icon, question input, and arrow
+        const header = document.createElement('div');
+        header.className = 'faq-block__header';
+        header.style.cssText = 'padding-right: 8px; gap: 0 !important;';
 
-        const labelQ = document.createElement('div');
-        labelQ.className = 'faq-block__label';
-        labelQ.textContent = 'Otázka';
+        // Drag icon (28x28 with white background)
+        const dragIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        dragIcon.setAttribute('width', '28');
+        dragIcon.setAttribute('height', '28');
+        dragIcon.setAttribute('viewBox', '0 0 28 28');
+        dragIcon.setAttribute('fill', 'none');
+        dragIcon.style.cssText = 'width: 28px; height: 28px;';
+        dragIcon.innerHTML = `
+            <rect width="28" height="28" rx="4" fill="white"></rect>
+            <path d="M11.334 18.0003C11.334 17.6321 11.6325 17.3337 12.0007 17.3337C12.3688 17.3337 12.6673 17.6321 12.6673 18.0003C12.6673 18.3685 12.3688 18.667 12.0007 18.667C11.6325 18.667 11.334 18.3685 11.334 18.0003Z" fill="#78829D"></path>
+            <path d="M12.0007 17.8337C11.9086 17.8337 11.834 17.9083 11.834 18.0003C11.834 18.0924 11.9086 18.167 12.0007 18.167C12.0927 18.167 12.1673 18.0924 12.1673 18.0003C12.1673 17.9083 12.0927 17.8337 12.0007 17.8337ZM12.0007 16.8337C12.645 16.8337 13.1673 17.356 13.1673 18.0003C13.1673 18.6447 12.645 19.167 12.0007 19.167C11.3563 19.167 10.834 18.6447 10.834 18.0003C10.834 17.356 11.3563 16.8337 12.0007 16.8337Z" fill="#78829D"></path>
+            <path d="M15.334 18.0003C15.334 17.6321 15.6325 17.3337 16.0007 17.3337C16.3689 17.3337 16.6673 17.6321 16.6673 18.0003C16.6673 18.3685 16.3689 18.667 16.0007 18.667C15.6325 18.667 15.334 18.3685 15.334 18.0003Z" fill="#78829D"></path>
+            <path d="M16.0007 17.8337C15.9086 17.8337 15.834 17.9083 15.834 18.0003C15.834 18.0924 15.9086 18.167 16.0007 18.167C16.0927 18.167 16.1673 18.0924 16.1673 18.0003C16.1673 17.9083 16.0927 17.8337 16.0007 17.8337ZM16.0007 16.8337C16.645 16.8337 17.1673 17.356 17.1673 18.0003C17.1673 18.6446 16.645 19.167 16.0007 19.167C15.3563 19.167 14.834 18.6446 14.834 18.0003C14.834 17.356 15.3563 16.8337 16.0007 16.8337Z" fill="#78829D"></path>
+            <path d="M11.334 10.0003C11.334 9.63213 11.6325 9.33366 12.0007 9.33366C12.3688 9.33366 12.6673 9.63213 12.6673 10.0003C12.6673 10.3685 12.3688 10.667 12.0007 10.667C11.6325 10.667 11.334 10.3685 11.334 10.0003Z" fill="#78829D"></path>
+            <path d="M12.0007 9.83366C11.9086 9.83366 11.834 9.90827 11.834 10.0003C11.834 10.0924 11.9086 10.167 12.0007 10.167C12.0927 10.167 12.1673 10.0924 12.1673 10.0003C12.1673 9.90827 12.0927 9.83366 12.0007 9.83366ZM12.0007 8.83366C12.645 8.83366 13.1673 9.35598 13.1673 10.0003C13.1673 10.6447 12.645 11.167 12.0007 11.167C11.3563 11.167 10.834 10.6447 10.834 10.0003C10.834 9.35598 11.3563 8.83366 12.0007 8.83366Z" fill="#78829D"></path>
+            <path d="M11.334 14.0003C11.334 13.6321 11.6325 13.3337 12.0007 13.3337C12.3688 13.3337 12.6673 13.6321 12.6673 14.0003C12.6673 14.3685 12.3688 14.667 12.0007 14.667C11.6325 14.667 11.334 14.3685 11.334 14.0003Z" fill="#78829D"></path>
+            <path d="M12.0007 13.8337C11.9086 13.8337 11.834 13.9083 11.834 14.0003C11.834 14.0924 11.9086 14.167 12.0007 14.167C12.0927 14.167 12.1673 14.0924 12.1673 14.0003C12.1673 13.9083 12.0927 13.8337 12.0007 13.8337ZM12.0007 12.8337C12.645 12.8337 13.1673 13.356 13.1673 14.0003C13.1673 14.6447 12.645 15.167 12.0007 15.167C11.3563 15.167 10.834 14.6447 10.834 14.0003C10.834 13.356 11.3563 12.8337 12.0007 12.8337Z" fill="#78829D"></path>
+            <path d="M15.334 10.0003C15.334 9.63213 15.6325 9.33366 16.0007 9.33366C16.3689 9.33366 16.6673 9.63213 16.6673 10.0003C16.6673 10.3685 16.3689 10.667 16.0007 10.667C15.6325 10.667 15.334 10.3685 15.334 10.0003Z" fill="#78829D"></path>
+            <path d="M16.0007 9.83366C15.9086 9.83366 15.834 9.90827 15.834 10.0003C15.834 10.0924 15.9086 10.167 16.0007 10.167C16.0927 10.167 16.1673 10.0924 16.1673 10.0003C16.1673 9.90827 16.0927 9.83366 16.0007 9.83366ZM16.0007 8.83366C16.645 8.83366 17.1673 9.35598 17.1673 10.0003C17.1673 10.6447 16.645 11.167 16.0007 11.167C15.3563 11.167 14.834 10.6447 14.834 10.0003C14.834 9.35598 15.3563 8.83366 16.0007 8.83366Z" fill="#78829D"></path>
+            <path d="M15.334 14.0003C15.334 13.6321 15.6325 13.3337 16.0007 13.3337C16.3689 13.3337 16.6673 13.6321 16.6673 14.0003C16.6673 14.3685 16.3689 14.667 16.0007 14.667C15.6325 14.667 15.334 14.3685 15.334 14.0003Z" fill="#78829D"></path>
+            <path d="M16.0007 13.8337C15.9086 13.8337 15.834 13.9083 15.834 14.0003C15.834 14.0924 15.9086 14.167 16.0007 14.167C16.0927 14.167 16.1673 14.0924 16.1673 14.0003C16.1673 13.9083 16.0927 13.8337 16.0007 13.8337ZM16.0007 12.8337C16.645 12.8337 17.1673 13.356 17.1673 14.0003C17.1673 14.6447 16.645 15.167 16.0007 15.167C15.3563 15.167 14.834 14.6447 14.834 14.0003C14.834 13.356 15.3563 12.8337 16.0007 12.8337Z" fill="#78829D"></path>
+        `;
 
+        // Question input
         const inputQ = document.createElement('input');
         inputQ.type = 'text';
         inputQ.className = 'faq-block__input';
-        inputQ.placeholder = 'Např. Jak funguje doprava?';
+        inputQ.placeholder = 'Otázka Text';
         inputQ.value = data.question || '';
         inputQ.disabled = this.readOnly;
+        inputQ.setAttribute('data-empty', 'false');
+        inputQ.style.cssText = 'padding-block: 11px; color: #4B5675; font-weight: 500; font-size: 16px; height: unset; min-height: unset;';
 
-        // Odpověď
-        const rowA = document.createElement('div');
-        rowA.className = 'faq-block__row';
+        // Arrow icon (16x16)
+        const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        arrow.setAttribute('width', '16');
+        arrow.setAttribute('height', '16');
+        arrow.setAttribute('viewBox', '0 0 16 16');
+        arrow.setAttribute('fill', 'none');
+        arrow.innerHTML = `<path fill-rule="evenodd" clip-rule="evenodd" d="M13.9581 4.76752C14.2817 5.07994 14.2817 5.58647 13.9581 5.89889L8.4333 11.2322C8.10967 11.5446 7.58496 11.5446 7.26133 11.2322L2.04351 6.19518C1.71987 5.88277 1.71987 5.37623 2.04351 5.06381C2.36714 4.75139 2.89185 4.75139 3.21548 5.06381L7.84732 9.53517L12.7861 4.76752C13.1097 4.4551 13.6344 4.4551 13.9581 4.76752Z" fill="#4B5675"></path>`;
 
-        const labelA = document.createElement('div');
-        labelA.className = 'faq-block__label';
-        labelA.textContent = 'Odpověď';
+        header.append(dragIcon, inputQ, arrow);
 
+        // Collapsible content
+        const content = document.createElement('div');
+        content.className = 'faq-block__content show';
+        content.style.cssText = 'max-width: 100%; width: 100%;';
+
+        // Answer
         const answer = document.createElement('div');
-        answer.className = 'faq-block__answer';
-        answer.setAttribute('data-placeholder', 'Krátká odpověď…');
+        answer.className = 'faq-block__answer input';
+        answer.setAttribute('data-placeholder', 'Odpověď');
+        answer.setAttribute('data-empty', 'false');
+        answer.style.cssText = 'padding: 10px; min-height: unset; font-size: 14px; color: #78829D; min-height: 42px; width: auto;';
         if (!this.readOnly) answer.setAttribute('contenteditable', 'true');
 
         const safeHTML = this._sanitizeIncomingHTML(data.answer || '');
         answer.innerHTML = safeHTML;
 
+        content.appendChild(answer);
+
         // Bublina nástrojů (skrytá, objevuje se u výběru)
         const bubble = this._createBubble(answer);
+        content.appendChild(bubble);
 
         if (!this.readOnly) {
-            // ➋ čistý paste s respektováním zalomení řádků
+            // Toggle collapse on header click
+            header.addEventListener('click', (e) => {
+                // Don't toggle if clicking on input
+                if (e.target === inputQ) return;
+                content.classList.toggle('show');
+                arrow.classList.toggle('rotate');
+            });
+
+            // Paste handler
             answer.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const raw = (e.clipboardData || window.clipboardData).getData('text/plain');
@@ -148,16 +284,16 @@ export default class FAQ {
                 });
             });
 
-            // ➌ Enter = nový řádek uvnitř odpovědi (ne nový blok)
+            // Enter = new line
             answer.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    e.stopPropagation();              // nedovol EditorJS vytvořit nový blok
-                    document.execCommand('insertLineBreak'); // vloží <br>
+                    e.stopPropagation();
+                    document.execCommand('insertLineBreak');
                 }
             });
 
-            // zobrazit bublinu při výběru
+            // Show bubble on selection
             const showMaybe = () => this._maybeShowBubble(answer, bubble);
             answer.addEventListener('mouseup', showMaybe);
             answer.addEventListener('keyup', (e) => {
@@ -167,38 +303,12 @@ export default class FAQ {
             });
             answer.addEventListener('scroll', () => this._hideBubble(bubble));
             answer.addEventListener('blur', () => {
-                // pročistit HTML a zavřít bublinu
                 answer.innerHTML = this._sanitizeIncomingHTML(answer.innerHTML);
                 this._hideBubble(bubble);
             });
         }
 
-        // Akce
-        const actions = document.createElement('div');
-        actions.className = 'faq-block__itemActions';
-
-        const moveHint = document.createElement('div');
-        moveHint.className = 'faq-block__moveHint';
-
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.textContent = 'Smazat';
-        removeBtn.className = 'faq-block__btn faq-block__remove';
-        removeBtn.disabled = this.readOnly;
-
-        removeBtn.addEventListener('click', () => {
-            if (this.nodes.list.children.length > 1) {
-                item.remove();
-            } else {
-                inputQ.value = '';
-                answer.innerHTML = '';
-            }
-        });
-
-        rowQ.append(labelQ, inputQ);
-        rowA.append(labelA, answer, bubble);
-        actions.append(moveHint, removeBtn);
-        item.append(rowQ, rowA, actions);
+        item.append(header, content);
 
         if (focus && !this.readOnly) setTimeout(() => inputQ.focus(), 0);
 
