@@ -2,7 +2,9 @@
 ## 2026-04-13
 ### Opraveno (Fixed)
 - core - dropzone - chunkSize předáván Dropzone jako number (parseInt), string způsoboval špatné rozdělení chunků a chybu UPLOAD_ERR_INI_SIZE při větších souborech
-- core - dropzone - data-chunksize počítán jako 90 % z min(upload_max_filesize, post_max_size), aby zbyla rezerva na multipart overhead
+- core - dropzone - data-chunksize počítán jako 90 % z min(upload_max_filesize, post_max_size, 1 MB), aby se vešel i do defaultního nginx client_max_body_size (1 MB)
+### Přidáno (Added)
+- core - nastavení - přidáno pole `max_chunk_size` (v KB) pro ruční override velikosti chunku v Dropzone; při nevyplnění se použije automatický výpočet
 
 ## 2026-03-10
 ### Opraveno (Fixed)

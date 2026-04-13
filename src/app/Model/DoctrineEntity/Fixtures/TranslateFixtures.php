@@ -104,6 +104,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_basicAuthPassword' => 'Heslo',
 		'flash_anotherTranslationInProgress' => 'Překlad tohoto jazyka probíhá. Prosím počktejte.',
 		'input_translate_expand_keys' => 'Překlady - rozpadnout menu podle klíčů',
+		'input_maxChunkSize' => 'Maximální velikost chunku (KB)',
 		'input_active' => 'Aktivní',
 		'column_active' => 'Aktivní',
 		'header_formHelp' => 'Nápověda',

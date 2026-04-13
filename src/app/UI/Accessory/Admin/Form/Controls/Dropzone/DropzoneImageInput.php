@@ -5,6 +5,7 @@ namespace App\UI\Accessory\Admin\Form\Controls\Dropzone;
 use App\Component\Image\ImageControlFactory;
 use App\Model\Admin\Image;
 use App\Model\Admin\ImageLocation;
+use App\Model\Admin\Setting;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette;
 use Nette\Forms\Controls\TextInput;
@@ -29,6 +30,7 @@ class DropzoneImageInput extends TextInput
         private readonly Image                           $imageModel,
         private readonly DropzoneImageLocationEnum       $locationEnum,
         private readonly ImageLocation                   $imageLocationModel,
+        private readonly Setting                         $settingModel,
         null|string|\Stringable                          $label = null,
         ?int                                             $maxLength = null
     ) {
@@ -90,11 +92,17 @@ class DropzoneImageInput extends TextInput
             ->addHtml($image)
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
-        $limit = min(
-            $this->convertToBytes(ini_get('upload_max_filesize')),
-            $this->convertToBytes(ini_get('post_max_size')),
-        );
-        $dropzone->setAttribute('data-chunksize', (int) ($limit * 0.9));
+        $setting = $this->settingModel->getDefault();
+        if ($setting?->max_chunk_size !== null) {
+            $chunkSize = $setting->max_chunk_size * 1024;
+        } else {
+            $limit = min(
+                $this->convertToBytes(ini_get('upload_max_filesize')),
+                $this->convertToBytes(ini_get('post_max_size')),
+            );
+            $chunkSize = (int) ($limit * 0.9);
+        }
+        $dropzone->setAttribute('data-chunksize', $chunkSize);
         $dropzone->setAttribute('data-accepted-files', $this->acceptedFiles);
 
         $container->addHtml($input->getControl()->style('display: none'));
