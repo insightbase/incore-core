@@ -74,6 +74,10 @@
 - core - dropzone - možnost omezit typy souborů
 - core - nastavení -přidány helpy k logům, hlavní logo může být jen obrázek (nikoliv svg)
 
+## 2026-04-08
+### Opraveno (Fixed)
+- enumeration - oprava invalidace cache při smazání položky z číselníku
+
 ## 2026-02-02
 ### Přidáno (Added)
 - lokalizace jazyků

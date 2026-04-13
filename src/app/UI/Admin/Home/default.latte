@@ -216,18 +216,16 @@
             <div class="px-3 py-1 relative">
                 <div id="area_chart"></div>
                 
-                <div n:if="$notConfigured" 
-                     id="chart-overlay"
-                     style="opacity: 0; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-image: linear-gradient(to top, var(--tw-gradient-stops)); --tw-gradient-from: white; --tw-gradient-stops: var(--tw-gradient-from), rgba(255, 255, 255, 0.95), var(--tw-gradient-to, rgba(255, 255, 255, 0)); --tw-gradient-to: rgba(255, 255, 255, 0.8); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; transition-property: opacity; transition-duration: 300ms;">
-                    <div class="text-center p-7 max-w-sm bg-white rounded-xl shadow-lg border border-gray-200/50">
+                <div n:if="$notConfigured" id="chart-overlay">
+                    <div class="chart-overlay-card text-center p-7 max-w-sm rounded-xl shadow-lg">
                         <div class="mb-4">
-                            <div class="w-12 h-12 mx-auto bg-orange-100 rounded-full flex items-center justify-center">
-                                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="chart-overlay-icon-bg w-12 h-12 mx-auto rounded-full flex items-center justify-center">
+                                <svg class="chart-overlay-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                                 </svg>
                             </div>
                         </div>
-                        <p class=" text-lg font-semibold text-gray-900 mb-2">
+                        <p class="chart-overlay-text text-lg font-semibold mb-2">
                             {if $analyticsError}
                                 {_'home_googleAnalyticsError'}
                             {else}
@@ -240,7 +238,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            {* TODO: Nakonfigurovat Analytics *}
                             {_'home_googleAnalyticsConfigure'}
                         </a>
                     </div>

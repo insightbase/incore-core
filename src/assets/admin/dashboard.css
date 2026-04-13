@@ -1,0 +1,36 @@
+#chart-overlay {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to top, var(--tw-light), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    transition: opacity 300ms;
+}
+
+html.dark #chart-overlay {
+    background: linear-gradient(to top, var(--tw-coal-500), rgba(13, 14, 18, 0.95), rgba(13, 14, 18, 0.8));
+}
+
+.chart-overlay-card {
+    background: var(--tw-card-background-color);
+    border: var(--tw-card-border);
+}
+
+.chart-overlay-icon-bg {
+    background: var(--tw-warning-light);
+}
+
+.chart-overlay-icon {
+    color: var(--tw-warning);
+}
+
+.chart-overlay-text {
+    color: var(--tw-gray-900);
+}
