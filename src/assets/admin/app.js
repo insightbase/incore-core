@@ -314,7 +314,7 @@ function initDropzone() {
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
                 chunking: true,
-                chunkSize: element.getAttribute('data-chunksize'),
+                chunkSize: parseInt(element.getAttribute('data-chunksize'), 10),
             };
 
             let acceptedFiles = element.getAttribute('data-accepted-files');
@@ -379,7 +379,7 @@ function initDropzone() {
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
                 chunking: true,
-                chunkSize: element.getAttribute('data-chunksize'),
+                chunkSize: parseInt(element.getAttribute('data-chunksize'), 10),
             });
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {

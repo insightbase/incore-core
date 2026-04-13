@@ -90,7 +90,11 @@ class DropzoneImageInput extends TextInput
             ->addHtml($image)
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
-        $dropzone->setAttribute('data-chunksize', $this->convertToBytes(ini_get('upload_max_filesize')));
+        $limit = min(
+            $this->convertToBytes(ini_get('upload_max_filesize')),
+            $this->convertToBytes(ini_get('post_max_size')),
+        );
+        $dropzone->setAttribute('data-chunksize', (int) ($limit * 0.9));
         $dropzone->setAttribute('data-accepted-files', $this->acceptedFiles);
 
         $container->addHtml($input->getControl()->style('display: none'));

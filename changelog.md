@@ -1,4 +1,9 @@
 # Changelog
+## 2026-04-13
+### Opraveno (Fixed)
+- core - dropzone - chunkSize předáván Dropzone jako number (parseInt), string způsoboval špatné rozdělení chunků a chybu UPLOAD_ERR_INI_SIZE při větších souborech
+- core - dropzone - data-chunksize počítán jako 90 % z min(upload_max_filesize, post_max_size), aby zbyla rezerva na multipart overhead
+
 ## 2026-03-10
 ### Opraveno (Fixed)
 - content - detail - editorJS se nemusí upravovat v modal okně
