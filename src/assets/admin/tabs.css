@@ -1,0 +1,28 @@
+
+.tabs:has(.tab-flag) {
+  border: 1px solid var(--tw-gray-300);
+  width: fit-content !important;
+  padding: 4px !important;
+  border-radius: 8px !important;
+  gap: 4px !important;
+}
+
+.tab-flag {
+  padding-block: 8px !important;
+  padding-inline: 16px !important;
+  color: var(--tw-gray-700) !important;
+  border-radius: 8px !important;
+  gap: 6px !important;
+  line-height: normal !important;
+  transition: all .2s ease-in-out !important;
+  border: unset !important;
+}
+
+.tab-flag:not(.active):hover {
+  background-color: var(--tw-gray-100) !important;
+}
+
+.tab-flag.active {
+  color: #fff !important;
+  background-color: var(--tw-primary) !important;
+}
