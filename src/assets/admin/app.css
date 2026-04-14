@@ -46,20 +46,22 @@ html {
 
 div.imageContainer {
     position: relative;
-    a.imageUpdate {
-        cursor: pointer;
-        position: absolute;
-        right: 0;
-        bottom: 0;
-    }
 }
+
 .dz-image a.imageUpdate{
     background-color: white;
-    right: 10px;
-    bottom: 10px;
     cursor: pointer;
     position: absolute;
+    right: 4px !important;
+    bottom: 8px !important;
+    border-radius: 12px;
+    padding: 2px;;
 }
+
+.dropzone .dz-preview:hover .dz-image img {
+    filter: unset !important;
+}
+
 .editorJsText{
     display: none !important;
 }
@@ -127,6 +129,17 @@ html.dark .dropzone .dz-preview.dz-image-preview {
     border: 1px solid var(--tw-gray-300) !important;
 }
 
+.dropzoneRemoveFile {
+    display: block;
+    margin-top: 8px;
+}
+
+
+.dz-image-preview {
+    margin: 0px !important;
+    padding: 0 !important;
+}
+
 .dropzone {
     max-width: 534px !important;
     overflow-x: auto;
@@ -169,7 +182,7 @@ html.dark .dropzone .dz-preview.dz-image-preview {
 
 .dz-preview {
     z-index: 0 !important;
-    padding: .5rem;
+    padding: 0 !important;
     border-radius: 20px;
 }
 
