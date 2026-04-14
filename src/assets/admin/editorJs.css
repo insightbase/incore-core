@@ -4,4 +4,9 @@
 }
 .ce-toolbar__actions{
     right: 100% !important;
+    background-color: unset !important;
+}
+
+.codex-editor {
+ border: 1px solid #DBDFE9 !important
 }
