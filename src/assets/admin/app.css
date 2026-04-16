@@ -457,11 +457,12 @@ form.max-w-2xl{
 
 /* Dark mode */
 .dark .dataGrid thead th.sticky {
-    background-color: var(--tw-gray-800) !important;
+    background-color: var(--tw-table-head-background-color) !important;
+    color: var(--tw-gray-700) !important;
 }
 
 .dark .dataGrid tbody td.sticky {
-    background-color: var(--tw-coal-600) !important;
+    background-color: var(--tw-coal-300) !important;
 }
 
 .menu-item-hover-parent:hover {
