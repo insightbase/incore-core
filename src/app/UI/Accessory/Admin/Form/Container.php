@@ -9,6 +9,8 @@ use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInput;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsInputFactory;
+use App\UI\Accessory\Admin\Form\Controls\Options\OptionsInput;
+use App\UI\Accessory\Admin\Form\Controls\Options\OptionsInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInput;
 use App\UI\Accessory\Admin\Form\Controls\Slug\SlugInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\TextAreaCopy\TextAreaCopyFactory;
@@ -28,6 +30,7 @@ class Container extends \Nette\Forms\Container
         private readonly SlugInputFactory          $slugInputFactory,
         private readonly CopyInputFactory          $copyInputFactory,
         private readonly TextAreaCopyFactory       $textAreaCopyFactory,
+        private readonly OptionsInputFactory       $optionsInputFactory,
     )
     {
     }
@@ -45,6 +48,11 @@ class Container extends \Nette\Forms\Container
     public function addSlug(string $name, ?TextBase $sourceInput, ?string $label = null):SlugInput
     {
         return $this[$name] = $this->slugInputFactory->create($sourceInput, $label);
+    }
+
+    public function addOptions(string|int $name, ?string $label = null): OptionsInput
+    {
+        return $this[$name] = $this->optionsInputFactory->create($label);
     }
 
 

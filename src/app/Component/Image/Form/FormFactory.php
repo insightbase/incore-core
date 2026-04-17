@@ -28,7 +28,9 @@ readonly class FormFactory
             ->setNullable();
         $form->addTextArea('author', $this->translator->translate('input_author'))
             ->setNullable();
-        $form->addHidden('image_id')->addRule($form::Integer);
+        $form->addHidden('image_id')
+            ->addRule($form::Integer)
+            ->addFilter(fn($v) => (int) $v);
         $form->addSubmit('send', $this->translator->translate('send_update'));
         return $form;
     }

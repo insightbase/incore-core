@@ -1,4 +1,12 @@
 # Changelog
+## 2026-04-15
+### Přidáno (Added)
+- forms - u kontaktního formuláře lze u typu select, radiolist a checkboxlist zadat hodnoty (středníkem oddělené)
+### Opraveno (Fixed)
+- forms - drag&drop pořadí řádků v editaci formuláře
+- forms - přidávání a mazání řádků při editaci formuláře
+- core - select (Choices) sjednocen vzhledem s inputem; rozbalený dropdown se zobrazuje nad dalším blokem
+
 ## 2026-04-13
 ### Opraveno (Fixed)
 - core - dropzone - chunkSize předáván Dropzone jako number (parseInt), string způsoboval špatné rozdělení chunků a chybu UPLOAD_ERR_INI_SIZE při větších souborech

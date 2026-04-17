@@ -16,7 +16,7 @@ class Role implements Entity
     #[ORM\Column(type: 'string', length: 255)]
     public string $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     public string $system_name;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]

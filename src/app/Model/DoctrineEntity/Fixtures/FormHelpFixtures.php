@@ -16,50 +16,35 @@ class FormHelpFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implement
 			'presenter' => 'Admin:Setting',
 			'input' => 'frm-formEdit-logo_id',
 			'label_help' => '136 x 22px',
-			'languages' => [
-				['label_help' => '', 'language_id' => 2, 'form_help_id' => 1],
-				['label_help' => '', 'language_id' => 5, 'form_help_id' => 1],
-			],
+			'languages' => [],
 		],
 		[
 			'id' => 2,
 			'presenter' => 'Admin:Setting',
 			'input' => 'frm-formEdit-logo_dark_id',
 			'label_help' => '136 x 22px',
-			'languages' => [
-				['label_help' => '', 'language_id' => 2, 'form_help_id' => 2],
-				['label_help' => '', 'language_id' => 5, 'form_help_id' => 2],
-			],
+			'languages' => [],
 		],
 		[
 			'id' => 3,
 			'presenter' => 'Admin:Setting',
 			'input' => 'frm-formEdit-logo_small_id',
 			'label_help' => '24 x 22px',
-			'languages' => [
-				['label_help' => '', 'language_id' => 2, 'form_help_id' => 3],
-				['label_help' => '', 'language_id' => 5, 'form_help_id' => 3],
-			],
+			'languages' => [],
 		],
 		[
 			'id' => 4,
 			'presenter' => 'Admin:Setting',
 			'input' => 'frm-formEdit-logo_dark_small_id',
 			'label_help' => '24 x 22px',
-			'languages' => [
-				['label_help' => '', 'language_id' => 2, 'form_help_id' => 4],
-				['label_help' => '', 'language_id' => 5, 'form_help_id' => 4],
-			],
+			'languages' => [],
 		],
 		[
 			'id' => 5,
 			'presenter' => 'Admin:ContactForm',
 			'input' => 'frm-formEdit-receiver',
 			'label_help' => 'Více příjemců lze oddělit středníkem',
-			'languages' => [
-				['label_help' => '', 'language_id' => 2, 'form_help_id' => 5],
-				['label_help' => '', 'language_id' => 5, 'form_help_id' => 5],
-			],
+			'languages' => [],
 		],
 	];
 

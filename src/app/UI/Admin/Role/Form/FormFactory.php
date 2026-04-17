@@ -5,10 +5,12 @@ namespace App\UI\Admin\Role\Form;
 use App\Component\Translator\Translator;
 use App\Model\Admin\ModulePrivilege;
 use App\Model\Admin\Permission;
+use App\Model\Admin\Role;
 use App\Model\Entity\ModuleEntity;
 use App\Model\Entity\RoleEntity;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
+use Nette\Forms\Controls\TextInput;
 
 readonly class FormFactory
 {
@@ -17,6 +19,7 @@ readonly class FormFactory
         private Translator                               $translator,
         private ModulePrivilege                          $modulePrivilege,
         private Permission                               $permissionModel,
+        private Role                                     $roleModel,
     ) {}
 
     /**
@@ -46,7 +49,7 @@ readonly class FormFactory
 
     public function createEdit(ActiveRow $role): Form
     {
-        $form = $this->createBase();
+        $form = $this->createBase($role->id);
         $form->addSubmit('send', $this->translator->translate('send_update'));
 
         $form->setDefaults($role->toArray());
@@ -62,7 +65,7 @@ readonly class FormFactory
         return $form;
     }
 
-    private function createBase(): Form
+    private function createBase(?int $excludeId = null): Form
     {
         $form = $this->formFactory->create();
 
@@ -71,6 +74,10 @@ readonly class FormFactory
         ;
         $form->addText('system_name', $this->translator->translate('input_system_name'))
             ->setRequired()
+            ->addRule(function (TextInput $input) use ($excludeId): bool {
+                $existing = $this->roleModel->findBySystemName($input->getValue());
+                return $existing === null || $existing->id === $excludeId;
+            }, $this->translator->translate('flash_roleSystemNameAlreadyExists'))
         ;
 
         return $form;

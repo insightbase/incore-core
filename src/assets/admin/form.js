@@ -1,5 +1,8 @@
 import naja from "naja";
 
+const optionsToggleBound = new WeakSet();
+const optionsWidgetBound = new WeakSet();
+
 Array.from(document.getElementsByClassName('remove-fieldset')).forEach((element) => {
     element.addEventListener('click', function(event){
         event.preventDefault();
@@ -93,6 +96,9 @@ function initForms() {
         });
     });
 
+    initOptionsWidget(document);
+    initOptionsToggle(document);
+
     Array.from(document.getElementsByClassName('formLanguageSelect')).forEach((formLanguageSelect) => {
         formLanguageSelect.addEventListener('change', function () {
             updateFormLanguageSelect(formLanguageSelect.value);
@@ -100,6 +106,119 @@ function initForms() {
         updateFormLanguageSelect(formLanguageSelect.value);
     });
 }
+
+function initOptionsWidget(root){
+    root.querySelectorAll('input[data-options-widget]').forEach((input) => {
+        if (optionsWidgetBound.has(input)) return;
+        optionsWidgetBound.add(input);
+
+        const widget = document.createElement('div');
+        widget.className = 'options-widget flex flex-wrap gap-1.5 items-center';
+
+        const chipsWrap = document.createElement('div');
+        chipsWrap.className = 'flex flex-wrap gap-1.5';
+        widget.appendChild(chipsWrap);
+
+        const addGroup = document.createElement('div');
+        addGroup.className = 'input-group flex items-center gap-1';
+        addGroup.style.flex = '1 1 160px';
+
+        const addInput = document.createElement('input');
+        addInput.type = 'text';
+        addInput.className = 'input';
+        addInput.style.flex = '1 1 auto';
+        addInput.placeholder = 'Přidat hodnotu…';
+        addGroup.appendChild(addInput);
+
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn btn-icon btn-primary';
+        addBtn.setAttribute('aria-label', 'Přidat');
+        addBtn.innerHTML = '<i class="ki-filled ki-plus fs-5"></i>';
+        addGroup.appendChild(addBtn);
+
+        widget.appendChild(addGroup);
+
+        const sync = () => {
+            const vals = [...chipsWrap.querySelectorAll('.options-chip')].map(c => c.dataset.value);
+            input.value = vals.join(';');
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+
+        const addChip = (value) => {
+            value = value.trim();
+            if (value === '') return;
+            if ([...chipsWrap.querySelectorAll('.options-chip')].some(c => c.dataset.value === value)) return;
+            const chip = document.createElement('span');
+            chip.className = 'options-chip badge badge-outline badge-primary inline-flex items-center gap-1';
+            chip.dataset.value = value;
+            chip.textContent = value;
+            const x = document.createElement('button');
+            x.type = 'button';
+            x.className = 'options-chip-remove';
+            x.setAttribute('aria-label', 'Odstranit');
+            x.innerHTML = '<i class="ki-filled ki-cross fs-7"></i>';
+            x.addEventListener('click', () => { chip.remove(); sync(); });
+            chip.appendChild(x);
+            chipsWrap.appendChild(chip);
+            sync();
+        };
+
+        (input.value || '').split(';').forEach(v => addChip(v));
+
+        addInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',' || e.key === ';') {
+                e.preventDefault();
+                addChip(addInput.value);
+                addInput.value = '';
+            }
+        });
+        addInput.addEventListener('blur', () => {
+            if (addInput.value.trim() !== '') {
+                addChip(addInput.value);
+                addInput.value = '';
+            }
+        });
+        addBtn.addEventListener('click', () => {
+            addChip(addInput.value);
+            addInput.value = '';
+            addInput.focus();
+        });
+
+        input.type = 'hidden';
+        input.insertAdjacentElement('afterend', widget);
+    });
+}
+
+function initOptionsToggle(root){
+    root.querySelectorAll('[data-options-widget]').forEach((optionsInput) => {
+        if (optionsToggleBound.has(optionsInput)) return;
+        const fieldset = optionsInput.closest('fieldset');
+        if (!fieldset) return;
+        const typeSelect = fieldset.querySelector('select[data-original-name="type"]');
+        if (!typeSelect) return;
+        const allowed = (optionsInput.dataset.optionsFor || '').split(',').map((s) => s.trim());
+        const wrapper = optionsInput.closest('.form-group, .input-group, label, div') || optionsInput;
+        const toggle = () => {
+            wrapper.style.display = allowed.includes(typeSelect.value) ? '' : 'none';
+        };
+        typeSelect.addEventListener('change', toggle);
+        optionsToggleBound.add(optionsInput);
+        toggle();
+    });
+}
+
+document.addEventListener('repeater:added', (e) => {
+    const root = e.detail?.fieldset || e.target;
+    // new fieldset cloned from template — drop any inherited widget DOM and re-init
+    root.querySelectorAll('.options-widget').forEach(w => w.remove());
+    root.querySelectorAll('input[data-options-widget][type="hidden"]').forEach(i => {
+        i.type = 'text';
+        i.value = '';
+    });
+    initOptionsWidget(root);
+    initOptionsToggle(root);
+});
 
 function updateFormLanguageSelect(value){
     Array.from(document.querySelectorAll('[langchange]')).forEach((element) => {

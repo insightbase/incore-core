@@ -45,6 +45,10 @@ class FormRepeater {
             if (input.id) {
                 input.setAttribute('data-original-id', input.id);
             }
+            if (!input.hasAttribute('data-original-name') && input.name) {
+                const match = input.name.match(/^(.+?)\[[^\]]*\](\[\])?$/);
+                input.setAttribute('data-original-name', match ? match[1] : input.name);
+            }
         });
 
         fieldset.querySelectorAll('label[for]').forEach(label => {
@@ -283,7 +287,8 @@ class FormRepeater {
             this.initializeFieldset(fieldset, index === 0);
             this.updateFieldsetIds(fieldset, index);
         });
-        this.updateIndices(container.dataset.repeater);
+        const repeaterEl = container.closest('[data-repeater]') || container;
+        this.updateIndices(repeaterEl.dataset.repeater);
     }
 
     bindEvents() {
@@ -312,12 +317,31 @@ class FormRepeater {
 
         // Clear values and remove any existing validation classes/messages
         newFieldset.querySelectorAll('input, select, textarea').forEach(input => {
-            input.value = '';
+            if (input.tagName === 'SELECT') {
+                if (input.options.length > 0) {
+                    input.selectedIndex = 0;
+                }
+            } else if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
             input.classList.remove('is-invalid', 'is-valid');
             const feedback = input.nextElementSibling;
             if (feedback && feedback.classList.contains('invalid-feedback')) {
                 feedback.remove();
             }
+        });
+
+        // Unwrap any Choices.js wrappers — clones retain the DOM but lose the JS bindings
+        newFieldset.querySelectorAll('.choices').forEach(choicesWrap => {
+            const select = choicesWrap.querySelector('select');
+            if (!select) return;
+            select.className = (select.className || '').replace(/\bchoices__input(--\S+)?\b/g, '').trim();
+            select.removeAttribute('hidden');
+            select.removeAttribute('data-choice');
+            delete select.dataset.choices;
+            choicesWrap.parentNode.replaceChild(select, choicesWrap);
         });
 
         newFieldset.style.opacity = '0';
@@ -328,6 +352,8 @@ class FormRepeater {
 
         this.initializeFieldset(newFieldset, false);
         this.updateAllFieldsets(repeater.container);
+
+        newFieldset.dispatchEvent(new CustomEvent('repeater:added', { bubbles: true, detail: { fieldset: newFieldset } }));
 
         requestAnimationFrame(() => {
             newFieldset.style.transition = `all ${this.options.animationDuration}ms ease`;
@@ -365,8 +391,12 @@ class FormRepeater {
 
         fieldsets.forEach((fieldset, index) => {
             fieldset.querySelectorAll('input, select, textarea').forEach(input => {
-                const originalName = input.getAttribute('data-original-name') || input.name;
-                if (!input.getAttribute('data-original-name')) {
+                let originalName = input.getAttribute('data-original-name');
+                if (!originalName) {
+                    const name = input.name;
+                    if (!name) return;
+                    const match = name.match(/^(.+?)\[[^\]]*\](\[\])?$/);
+                    originalName = match ? match[1] : name;
                     input.setAttribute('data-original-name', originalName);
                 }
                 input.name = this.options.namePattern
