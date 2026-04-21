@@ -1,4 +1,9 @@
 # Changelog
+
+## 2026-04-21
+### Přidáno (Added)
+- users - admin grid - přidán filtr podle role (select) v `admin/user/`; hodnoty z `Role::getToSelect()` respektují oprávnění aktuálního uživatele
+
 ## 2026-04-21
 ### Přidáno (Added)
 - users - výpis uživatelů - nový sloupec `Role` (zobrazuje název role přes vazbu `role`, řaditelný podle `role.name`)
