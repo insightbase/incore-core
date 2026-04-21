@@ -1,4 +1,15 @@
 # Changelog
+## 2026-04-21
+### Přidáno (Added)
+- users - výpis uživatelů - nový sloupec `Role` (zobrazuje název role přes vazbu `role`, řaditelný podle `role.name`)
+
+## 2026-04-20
+### Opraveno (Fixed)
+- core - jazyky - `actionDelete` nyní blokuje smazání výchozího jazyka (flash `flash_languageIsDefault`) a v DataGridu je položka Smazat skryta pro výchozí jazyk; dříve smazání shodilo `RouterFactory` na `$default->url` na null
+- core - nastavení jazyka - `LanguageSettingFormData::$type` převeden na nullable a facade přeskočí update při null, aby prázdná hodnota neshodila mapování formuláře na TypeError
+- core - úprava obrázku - `EditFormData::$image_id` převeden na nullable a `ImageFacade::edit()` vyhazuje `ImageNotFoundException` při null, prázdné image_id už neshodí render
+- core - postranní menu - `MainMenuItem::isValidLink()` hlídá formát presenter jména z DB a `@layout.latte` skryje odkazy s neplatným presenterem místo vyhození výjimky o alfanumerickém názvu
+
 ## 2026-04-15
 ### Přidáno (Added)
 - forms - u kontaktního formuláře lze u typu select, radiolist a checkboxlist zadat hodnoty (středníkem oddělené)

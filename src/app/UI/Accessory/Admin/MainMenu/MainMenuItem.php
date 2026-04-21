@@ -98,4 +98,12 @@ class MainMenuItem
     {
         return $this->subMenu;
     }
+
+    public function isValidLink(): bool
+    {
+        if ($this->module->presenter === null) {
+            return false;
+        }
+        return (bool) preg_match('~^[a-zA-Z\x7f-\xff][a-zA-Z0-9\x7f-\xff]*(?::[a-zA-Z\x7f-\xff][a-zA-Z0-9\x7f-\xff]*)*$~D', $this->module->presenter);
+    }
 }

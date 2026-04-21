@@ -113,6 +113,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'column_firstname' => 'Jméno',
 		'column_lastname' => 'Příjmení',
 		'column_email' => 'Email',
+		'column_role' => 'Role',
 		'input_firstname' => 'Jméno',
 		'input_lastname' => 'Příjmení',
 		'submit_update' => 'Upravit',

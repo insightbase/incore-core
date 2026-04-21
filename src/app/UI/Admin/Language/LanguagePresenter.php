@@ -73,6 +73,10 @@ class LanguagePresenter extends Presenter
     public function actionDelete(int $id): void
     {
         $this->exist($id);
+        if ($this->language->is_default) {
+            $this->flashMessage($this->translator->translate('flash_languageIsDefault'), 'error');
+            $this->redirect('default');
+        }
         $this->languageFacade->delete($this->language);
         $this->flashMessage($this->translator->translate('flash_languageDeleted'));
         $this->redirect('default');
