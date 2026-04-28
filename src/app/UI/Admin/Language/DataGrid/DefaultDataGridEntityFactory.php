@@ -80,6 +80,9 @@ readonly class DefaultDataGridEntityFactory
         );
         $dataGridEntity->addMenu(
             (new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete'))
+                ->setShowCallback(function (ActiveRow $row): bool {
+                    return !$row['is_default'];
+                })
         );
 
         return $dataGridEntity;

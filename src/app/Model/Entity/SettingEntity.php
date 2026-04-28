@@ -33,6 +33,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?int $placeholder_id
  * @property-read ?string $ga_service_id
  * @property-read ?int $max_image_resolution
+ * @property-read ?int $max_chunk_size
  * @property-read ?string $basic_auth_user
  * @property-read ?string $basic_auth_password
  * @property-read bool $translate_expand_keys

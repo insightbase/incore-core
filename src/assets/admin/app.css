@@ -261,6 +261,41 @@ textarea {
     display: none;
 }
 
+.choices {
+    margin-bottom: 0;
+}
+.choices__inner {
+    min-height: 40px !important;
+    height: 40px;
+    padding: 0 12px !important;
+    border: 0.8px solid rgb(219, 223, 233) !important;
+    border-radius: 6px !important;
+    background-color: rgb(252, 252, 252) !important;
+    font-size: 13px !important;
+    display: flex;
+    align-items: center;
+}
+.choices__list--single {
+    padding: 0 !important;
+}
+.choices__inner:hover {
+    border-color: var(--tw-gray-400) !important;
+}
+.choices.is-open {
+    position: relative;
+    z-index: 100;
+}
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    z-index: 100 !important;
+}
+.fieldset:has(.choices.is-open) {
+    z-index: 100;
+}
+.choices[data-type*=select-one]::after {
+    right: 12px;
+}
+
 .modal .codex-editor__redactor{
     padding-bottom: 0 !important;
 }

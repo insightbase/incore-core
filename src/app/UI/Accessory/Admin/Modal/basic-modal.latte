@@ -15,4 +15,21 @@
             </div>
         </div>
     </div>
+    <script n:nonce>
+        (function () {
+            var open = function () {
+                var el = document.getElementById({$modalId});
+                if (!el || !el.querySelector('ul.errors li, .text-danger')) return;
+                if (window.KTModal && typeof KTModal.getInstance === 'function') {
+                    var inst = KTModal.getInstance(el) || new KTModal(el);
+                    if (inst && typeof inst.show === 'function') inst.show();
+                }
+            };
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', open);
+            } else {
+                open();
+            }
+        })();
+    </script>
 {/define}

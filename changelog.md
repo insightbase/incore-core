@@ -1,4 +1,35 @@
 # Changelog
+
+## 2026-04-21
+### Přidáno (Added)
+- users - admin grid - přidán filtr podle role (select) v `admin/user/`; hodnoty z `Role::getToSelect()` respektují oprávnění aktuálního uživatele
+
+## 2026-04-21
+### Přidáno (Added)
+- users - výpis uživatelů - nový sloupec `Role` (zobrazuje název role přes vazbu `role`, řaditelný podle `role.name`)
+
+## 2026-04-20
+### Opraveno (Fixed)
+- core - jazyky - `actionDelete` nyní blokuje smazání výchozího jazyka (flash `flash_languageIsDefault`) a v DataGridu je položka Smazat skryta pro výchozí jazyk; dříve smazání shodilo `RouterFactory` na `$default->url` na null
+- core - nastavení jazyka - `LanguageSettingFormData::$type` převeden na nullable a facade přeskočí update při null, aby prázdná hodnota neshodila mapování formuláře na TypeError
+- core - úprava obrázku - `EditFormData::$image_id` převeden na nullable a `ImageFacade::edit()` vyhazuje `ImageNotFoundException` při null, prázdné image_id už neshodí render
+- core - postranní menu - `MainMenuItem::isValidLink()` hlídá formát presenter jména z DB a `@layout.latte` skryje odkazy s neplatným presenterem místo vyhození výjimky o alfanumerickém názvu
+
+## 2026-04-15
+### Přidáno (Added)
+- forms - u kontaktního formuláře lze u typu select, radiolist a checkboxlist zadat hodnoty (středníkem oddělené)
+### Opraveno (Fixed)
+- forms - drag&drop pořadí řádků v editaci formuláře
+- forms - přidávání a mazání řádků při editaci formuláře
+- core - select (Choices) sjednocen vzhledem s inputem; rozbalený dropdown se zobrazuje nad dalším blokem
+
+## 2026-04-13
+### Opraveno (Fixed)
+- core - dropzone - chunkSize předáván Dropzone jako number (parseInt), string způsoboval špatné rozdělení chunků a chybu UPLOAD_ERR_INI_SIZE při větších souborech
+- core - dropzone - data-chunksize počítán jako 90 % z min(upload_max_filesize, post_max_size, 1 MB), aby se vešel i do defaultního nginx client_max_body_size (1 MB)
+### Přidáno (Added)
+- core - nastavení - přidáno pole `max_chunk_size` (v KB) pro ruční override velikosti chunku v Dropzone; při nevyplnění se použije automatický výpočet
+
 ## 2026-03-10
 ### Opraveno (Fixed)
 - content - detail - editorJS se nemusí upravovat v modal okně
@@ -68,6 +99,10 @@
 ### Přidáno (Added)
 - core - dropzone - možnost omezit typy souborů
 - core - nastavení -přidány helpy k logům, hlavní logo může být jen obrázek (nikoliv svg)
+
+## 2026-04-08
+### Opraveno (Fixed)
+- enumeration - oprava invalidace cache při smazání položky z číselníku
 
 ## 2026-02-02
 ### Přidáno (Added)

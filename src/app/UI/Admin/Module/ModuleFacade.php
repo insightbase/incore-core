@@ -63,6 +63,12 @@ readonly class ModuleFacade
         if($module->presenter === null){
             return '#';
         }
+        if(!preg_match('~^[a-zA-Z\x7f-\xff][a-zA-Z0-9\x7f-\xff]*(?::[a-zA-Z\x7f-\xff][a-zA-Z0-9\x7f-\xff]*)*$~D', $module->presenter)){
+            return '#';
+        }
+        if($module->action !== null && !preg_match('~^[a-zA-Z\x7f-\xff][a-zA-Z0-9\x7f-\xff]*$~D', $module->action)){
+            return '#';
+        }
         return $this->linkGenerator->link('Admin:' . $module->presenter . ':' . $module->action);
     }
 

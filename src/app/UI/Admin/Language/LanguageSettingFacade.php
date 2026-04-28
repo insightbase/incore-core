@@ -15,6 +15,9 @@ class LanguageSettingFacade
      */
     public function update(ActiveRow $languageSetting, LanguageSettingFormData $data):void
     {
+        if ($data->type === null) {
+            return;
+        }
         $languageSetting->update((array)$data);
     }
 }

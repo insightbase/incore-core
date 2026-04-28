@@ -35,7 +35,9 @@ readonly class FormFactory
         $form->addRadioList('type', $this->translator->translate('input_type'), [
             LanguageSettingTypeEnum::Url->value => $this->translator->translate('input_radio_languageByUrl'),
             LanguageSettingTypeEnum::Host->value => $this->translator->translate('input_radio_languageByHost'),
-        ]);
+        ])
+            ->setRequired()
+        ;
         $form->addSubmit('send', $this->translator->translate('input_update'));
 
         $form->setDefaults($languageSetting->toArray());

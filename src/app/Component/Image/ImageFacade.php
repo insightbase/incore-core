@@ -70,6 +70,9 @@ readonly class ImageFacade
      * @throws ImageNotFoundException
      */
     public function edit(EditFormData $data):void{
+        if ($data->image_id === null) {
+            throw new ImageNotFoundException();
+        }
         $image = $this->imageModel->get($data->image_id);
         if($image === null){
             throw new ImageNotFoundException();

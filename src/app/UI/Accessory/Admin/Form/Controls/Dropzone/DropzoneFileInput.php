@@ -3,6 +3,7 @@
 namespace App\UI\Accessory\Admin\Form\Controls\Dropzone;
 
 use App\Model\Admin\File;
+use App\Model\Admin\Setting;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Application\LinkGenerator;
 use Nette\Forms\Controls\TextInput;
@@ -22,6 +23,7 @@ class DropzoneFileInput extends TextInput
     public function __construct(
         private readonly LinkGenerator $linkGenerator,
         private readonly File                           $fileModel,
+        private readonly Setting                        $settingModel,
         null|string|\Stringable                          $label = null,
         ?int                                             $maxLength = null
     ) {
@@ -66,7 +68,17 @@ class DropzoneFileInput extends TextInput
             ->addHtml(Html::el('div')->class('ms-4')->addHtml($link))
         ;
         $dropzone->setAttribute('data-multiple', $this->multiple);
-        $dropzone->setAttribute('data-chunksize', $this->convertToBytes(ini_get('upload_max_filesize')));
+        $setting = $this->settingModel->getDefault();
+        if ($setting?->max_chunk_size !== null) {
+            $chunkSize = $setting->max_chunk_size * 1024;
+        } else {
+            $limit = min(
+                $this->convertToBytes(ini_get('upload_max_filesize')),
+                $this->convertToBytes(ini_get('post_max_size')),
+            );
+            $chunkSize = (int) ($limit * 0.9);
+        }
+        $dropzone->setAttribute('data-chunksize', $chunkSize);
 
         $container->addHtml($input->getControl()->style('display: none'));
         $container->addHtml($dropzone);

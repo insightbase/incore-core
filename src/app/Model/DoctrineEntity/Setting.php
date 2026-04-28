@@ -74,6 +74,9 @@ class Setting implements Entity
     #[ORM\Column(nullable: true, options: ['default' => null])]
     public ?int $max_image_resolution = null;
 
+    #[ORM\Column(nullable: true, options: ['default' => null])]
+    public ?int $max_chunk_size = null;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $basic_auth_user = null;
 

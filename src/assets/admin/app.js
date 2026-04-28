@@ -17,6 +17,8 @@ import './performance';
 import './tabs';
 import './stickyTable';
 import './editorJs.css';
+import Choices from 'choices.js';
+import 'choices.js/public/assets/styles/choices.min.css';
 
 let loaderId = null;
 if (!window.editors) window.editors = {};
@@ -167,8 +169,35 @@ function initSystem(){
     initDropzone();
     initFlashes();
     initMenu();
+    initSelect();
 }
 initSystem();
+
+function initSelect(root = document){
+    root.querySelectorAll('select').forEach((el) => {
+        if (el.classList.contains('formLanguageSelect')) return;
+        if (!el.dataset.choices) {
+            const isMultiple = el.multiple === true;
+
+            new Choices(el, {
+                removeItemButton: isMultiple,
+                searchEnabled: true,
+                // když není co vybírat
+                noChoicesText: 'Žádné možnosti',
+                // když vyhledávání nic nenašlo
+                noResultsText: 'Nic nenalezeno',
+                // text u položky (klikni pro výběr) – můžeš dát prázdný
+                itemSelectText: '',
+                placeholder: true,
+            });
+            el.dataset.choices = 'active';
+        }
+    });
+}
+
+document.addEventListener('repeater:added', (e) => {
+    initSelect(e.detail?.fieldset || e.target);
+});
 
 function initConfirmDelete(){
     Array.from(document.getElementsByClassName('confirmDelete')).forEach((element) => {
@@ -314,7 +343,7 @@ function initDropzone() {
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
                 chunking: true,
-                chunkSize: element.getAttribute('data-chunksize'),
+                chunkSize: parseInt(element.getAttribute('data-chunksize'), 10),
             };
 
             let acceptedFiles = element.getAttribute('data-accepted-files');
@@ -379,7 +408,7 @@ function initDropzone() {
                 maxFiles: element.getAttribute('data-multiple') === null ? 1 : null,
                 addRemoveLinks: true,
                 chunking: true,
-                chunkSize: element.getAttribute('data-chunksize'),
+                chunkSize: parseInt(element.getAttribute('data-chunksize'), 10),
             });
             dropzone.on('success', (file, response) => {
                 if (element.getAttribute('data-multiple') == null) {
