@@ -3,6 +3,7 @@
 ## 2026-04-29
 ### Změněno (Changed)
 - forms - pro nižší role se systémové/interní názvy generují automaticky
+- forms - možnost zamknout formulář
 
 ## 2026-04-21
 ### Přidáno (Added)
