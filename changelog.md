@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2026-04-29
+### Přidáno (Added)
+- forms - formControl - přidáno autohandled, kterým jde vypnout defaultní odesílání dat a řídit si to sám
+
+## 2026-04-29
 ### Změněno (Changed)
 - forms - pro nižší role se systémové/interní názvy generují automaticky
 - forms - možnost zamknout formulář
