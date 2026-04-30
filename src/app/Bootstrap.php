@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Core\Logger\DiscordLogger;
+use App\Core\Logger\SentryLogger;
 use App\UI\Admin\Setting\SettingFacade;
 use Nette\Bootstrap\Configurator;
 use Nette\DI\Container;
@@ -48,17 +49,27 @@ class Bootstrap
 
         $dir = (dirname(__FILE__));
         if(str_contains($dir, '/vendor/')){
-            $webhookErrorLogUrlFile = $dir.'/../../../../../private/';
+            $privateDir = $dir.'/../../../../../private/';
         }else{
-            $webhookErrorLogUrlFile = $dir.'/../../../incore-app/private/';
+            $privateDir = $dir.'/../../../incore-app/private/';
         }
-        $webhookErrorLogUrlFile .= SettingFacade::DISCORD_ERROR_LOG_URL;
+        $webhookErrorLogUrlFile = $privateDir . SettingFacade::DISCORD_ERROR_LOG_URL;
+        $sentryDsnFile = $privateDir . SettingFacade::SENTRY_DSN;
 
-        if (Debugger::$productionMode && file_exists($webhookErrorLogUrlFile)) {
-            $webhook = FileSystem::read($webhookErrorLogUrlFile);
-
+        if (Debugger::$productionMode) {
             $logger = Debugger::getLogger();
-            Debugger::setLogger(new DiscordLogger($logger, $webhook));
+
+            if (file_exists($webhookErrorLogUrlFile)) {
+                $webhook = FileSystem::read($webhookErrorLogUrlFile);
+                $logger = new DiscordLogger($logger, $webhook);
+            }
+
+            if (file_exists($sentryDsnFile)) {
+                $dsn = FileSystem::read($sentryDsnFile);
+                $logger = new SentryLogger($logger, $dsn, 'production');
+            }
+
+            Debugger::setLogger($logger);
         }
     }
 

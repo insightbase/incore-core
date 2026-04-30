@@ -22,8 +22,8 @@ class Setting implements Entity
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $email_sender = null;
 
-    #[ORM\Column(type: 'string', length: 255, options: ['default' => 'info@email.cz'])]
-    public string $email;
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => 'info@email.cz'])]
+    public ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $recaptcha_secret_key = null;
@@ -88,5 +88,8 @@ class Setting implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $discord_error_log_url = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $sentry_dsn = null;
 
 }

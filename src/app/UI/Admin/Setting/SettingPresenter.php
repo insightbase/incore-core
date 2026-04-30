@@ -15,6 +15,7 @@ use App\UI\Admin\Setting\Form\TestEmailFormData;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
 use Nette\Mail\SendException;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class SettingPresenter extends Presenter
 {

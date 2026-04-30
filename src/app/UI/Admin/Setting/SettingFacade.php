@@ -18,6 +18,7 @@ use Nette\Utils\FileSystem;
 class SettingFacade
 {
     public const string DISCORD_ERROR_LOG_URL = 'discordErrorLogUrl';
+    public const string SENTRY_DSN = 'sentryDsn';
 
     public function __construct(
         private readonly Setting       $settingModel,
@@ -43,11 +44,13 @@ class SettingFacade
             $setting = $this->settingModel->insert($updateData);
             $this->logFacade->create(LogActionEnum::Created, 'setting', $setting->id);
             $discordUpdated = $setting->discord_error_log_url !== null;
+            $sentryUpdated = $setting->sentry_dsn !== null;
         } else {
             $oldSetting = clone $setting;
             $setting->update($updateData);
             $this->logFacade->create(LogActionEnum::Updated, 'setting', $setting->id);
             $discordUpdated = $oldSetting->discord_error_log_url !== $setting->discord_error_log_url;
+            $sentryUpdated = $oldSetting->sentry_dsn !== $setting->sentry_dsn;
         }
 
         if($discordUpdated){
@@ -55,6 +58,14 @@ class SettingFacade
                 FileSystem::write($this->parameterBag->privateDir . '/' . self::DISCORD_ERROR_LOG_URL, $setting->discord_error_log_url);
             }else{
                 FileSystem::delete($this->parameterBag->privateDir . '/' . self::DISCORD_ERROR_LOG_URL);
+            }
+        }
+
+        if($sentryUpdated){
+            if($setting->sentry_dsn !== null){
+                FileSystem::write($this->parameterBag->privateDir . '/' . self::SENTRY_DSN, $setting->sentry_dsn);
+            }else{
+                FileSystem::delete($this->parameterBag->privateDir . '/' . self::SENTRY_DSN);
             }
         }
     }

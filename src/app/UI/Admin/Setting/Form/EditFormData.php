@@ -25,5 +25,6 @@ class EditFormData
     public ?string $basic_auth_password;
     public ?string $basic_auth_user;
     public ?string $discord_error_log_url;
+    public ?string $sentry_dsn;
     public bool $translate_expand_keys;
 }

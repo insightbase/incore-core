@@ -80,6 +80,9 @@ readonly class FormFactory
         $form->addText('discord_error_log_url', $this->translator->translate('input_discordErrorLogUrl'))
             ->setNullable()
         ;
+        $form->addText('sentry_dsn', $this->translator->translate('input_sentryDsn'))
+            ->setNullable()
+        ;
 
         $form->addGroup($this->translator->translate('field_email'));
         $form->addEmail('email', $this->translator->translate('input_email_formReceiver'))

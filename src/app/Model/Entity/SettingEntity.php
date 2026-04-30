@@ -11,7 +11,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read string $title
  * @property-read ?string $title_subpage
  * @property-read ?string $email_sender
- * @property-read string $email
+ * @property-read ?string $email
  * @property-read ?string $recaptcha_secret_key
  * @property-read ?string $recaptcha_site_key
  * @property-read ?ImageEntity $shareimage
@@ -38,6 +38,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $basic_auth_password
  * @property-read bool $translate_expand_keys
  * @property-read ?string $discord_error_log_url
+ * @property-read ?string $sentry_dsn
  */
 class SettingEntity extends ActiveRow
 {
