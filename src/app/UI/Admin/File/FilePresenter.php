@@ -43,36 +43,93 @@ class FilePresenter extends Presenter
     #[NoReturn] public function actionUpload(): void
     {
         $file = $this->getHttpRequest()->getFile('file');
-        if ($file instanceof FileUpload) {
-            if ($file->isOk()) {
+
+        $request = $this->getHttpRequest();
+        if($request->getPost('dzuuid') !== null){
+            $uuid = $request->getPost('dzuuid');
+            $index = (int) $request->getPost('dzchunkindex');
+            $total = (int) $request->getPost('dztotalchunkcount');
+
+            $tempDir = $this->parameterBag->tempDir . '/upload_chunks/' . $uuid;
+            $finalFile  = $this->parameterBag->tempDir . '/upload_chunks/' . $uuid . '_final';
+            FileSystem::createDir($tempDir);
+
+            $chunkPath = $tempDir . '/' . $index . '.part';
+            $file->move($chunkPath);
+
+            // Pokud je poslední chunk, slož finální soubor
+            if ($index === $total - 1) {
+                $output = fopen($finalFile, 'wb');
+                for ($i = 0; $i < $total; $i++) {
+                    $partPath = $tempDir . '/' . $i . '.part';
+                    if (!file_exists($partPath)) {
+                        $this->error("Chybí chunk $i");
+                    }
+                    fwrite($output, file_get_contents($partPath));
+                }
+                fclose($output);
+
                 $suffix = Arrays::last(explode('.', $file->getSanitizedName()));
 
                 $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
+                FileSystem::createDir($this->parameterBag->uploadDir);
+                FileSystem::copy($finalFile, $this->parameterBag->uploadDir . '/' . $fileName);
+
+                // Smazání chunků
+                FileSystem::delete($tempDir);
+                FileSystem::delete($finalFile);
 
                 $fileRow = $this->fileModel->insert([
                     'original_name' => $file->getUntrustedName(),
                     'saved_name' => $fileName,
                 ]);
 
-                FileSystem::createDir($this->parameterBag->uploadDir);
                 if($file->isImage()) {
-                    $netteImage = $file->toImage();
                     $setting = $this->settingModel->getDefault();
                     if($setting?->max_image_resolution !== null){
+                        $netteImage = Image::fromFile($this->parameterBag->uploadDir . '/' . $fileName);
                         $netteImage->resize($setting->max_image_resolution, $setting->max_image_resolution, Image::ShrinkOnly);
+                        $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
                     }
-                    $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
-                }else{
-                    $file->move($this->parameterBag->uploadDir . '/' . $fileName);
                 }
+
                 $this->payload->file = $fileName;
                 $this->payload->fileId = $fileRow->id;
-            } else {
-                $this->payload->error = $this->translator->translate('flash_fileSaveFailed');
+                $this->sendPayload();
             }
-        } else {
-            $this->payload->error = $this->translator->translate('flash_internalError');
+            $this->sendJson(['success' => true]);
+        }else {
+            if ($file instanceof FileUpload) {
+                if ($file->isOk()) {
+                    $suffix = Arrays::last(explode('.', $file->getSanitizedName()));
+
+                    $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
+
+                    $fileRow = $this->fileModel->insert([
+                        'original_name' => $file->getUntrustedName(),
+                        'saved_name' => $fileName,
+                    ]);
+
+                    FileSystem::createDir($this->parameterBag->uploadDir);
+                    if($file->isImage()) {
+                        $netteImage = $file->toImage();
+                        $setting = $this->settingModel->getDefault();
+                        if($setting?->max_image_resolution !== null){
+                            $netteImage->resize($setting->max_image_resolution, $setting->max_image_resolution, Image::ShrinkOnly);
+                        }
+                        $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
+                    }else{
+                        $file->move($this->parameterBag->uploadDir . '/' . $fileName);
+                    }
+                    $this->payload->file = $fileName;
+                    $this->payload->fileId = $fileRow->id;
+                } else {
+                    $this->payload->error = $this->translator->translate('flash_fileSaveFailed');
+                }
+            } else {
+                $this->payload->error = $this->translator->translate('flash_internalError');
+            }
+            $this->sendPayload();
         }
-        $this->sendPayload();
     }
 }
