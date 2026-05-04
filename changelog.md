@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-04
+### Přidáno (Added)
+- forms - saveData vrací vložený řádek
+
 ## 2026-05-03
 ### Opraveno (Fixed)
 - core - upload souborů - fixnut chunking
