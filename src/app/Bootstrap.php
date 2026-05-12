@@ -95,5 +95,12 @@ class Bootstrap
         if (file_exists($this->rootDir.'/config/local.neon')) {
             $this->configurator->addConfig($configDir.'/local.neon');
         }
+
+        // Test environment overrides local.neon when served under a test hostname
+        // (HTTP host for web requests, container hostname for CLI).
+        $host = $_SERVER['HTTP_HOST'] ?? php_uname('n');
+        if (str_contains($host, '-test.') && file_exists($this->rootDir.'/config/test.neon')) {
+            $this->configurator->addConfig($configDir.'/test.neon');
+        }
     }
 }

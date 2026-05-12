@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-05-12
+### Přidáno (Added)
+- core - fixtures - vytvoření super admin uživatele Václav Stodůlka, pokud ještě neexistuje
+
 ## 2026-05-04
 ### Přidáno (Added)
 - forms - saveData vrací vložený řádek
