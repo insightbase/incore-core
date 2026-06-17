@@ -40,6 +40,10 @@ class SettingFacade
             $updateData['smtp_password'] = $this->encryptFacade->encrypt($data->smtp_password);
         }
 
+        $updateData['editor_js_enabled_types'] = $data->editor_js_enabled_types === []
+            ? null
+            : implode(';', $data->editor_js_enabled_types);
+
         if (null === $setting) {
             $setting = $this->settingModel->insert($updateData);
             $this->logFacade->create(LogActionEnum::Created, 'setting', $setting->id);

@@ -39,6 +39,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read bool $translate_expand_keys
  * @property-read ?string $discord_error_log_url
  * @property-read ?string $sentry_dsn
+ * @property-read ?string $editor_js_enabled_types
  */
 class SettingEntity extends ActiveRow
 {

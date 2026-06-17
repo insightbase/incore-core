@@ -444,6 +444,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'field_basicAuth' => 'Basic Authentication',
 		'input_basicAuthUser' => 'Uživatel',
 		'input_basicAuthPassword' => 'Heslo',
+		'field_editorJs' => 'EditorJS',
+		'input_editorJsPlugins' => 'Povolené pluginy (prázdné = všechny povoleny)',
 		'flash_anotherTranslationInProgress' => 'Překlad tohoto jazyka probíhá. Prosím počktejte.',
 		'input_translate_expand_keys' => 'Překlady - rozpadnout menu podle klíčů',
 		'input_maxChunkSize' => 'Maximální velikost chunku (KB)',

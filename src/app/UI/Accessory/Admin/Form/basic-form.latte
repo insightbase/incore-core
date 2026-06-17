@@ -142,7 +142,7 @@
         <div class="flex flex-col w-full gap-1" n:tag-if="!$repeater">
             {if $input instanceof Nette\Forms\Controls\CheckboxList}
                 {foreach $input->items as $key => $label}
-                    {label $input->getName():$key}{input $input->getName():$key, class: 'checkbox'} {$label}{/label}
+                    {label $input->getName():$key, class: 'switch mb-2'}{input $input->getName():$key}<span class="switch-label">{$label}</span>{/label}
                 {/foreach}
             {else}
                 {if $input instanceof Nette\Forms\Controls\Checkbox}
@@ -364,9 +364,9 @@
                     {/if}
                 </span>
                 </label>
-                <div class="grow">
+                <div class="grow flex flex-col gap-2">
                     {foreach $input->items as $key => $label}
-                        {label $input->getName():$key}{input $input->getName():$key, class: 'checkbox'} {$label}{/label}
+                        {label $input->getName():$key, class: 'switch'}{input $input->getName():$key}<span class="switch-label">{$label}</span>{/label}
                     {/foreach}
                 </div>
             </div>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-06-17
+### Přidáno (Added)
+- core - editorJs - přidány pluginy
+
 ## 2026-05-12
 ### Přidáno (Added)
 - core - fixtures - vytvoření super admin uživatele Václav Stodůlka, pokud ještě neexistuje

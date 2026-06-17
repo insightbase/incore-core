@@ -92,4 +92,10 @@ class Setting implements Entity
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $sentry_dsn = null;
 
+    /**
+     * Semicolon-separated list of enabled EditorJS plugin types. Null = all plugins enabled (default).
+     */
+    #[ORM\Column(type: 'string', length: 1000, nullable: true, options: ['default' => null])]
+    public ?string $editor_js_enabled_types = null;
+
 }

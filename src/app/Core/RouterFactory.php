@@ -60,6 +60,7 @@ final class RouterFactory
         if($defaultFront) {
             $router
                 ->withModule('Front')
+                ->addRoute($langPrefix . 'o-nas', 'About:default')
                 ->addRoute($langPrefix . '<presenter>/<action>[/<id>]', 'Home:default')
                 ->end();
         }

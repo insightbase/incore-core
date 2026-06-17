@@ -7,7 +7,7 @@ import EditorJsTable from '@editorjs/table';
 import List from '@editorjs/list';
 import naja from "naja";
 import UploadLinkInlineTool from './editorJs/uploadLinkInlineTool.js';
-import ImageGallery from '@kiberpro/editorjs-gallery';
+import ImageGallery from "./editorJs/ImageGallery.js";
 import Sortable from 'sortablejs';
 import FAQ from './editorJs/faq';
 import Citation from './editorJs/citation';
@@ -17,6 +17,7 @@ import AnchorTune from './editorJs/AnchorTune.ts';
 import HighlightTune from './editorJs/HighlightTune';
 import ImageWithReplace from './editorJs/ImageWithReplace';
 import AudioTool from '@furison-tech/editorjs-audio';
+import MultiImageTool from "./editorJs/multiImageRow.js";
 import Partner from './editorJs/Partner.js';
 
 
@@ -92,6 +93,53 @@ export function initEditorJs() {
         if (types.includes("faq")) {
             tools.faq = {
                 class: FAQ,
+            }
+        }
+        if (types.includes("citation")) {
+            tools.citation = {
+                class: Citation,
+            }
+        }
+        if (types.includes("spotify")) {
+            tools.spotify = {
+                class: SpotifyTool,
+            }
+        }
+        if (types.includes("youtube")) {
+            tools.youtube = {
+                class: YouTubeTool,
+            }
+        }
+        if (types.includes("audio")) {
+            tools.audio = {
+                class: AudioTool,
+                config: {
+                    endpoints: {
+                        byFile: element.getAttribute('data-upload-url'),
+                    }
+                },
+            }
+        }
+        if (types.includes("gallery")) {
+            tools.gallery = {
+                class: ImageGallery,
+                config: {
+                    sortableJs: Sortable,
+                    endpoints: {
+                        byFile: element.getAttribute('data-upload-url'),
+                    },
+                    field: 'image',
+                },
+            }
+        }
+        if (types.includes("multiImage")) {
+            tools.multiImage = {
+                class: MultiImageTool,
+                config: {
+                    endpoints: {
+                        byFile: element.getAttribute('data-upload-url'),
+                    },
+                },
             }
         }
 

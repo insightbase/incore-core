@@ -5,6 +5,7 @@ namespace App\UI\Admin\Setting\Form;
 use App\Component\Translator\Translator;
 use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
+use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsTypeEnum;
 use App\UI\Accessory\Admin\Form\Form;
 use Nette\Database\Table\ActiveRow;
 
@@ -125,12 +126,28 @@ readonly class FormFactory
         $form->addText('basic_auth_password', $this->translator->translate('input_basicAuthPassword'))
             ->setNullable();
 
+        $form->addGroup($this->translator->translate('field_editorJs'));
+        $pluginItems = [];
+        foreach (EditorJsTypeEnum::cases() as $case) {
+            $pluginItems[$case->value] = $case->value;
+        }
+        $form->addMultiSelect('editor_js_enabled_types', $this->translator->translate('input_editorJsPlugins'), $pluginItems);
+
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));
 
         if (null !== $setting) {
-            $form->setDefaults($setting->toArray());
+            $defaults = $setting->toArray();
+            unset($defaults['editor_js_enabled_types']);
+            $form->setDefaults($defaults);
         }
+
+        // Null (empty selection) = all plugins enabled. A non-empty selection enables only the chosen ones.
+        $stored = $setting?->editor_js_enabled_types ?? null;
+        $enabledDefault = $stored === null
+            ? []
+            : array_values(array_filter(explode(';', $stored)));
+        $form->setDefaults(['editor_js_enabled_types' => $enabledDefault]);
 
         return $form;
     }
