@@ -54,6 +54,10 @@ application:
 		4xx: Error:Error4xx
 		5xx: Error:Error5xx
 	mapping: App\UI\*\**Presenter
+	# nette/application 3.3.0 předává prázdné scanDirs → projektové app/ presentery se neskenují
+	# a hlásí "No services of type ...Presenter found". Explicitní scanDirs to vynutí.
+	scanDirs:
+		- %appDir%
 
 
 
