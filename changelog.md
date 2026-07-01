@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-01
+### Opraveno (Fixed)
+- forms - Front\Accessory\Form - doplněn parametr `?Closure $onSubmit` do `addSubmit()` kvůli kompatibilitě signatury s novým `Nette\Forms\Container::addSubmit()`
+
 ## 2026-06-17
 ### Přidáno (Added)
 - core - editorJs - přidány pluginy
