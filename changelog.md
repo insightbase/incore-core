@@ -3,6 +3,9 @@
 ## 2026-07-01
 ### Opraveno (Fixed)
 - forms - Front\Accessory\Form - doplněn parametr `?Closure $onSubmit` do `addSubmit()` kvůli kompatibilitě signatury s novým `Nette\Forms\Container::addSubmit()`
+- core - Admin\Home - `getActivityDescription()` nespadne na neznámé akci logu (`LogActionEnum::tryFrom` místo `from`, který vyhazoval nezachycený `\ValueError`)
+- core - Admin\Form (basic-form.latte) - přidána vlastní vykreslovací větev pro `RadioList` a guard proti volání `getControlPart()` bez klíče u `RadioList`/`CheckboxList`, které vyhazovalo `Item '' does not exist` (projevilo se u pole `type` v editaci obsahu)
+- content - Admin\Content - RadioList `type` toleruje prázdnou/legacy uloženou hodnotu (`checkDefaultValue(false)`)
 
 ## 2026-06-17
 ### Přidáno (Added)

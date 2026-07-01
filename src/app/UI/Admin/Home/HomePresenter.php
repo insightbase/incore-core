@@ -141,17 +141,21 @@ final class HomePresenter extends Nette\Application\UI\Presenter
     public function getActivityDescription(ActiveRow $log): string
     {
         try {
-            $action = LogActionEnum::from($log['action']);
-            
+            $action = LogActionEnum::tryFrom($log['action']);
+
             try {
                 $user = $log->ref('user', 'user_id');
                 $userName = $user && isset($user->name) ? $user->name : 'Systém';
             } catch (\Exception $e) {
                 $userName = 'Systém';
             }
-            
+
             $table = $log['table'] ?? 'neznámý modul';
-            
+
+            if ($action === null) {
+                return sprintf('%s - %s v modulu %s', $userName, $log['action'], $table);
+            }
+
             return match($action) {
                 LogActionEnum::Created => sprintf('%s vytvořil nový záznam v modulu %s', $userName, $table),
                 LogActionEnum::Updated => sprintf('%s upravil záznam v modulu %s', $userName, $table),

@@ -119,7 +119,8 @@
         {else}
             {var string $class = 'input'}
         {/if}
-        {if $input->getControlPart()->getAttribute('class') !== null}
+        {* RadioList/CheckboxList nemají jeden control part - getControlPart() bez klíče by vyhodilo výjimku *}
+        {if !($input instanceof Nette\Forms\Controls\RadioList) && !($input instanceof Nette\Forms\Controls\CheckboxList) && $input->getControlPart()->getAttribute('class') !== null}
             {php $class .= ' ' . $input->getControlPart()->getAttribute('class')}
         {/if}
         {if $input->hasErrors()}
@@ -140,7 +141,13 @@
             {php $class .= ' select'}
         {/if}
         <div class="flex flex-col w-full gap-1" n:tag-if="!$repeater">
-            {if $input instanceof Nette\Forms\Controls\CheckboxList}
+            {if $input instanceof Nette\Forms\Controls\RadioList}
+                <div class="flex flex-wrap gap-4">
+                    {foreach $input->items as $key => $label}
+                        {label $input->getName():$key, class: 'flex items-center gap-1.5 cursor-pointer'}{input $input->getName():$key}<span>{$label}</span>{/label}
+                    {/foreach}
+                </div>
+            {elseif $input instanceof Nette\Forms\Controls\CheckboxList}
                 {foreach $input->items as $key => $label}
                     {label $input->getName():$key, class: 'switch mb-2'}{input $input->getName():$key}<span class="switch-label">{$label}</span>{/label}
                 {/foreach}
