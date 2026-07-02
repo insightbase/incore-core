@@ -33,6 +33,9 @@ readonly class FormFactory
             ->addRule($form::Integer)
             ->addFilter(fn($v) => (int) $v);
         $form->addSubmit('send', $this->translator->translate('send_update'));
+
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Image::class);
+
         return $form;
     }
 }

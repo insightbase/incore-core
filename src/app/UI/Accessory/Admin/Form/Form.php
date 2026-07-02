@@ -29,6 +29,13 @@ class Form extends Nette\Application\UI\Form
     public const string LANG_CHANGE_ATTRIBUTE = 'langChange';
     public bool $showHelp = true;
 
+    use EntityMaxLengthTrait;
+
+    protected function translateMaxLengthMessage(int $length): string
+    {
+        return (string) $this->translator->translate('input_maxLength_%length%', ['length' => $length]);
+    }
+
     private array $defaultTranslates = [];
     public bool $sendByAjax = false {
         get {
@@ -255,12 +262,20 @@ class Form extends Nette\Application\UI\Form
                         ->setHtmlAttribute('data-original-name', $base);
                     $lang[$input->getName()] = $input1;
                 }else {
-                    $lang->addText($input->getName())
+                    $clone = $lang->addText($input->getName())
                         ->setNullable()
                         ->setHtmlAttribute('data-language-id', $language->id)
                         ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
                         ->setDefaultValue(null !== $defaults && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
                         ->setHtmlAttribute('data-original-name', $base);
+
+                    if ($input instanceof \Nette\Forms\Controls\TextBase) {
+                        MaxLengthApplier::copyMaxLength(
+                            $input,
+                            $clone,
+                            fn (int $length): string => $this->translateMaxLengthMessage($length),
+                        );
+                    }
                 }
             }
         }

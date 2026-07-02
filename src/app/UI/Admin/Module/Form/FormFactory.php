@@ -42,6 +42,8 @@ readonly class FormFactory
 
         $form->setDefaults($module->toArray());
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Module::class);
+
         return $form;
     }
 }

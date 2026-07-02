@@ -37,6 +37,8 @@ readonly class SignFormFactory
         ;
         $form->addSubmit('send', $this->translator->translate('submit_continue'));
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\User::class);
+
         return $form;
     }
 
@@ -52,6 +54,8 @@ readonly class SignFormFactory
         ;
         $form->addCheckbox('rememberMe', $this->translator->translate('input_rememberMe'));
         $form->addSubmit('send', $this->translator->translate('submit_logIn'));
+
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\User::class);
 
         return $form;
     }

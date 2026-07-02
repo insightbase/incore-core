@@ -108,6 +108,8 @@ readonly class FormFactory
         }
         $form->addGroup();
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Language::class);
+
         return $form;
     }
 }

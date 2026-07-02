@@ -125,6 +125,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'flash_default_language_required' => 'Musí být nastaven výchozí jazyk',
 		'column_url' => 'URL',
 		'input_url' => 'URL',
+		'input_maxLength_%length%' => 'Maximální délka je %length% znaků',
 		'input_url_max_length_%length%' => 'Maximální délka je %length%',
 		'flash_default_language_cannot_be_deactivate' => 'Výchozí jazyk nemůže být deaktivován',
 		'header_modules' => 'Moduly',

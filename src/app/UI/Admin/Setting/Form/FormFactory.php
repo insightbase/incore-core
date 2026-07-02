@@ -29,6 +29,8 @@ readonly class FormFactory
             ->setNullable();
         $form->addSubmit('send', $this->translator->translate('send_send'));
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Setting::class);
+
         return $form;
     }
 
@@ -148,6 +150,8 @@ readonly class FormFactory
             ? []
             : array_values(array_filter(explode(';', $stored)));
         $form->setDefaults(['editor_js_enabled_types' => $enabledDefault]);
+
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Setting::class);
 
         return $form;
     }

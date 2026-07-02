@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-07-02
+### Přidáno (Added)
+- core - formuláře - textová pole mají nově omezený počet znaků podle databáze (napříč administrací)
+
 ### Opraveno (Fixed)
 - datagrid - opravena chyba při rychlé úpravě překladu, když bylo zapnuté vyhledávání
 

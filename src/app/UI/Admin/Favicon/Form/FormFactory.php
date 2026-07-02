@@ -90,6 +90,8 @@ readonly class FormFactory
             'href' => 'href',
         ]);
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Favicon::class);
+
         return $form;
     }
 }
