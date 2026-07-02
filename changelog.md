@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-02
+### Opraveno (Fixed)
+- datagrid - opravena chyba při rychlé úpravě překladu, když bylo zapnuté vyhledávání
+
 ## 2026-07-01
 ### Opraveno (Fixed)
 - forms - Front\Accessory\Form - doplněn parametr `?Closure $onSubmit` do `addSubmit()` kvůli kompatibilitě signatury s novým `Nette\Forms\Container::addSubmit()`
