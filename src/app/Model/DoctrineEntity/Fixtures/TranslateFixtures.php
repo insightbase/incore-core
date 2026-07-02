@@ -448,6 +448,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'field_editorJs' => 'EditorJS',
 		'input_editorJsPlugins' => 'Povolené pluginy (prázdné = všechny povoleny)',
 		'flash_anotherTranslationInProgress' => 'Překlad tohoto jazyka probíhá. Prosím počktejte.',
+		'flash_translateApiError' => 'Odeslání k překladu se nezdařilo, překladová služba je dočasně nedostupná. Zkuste to prosím znovu později.',
+		'flash_translateApiErrorPartial' => 'Část textů byla odeslána k překladu, ale zbytek se nepodařilo odeslat, protože překladová služba selhala. Spusťte překlad prosím znovu.',
 		'input_translate_expand_keys' => 'Překlady - rozpadnout menu podle klíčů',
 		'input_maxChunkSize' => 'Maximální velikost chunku (KB)',
 		'input_active' => 'Aktivní',

@@ -6,6 +6,7 @@
 
 ### Opraveno (Fixed)
 - datagrid - opravena chyba při rychlé úpravě překladu, když bylo zapnuté vyhledávání
+- core - překlady - když je překladová služba nedostupná nebo vrátí chybu, zobrazí se srozumitelná hláška místo chybové stránky (překlad jazyka, překlad klíče i překlad obsahu performance)
 
 ## 2026-07-01
 ### Opraveno (Fixed)

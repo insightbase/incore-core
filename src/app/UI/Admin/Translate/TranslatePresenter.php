@@ -11,6 +11,8 @@ use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
+use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
+use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\LanguageFacade;
 use App\UI\Admin\Translate\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Accessory\ParameterBag;
@@ -88,8 +90,16 @@ class TranslatePresenter extends Presenter
     public function actionTranslate(int $id):void
     {
         $this->exist($id);
-        foreach($this->languageModel->getToTranslateNotDefault() as $language) {
-            $this->languageFacade->translateTranslate($this->translate, $language);
+        try {
+            foreach($this->languageModel->getToTranslateNotDefault() as $language) {
+                $this->languageFacade->translateTranslate($this->translate, $language);
+            }
+        } catch (BasicAuthNotSetException $e) {
+            $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
+            $this->redirect('default');
+        } catch (TranslateApiException $e) {
+            $this->flashMessage($this->translator->translate('flash_translateApiError'), 'error');
+            $this->redirect('default');
         }
         $this->flashMessage($this->translator->translate('flash_sendToTranslate'));
         $this->redirect('default');
