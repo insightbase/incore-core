@@ -3,6 +3,7 @@
 ## 2026-07-02
 ### Přidáno (Added)
 - core - formuláře - textová pole mají nově omezený počet znaků podle databáze (napříč administrací)
+- datagrid - řazení - u tabulek s ručním přeuspořádáním lze nastavit, do kterého sloupce se ukládá pořadí
 
 ### Opraveno (Fixed)
 - datagrid - opravena chyba při rychlé úpravě překladu, když bylo zapnuté vyhledávání
