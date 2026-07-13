@@ -11,13 +11,13 @@ readonly class ConsoleUrlBuilder
     public function build(string $identityToken, ConsolePageEnum $page, ?string $env): string
     {
         $params = [
-            'identity=' . $identityToken,
-            'page=' . $page->value,
+            'identity='.$identityToken,
+            'page='.$page->value,
         ];
         if (null !== $env && '' !== $env) {
-            $params[] = 'env=' . $env;
+            $params[] = 'env='.$env;
         }
 
-        return $this->consoleUrl . '#' . implode('&', $params);
+        return $this->consoleUrl.'#'.implode('&', $params);
     }
 }
