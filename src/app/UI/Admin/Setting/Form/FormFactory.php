@@ -141,6 +141,8 @@ readonly class FormFactory
             ->setNullable();
         $form->addSelect('dropcore_env', $this->translator->translate('input_dropCoreEnv'), DropCoreEnvEnum::getToSelect())
             ->setPrompt('---');
+        $form->addText('credit_id', $this->translator->translate('input_dropCoreCreditId'))
+            ->setNullable();
 
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));

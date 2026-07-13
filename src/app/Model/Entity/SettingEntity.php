@@ -42,6 +42,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $editor_js_enabled_types
  * @property-read ?string $dropcore_identity_token
  * @property-read ?string $dropcore_env
+ * @property-read ?string $credit_id
  */
 class SettingEntity extends ActiveRow
 {

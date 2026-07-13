@@ -34,4 +34,5 @@ class EditFormData
     public array $editor_js_enabled_types = [];
     public ?string $dropcore_identity_token;
     public ?string $dropcore_env;
+    public ?string $credit_id;
 }
