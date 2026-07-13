@@ -1,0 +1,33 @@
+{templateType App\UI\Admin\BaseTemplate}
+
+{layout $layoutFile}
+
+{block h1}{_'header_credit'}{/block}
+
+{block content}
+    <div n:if="$demoOnProduction" class="alert alert-danger mb-5">
+        {_'credit_demoOnProduction'}
+    </div>
+
+    {if !$hasToken}
+        <div class="alert alert-warning">
+            {_'credit_tokenMissing'}
+            <a n:href="Setting:default" class="btn btn-sm btn-light ms-3">{_'header_setting'}</a>
+        </div>
+    {else}
+        <div class="tabs mb-5 no-border">
+            <a n:foreach="$pages as $page"
+               n:href="default, page: $page->value"
+               n:class="'tab', $page === $activePage ? 'active'">
+                {_'tab_credit_' . $page->value}
+            </a>
+        </div>
+
+        <iframe
+            src="{$consoleUrl}"
+            loading="lazy"
+            {if $activePage === App\Component\DropCore\ConsolePageEnum::Buy}allow="payment"{/if}
+            style="width: 100%; height: {$activePage === App\Component\DropCore\ConsolePageEnum::Buy ? 760 : 600}px; border: 0; border-radius: 12px;"
+        ></iframe>
+    {/if}
+{/block}
