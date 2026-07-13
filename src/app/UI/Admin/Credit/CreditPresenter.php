@@ -11,6 +11,7 @@ use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\ParameterBag;
 use Nette\Application\BadRequestException;
+use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
 
 class CreditPresenter extends Presenter
@@ -28,9 +29,14 @@ class CreditPresenter extends Presenter
 
     /**
      * @throws BadRequestException
+     * @throws ForbiddenRequestException
      */
     public function actionDefault(string $page = ConsolePageEnum::Credits->value): void
     {
+        if (!$this->getUser()->isAllowed('credit', 'default')) {
+            throw new ForbiddenRequestException();
+        }
+
         $activePage = ConsolePageEnum::tryFromString($page);
         if (null === $activePage) {
             throw new BadRequestException();
