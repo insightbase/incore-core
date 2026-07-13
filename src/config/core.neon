@@ -8,6 +8,9 @@ parameters:
     metronicDir: 'metronic'
     dropCore:
         consoleUrl: 'https://console.inbs.cz/shop.html'
+        apiUrl: ''
+        store: ''
+        accessToken: ''
 
 services:
     - App\Component\Translator\Translator
@@ -20,6 +23,8 @@ services:
     - App\UI\Accessory\ParameterBag(%wwwDir%, %rootDir%, %debugMode%, %uploadDir%,%previewDir%,%previewWwwDir%, %tempDir%, %appDir%,%encryptionKey%, %autoGenerateEntities%, %metronicDir%, %privateDir%)
     - App\Core\DbParameterBag(%database.host%,%database.dbname%,%database.user%,%database.password%)
     - App\Component\DropCore\ConsoleUrlBuilder(%dropCore.consoleUrl%)
+    - App\Component\DropCore\DropCoreConfig(%dropCore.apiUrl%, %dropCore.store%, %dropCore.accessToken%)
+    - App\Component\Credit\CreditClient
 
     - App\Component\Translator\Extractor\LatteExtractor
     - App\Component\Translator\Extraxtor\NetteTranslatorExtractor
