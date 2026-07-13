@@ -5,12 +5,12 @@
 {block h1}{_'header_credit'}{/block}
 
 {block content}
-    <div n:if="$demoOnProduction" class="alert alert-danger mb-5">
+    <div n:if="$demoOnProduction" class="flex items-center gap-3 p-4 mb-5 rounded-lg border border-danger bg-danger-light text-danger font-medium">
         {_'credit_demoOnProduction'}
     </div>
 
     {if !$hasToken}
-        <div class="alert alert-warning">
+        <div class="flex items-center gap-3 p-4 rounded-lg border border-warning bg-warning-light text-warning">
             {_'credit_tokenMissing'}
             <a n:href="Setting:default" class="btn btn-sm btn-light ms-3">{_'header_setting'}</a>
         </div>
