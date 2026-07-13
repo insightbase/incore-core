@@ -31,4 +31,6 @@ class EditFormData
      * @var string[] Selected (enabled) EditorJS plugin type values.
      */
     public array $editor_js_enabled_types = [];
+    public ?string $dropcore_identity_token;
+    public ?string $dropcore_env;
 }

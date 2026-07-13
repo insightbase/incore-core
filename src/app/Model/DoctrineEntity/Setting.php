@@ -98,4 +98,10 @@ class Setting implements Entity
     #[ORM\Column(type: 'string', length: 1000, nullable: true, options: ['default' => null])]
     public ?string $editor_js_enabled_types = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $dropcore_identity_token = null;
+
+    #[ORM\Column(type: 'string', length: 10, nullable: true, options: ['default' => null])]
+    public ?string $dropcore_env = null;
+
 }

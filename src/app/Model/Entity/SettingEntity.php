@@ -40,6 +40,8 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $discord_error_log_url
  * @property-read ?string $sentry_dsn
  * @property-read ?string $editor_js_enabled_types
+ * @property-read ?string $dropcore_identity_token
+ * @property-read ?string $dropcore_env
  */
 class SettingEntity extends ActiveRow
 {

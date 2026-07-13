@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\Setting\Form;
 
+use App\Component\DropCore\DropCoreEnvEnum;
 use App\Component\Translator\Translator;
 use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
@@ -134,6 +135,12 @@ readonly class FormFactory
             $pluginItems[$case->value] = $case->value;
         }
         $form->addMultiSelect('editor_js_enabled_types', $this->translator->translate('input_editorJsPlugins'), $pluginItems);
+
+        $form->addGroup($this->translator->translate('field_dropCore'));
+        $form->addText('dropcore_identity_token', $this->translator->translate('input_dropCoreIdentityToken'))
+            ->setNullable();
+        $form->addSelect('dropcore_env', $this->translator->translate('input_dropCoreEnv'), DropCoreEnvEnum::getToSelect())
+            ->setPrompt('---');
 
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));

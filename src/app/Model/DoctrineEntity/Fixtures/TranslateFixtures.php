@@ -558,6 +558,9 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_formReceiver' => 'Příjemce',
 		'input_discordErrorLogUrl' => 'Discord URL pro logování chyb',
 		'input_sentryDsn' => 'Sentry DSN pro logování chyb',
+		'field_dropCore' => 'DropCore',
+		'input_dropCoreIdentityToken' => 'Identity token',
+		'input_dropCoreEnv' => 'Prostředí',
 	];
 
 
