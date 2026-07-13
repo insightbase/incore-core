@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\Credit;
 
+use App\Component\Credit\CreditFacade;
 use App\Component\DropCore\ConsolePageEnum;
 use App\Component\DropCore\ConsoleUrlBuilder;
 use App\Component\DropCore\DropCoreEnvEnum;
@@ -23,6 +24,7 @@ class CreditPresenter extends Presenter
         private readonly Setting $settingModel,
         private readonly ConsoleUrlBuilder $consoleUrlBuilder,
         private readonly ParameterBag $parameterBag,
+        private readonly CreditFacade $creditFacade,
     ) {
         parent::__construct();
     }
@@ -55,5 +57,17 @@ class CreditPresenter extends Presenter
             : null;
         $this->template->demoOnProduction = !$this->parameterBag->debugMode
             && DropCoreEnvEnum::Demo->value === $env;
+    }
+
+    /**
+     * @throws ForbiddenRequestException
+     */
+    public function actionBalance(): void
+    {
+        if (!$this->getUser()->isAllowed('credit', 'default')) {
+            throw new ForbiddenRequestException();
+        }
+
+        $this->sendJson(['value' => $this->creditFacade->getBalance()]);
     }
 }
