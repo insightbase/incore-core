@@ -28,7 +28,7 @@ class CreditClient
     public function getBalance(string $account): ?int
     {
         try {
-            $response = $this->httpClient->request('POST', $this->config->apiUrl . '/promo/credits/value', [
+            $response = $this->httpClient->request('POST', $this->config->apiUrl.'/promo/credits/value', [
                 'headers' => [
                     'access-token' => $this->config->accessToken,
                     'store' => $this->config->store,
