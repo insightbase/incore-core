@@ -127,7 +127,7 @@ function initOptionsWidget(root){
         addInput.type = 'text';
         addInput.className = 'input';
         addInput.style.flex = '1 1 auto';
-        addInput.placeholder = 'Přidat hodnotu…';
+        addInput.placeholder = input.getAttribute('data-options-placeholder') || 'Přidat hodnotu…';
         addGroup.appendChild(addInput);
 
         const addBtn = document.createElement('button');
