@@ -558,6 +558,17 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_formReceiver' => 'Příjemce',
 		'input_discordErrorLogUrl' => 'Discord URL pro logování chyb',
 		'input_sentryDsn' => 'Sentry DSN pro logování chyb',
+		'field_dropCore' => 'DropCore',
+		'input_dropCoreIdentityToken' => 'Identity token',
+		'input_dropCoreEnv' => 'Prostředí',
+		'input_dropCoreCreditId' => 'Účet kreditů',
+		'header_credit' => 'Kredity',
+		'tab_credit_credits' => 'Přehled',
+		'tab_credit_buy' => 'Dobít',
+		'tab_credit_orders' => 'Objednávky',
+		'tab_credit_usage' => 'Spotřeba',
+		'credit_tokenMissing' => 'Nejprve vyplňte identity token v nastavení.',
+		'credit_demoOnProduction' => 'Pozor: na produkci je nastaveno demo prostředí DropCore.',
 	];
 
 

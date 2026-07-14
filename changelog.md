@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-13
+### Přidáno (Added)
+- core - kredity - nová sekce Kredity v administraci: přehled zůstatku, dobití, objednávky a spotřeba se zobrazují přímo z kreditové konzole
+- core - nastavení - nová pole Identity token a Prostředí (demo/produkce) pro připojení ke kreditové konzoli; bez vyplněného tokenu sekce Kredity vyzve k jeho doplnění
+- core - kredity - zůstatek kreditů se zobrazuje v hlavičce administrace vedle přihlášeného uživatele
+- core - nastavení - nové pole Účet kreditů; bez něj se zůstatek v hlavičce nezobrazuje
+- core - kredity - položka Kredity se v menu objeví, až když je v nastavení vyplněný identity token
+
 ## 2026-07-02
 ### Přidáno (Added)
 - core - formuláře - textová pole mají nově omezený počet znaků podle databáze (napříč administrací)
