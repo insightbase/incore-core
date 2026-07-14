@@ -65,6 +65,8 @@ readonly class MyAccountFormFactory
             'avatar_id' => $user->avatar_id,
         ]);
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\User::class);
+
         return $form;
     }
 

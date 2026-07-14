@@ -80,6 +80,8 @@ readonly class FormFactory
             }, $this->translator->translate('flash_roleSystemNameAlreadyExists'))
         ;
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Role::class);
+
         return $form;
     }
 }

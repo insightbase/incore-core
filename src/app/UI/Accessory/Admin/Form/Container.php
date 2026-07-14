@@ -2,6 +2,7 @@
 
 namespace App\UI\Accessory\Admin\Form;
 
+use App\Component\Translator\Translator;
 use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInput;
 use App\UI\Accessory\Admin\Form\Controls\Copy\CopyInputFactory;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput;
@@ -23,6 +24,13 @@ class Container extends \Nette\Forms\Container
     private bool $toggle = false;
     private ?string $toggleCaption = null;
 
+    use EntityMaxLengthTrait;
+
+    protected function translateMaxLengthMessage(int $length): string
+    {
+        return (string) $this->translator->translate('input_maxLength_%length%', ['length' => $length]);
+    }
+
     public function __construct(
         private readonly DropzoneImageInputFactory $dropzoneImageInputFactory,
         private readonly EditorJsInputFactory      $editorJsInputFactory,
@@ -31,6 +39,7 @@ class Container extends \Nette\Forms\Container
         private readonly CopyInputFactory          $copyInputFactory,
         private readonly TextAreaCopyFactory       $textAreaCopyFactory,
         private readonly OptionsInputFactory       $optionsInputFactory,
+        private readonly Translator                $translator,
     )
     {
     }

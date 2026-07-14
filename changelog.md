@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-07-13
+### Přidáno (Added)
+- core - kredity - nová sekce Kredity v administraci: přehled zůstatku, dobití, objednávky a spotřeba se zobrazují přímo z kreditové konzole
+- core - nastavení - nová pole Identity token a Prostředí (demo/produkce) pro připojení ke kreditové konzoli; bez vyplněného tokenu sekce Kredity vyzve k jeho doplnění
+- core - kredity - zůstatek kreditů se zobrazuje v hlavičce administrace vedle přihlášeného uživatele
+- core - nastavení - nové pole Účet kreditů; bez něj se zůstatek v hlavičce nezobrazuje
+- core - kredity - položka Kredity se v menu objeví, až když je v nastavení vyplněný identity token
+
+## 2026-07-02
+### Přidáno (Added)
+- core - formuláře - textová pole mají nově omezený počet znaků podle databáze (napříč administrací)
+- datagrid - řazení - u tabulek s ručním přeuspořádáním lze nastavit, do kterého sloupce se ukládá pořadí
+
+### Opraveno (Fixed)
+- datagrid - opravena chyba při rychlé úpravě překladu, když bylo zapnuté vyhledávání
+- core - překlady - když je překladová služba nedostupná nebo vrátí chybu, zobrazí se srozumitelná hláška místo chybové stránky (překlad jazyka, překlad klíče i překlad obsahu performance)
+
+## 2026-07-01
+### Opraveno (Fixed)
+- forms - Front\Accessory\Form - doplněn parametr `?Closure $onSubmit` do `addSubmit()` kvůli kompatibilitě signatury s novým `Nette\Forms\Container::addSubmit()`
+- core - Admin\Home - `getActivityDescription()` nespadne na neznámé akci logu (`LogActionEnum::tryFrom` místo `from`, který vyhazoval nezachycený `\ValueError`)
+- core - Admin\Form (basic-form.latte) - přidána vlastní vykreslovací větev pro `RadioList` a guard proti volání `getControlPart()` bez klíče u `RadioList`/`CheckboxList`, které vyhazovalo `Item '' does not exist` (projevilo se u pole `type` v editaci obsahu)
+- content - Admin\Content - RadioList `type` toleruje prázdnou/legacy uloženou hodnotu (`checkDefaultValue(false)`)
+
 ## 2026-06-17
 ### Přidáno (Added)
 - core - editorJs - přidány pluginy

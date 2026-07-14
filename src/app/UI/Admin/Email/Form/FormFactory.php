@@ -52,6 +52,8 @@ readonly class FormFactory
             ->setNullable()
         ;
 
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Email::class);
+
         return $form;
     }
 }

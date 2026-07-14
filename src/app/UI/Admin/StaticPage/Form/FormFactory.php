@@ -62,6 +62,9 @@ readonly class FormFactory
                 ->setNullable();
             $seo->addText('keywords', $this->translator->translate('input_staticPageKeywords'))
                 ->setNullable();
+
+            $container->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\StaticPageLanguage::class);
+            $seo->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\StaticPageLanguage::class);
         }
 
         $form->addGroup();
@@ -89,6 +92,8 @@ readonly class FormFactory
                 $this->staticPageFacade->update($staticPage, $data);
             };
         }
+
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\StaticPage::class);
 
         return $form;
     }

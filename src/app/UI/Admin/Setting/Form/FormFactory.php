@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\Setting\Form;
 
+use App\Component\DropCore\DropCoreEnvEnum;
 use App\Component\Translator\Translator;
 use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
@@ -28,6 +29,8 @@ readonly class FormFactory
             ->setDefaultValue($setting?->ga_service_id)
             ->setNullable();
         $form->addSubmit('send', $this->translator->translate('send_send'));
+
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Setting::class);
 
         return $form;
     }
@@ -133,6 +136,14 @@ readonly class FormFactory
         }
         $form->addMultiSelect('editor_js_enabled_types', $this->translator->translate('input_editorJsPlugins'), $pluginItems);
 
+        $form->addGroup($this->translator->translate('field_dropCore'));
+        $form->addText('dropcore_identity_token', $this->translator->translate('input_dropCoreIdentityToken'))
+            ->setNullable();
+        $form->addSelect('dropcore_env', $this->translator->translate('input_dropCoreEnv'), DropCoreEnvEnum::getToSelect())
+            ->setPrompt('---');
+        $form->addText('credit_id', $this->translator->translate('input_dropCoreCreditId'))
+            ->setNullable();
+
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));
 
@@ -148,6 +159,8 @@ readonly class FormFactory
             ? []
             : array_values(array_filter(explode(';', $stored)));
         $form->setDefaults(['editor_js_enabled_types' => $enabledDefault]);
+
+        $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\Setting::class);
 
         return $form;
     }

@@ -27,8 +27,12 @@ class EditFormData
     public ?string $discord_error_log_url;
     public ?string $sentry_dsn;
     public bool $translate_expand_keys;
+
     /**
-     * @var string[] Selected (enabled) EditorJS plugin type values.
+     * @var string[] selected (enabled) EditorJS plugin type values
      */
     public array $editor_js_enabled_types = [];
+    public ?string $dropcore_identity_token;
+    public ?string $dropcore_env;
+    public ?string $credit_id;
 }

@@ -40,7 +40,7 @@ class Translator implements \Nette\Localization\Translator
     }
 
     /**
-     * @param array<int|string|\Stringable> $parameters
+     * @param int|string|\Stringable|TranslateTypeEnum|array<string, int|string|\Stringable> ...$parameters
      */
     public function translate(string|\Stringable $message, ...$parameters): string|\Stringable
     {

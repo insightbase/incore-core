@@ -57,6 +57,7 @@ use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
 use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
 use App\UI\Admin\Language\Exception\LanguageNotFoundException;
+use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\Exception\TranslateInProgressException;
 use App\UI\Admin\Language\Form\NewFormData;
 use GuzzleHttp\Client;
@@ -210,7 +211,7 @@ class LanguageFacade
      * @return void
      * @throws BasicAuthNotSetException
      * @throws TranslateInProgressException
-     * @throws GuzzleException
+     * @throws TranslateApiException
      * @throws InvalidLinkException
      * @throws JsonException
      */
@@ -734,6 +735,10 @@ class LanguageFacade
      * @param TranslateEntity $translate
      * @param LanguageEntity $language
      * @return void
+     * @throws BasicAuthNotSetException
+     * @throws TranslateApiException
+     * @throws InvalidLinkException
+     * @throws JsonException
      */
     public function translateTranslate(ActiveRow $translate, ActiveRow $language):void
     {
@@ -750,13 +755,14 @@ class LanguageFacade
      * @param LanguageEntity $language
      * @return void
      * @throws BasicAuthNotSetException
-     * @throws GuzzleException
+     * @throws TranslateApiException
      * @throws InvalidLinkException
      * @throws JsonException
      */
     private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language):void
     {
         $chunks = array_chunk($json, $this->bachLimit, true);
+        $totalChunks = count($chunks);
 
         $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
         $iterator = 0;
@@ -790,17 +796,44 @@ class LanguageFacade
                 'body' => $bodyArray,
             ]));
 
-            $client = new Client();
-            $response = $client->request('POST', $url, [
-                'headers' => [
-                    'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
-                    'store' => 'incore',
-                    'content-type' => 'application/json',
-                ],
-                'body' => $body,
-            ]);
+            try {
+                $client = new Client();
+                $response = $client->request('POST', $url, [
+                    'headers' => [
+                        'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
+                        'store' => 'incore',
+                        'content-type' => 'application/json',
+                    ],
+                    'body' => $body,
+                ]);
+            } catch (GuzzleException $e) {
+                throw new TranslateApiException(
+                    'Volání překladového API selhalo: ' . $e->getMessage(),
+                    $iterator,
+                    $totalChunks,
+                    $e,
+                );
+            }
 
-            $response = Json::decode((string)$response->getBody(), true);
+            try {
+                $response = Json::decode((string)$response->getBody(), true);
+            } catch (JsonException $e) {
+                throw new TranslateApiException(
+                    'Překladové API vrátilo neplatnou odpověď.',
+                    $iterator,
+                    $totalChunks,
+                    $e,
+                );
+            }
+
+            if (!is_array($response) || !array_key_exists('id', $response)) {
+                throw new TranslateApiException(
+                    'Překladové API nevrátilo očekávané ID požadavku.',
+                    $iterator,
+                    $totalChunks,
+                );
+            }
+
             $this->languageTranslateModel->insert([
                 'drop_core_id' => $response['id'],
                 'user_id' => $this->userSecurity->getId(),
@@ -820,6 +853,14 @@ class LanguageFacade
         }
     }
 
+    /**
+     * @param LanguageEntity $language
+     * @return void
+     * @throws BasicAuthNotSetException
+     * @throws TranslateApiException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
     public function translatePerformancesContent(ActiveRow $language):void
     {
         /** @var ContentLanguage $contentLanguageModel */
