@@ -25,6 +25,8 @@ class Sender
 {
     private Message $message;
 
+    private ?string $subject = null;
+
     /**
      * @var array<string, string>
      */
@@ -53,6 +55,13 @@ class Sender
     public function addAttachment(string $file): self
     {
         $this->message->addAttachment($file);
+
+        return $this;
+    }
+
+    public function setSubject(string $subject): self
+    {
+        $this->subject = $subject;
 
         return $this;
     }
@@ -116,7 +125,7 @@ class Sender
         if($this->settingModel->getDefault()?->email_sender !== null) {
             $this->message->setFrom($this->settingModel->getDefault()->email_sender);
         }
-        $this->message->setSubject($email->subject);
+        $this->message->setSubject($this->subject ?? $email->subject);
         $this->message->setHtmlBody($text);
 
         try {
