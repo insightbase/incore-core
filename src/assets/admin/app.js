@@ -14,6 +14,7 @@ import netteForms from 'nette-forms';
 import './content.js';
 import { initEditorJs } from './editorJs';
 import './performance';
+import './credit';
 import './tabs';
 import './stickyTable';
 import './editorJs.css';
