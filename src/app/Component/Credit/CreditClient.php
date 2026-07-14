@@ -5,9 +5,7 @@ namespace App\Component\Credit;
 use App\Component\DropCore\DropCoreConfig;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use Nette\Utils\Json;
-use Nette\Utils\JsonException;
 
 class CreditClient
 {
@@ -39,7 +37,7 @@ class CreditClient
                 'http_errors' => true,
             ]);
             $data = Json::decode((string) $response->getBody(), forceArrays: true);
-        } catch (GuzzleException|JsonException) {
+        } catch (\Throwable) {
             return null;
         }
 

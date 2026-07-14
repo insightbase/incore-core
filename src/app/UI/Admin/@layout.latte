@@ -270,7 +270,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 					<!-- Topbar -->
 					<div class="flex items-center gap-2 lg:gap-3.5">
 						<a
-							n:if="$setting?->credit_id"
+							n:if="$setting?->credit_id && $user->isAllowed('credit', 'default')"
 							n:href="Credit:default"
 							id="credit_balance"
 							class="btn btn-sm btn-light hidden"
