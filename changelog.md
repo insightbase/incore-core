@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-14
+### Přidáno (Added)
+- core - nastavení - store a access token kreditové konzole se nastavují v adminu, ne v konfiguračním souboru
+- core - kredity - adresa API se vybírá automaticky podle zvoleného prostředí (demo/produkce)
+
 ## 2026-07-13
 ### Přidáno (Added)
 - core - kredity - nová sekce Kredity v administraci: přehled zůstatku, dobití, objednávky a spotřeba se zobrazují přímo z kreditové konzole
