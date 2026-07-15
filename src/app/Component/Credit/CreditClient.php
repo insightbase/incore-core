@@ -13,23 +13,21 @@ class CreditClient
 
     private ClientInterface $httpClient;
 
-    public function __construct(
-        private readonly DropCoreConfig $config,
-        ?ClientInterface $httpClient = null,
-    ) {
+    public function __construct(?ClientInterface $httpClient = null)
+    {
         $this->httpClient = $httpClient ?? new Client();
     }
 
     /**
      * Zůstatek kreditů účtu. Při jakékoli chybě API vrací null — indikátor se prostě nezobrazí.
      */
-    public function getBalance(string $account): ?int
+    public function getBalance(DropCoreConfig $config, string $account): ?int
     {
         try {
-            $response = $this->httpClient->request('POST', $this->config->apiUrl.'/promo/credits/value', [
+            $response = $this->httpClient->request('POST', $config->apiUrl.'/promo/credits/value', [
                 'headers' => [
-                    'access-token' => $this->config->accessToken,
-                    'store' => $this->config->store,
+                    'access-token' => $config->accessToken,
+                    'store' => $config->store,
                     'content-type' => 'application/json',
                 ],
                 'body' => Json::encode(['id' => $account]),
