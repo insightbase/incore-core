@@ -5,12 +5,10 @@ namespace App\UI\Admin\Credit;
 use App\Component\Credit\CreditFacade;
 use App\Component\DropCore\ConsolePageEnum;
 use App\Component\DropCore\ConsoleUrlBuilder;
-use App\Component\DropCore\DropCoreEnvEnum;
 use App\Model\Admin\Setting;
 use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
-use App\UI\Accessory\ParameterBag;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
@@ -23,7 +21,6 @@ class CreditPresenter extends Presenter
     public function __construct(
         private readonly Setting $settingModel,
         private readonly ConsoleUrlBuilder $consoleUrlBuilder,
-        private readonly ParameterBag $parameterBag,
         private readonly CreditFacade $creditFacade,
     ) {
         parent::__construct();
@@ -55,8 +52,6 @@ class CreditPresenter extends Presenter
         $this->template->consoleUrl = $this->template->hasToken
             ? $this->consoleUrlBuilder->build($token, $activePage, $env)
             : null;
-        $this->template->demoOnProduction = !$this->parameterBag->debugMode
-            && DropCoreEnvEnum::Demo->value === $env;
     }
 
     /**

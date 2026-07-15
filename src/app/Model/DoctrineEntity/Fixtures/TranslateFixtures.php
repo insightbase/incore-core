@@ -572,7 +572,6 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'tab_credit_orders' => 'Objednávky',
 		'tab_credit_usage' => 'Spotřeba',
 		'credit_tokenMissing' => 'Nejprve vyplňte identity token v nastavení.',
-		'credit_demoOnProduction' => 'Pozor: na produkci je nastaveno demo prostředí DropCore.',
 	];
 
 
