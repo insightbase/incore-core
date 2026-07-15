@@ -43,6 +43,8 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $dropcore_identity_token
  * @property-read ?string $dropcore_env
  * @property-read ?string $credit_id
+ * @property-read ?string $dropcore_store
+ * @property-read ?string $dropcore_access_token
  */
 class SettingEntity extends ActiveRow
 {

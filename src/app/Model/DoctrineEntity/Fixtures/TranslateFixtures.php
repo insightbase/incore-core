@@ -562,6 +562,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_dropCoreIdentityToken' => 'Identity token',
 		'input_dropCoreEnv' => 'Prostředí',
 		'input_dropCoreCreditId' => 'Účet kreditů',
+		'input_dropCoreStore' => 'Store',
+		'input_dropCoreAccessToken' => 'Access token',
 		'header_credit' => 'Kredity',
 		'tab_credit_credits' => 'Přehled',
 		'tab_credit_buy' => 'Dobít',
