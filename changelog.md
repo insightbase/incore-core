@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-22
+### Opraveno (Fixed)
+- forms - kontaktní formuláře - když u formuláře není vyplněný příjemce, notifikace se nyní správně odešle na e-mail z nastavení
+- forms - kontaktní formuláře - notifikace se odešle příjemci nastavenému u formuláře i tehdy, když v nastavení není vyplněný výchozí e-mail
+
 ## 2026-07-14
 ### Přidáno (Added)
 - core - nastavení - store a access token kreditové konzole se nastavují v adminu, ne v konfiguračním souboru
