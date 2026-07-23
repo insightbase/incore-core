@@ -60,27 +60,27 @@ class LanguageCallbackPresenter extends Presenter
                 } catch (LanguageCallbackIdNotFoundException $e) {
                     $status = 'error';
                     $this->payload->error = 'token id not found';
-                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . get_class($e) . ': ' . $e->getMessage());
                 } catch (LanguageIsDefaultException $e) {
                     $status = 'error';
                     $this->payload->error = 'language id default';
-                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . get_class($e) . ': ' . $e->getMessage());
                 } catch (LanguageNotFoundException $e) {
                     $status = 'error';
                     $this->payload->error = 'language not found';
-                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . get_class($e) . ': ' . $e->getMessage());
                 } catch (JsonException $e) {
                     $status = 'error';
                     $this->payload->error = 'json translate error';
-                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . get_class($e) . ': ' . $e->getMessage());
                 }catch (\Exception $e){
                     $status = 'error';
                     $this->payload->error = $e->getMessage();
-                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . $e->getMessage());
+                    FileSystem::write($tempFile . '_error', $raw . ', error: ' . get_class($e) . ': ' . $e->getMessage());
                 }
             }
         } catch (JsonException $e) {
-            FileSystem::write($tempFile . '_error', $e->getMessage());
+            FileSystem::write($tempFile . '_error', get_class($e) . ': ' . $e->getMessage());
             $status = 'error';
             $this->payload->error = 'json translate error';
         }
