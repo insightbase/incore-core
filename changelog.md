@@ -6,7 +6,8 @@
 
 ### Přidáno (Added)
 - core - překlady - nový výpis odeslaných požadavků na překladové API (`/admin/language-translate-log/`) s detailem odeslaného requestu
-- core - překlady - tlačítko „Označit vše jako dokončené" ve výpisu překladů (hromadně nastaví datum vyřízení u nedokončených záznamů)
+- core - překlady - tlačítko „Označit doručené jako dokončené" ve výpisu překladů (projde přijaté odpovědi překladového API a označí jen ty požadavky, na které odpověď opravdu dorazila)
+- core - překlady - když na překlad nezbývá dostatek kreditů, zobrazí se srozumitelná hláška a uživatel je přesměrován do sekce Kredity
 
 ### Změněno (Changed)
 - core - kredity - zůstatek se ke kreditové konzoli ověřuje identity tokenem; samostatný access token se už nepoužívá

@@ -20,6 +20,7 @@ class LanguageTranslateLogPresenter extends Presenter
 
     public function __construct(
         private readonly LanguageTranslate $languageTranslateModel,
+        private readonly LanguageTranslateLogFacade $languageTranslateLogFacade,
         private readonly LanguageTranslateLogDataGridEntityFactory $dataGridEntityFactory,
         private readonly DataGridFactory $dataGridFactory,
         private readonly SubmenuFactory $submenuFactory,
@@ -29,12 +30,12 @@ class LanguageTranslateLogPresenter extends Presenter
 
     public function actionDefault(): void
     {
-        $this->submenuFactory->addMenu($this->translator->translate('menu_languageTranslateLog_markAllFinished'), 'markAllFinished');
+        $this->submenuFactory->addMenu($this->translator->translate('menu_languageTranslateLog_markFinishedByCallbacks'), 'markFinishedByCallbacks');
     }
 
-    public function actionMarkAllFinished(): void
+    public function actionMarkFinishedByCallbacks(): void
     {
-        $count = $this->languageTranslateModel->markAllUnfinished(new \DateTime());
+        $count = $this->languageTranslateLogFacade->markFinishedByReceivedCallbacks();
         $this->flashMessage($this->translator->translate('flash_languageTranslateLog_marked', ['count' => $count]));
         $this->redirect('default');
     }

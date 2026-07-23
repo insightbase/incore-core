@@ -13,6 +13,7 @@ use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Admin\Language\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
+use App\UI\Admin\Language\Exception\NotEnoughCreditsException;
 use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\Form\EditFormData;
 use App\UI\Admin\Language\Form\FormFactory;
@@ -59,6 +60,12 @@ class LanguagePresenter extends Presenter
         } catch(BasicAuthNotSetException $e){
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
             $this->redirect('Setting:default');
+        } catch (NotEnoughCreditsException $e) {
+            $this->flashMessage($this->translator->translate(
+                $e->isPartial() ? 'flash_notEnoughCreditsPartial' : 'flash_notEnoughCredits'
+            ), 'error');
+            // Bez práv na kredity by uživatel skončil na chybové stránce, proto ho necháme ve výpisu.
+            $this->redirect($this->getUser()->isAllowed('credit', 'default') ? 'Credit:default' : 'default');
         } catch (TranslateApiException $e) {
             $this->flashMessage($this->translator->translate(
                 $e->isPartial() ? 'flash_translateApiErrorPartial' : 'flash_translateApiError'

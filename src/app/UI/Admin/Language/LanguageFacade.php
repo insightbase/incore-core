@@ -57,11 +57,13 @@ use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateEx
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
 use App\UI\Admin\Language\Exception\LanguageNotFoundException;
+use App\UI\Admin\Language\Exception\NotEnoughCreditsException;
 use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\Exception\TranslateInProgressException;
 use App\UI\Admin\Language\Form\NewFormData;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Caching\Cache;
@@ -817,6 +819,16 @@ class LanguageFacade
                     'body' => $body,
                 ]);
             } catch (GuzzleException $e) {
+                // 402 Payment Required = na účtu není dost kreditů na překlad.
+                if ($e instanceof RequestException && 402 === $e->getResponse()?->getStatusCode()) {
+                    throw new NotEnoughCreditsException(
+                        'Na překlad není dostatek kreditů.',
+                        $iterator,
+                        $totalChunks,
+                        $e,
+                    );
+                }
+
                 throw new TranslateApiException(
                     'Volání překladového API selhalo: ' . $e->getMessage(),
                     $iterator,

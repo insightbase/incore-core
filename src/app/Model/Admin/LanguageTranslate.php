@@ -37,11 +37,14 @@ readonly class LanguageTranslate implements Model
     }
 
     /**
-     * Označí všechny dosud nedokončené záznamy jako dokončené. Vrací počet označených.
+     * Označí dosud nedokončený záznam daného DropCore ID jako dokončený. Vrací počet označených.
      */
-    public function markAllUnfinished(\DateTime $datetime): int
+    public function markFinishedByDropCoreId(string $dropCoreId, \DateTime $datetime): int
     {
-        return $this->getTable()->where('finished', null)->update(['finished' => $datetime]);
+        return $this->getTable()
+            ->where('drop_core_id', $dropCoreId)
+            ->where('finished', null)
+            ->update(['finished' => $datetime]);
     }
 
     /**
