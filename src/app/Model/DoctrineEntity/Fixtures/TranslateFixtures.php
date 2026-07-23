@@ -449,7 +449,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'column_languageTranslateLog_language' => 'Jazyk',
 		'column_languageTranslateLog_user' => 'Uživatel',
 		'column_languageTranslateLog_dropCoreId' => 'Drop Core ID',
-		'column_languageTranslateLog_finished' => 'Dokončeno',
+		'column_languageTranslateLog_finished' => 'Datum vyřízení',
 		'column_languageTranslateLog_request' => 'Odeslaný požadavek',
 		'menu_languageTranslateLog_detail' => 'Detail',
 		'flash_basicAuthNotSet' => 'Váš web vyžaduje Basic Authentication, pro funkci překladu musíte nastavit přístup v nastavení',
