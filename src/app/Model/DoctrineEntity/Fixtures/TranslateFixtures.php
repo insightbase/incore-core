@@ -452,6 +452,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'column_languageTranslateLog_finished' => 'Datum vyřízení',
 		'column_languageTranslateLog_request' => 'Odeslaný požadavek',
 		'menu_languageTranslateLog_detail' => 'Detail',
+		'menu_languageTranslateLog_markAllFinished' => 'Označit vše jako dokončené',
+		'flash_languageTranslateLog_marked' => 'Označeno %count% záznamů jako dokončené',
 		'flash_basicAuthNotSet' => 'Váš web vyžaduje Basic Authentication, pro funkci překladu musíte nastavit přístup v nastavení',
 		'field_basicAuth' => 'Basic Authentication',
 		'input_basicAuthUser' => 'Uživatel',

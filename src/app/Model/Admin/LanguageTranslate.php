@@ -37,6 +37,14 @@ readonly class LanguageTranslate implements Model
     }
 
     /**
+     * Označí všechny dosud nedokončené záznamy jako dokončené. Vrací počet označených.
+     */
+    public function markAllUnfinished(\DateTime $datetime): int
+    {
+        return $this->getTable()->where('finished', null)->update(['finished' => $datetime]);
+    }
+
+    /**
      * @param string $id
      * @return ?LanguageTranslateEntity
      */

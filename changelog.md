@@ -1,8 +1,12 @@
 # Changelog
 
 ## 2026-07-23
+### Opraveno (Fixed)
+- core - překlady - callback z rychlého (demo) překladového API se už nezahazuje, když dorazí dřív, než se stihne uložit záznam požadavku; překlad se aplikuje i tak
+
 ### Přidáno (Added)
 - core - překlady - nový výpis odeslaných požadavků na překladové API (`/admin/language-translate-log/`) s detailem odeslaného requestu
+- core - překlady - tlačítko „Označit vše jako dokončené" ve výpisu překladů (hromadně nastaví datum vyřízení u nedokončených záznamů)
 
 ### Změněno (Changed)
 - core - kredity - zůstatek se ke kreditové konzoli ověřuje identity tokenem; samostatný access token se už nepoužívá

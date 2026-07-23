@@ -55,7 +55,6 @@ use App\UI\Admin\Content\Form\BlockItem\EditorJs;
 use App\UI\Admin\Content\Form\BlockItem\Gallery;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
-use App\UI\Admin\Language\Exception\LanguageCallbackIdNotFoundException;
 use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
 use App\UI\Admin\Language\Exception\LanguageNotFoundException;
 use App\UI\Admin\Language\Exception\TranslateApiException;
@@ -393,7 +392,6 @@ class LanguageFacade
      * @param int $id
      * @param array $post
      * @return void
-     * @throws LanguageCallbackIdNotFoundException
      * @throws LanguageIsDefaultException
      * @throws LanguageNotFoundException
      * @throws \Nette\Utils\JsonException
@@ -407,10 +405,10 @@ class LanguageFacade
         if($language->is_default){
             throw new LanguageIsDefaultException();
         }
+        // Rychlé (demo) DropCore vystřelí callback dřív, než se stihne uložit language_translate
+        // záznam (insert je až po odpovědi na požadavek). Záznam slouží jen k označení `finished`,
+        // takže když ještě není, překlad přesto aplikujeme a `finished` nastavíme best-effort níže.
         $languageTranslate = $this->languageTranslateModel->getByDropCoreId($post['id']);
-        if($languageTranslate === null){
-            throw new LanguageCallbackIdNotFoundException();
-        }
 
         $enumerationRowLanguageModel = null;
         $enumerationItemValueLanguageModel = null;
@@ -686,7 +684,7 @@ class LanguageFacade
                 }
             }
         }
-        $languageTranslate->update(['finished' => new DateTime()]);
+        $languageTranslate?->update(['finished' => new DateTime()]);
 
         $cacheTranslate = new Cache($this->storage, Translator::CACHE_NAMESPACE);
         $cacheTranslate->remove($language->id);
