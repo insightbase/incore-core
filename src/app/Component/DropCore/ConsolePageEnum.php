@@ -4,7 +4,6 @@ namespace App\Component\DropCore;
 
 enum ConsolePageEnum: string
 {
-    case Credits = 'credits';
     case Buy = 'buy';
     case Orders = 'orders';
     case Usage = 'usage';

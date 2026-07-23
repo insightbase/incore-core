@@ -36,5 +36,4 @@ class EditFormData
     public ?string $dropcore_env;
     public ?string $credit_id;
     public ?string $dropcore_store;
-    public ?string $dropcore_access_token;
 }

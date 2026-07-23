@@ -26,7 +26,7 @@ class CreditClient
         try {
             $response = $this->httpClient->request('POST', $config->apiUrl.'/promo/credits/value', [
                 'headers' => [
-                    'access-token' => $config->accessToken,
+                    'identity-token' => $config->identityToken,
                     'store' => $config->store,
                     'content-type' => 'application/json',
                 ],

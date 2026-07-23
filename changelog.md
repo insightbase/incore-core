@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-07-23
+### Změněno (Changed)
+- core - kredity - zůstatek se ke kreditové konzoli ověřuje identity tokenem; samostatný access token se už nepoužívá
+- core - překlady - překladové API se volá stejným klíčem jako kredity (identity token, store a prostředí z nastavení) místo pevně zadaného tokenu; bez vyplněného identity tokenu a prostředí překlad neproběhne
+
+### Odebráno (Removed)
+- core - nastavení - pole Access token (kreditová konzole) bylo odstraněno
+- core - kredity - záložka Přehled byla odebrána; sekce Kredity se nově otevírá na záložce Dobít
+
 ## 2026-07-22
 ### Opraveno (Fixed)
 - forms - kontaktní formuláře - když u formuláře není vyplněný příjemce, notifikace se nyní správně odešle na e-mail z nastavení

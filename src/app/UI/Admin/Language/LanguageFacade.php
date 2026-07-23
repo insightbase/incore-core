@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\Language;
 
+use App\Component\DropCore\DropCoreConfigProvider;
 use App\Component\Front\ContactFormComponent\ContactFormControl;
 use App\Component\Front\ContentControl\ContentControl;
 use App\Component\Front\EnumerationControl\EnumerationControl;
@@ -98,6 +99,7 @@ class LanguageFacade
         private readonly LanguageLocale     $languageLocaleModel,
         private readonly StaticPage         $staticPageModel,
         private readonly StaticPageLanguage $staticPageLanguage,
+        private readonly DropCoreConfigProvider $dropCoreConfigProvider,
     ) {}
 
     public function create(NewFormData $data): void
@@ -764,6 +766,16 @@ class LanguageFacade
         $chunks = array_chunk($json, $this->bachLimit, true);
         $totalChunks = count($chunks);
 
+        // Kredity i překlady používají stejný klíč z nastavení (identity token + store + prostředí).
+        $dropCoreConfig = $this->dropCoreConfigProvider->getConfig();
+        if (null === $dropCoreConfig) {
+            throw new TranslateApiException(
+                'Pro překlad je potřeba v nastavení vyplnit identity token a prostředí (DropCore).',
+                0,
+                $totalChunks,
+            );
+        }
+
         $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
         $iterator = 0;
         foreach($chunks as $shortJson) {
@@ -788,7 +800,7 @@ class LanguageFacade
                 'value' => $shortJson,
             ]);
 
-            $url = 'https://core.inbs.cz/api/gen/translate';
+            $url = $dropCoreConfig->apiUrl . '/gen/translate';
 
             FileSystem::write($tempFile . '_' . $iterator, Json::encode([
                 'callback' => $callback,
@@ -800,8 +812,8 @@ class LanguageFacade
                 $client = new Client();
                 $response = $client->request('POST', $url, [
                     'headers' => [
-                        'access-token' => 'c9394c041d8e52ce109fec90f343ff6baf9eb52dc8a30879b373bcbd1948a403',
-                        'store' => 'incore',
+                        'identity-token' => $dropCoreConfig->identityToken,
+                        'store' => $dropCoreConfig->store,
                         'content-type' => 'application/json',
                     ],
                     'body' => $body,

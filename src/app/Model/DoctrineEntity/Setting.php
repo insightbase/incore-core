@@ -109,7 +109,4 @@ class Setting implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $dropcore_store = null;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
-    public ?string $dropcore_access_token = null;
 }

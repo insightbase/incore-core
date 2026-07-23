@@ -30,7 +30,7 @@ class CreditPresenter extends Presenter
      * @throws BadRequestException
      * @throws ForbiddenRequestException
      */
-    public function actionDefault(string $page = ConsolePageEnum::Credits->value): void
+    public function actionDefault(string $page = ConsolePageEnum::Buy->value): void
     {
         if (!$this->getUser()->isAllowed('credit', 'default')) {
             throw new ForbiddenRequestException();

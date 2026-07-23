@@ -145,8 +145,6 @@ readonly class FormFactory
             ->setNullable();
         $form->addText('dropcore_store', $this->translator->translate('input_dropCoreStore'))
             ->setNullable();
-        $form->addText('dropcore_access_token', $this->translator->translate('input_dropCoreAccessToken'))
-            ->setNullable();
 
         $form->addGroup();
         $form->addSubmit('send', $this->translator->translate('submit_update'));
