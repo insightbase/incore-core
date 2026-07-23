@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-07-23
+### Přidáno (Added)
+- core - překlady - nový výpis odeslaných požadavků na překladové API (`/admin/language-translate-log/`) s detailem odeslaného requestu
+
 ### Změněno (Changed)
 - core - kredity - zůstatek se ke kreditové konzoli ověřuje identity tokenem; samostatný access token se už nepoužívá
 - core - překlady - překladové API se volá stejným klíčem jako kredity (identity token, store a prostředí z nastavení) místo pevně zadaného tokenu; bez vyplněného identity tokenu a prostředí překlad neproběhne

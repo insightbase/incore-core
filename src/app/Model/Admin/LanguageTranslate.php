@@ -29,6 +29,14 @@ readonly class LanguageTranslate implements Model
     }
 
     /**
+     * @return Selection<LanguageTranslateEntity>
+     */
+    public function getToGrid(): Selection
+    {
+        return $this->getTable()->order('datetime DESC');
+    }
+
+    /**
      * @param string $id
      * @return ?LanguageTranslateEntity
      */
