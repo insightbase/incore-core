@@ -7,6 +7,7 @@ import EditorJsTable from '@editorjs/table';
 import List from '@editorjs/list';
 import naja from "naja";
 import UploadLinkInlineTool from './editorJs/uploadLinkInlineTool.js';
+import LinkInlineTool from './editorJs/linkInlineTool.js';
 import ImageGallery from "./editorJs/ImageGallery.js";
 import Sortable from 'sortablejs';
 import FAQ from './editorJs/faq';
@@ -148,6 +149,10 @@ export function initEditorJs() {
             config: {
                 endpoint: element.getAttribute('data-upload-url'),
             }
+        }
+
+        tools.link = {
+            class: LinkInlineTool,
         }
 
         window.editors[id] = new EditorJS({

@@ -3,6 +3,7 @@
 ## 2026-07-24
 ### Přidáno (Added)
 - core - kredity - po dokončení platby se uživatel vrátí zpět do adminu na záložku Objednávky
+- core - editor obsahu - u odkazu lze nově zaškrtnout, že se má otevřít v novém okně
 
 ## 2026-07-23
 ### Opraveno (Fixed)
