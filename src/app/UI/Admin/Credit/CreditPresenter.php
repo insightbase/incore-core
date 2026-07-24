@@ -50,8 +50,21 @@ class CreditPresenter extends Presenter
         $this->template->pages = ConsolePageEnum::cases();
         $this->template->hasToken = null !== $token && '' !== $token;
         $this->template->consoleUrl = $this->template->hasToken
-            ? $this->consoleUrlBuilder->build($token, $activePage, $env)
+            ? $this->consoleUrlBuilder->build($token, $activePage, $env, $this->buildPaymentCallback($activePage))
             : null;
+    }
+
+    /**
+     * Adresa, na kterou má konzole přesměrovat po dokončení platby.
+     * Jen na záložce Dobít — jinde se neplatí.
+     */
+    private function buildPaymentCallback(ConsolePageEnum $activePage): ?string
+    {
+        if (ConsolePageEnum::Buy !== $activePage) {
+            return null;
+        }
+
+        return $this->link('//default', ['page' => ConsolePageEnum::Orders->value]);
     }
 
     /**

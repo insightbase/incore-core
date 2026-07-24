@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-24
+### Přidáno (Added)
+- core - kredity - po dokončení platby se uživatel vrátí zpět do adminu na záložku Objednávky
+
 ## 2026-07-23
 ### Opraveno (Fixed)
 - core - překlady - callback z rychlého (demo) překladového API se už nezahazuje, když dorazí dřív, než se stihne uložit záznam požadavku; překlad se aplikuje i tak
