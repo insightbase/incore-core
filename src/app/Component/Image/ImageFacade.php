@@ -10,6 +10,8 @@ use App\Model\Entity\ImageEntity;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\ORM\Mapping\Table;
+use Nette\Caching\Cache;
+use Nette\Caching\Storage;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\DI\Container;
@@ -29,7 +31,20 @@ readonly class ImageFacade
         private LogFacade $logFacade,
         private \App\Model\Admin\Language $languageModel,
         private \App\Model\Admin\ImageLanguage $imageLanguageModel,
+        private Storage $storage,
     ) {}
+
+    /**
+     * Cache obrázku je jazykově závislá (obsahuje přeložený ALT), proto se maže
+     * záznam pro každý jazyk zvlášť.
+     */
+    public function clearCache(int $imageId):void
+    {
+        $cache = new Cache($this->storage, 'image');
+        foreach($this->languageModel->getTable() as $language){
+            $cache->remove('id_' . $imageId . '_' . $language->id);
+        }
+    }
 
     /**
      * @return array<int, ImageEntity>
@@ -103,6 +118,7 @@ readonly class ImageFacade
             }
         }
 
+        $this->clearCache($image->id);
         $this->logFacade->create(LogActionEnum::Updated, 'image', $image->id);
     }
 

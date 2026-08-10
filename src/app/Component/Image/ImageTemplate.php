@@ -19,4 +19,5 @@ class ImageTemplate extends Template
     public ?ImageControl $control = null;
     public ?string $imageFile = null;
     public array $htmlAttributes = [];
+    public ?string $alt = null;
 }

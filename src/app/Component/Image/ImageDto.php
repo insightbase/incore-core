@@ -6,6 +6,7 @@ class ImageDto implements \JsonSerializable
 {
     public function __construct(
         public string $saved_name,
+        public ?string $alt = null,
     )
     {
     }

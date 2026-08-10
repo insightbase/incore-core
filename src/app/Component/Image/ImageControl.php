@@ -32,6 +32,7 @@ class ImageControl extends Control
         protected readonly Storage      $storage,
         protected readonly Setting      $settingModel,
         protected readonly LinkGenerator $linkGenerator,
+        protected readonly \App\Model\Admin\ImageLanguage $imageLanguageModel,
     )
     {
     }
@@ -41,28 +42,33 @@ class ImageControl extends Control
         if($id === 0){
             return false;
         }
-        $cache = new Cache($this->storage, 'image');
-        $image = ImageDto::fromJson($cache->load('id_' . $id, function() use ($id):?string{
-            $image = $this->imageModel->get($id);
-            if($image === null){
-                return null;
-            }
-            return json_encode(new ImageDto(
-                saved_name: $image->saved_name,
-            ));
-        }));
+        $image = $this->getImage($id);
+        if($image === null){
+            return false;
+        }
         return file_exists($this->parameterBag->uploadDir . '/' . $image->saved_name);
     }
 
     public function getImage(int $id):?ImageDto{
+        $language = $this->translator->getLanguage();
         $cache = new Cache($this->storage, 'image');
-        $image = $cache->load('id_' . $id, function() use ($id):?string{
+        $image = $cache->load('id_' . $id . '_' . $language->id, function() use ($id, $language):?string{
             $image = $this->imageModel->get($id);
             if($image === null){
                 return null;
             }
+
+            $alt = $image->alt;
+            if(!$language->is_default){
+                $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($id, $language);
+                if($imageLanguage !== null && $imageLanguage->alt !== null && $imageLanguage->alt !== ''){
+                    $alt = $imageLanguage->alt;
+                }
+            }
+
             return json_encode(new ImageDto(
                 saved_name: $image->saved_name,
+                alt: $alt,
             ));
         });
         if($image === null){
@@ -174,6 +180,7 @@ class ImageControl extends Control
         $ret['showSetting'] = $showSetting;
         $ret['control'] = $this;
         $ret['htmlAttributes'] = $htmlAttributes;
+        $ret['alt'] = $image->alt;
         return $ret;
     }
 
