@@ -248,6 +248,8 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'column_used' => 'Použito',
 		'flash_deleteUnusedImages' => 'Smazat nepouživané obrázky',
 		'menu_deleteUnused' => 'Smazat nepoužívané',
+		'menu_translateImage' => 'Přeložit texty',
+		'flash_imageSendToTranslate' => 'Texty obrázku byly odeslány k překladu',
 		'flash_imageNotFound' => 'Obrázek nebyl nalezen',
 		'field_images' => 'Obrázky',
 		'input_maxImageResolution' => 'Maximální rozlišení obrázku',

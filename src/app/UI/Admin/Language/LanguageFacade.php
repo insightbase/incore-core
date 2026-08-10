@@ -42,6 +42,7 @@ use App\Model\Admin\TagLanguage;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\ContentLanguageEntity;
+use App\Model\Entity\ImageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\TranslateEntity;
 use App\Model\Enum\EnumerationFormTypeEnum;
@@ -101,6 +102,9 @@ class LanguageFacade
         private readonly StaticPage         $staticPageModel,
         private readonly StaticPageLanguage $staticPageLanguage,
         private readonly DropCoreConfigProvider $dropCoreConfigProvider,
+        private readonly \App\Model\Admin\Image $imageModel,
+        private readonly \App\Model\Admin\ImageLanguage $imageLanguageModel,
+        private readonly \App\Component\Image\ImageFacade $imageFacade,
     ) {}
 
     public function create(NewFormData $data): void
@@ -387,6 +391,10 @@ class LanguageFacade
             $json['static_page_' . $staticPage->id . '_content'] = Json::decode($staticPage->content, true);
         }
 
+        foreach($this->imageModel->getTable() as $image){
+            $this->addImageToJson($image, $json);
+        }
+
         $this->sendJsonToTranslate($json, $defaultLanguage, $language);
     }
 
@@ -579,6 +587,23 @@ class LanguageFacade
                         $blogFacade->refreshContent($blogTag->blog);
                     }
                 }
+            }elseif($type === 'image'){
+                $id = explode('_', $key);
+                $imageId = (int)$id[0];
+                $field = $id[1] ?? null;
+                if($field !== null && in_array($field, ['alt', 'name', 'description'], true) && $this->imageModel->get($imageId) !== null){
+                    $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($imageId, $language);
+                    if($imageLanguage === null){
+                        $this->imageLanguageModel->insert([
+                            'image_id' => $imageId,
+                            'language_id' => $language->id,
+                            $field => $text,
+                        ]);
+                    }else{
+                        $imageLanguage->update([$field => $text]);
+                    }
+                    $this->imageFacade->clearCache($imageId);
+                }
             }elseif($type === 'blog' && $blogModel !== null){
                 $id = explode('_', $key);
                 if(!in_array($id[0], $blogsUpdated)) {
@@ -749,6 +774,42 @@ class LanguageFacade
         $this->addTranslateToJson($translate, $json, $defaultLanguage);
 
         $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param ImageEntity $image
+     * @param LanguageEntity $language
+     * @return void
+     * @throws BasicAuthNotSetException
+     * @throws TranslateApiException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
+    public function translateImage(ActiveRow $image, ActiveRow $language):void
+    {
+        $defaultLanguage = $this->languageModel->getDefault();
+        $json = [];
+        $this->addImageToJson($image, $json);
+
+        if($json === []){
+            return;
+        }
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param ImageEntity $image
+     * @param array<string, mixed> $json
+     * @return void
+     */
+    private function addImageToJson(ActiveRow $image, array &$json):void
+    {
+        foreach(['alt', 'name', 'description'] as $field){
+            if($image->{$field} !== null && $image->{$field} !== ''){
+                $json['image_' . $image->id . '_' . $field] = $image->{$field};
+            }
+        }
     }
 
     /**
