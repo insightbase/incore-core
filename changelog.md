@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-10
+### Přidáno (Added)
+- core - obrázky - texty u obrázku (ALT, jméno, popis) lze nově vyplnit ve všech jazycích
+- core - obrázky - tlačítko „Přeložit texty" v detailu obrázku odešle texty k automatickému překladu
+- core - obrázky - vykreslené obrázky mají nově atribut ALT v jazyce stránky
+
+### Opraveno (Fixed)
+- core - obrázky - při otevření okna pro úpravu obrázku se už nezobrazuje varovná hláška v ladicí liště
+- core - formuláře - víceřádkové texty se nově překládají také ve víceřádkovém poli, ne v jednořádkovém
+- core - formuláře - vybraný jazyk zůstane zachovaný i po načtení dalšího obsahu stránky
+
 ## 2026-07-24
 ### Přidáno (Added)
 - core - kredity - po dokončení platby se uživatel vrátí zpět do adminu na záložku Objednávky
