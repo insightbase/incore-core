@@ -66,6 +66,14 @@ class ImagePresenter extends Presenter
             'author' => $this->image->author,
             'image_id' => $this->image->id,
         ]);
+        foreach($this->languageModel->getToTranslateNotDefault() as $language){
+            $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($this->image->id, $language);
+            $form->setTranslates($language, [
+                'alt' => $imageLanguage?->alt,
+                'name' => $imageLanguage?->name,
+                'description' => $imageLanguage?->description,
+            ]);
+        }
         return $form;
     }
 

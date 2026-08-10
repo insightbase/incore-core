@@ -16,6 +16,7 @@ use App\Core\Admin\Enum\DefaultSnippetsEnum;
 use App\Model\Admin\FormHelp;
 use App\Model\Admin\FormHelpLanguage;
 use App\Model\Admin\Image;
+use App\Model\Admin\ImageLanguage;
 use App\Model\Admin\Language;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
@@ -68,6 +69,8 @@ trait StandardTemplateTrait
     public FormHelpLanguage $formHelpLanguageModel;
     #[Inject]
     public Language $languageModel;
+    #[Inject]
+    public ImageLanguage $imageLanguageModel;
 
     protected function createComponentEditFormHelpForm():Form
     {
@@ -108,13 +111,23 @@ trait StandardTemplateTrait
             $this->error($this->translator->translate('flash_imageNotFound'));
         }
         $this->getPresenter()->getTemplate()->editedImage = $image;
-        $this->getPresenter()->getComponent('editImageForm')->setDefaults([
+        /** @var Form $form */
+        $form = $this->getPresenter()->getComponent('editImageForm');
+        $form->setDefaults([
             'alt' => $image->alt,
             'name' => $image->name,
             'description' => $image->description,
             'author' => $image->author,
             'image_id' => $image->id,
         ]);
+        foreach($this->languageModel->getToTranslateNotDefault() as $language){
+            $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($image->id, $language);
+            $form->setTranslates($language, [
+                'alt' => $imageLanguage?->alt,
+                'name' => $imageLanguage?->name,
+                'description' => $imageLanguage?->description,
+            ]);
+        }
         $this->getPresenter()->redrawControl('editImageForm');
     }
 
@@ -122,7 +135,7 @@ trait StandardTemplateTrait
         $form = $this->formFactoryEditImage->create();
         $form->onSuccess[] = function(Form $form, EditFormData $data):void{
             try {
-                $this->imageFacade->edit($data);
+                $this->imageFacade->edit($data, $form);
                 $this->flashMessage($this->translator->translate('flash_imageUpdated'));
             }catch (ImageNotFoundException $e){
                 $this->flashMessage($this->translator->translate('flash_imageNotFound'), 'error');

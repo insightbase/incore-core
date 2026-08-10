@@ -21,11 +21,14 @@ readonly class FormFactory
         $form->sendByAjax();
 
         $form->addText('alt', $this->translator->translate('input_alt'))
-            ->setNullable();
+            ->setNullable()
+            ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE);
         $form->addText('name', $this->translator->translate('input_name'))
-            ->setNullable();
+            ->setNullable()
+            ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE);
         $form->addTextArea('description', $this->translator->translate('input_description'))
-            ->setNullable();
+            ->setNullable()
+            ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE);
         $form->addTextArea('author', $this->translator->translate('input_author'))
             ->setNullable();
         $form->addHidden('image_id')

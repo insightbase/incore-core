@@ -7,6 +7,7 @@ use App\Component\Image\Form\EditFormData;
 use App\Component\Log\LogActionEnum;
 use App\Component\Log\LogFacade;
 use App\Model\Entity\ImageEntity;
+use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\ParameterBag;
 use Doctrine\ORM\Mapping\Table;
 use Nette\Database\Explorer;
@@ -26,6 +27,8 @@ readonly class ImageFacade
         private Container              $container,
         private Explorer               $explorer,
         private LogFacade $logFacade,
+        private \App\Model\Admin\Language $languageModel,
+        private \App\Model\Admin\ImageLanguage $imageLanguageModel,
     ) {}
 
     /**
@@ -66,10 +69,11 @@ readonly class ImageFacade
 
     /**
      * @param EditFormData $data
+     * @param Form $form
      * @return void
      * @throws ImageNotFoundException
      */
-    public function edit(EditFormData $data):void{
+    public function edit(EditFormData $data, Form $form):void{
         if ($data->image_id === null) {
             throw new ImageNotFoundException();
         }
@@ -80,6 +84,25 @@ readonly class ImageFacade
         $updateData = (array)$data;
         unset($updateData['image_id']);
         $image->update($updateData);
+
+        foreach($this->languageModel->getToTranslateNotDefault() as $language){
+            $translates = $form->getTranslates($language);
+            $languageData = [
+                'alt' => $translates['alt'] ?? null,
+                'name' => $translates['name'] ?? null,
+                'description' => $translates['description'] ?? null,
+            ];
+            $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($image->id, $language);
+            if($imageLanguage === null){
+                $this->imageLanguageModel->insert($languageData + [
+                    'image_id' => $image->id,
+                    'language_id' => $language->id,
+                ]);
+            }else{
+                $imageLanguage->update($languageData);
+            }
+        }
+
         $this->logFacade->create(LogActionEnum::Updated, 'image', $image->id);
     }
 

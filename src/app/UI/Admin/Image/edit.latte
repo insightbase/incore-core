@@ -6,5 +6,6 @@
 
 {block content}
     {control image, $imageEntity->id, 100, 100}
+    {embed languageSelect, defaultId: $presenter->getParameter('languageId')}{/embed}
     {embed basicForm, formEdit}{/embed}
 {/block}

@@ -444,7 +444,10 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
     {/embed}
 
 	{embed basicModal, 'image-update'}
-		{block title}{_'header_editImage'}{/block}
+		{block title}
+			{_'header_editImage'}
+			{embed languageSelect, defaultId: $presenter->getParameter('languageId')}{/embed}
+		{/block}
 		{block body}
 			{snippet editImageForm}
 				{if $editedImage !== null}
