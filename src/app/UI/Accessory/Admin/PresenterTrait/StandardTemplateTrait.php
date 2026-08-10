@@ -107,7 +107,7 @@ trait StandardTemplateTrait
         if($image === null){
             $this->error($this->translator->translate('flash_imageNotFound'));
         }
-        $this->presenter->getTemplate()->editedImage = $image;
+        $this->getPresenter()->getTemplate()->editedImage = $image;
         $this->getPresenter()->getComponent('editImageForm')->setDefaults([
             'alt' => $image->alt,
             'name' => $image->name,
