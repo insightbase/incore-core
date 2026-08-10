@@ -11,6 +11,9 @@
 - core - formuláře - víceřádkové texty se nově překládají také ve víceřádkovém poli, ne v jednořádkovém
 - core - formuláře - vybraný jazyk zůstane zachovaný i po načtení dalšího obsahu stránky
 
+### Změněno (Changed)
+- core - formuláře - přepínač jazyků nad formulářem je nově řada tlačítek s vlajkami místo rozbalovacího seznamu
+
 ## 2026-07-24
 ### Přidáno (Added)
 - core - kredity - po dokončení platby se uživatel vrátí zpět do adminu na záložku Objednávky
