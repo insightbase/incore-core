@@ -3,6 +3,11 @@ import naja from "naja";
 const optionsToggleBound = new WeakSet();
 const optionsWidgetBound = new WeakSet();
 
+// updateFormLanguageSelect přepíná jazyk globálně pro celý dokument, ale přepínačů
+// je na stránce víc (obsah + modály v layoutu). Zvolený jazyk proto držíme tady,
+// aby ho initForms() po AJAXu obnovil místo přebírání z posledního přepínače v DOM.
+let currentLanguageId = null;
+
 Array.from(document.getElementsByClassName('remove-fieldset')).forEach((element) => {
     element.addEventListener('click', function(event){
         event.preventDefault();
@@ -99,12 +104,20 @@ function initForms() {
     initOptionsWidget(document);
     initOptionsToggle(document);
 
-    Array.from(document.getElementsByClassName('formLanguageSelect')).forEach((formLanguageSelect) => {
+    const languageSelects = Array.from(document.getElementsByClassName('formLanguageSelect'));
+    languageSelects.forEach((formLanguageSelect) => {
+        if (formLanguageSelect.dataset.languageBound) {
+            return;
+        }
+        formLanguageSelect.dataset.languageBound = '1';
         formLanguageSelect.addEventListener('change', function () {
-            updateFormLanguageSelect(formLanguageSelect.value);
+            setFormLanguage(formLanguageSelect.value);
         });
-        updateFormLanguageSelect(formLanguageSelect.value);
     });
+
+    if (languageSelects.length > 0) {
+        setFormLanguage(currentLanguageId !== null ? currentLanguageId : languageSelects[0].value);
+    }
 }
 
 function initOptionsWidget(root){
@@ -219,6 +232,17 @@ document.addEventListener('repeater:added', (e) => {
     initOptionsWidget(root);
     initOptionsToggle(root);
 });
+
+function setFormLanguage(value){
+    currentLanguageId = value;
+    // Seznam se čte znovu, protože AJAX mohl do stránky přidat další přepínač.
+    Array.from(document.getElementsByClassName('formLanguageSelect')).forEach((element) => {
+        if (element.value !== value) {
+            element.value = value;
+        }
+    });
+    updateFormLanguageSelect(value);
+}
 
 function updateFormLanguageSelect(value){
     Array.from(document.querySelectorAll('[langchange]')).forEach((element) => {
