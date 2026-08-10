@@ -185,6 +185,11 @@
                             {if $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageInput || $input instanceof App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneFileInput}
                                 {$input->getControlDropzone('hidden', $lang[$input->getName()])}
                             {else}
+                                {* jazyková varianta má vypadat stejně jako originál, atributy velikosti se proto kopírují *}
+                                {if $input instanceof Nette\Forms\Controls\TextArea}
+                                    {php $lang[$input->getName()]->setHtmlAttribute('rows', $input->control->attrs['rows'])}
+                                    {php $lang[$input->getName()]->setHtmlAttribute('style', $input->control->attrs['style'])}
+                                {/if}
                                 {input $lang[$input->getName()] class: $class . ' hidden'}
                             {/if}
                         {/foreach}

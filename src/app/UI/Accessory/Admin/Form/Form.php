@@ -262,8 +262,13 @@ class Form extends Nette\Application\UI\Form
                         ->setHtmlAttribute('data-original-name', $base);
                     $lang[$input->getName()] = $input1;
                 }else {
-                    $clone = $lang->addText($input->getName())
-                        ->setNullable()
+                    if ($input instanceof \Nette\Forms\Controls\TextArea) {
+                        $clone = $lang->addTextArea($input->getName());
+                    } else {
+                        $clone = $lang->addText($input->getName());
+                    }
+
+                    $clone->setNullable()
                         ->setHtmlAttribute('data-language-id', $language->id)
                         ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
                         ->setDefaultValue(null !== $defaults && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
