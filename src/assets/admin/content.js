@@ -11,7 +11,7 @@ if (contentDetail) {
     let formLanguageSelect = contentDetail.getElementsByClassName('formLanguageSelect')[0];
     if(formLanguageSelect){
         formLanguageSelect.addEventListener('change', function () {
-            let url = contentDetail.getAttribute('data-change-language-url').replace('0', formLanguageSelect.value);
+            let url = contentDetail.getAttribute('data-change-language-url').replace('0', formLanguageSelect.dataset.value);
             naja.makeRequest('GET', url)
         });
     }

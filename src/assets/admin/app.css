@@ -11,6 +11,20 @@ html {
   border: 0;
 }
 
+/* Přepínač jazyků nad formulářem — Metronic nemá komponentu s barevně
+   zvýrazněnou aktivní položkou (.btn-tabs zvýrazňuje jen světle). */
+.languageSwitch {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--tw-gray-200);
+  border-radius: 0.5rem;
+  background-color: var(--tw-light);
+}
+
 .ml-4 {
   margin-left: 1rem;
 }

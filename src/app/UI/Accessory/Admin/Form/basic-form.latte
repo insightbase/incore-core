@@ -449,11 +449,19 @@
 {/define}
 
 {define languageSelect, ?int $defaultId = null}
-    <select class="formLanguageSelect">
+    {* Není to <select>, ale řada tlačítek s vlajkami; zvolený jazyk drží data-value
+       na kontejneru a obsluhuje ho setFormLanguage() ve form.js. *}
+    <div class="languageSwitch formLanguageSelect">
         {foreach $languages as $language}
-            <option value="{$language->id}"{if ($defaultId === null && $language->is_default) || ($defaultId !== null && $language->id === $defaultId)} selected{/if}>{$language->name}</option>
+            <button type="button" data-language-value="{$language->id}"
+                    n:class="'btn', 'btn-sm', ($defaultId === null && $language->is_default) || ($defaultId !== null && $language->id === $defaultId) ? 'btn-primary'">
+                {if $language->flag_id !== null}
+                    {control image, $language->flag_id, 16, 16, class: 'rounded-full', type: Nette\Utils\Image::OrBigger}
+                {/if}
+                {$language->name}
+            </button>
         {/foreach}
-    </select>
+    </div>
 {/define}
 
 {define tabsForm, $form}

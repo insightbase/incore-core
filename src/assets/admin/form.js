@@ -105,19 +105,31 @@ function initForms() {
     initOptionsToggle(document);
 
     const languageSelects = Array.from(document.getElementsByClassName('formLanguageSelect'));
-    languageSelects.forEach((formLanguageSelect) => {
-        if (formLanguageSelect.dataset.languageBound) {
+    languageSelects.forEach((container) => {
+        if (container.dataset.languageBound) {
             return;
         }
-        formLanguageSelect.dataset.languageBound = '1';
-        formLanguageSelect.addEventListener('change', function () {
-            setFormLanguage(formLanguageSelect.value);
+        container.dataset.languageBound = '1';
+        container.addEventListener('click', function (event) {
+            const button = event.target.closest('[data-language-value]');
+            if (!button) {
+                return;
+            }
+            event.preventDefault();
+            setFormLanguage(button.dataset.languageValue);
+            // Kvůli zpětné kompatibilitě s posluchači, které dřív poslouchaly na <select>.
+            container.dispatchEvent(new Event('change', { bubbles: true }));
         });
     });
 
     if (languageSelects.length > 0) {
-        setFormLanguage(currentLanguageId !== null ? currentLanguageId : languageSelects[0].value);
+        setFormLanguage(currentLanguageId !== null ? currentLanguageId : getActiveLanguageId(languageSelects[0]));
     }
+}
+
+function getActiveLanguageId(container){
+    const active = container.querySelector('[data-language-value].btn-primary') || container.querySelector('[data-language-value]');
+    return active ? active.dataset.languageValue : null;
 }
 
 function initOptionsWidget(root){
@@ -234,12 +246,16 @@ document.addEventListener('repeater:added', (e) => {
 });
 
 function setFormLanguage(value){
+    if (value === null) {
+        return;
+    }
     currentLanguageId = value;
     // Seznam se čte znovu, protože AJAX mohl do stránky přidat další přepínač.
-    Array.from(document.getElementsByClassName('formLanguageSelect')).forEach((element) => {
-        if (element.value !== value) {
-            element.value = value;
-        }
+    Array.from(document.getElementsByClassName('formLanguageSelect')).forEach((container) => {
+        container.dataset.value = value;
+        Array.from(container.querySelectorAll('[data-language-value]')).forEach((button) => {
+            button.classList.toggle('btn-primary', button.dataset.languageValue === value);
+        });
     });
     updateFormLanguageSelect(value);
 }
