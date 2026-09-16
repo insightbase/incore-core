@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-16
+### Opraveno (Fixed)
+- core - kredity - nákup kreditů a přehled objednávek se znovu načítají, přesunuly se na novou adresu služby
+
 ## 2026-08-10
 ### Přidáno (Added)
 - core - obrázky - texty u obrázku (ALT, jméno, popis) lze nově vyplnit ve všech jazycích

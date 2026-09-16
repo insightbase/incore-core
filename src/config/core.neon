@@ -7,9 +7,9 @@ parameters:
     autoGenerateEntities: false
     metronicDir: 'metronic'
     dropCore:
-        consoleUrl: 'https://console.inbs.cz/shop.html'
-        apiUrlDemo: 'https://demo-core.inbs.cz/api'
-        apiUrlProd: 'https://core.inbs.cz/api'
+        consoleUrl: 'https://inmake.dev/shop.html'
+        apiUrlDemo: 'https://demo-core.inmake.dev/api'
+        apiUrlProd: 'https://core.inmake.dev/api'
 
 services:
     - App\Component\Translator\Translator
