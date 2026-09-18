@@ -210,6 +210,20 @@ function initOptionsWidget(root){
             addInput.focus();
         });
 
+        // Jazykové mutace se přepínají skrýváním prvků s atributem langchange.
+        // Skrytý input už nic nezobrazuje, atributy proto přebírá obal widgetu.
+        const langChange = input.getAttribute('langchange');
+        if (langChange !== null) {
+            widget.setAttribute('langchange', langChange);
+            input.removeAttribute('langchange');
+        }
+        const languageId = input.getAttribute('data-language-id');
+        if (languageId !== null) {
+            widget.dataset.languageId = languageId;
+            widget.dataset.langDisplay = 'flex';
+            input.removeAttribute('data-language-id');
+        }
+
         input.type = 'hidden';
         input.insertAdjacentElement('afterend', widget);
     });
@@ -265,7 +279,10 @@ function updateFormLanguageSelect(value){
         element.style.display = 'none';
     });
     Array.from(document.querySelectorAll('[data-language-id="' + value + '"]')).forEach((element) => {
-        element.style.display = 'inline';
+        // Inline styl je nutný – jazykové klony se renderují s třídou .hidden,
+        // kterou přebije. Prvky s jiným než inline zobrazením si svou hodnotu
+        // řeknou přes data-lang-display (např. flexový obal options-widgetu).
+        element.style.display = element.dataset.langDisplay || 'inline';
     });
 }
 

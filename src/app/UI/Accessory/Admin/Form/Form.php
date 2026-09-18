@@ -27,6 +27,14 @@ use Nette;
 class Form extends Nette\Application\UI\Form
 {
     public const string LANG_CHANGE_ATTRIBUTE = 'langChange';
+
+    /**
+     * Atributy vstupních widgetů, které se přenášejí na jazykové varianty pole.
+     *
+     * @var string[]
+     */
+    private const array WIDGET_ATTRIBUTES = ['data-options-widget', 'data-options-placeholder'];
+
     public bool $showHelp = true;
 
     use EntityMaxLengthTrait;
@@ -273,6 +281,15 @@ class Form extends Nette\Application\UI\Form
                         ->setHtmlAttribute(self::LANG_CHANGE_ATTRIBUTE)
                         ->setDefaultValue(null !== $defaults && array_key_exists($input->getName(), $defaults) ? $defaults[$input->getName()] : null)
                         ->setHtmlAttribute('data-original-name', $base);
+
+                    // Jazyková varianta se má ovládat stejně jako originál,
+                    // proto přebírá i nastavení vstupních widgetů.
+                    foreach (self::WIDGET_ATTRIBUTES as $attribute) {
+                        $value = $input->getControl()->getAttribute($attribute);
+                        if (null !== $value) {
+                            $clone->setHtmlAttribute($attribute, $value);
+                        }
+                    }
 
                     if ($input instanceof \Nette\Forms\Controls\TextBase) {
                         MaxLengthApplier::copyMaxLength(
