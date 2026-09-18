@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-18
+### Přidáno (Added)
+- forms - kontaktní formuláře - příjemce e-mailu lze nastavit zvlášť pro každý jazyk, nevyplněný jazyk použije hlavního příjemce
+- core - formuláře - pole s přidáváním hodnot po jedné vypadá a ovládá se stejně i v ostatních jazycích
+
+### Opraveno (Fixed)
+- forms - kontaktní formuláře - předmět odeslaného e-mailu nově respektuje přeložený název formuláře
+
 ## 2026-09-16
 ### Opraveno (Fixed)
 - core - kredity - nákup kreditů a přehled objednávek se znovu načítají, přesunuly se na novou adresu služby
