@@ -8,8 +8,12 @@ používají stejný mechanismus — a autoři cílových aplikací si jím moho
 zapojit i vlastní texty (vlastní entity, vlastní formuláře apod.), aniž by
 zasahovali do jádra.
 
-Provider se sám zaregistruje přes autodiscovery (viz níže) — nikde ho není
-potřeba ručně přidávat do seznamu.
+V jádru a v modulech inCore se provider sám zaregistruje přes autodiscovery
+(viz níže) — nikde ho není potřeba ručně přidávat do seznamu. V cílové
+aplikaci to platí, jen pokud je autodiscovery pro její vlastní balíček
+zapnutá — jinak provider nikam nepatří a hromadný překlad ho beze
+zjevné chyby prostě přeskočí (viz sekce „Registrace v `config/services.neon`“
+níže).
 
 ## Kam provider umístit
 
@@ -88,9 +92,12 @@ final readonly class EmailTranslationProvider implements TranslationProvider
      */
     public function collect(ActiveRow $language, ?int $id = null): array
     {
-        $emails = $id === null
-            ? $this->emailModel->getTable()
-            : array_filter([$this->emailModel->get($id)]);
+        if ($id === null) {
+            $emails = $this->emailModel->getTable();
+        } else {
+            $row = $this->emailModel->get($id);
+            $emails = $row === null ? [] : [$row];
+        }
 
         $items = [];
         foreach ($emails as $email) {
@@ -141,6 +148,26 @@ Tři metody rozhraní:
   DropCore vrátí hotový překlad. Neznámé `$field` nebo neexistující `$id`
   se má tiše přeskočit (`return`), stejně jako typ hodnoty, který provider
   neumí uložit (viz `is_array($value)` výše — e-maily pole neukládají).
+
+## Vlastnosti kontraktu, které nejsou vidět na první pohled
+
+- **`collect()` smí zapisovat do databáze.** Typicky jen čte, ale není to
+  podmínkou — `ContentTranslationProvider::collect()` například při sběru
+  zakládá chybějící jazykové řádky obsahu (`contentValue`, `contentValueItem`
+  a kopie galerií), protože bez nich by neměl kam později uložit přeloženou
+  hodnotu. Autor cizího providera by proto neměl spoléhat na to, že zavolat
+  `collect()` je bezpečné „jen si to přečíst“.
+- **`save()` může být pro jednu entitu v jedné dávce zavoláno vícekrát** —
+  jednou pro každé přeložené pole. `BlogTranslationProvider::save()` na tom
+  přímo staví: při každém volání načte aktuální jazykovou mutaci, přepíše
+  jen pole podle `$field` a celý obsah uloží zpátky, takže se postupná
+  volání pro `name`, `slug` i jednotlivé položky JSON obsahu skládají do
+  jednoho výsledku, aniž by jedno volání přepsalo výsledek druhého.
+- **`$id` v `collect()` a v `save()` nemusí označovat tutéž entitu.** U
+  `ContentTranslationProvider` `collect()` parametr `$id` filtruje podle
+  `content_id` (obsahu jako celku), ale `TranslationItem::$id`, který se
+  vrátí a později přijde do `save()`, je id konkrétní hodnoty (`content_value`
+  položky nebo pole obsahu) — ne id obsahu, kterým se sběr omezoval.
 
 ## Registrace v `config/services.neon`
 

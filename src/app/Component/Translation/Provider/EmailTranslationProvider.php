@@ -32,9 +32,12 @@ final readonly class EmailTranslationProvider implements TranslationProvider
      */
     public function collect(ActiveRow $language, ?int $id = null): array
     {
-        $emails = $id === null
-            ? $this->emailModel->getTable()
-            : array_filter([$this->emailModel->get($id)]);
+        if ($id === null) {
+            $emails = $this->emailModel->getTable();
+        } else {
+            $row = $this->emailModel->get($id);
+            $emails = $row === null ? [] : [$row];
+        }
 
         $items = [];
         foreach ($emails as $email) {
