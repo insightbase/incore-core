@@ -111,7 +111,7 @@ class EmailPresenter extends Presenter
         $this->exist($id);
         try {
             foreach($this->languageModel->getToTranslateNotDefault() as $language) {
-                $this->languageFacade->translateEmail($this->email, $language);
+                $this->languageFacade->translateProviderItem('email', $this->email->id, $language);
             }
         } catch (BasicAuthNotSetException $e) {
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
