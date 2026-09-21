@@ -13,6 +13,7 @@ parameters:
 
 services:
     - App\Component\Translator\Translator
+    - App\Component\Translation\TranslationProviderRegistry
 
     routerFactory: App\Core\RouterFactory
     router: @routerFactory::createRouter()
