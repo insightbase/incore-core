@@ -32,7 +32,7 @@ final class TranslationProviderRegistry
      * Sesbírá texty všech providerů do pole připraveného k odeslání.
      *
      * @param LanguageEntity $language
-     * @return array<string, string|array>
+     * @return array<string, string|array<string, mixed>>
      */
     public function collectAll(ActiveRow $language): array
     {

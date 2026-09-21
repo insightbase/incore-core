@@ -27,6 +27,7 @@ interface TranslationProvider
     /**
      * Uloží přeloženou hodnotu.
      *
+     * @param string|array<string, mixed> $value
      * @param LanguageEntity $language
      */
     public function save(int $id, string $field, string|array $value, ActiveRow $language): void;
