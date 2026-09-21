@@ -35,8 +35,6 @@ use App\Model\Admin\LanguageLocale;
 use App\Model\Admin\LanguageTranslate;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
-use App\Model\Admin\StaticPage;
-use App\Model\Admin\StaticPageLanguage;
 use App\Model\Admin\Tag;
 use App\Model\Admin\TagLanguage;
 use App\Model\Entity\ContentLanguageEntity;
@@ -101,8 +99,6 @@ class LanguageFacade
         private readonly LanguageTranslate  $languageTranslateModel,
         private readonly User               $userSecurity,
         private readonly LanguageLocale     $languageLocaleModel,
-        private readonly StaticPage         $staticPageModel,
-        private readonly StaticPageLanguage $staticPageLanguage,
         private readonly DropCoreConfigProvider $dropCoreConfigProvider,
         private readonly \App\Component\Translation\TranslationProviderRegistry $translationProviderRegistry,
     ) {}
@@ -380,14 +376,6 @@ class LanguageFacade
                 $json['blog_' . $tag->id . '_name'] = $blog->name;
                 $json['blog_' . $tag->id . '_slug'] = $blog->slug;
             }
-        }
-
-        foreach($this->staticPageModel->getTable() as $staticPage){
-            $json['static_page_' . $staticPage->id . '_name'] = $staticPage->name;
-            $json['static_page_' . $staticPage->id . '_title'] = $staticPage->title;
-            $json['static_page_' . $staticPage->id . '_description'] = $staticPage->description;
-            $json['static_page_' . $staticPage->id . '_keywords'] = $staticPage->keywords;
-            $json['static_page_' . $staticPage->id . '_content'] = Json::decode($staticPage->content, true);
         }
 
         $json += $this->translationProviderRegistry->collectAll($language);
@@ -680,31 +668,6 @@ class LanguageFacade
                     $contentLanguageModel->insert($data);
                 }else{
                     $contentLanguage->update($data);
-                }
-            }elseif($type === 'static_page'){
-                $id = explode('_', $key);
-                $staticPage = $this->staticPageModel->get((int)$id);
-                if($staticPage !== null){
-                    if($key[1] === 'content'){
-                        $text = Json::encode($text);
-                    }
-                    if($language->is_default){
-                        $staticPage->update([
-                            $key[0] => $text,
-                        ]);
-                    }else{
-                        $staticPageLanguage = $this->staticPageLanguage->getByStaticPageAndLanguage($staticPage, $language);
-
-                        if($staticPageLanguage === null){
-                            $this->staticPageLanguage->insert([
-                                'static_page_id' => $staticPage->id,
-                                'language_id' => $language->id,
-                                $key => $text
-                            ]);
-                        }else{
-                            $staticPageLanguage->update([$key => $text]);
-                        }
-                    }
                 }
             }
         }

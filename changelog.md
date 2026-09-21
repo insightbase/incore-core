@@ -9,6 +9,7 @@
 
 ### Opraveno (Fixed)
 - core - e-maily - editace e-mailu měla v nadpisu „Editace favicony“
+- core - jazyky - hromadný překlad nově ukládá i přeložené statické stránky
 
 ## 2026-09-18
 ### Přidáno (Added)
