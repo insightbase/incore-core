@@ -38,7 +38,17 @@ final class TranslationProviderRegistry
     {
         $json = [];
         foreach ($this->getProviders() as $systemName => $provider) {
-            foreach ($provider->collect($language) as $item) {
+            try {
+                $items = $provider->collect($language);
+            } catch (\Throwable $e) {
+                // Zdroj (i z cizí aplikace) nesmí pádem shodit hromadný překlad celého webu -
+                // jeho texty jen vynecháme z dávky a chybu zalogujeme, ostatní zdroje pokračují dál.
+                \Tracy\Debugger::log($e, \Tracy\ILogger::EXCEPTION);
+
+                continue;
+            }
+
+            foreach ($items as $item) {
                 $json[TranslationKey::encode($systemName, $item->id, $item->field)] = $item->value;
             }
         }
