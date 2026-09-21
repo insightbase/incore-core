@@ -39,13 +39,9 @@ use App\Model\Admin\StaticPage;
 use App\Model\Admin\StaticPageLanguage;
 use App\Model\Admin\Tag;
 use App\Model\Admin\TagLanguage;
-use App\Model\Admin\Translate;
-use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\ContentLanguageEntity;
 use App\Model\Entity\LanguageEntity;
-use App\Model\Entity\TranslateEntity;
 use App\Model\Enum\EnumerationFormTypeEnum;
-use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Accessory\Blog\BlogContentTypeEnum;
 use App\UI\Admin\Accessory\Blog\BlogDto;
@@ -97,8 +93,6 @@ class LanguageFacade
         private readonly LogFacade         $logFacade,
         private readonly EventFacade       $eventFacade,
         private readonly LinkGenerator     $linkGenerator,
-        private readonly Translate         $translateModel,
-        private readonly TranslateLanguage  $translateLanguageModel,
         private readonly Setting            $settingModel,
         private readonly ParameterBag       $parameterBag,
         private readonly Module             $moduleModel,
@@ -233,9 +227,6 @@ class LanguageFacade
         $defaultLanguage = $this->languageModel->getDefault();
 
         $json = [];
-        foreach($this->translateModel->getNotAdmin() as $translate){
-            $this->addTranslateToJson($translate, $json, $defaultLanguage);
-        }
 
         if($this->moduleModel->getBySystemName('enumeration') !== null){
             /** @var EnumerationRow $enumerationRowModel */
@@ -391,10 +382,6 @@ class LanguageFacade
             }
         }
 
-        foreach($this->languageModel->getTable() as $language1){
-            $json['language_' . $language1->id] = $language1->name;
-        }
-
         foreach($this->staticPageModel->getTable() as $staticPage){
             $json['static_page_' . $staticPage->id . '_name'] = $staticPage->name;
             $json['static_page_' . $staticPage->id . '_title'] = $staticPage->title;
@@ -538,24 +525,7 @@ class LanguageFacade
             $type = Arrays::pick($key, 0);
             $key = implode('_', $key);
 
-            if($type === 'translate'){
-                $translate = $this->translateModel->getByKey($key);
-                if($translate->type === TranslateTypeEnum::Html->value){
-                    $text = Json::encode($text);
-                }
-                if($translate !== null){
-                    $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $language);
-                    if($translateLanguage === null){
-                        $this->translateLanguageModel->insert([
-                            'value' => $text,
-                            'language_id' => $language->id,
-                            'translate_id' => $translate->id,
-                        ]);
-                    }else{
-                        $translateLanguage->update(['value' => $text]);
-                    }
-                }
-            }elseif($type === 'enumeration' && $enumerationRowLanguageModel !== null){
+            if($type === 'enumeration' && $enumerationRowLanguageModel !== null){
                 $enumerationRowLanguage = $enumerationRowLanguageModel->getByEnumerationRowIdAndLanguage((int)$key, $language);
                 if($enumerationRowLanguage === null){
                     $enumerationRowLanguageModel->insert([
@@ -711,24 +681,6 @@ class LanguageFacade
                 }else{
                     $contentLanguage->update($data);
                 }
-            }elseif($type === 'language'){
-                $locale = $this->languageModel->get((int)$key);
-                if($locale !== null){
-                    if($locale->is_default){
-                        $locale->update(['name' => $text]);
-                    }else {
-                        $languageLocale = $this->languageLocaleModel->getByLanguageAndLocale($language, $locale);
-                        if ($languageLocale === null) {
-                            $this->languageLocaleModel->insert([
-                                'language_id' => $language->id,
-                                'locale_id' => $locale->id,
-                                'name' => $text,
-                            ]);
-                        } else {
-                            $languageLocale->update(['name' => $text]);
-                        }
-                    }
-                }
             }elseif($type === 'static_page'){
                 $id = explode('_', $key);
                 $staticPage = $this->staticPageModel->get((int)$id);
@@ -790,35 +742,6 @@ class LanguageFacade
                 ]);
             }
         }
-    }
-
-    private function addTranslateToJson(ActiveRow $translate, array &$json, ActiveRow $defaultLanguage):void{
-        $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
-        if($translateLanguage !== null) {
-            $value = $translateLanguage->value;
-            if($translateLanguage->translate->type === TranslateTypeEnum::Html->value){
-                $value = Json::decode($value, true);
-            }
-            $json['translate_' . $translate->key] = $value;
-        }
-    }
-
-    /**
-     * @param TranslateEntity $translate
-     * @param LanguageEntity $language
-     * @return void
-     * @throws BasicAuthNotSetException
-     * @throws TranslateApiException
-     * @throws InvalidLinkException
-     * @throws JsonException
-     */
-    public function translateTranslate(ActiveRow $translate, ActiveRow $language):void
-    {
-        $defaultLanguage = $this->languageModel->getDefault();
-        $json = [];
-        $this->addTranslateToJson($translate, $json, $defaultLanguage);
-
-        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
     }
 
     /**
