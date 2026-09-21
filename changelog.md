@@ -11,6 +11,8 @@
 ### Opraveno (Fixed)
 - core - e-maily - editace e-mailu měla v nadpisu „Editace favicony“
 - core - jazyky - hromadný překlad nově ukládá i přeložené statické stránky
+- content - blog - přeložený článek se po dokončení automatického překladu už skutečně uloží
+- content - blog - hromadný překlad jazyka teď přeloží všechny články, ne jen jeden
 
 ## 2026-09-18
 ### Přidáno (Added)
