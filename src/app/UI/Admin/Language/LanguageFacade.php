@@ -389,7 +389,13 @@ class LanguageFacade
                         $json['blog_' . $blog->id . '_' . $key] = $value->value;
                     }
                     if($value->type === BlogContentTypeEnum::EditorJs){
-                        $json['blog_' . $blog->id . '_' . $key] = Json::decode($value->value);
+                        try {
+                            $json['blog_' . $blog->id . '_' . $key] = Json::decode($value->value);
+                        } catch (JsonException $e) {
+                            // Vadný obsah jednoho záznamu nesmí zastavit hromadný překlad
+                            // celého webu - hodnotu jen vynecháme z dávky a chybu zalogujeme.
+                            \Tracy\Debugger::log($e, \Tracy\ILogger::WARNING);
+                        }
                     }
                 }
                 $json['blog_' . $tag->id . '_name'] = $blog->name;
