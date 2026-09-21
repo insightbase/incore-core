@@ -221,7 +221,10 @@ class LanguageFacade
     /**
      * Přeloží jedinou položku zdroje registrovaného přes TranslationProvider.
      *
+     * @param string $systemName
+     * @param int $id
      * @param LanguageEntity $language
+     * @return void
      * @throws BasicAuthNotSetException
      * @throws TranslateApiException
      * @throws InvalidLinkException
@@ -287,7 +290,8 @@ class LanguageFacade
             $json = $json[0];
         }
         foreach($json as $key => $text){
-            $translationKey = \App\Component\Translation\TranslationKey::tryDecode((string) $key);
+            $originalKey = (string) $key;
+            $translationKey = \App\Component\Translation\TranslationKey::tryDecode($originalKey);
             if ($translationKey !== null) {
                 $provider = $this->translationProviderRegistry->get($translationKey->systemName);
                 if ($provider === null) {
@@ -332,11 +336,16 @@ class LanguageFacade
 
                 if($contentLanguage === null){
                     $data['language_id'] = $language->id;
-                    $data['content_id'] = (int)$key[0];
+                    $data['content_id'] = (int)$id[0];
                     $contentLanguageModel->insert($data);
                 }else{
                     $contentLanguage->update($data);
                 }
+            } elseif ($type !== 'performanceContent') {
+                // Klíč neodpovídá ani novému formátu (TranslationKey), ani žádné zbylé staré větvi
+                // podle prefixu - dřív by tiše zmizel beze stopy, což skrývalo chyby jako ta se
+                // statickými stránkami. Zalogujeme, ať se podobné selhání příště nepřehlédne.
+                \Tracy\Debugger::log(sprintf('Nerozpoznaný klíč překladu "%s" v callbacku.', $originalKey), \Tracy\ILogger::WARNING);
             }
         }
         $languageTranslate?->update(['finished' => new DateTime()]);
