@@ -33,6 +33,7 @@ class EmailFixtures extends Fixture implements FixtureInterface, DependentFixtur
             $this->getReference(PrivilegeFixtures::DEFAULT, Privilege::class),
             $this->getReference(PrivilegeFixtures::EDIT, Privilege::class),
             $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
+            $this->getReference(PrivilegeFixtures::TRANSLATE, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {

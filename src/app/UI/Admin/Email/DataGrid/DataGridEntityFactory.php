@@ -38,6 +38,10 @@ readonly class DataGridEntityFactory
                     ->setIcon(DefaultIconEnum::Edit->value)
             )
             ->addMenu(
+                new MenuEntity($this->translator->translate('menu_translate'), 'translate')
+                    ->setIcon('ki-filled ki-geolocation')
+            )
+            ->addMenu(
                 new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete')
             )
         ;

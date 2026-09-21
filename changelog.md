@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-21
+### Přidáno (Added)
+- core - e-maily - předmět a text e-mailové šablony lze nově vyplnit ve všech jazycích, mezi jazyky se přepíná vlaječkami nad formulářem
+- core - e-maily - odeslaný e-mail použije jazyk příjemce, u nevyplněného překladu se doplní text ve výchozím jazyce
+- core - e-maily - tlačítko „Přeložit texty“ v detailu e-mailu a akce „Přeložit“ v přehledu odešlou předmět a text k automatickému překladu
+- core - jazyky - hromadný překlad jazyka nově zahrnuje i texty e-mailových šablon
+
+### Opraveno (Fixed)
+- core - e-maily - editace e-mailu měla v nadpisu „Editace favicony“
+
 ## 2026-09-18
 ### Přidáno (Added)
 - forms - kontaktní formuláře - příjemce e-mailu lze nastavit zvlášť pro každý jazyk, nevyplněný jazyk použije hlavního příjemce

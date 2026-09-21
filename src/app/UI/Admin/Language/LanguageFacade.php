@@ -42,6 +42,7 @@ use App\Model\Admin\TagLanguage;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
 use App\Model\Entity\ContentLanguageEntity;
+use App\Model\Entity\EmailEntity;
 use App\Model\Entity\ImageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\TranslateEntity;
@@ -81,6 +82,11 @@ use Nette\Utils\JsonException;
 
 class LanguageFacade
 {
+    /**
+     * Pole e-mailové šablony, která se překládají.
+     */
+    private const array EMAIL_TRANSLATED_FIELDS = ['subject', 'text'];
+
     private int $bachLimit = 40;
 
     public function __construct(
@@ -105,6 +111,8 @@ class LanguageFacade
         private readonly \App\Model\Admin\Image $imageModel,
         private readonly \App\Model\Admin\ImageLanguage $imageLanguageModel,
         private readonly \App\Component\Image\ImageFacade $imageFacade,
+        private readonly \App\Model\Admin\Email $emailModel,
+        private readonly \App\Model\Admin\EmailLanguage $emailLanguageModel,
     ) {}
 
     public function create(NewFormData $data): void
@@ -395,6 +403,10 @@ class LanguageFacade
             $this->addImageToJson($image, $json);
         }
 
+        foreach($this->emailModel->getTable() as $email){
+            $this->addEmailToJson($email, $json);
+        }
+
         $this->sendJsonToTranslate($json, $defaultLanguage, $language);
     }
 
@@ -604,6 +616,22 @@ class LanguageFacade
                     }
                     $this->imageFacade->clearCache($imageId);
                 }
+            }elseif($type === 'email'){
+                $id = explode('_', $key);
+                $emailId = (int)$id[0];
+                $field = $id[1] ?? null;
+                if($field !== null && in_array($field, self::EMAIL_TRANSLATED_FIELDS, true) && $this->emailModel->get($emailId) !== null){
+                    $emailLanguage = $this->emailLanguageModel->getByEmailIdAndLanguage($emailId, $language);
+                    if($emailLanguage === null){
+                        $this->emailLanguageModel->insert([
+                            'email_id' => $emailId,
+                            'language_id' => $language->id,
+                            $field => $text,
+                        ]);
+                    }else{
+                        $emailLanguage->update([$field => $text]);
+                    }
+                }
             }elseif($type === 'blog' && $blogModel !== null){
                 $id = explode('_', $key);
                 if(!in_array($id[0], $blogsUpdated)) {
@@ -808,6 +836,42 @@ class LanguageFacade
         foreach(['alt', 'name', 'description'] as $field){
             if($image->{$field} !== null && $image->{$field} !== ''){
                 $json['image_' . $image->id . '_' . $field] = $image->{$field};
+            }
+        }
+    }
+
+    /**
+     * @param EmailEntity $email
+     * @param LanguageEntity $language
+     * @return void
+     * @throws BasicAuthNotSetException
+     * @throws TranslateApiException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
+    public function translateEmail(ActiveRow $email, ActiveRow $language):void
+    {
+        $defaultLanguage = $this->languageModel->getDefault();
+        $json = [];
+        $this->addEmailToJson($email, $json);
+
+        if($json === []){
+            return;
+        }
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * @param EmailEntity $email
+     * @param array<string, mixed> $json
+     * @return void
+     */
+    private function addEmailToJson(ActiveRow $email, array &$json):void
+    {
+        foreach(self::EMAIL_TRANSLATED_FIELDS as $field){
+            if($email->{$field} !== null && $email->{$field} !== ''){
+                $json['email_' . $email->id . '_' . $field] = $email->{$field};
             }
         }
     }

@@ -17,6 +17,10 @@ use App\UI\Admin\Email\DataGrid\DataGridLogEntityFactory;
 use App\UI\Admin\Email\Form\EditFormData;
 use App\UI\Admin\Email\Form\FormFactory;
 use App\UI\Admin\Email\Form\NewFormData;
+use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
+use App\UI\Admin\Language\Exception\NotEnoughCreditsException;
+use App\UI\Admin\Language\Exception\TranslateApiException;
+use App\UI\Admin\Language\LanguageFacade;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
@@ -47,6 +51,7 @@ class EmailPresenter extends Presenter
         private readonly EmailFacade              $emailFacade,
         private readonly DataGridLogEntityFactory $dataGridLogEntityFactory,
         private readonly EmailLog                 $emailLogModel,
+        private readonly LanguageFacade           $languageFacade,
     )
     {
         parent::__construct();
@@ -64,7 +69,7 @@ class EmailPresenter extends Presenter
     {
         $form = $this->formFactory->createEdit($this->email);
         $form->onSuccess[] = function(Form $form, EditFormData $data):void{
-            $this->emailFacade->update($this->email, $data);
+            $this->emailFacade->update($this->email, $data, $form);
             $this->flashMessage($this->translator->translate('flash_emailUpdated'));
             $this->redirect('this');
         };
@@ -96,13 +101,41 @@ class EmailPresenter extends Presenter
     public function actionEdit(int $id):void
     {
         $this->exist($id);
+        $this->submenuFactory->addMenu($this->translator->translate('menu_translateEmail'), 'translate')
+            ->addParam('id', (string)$id)
+        ;
+    }
+
+    #[NoReturn] public function actionTranslate(int $id):void
+    {
+        $this->exist($id);
+        try {
+            foreach($this->languageModel->getToTranslateNotDefault() as $language) {
+                $this->languageFacade->translateEmail($this->email, $language);
+            }
+        } catch (BasicAuthNotSetException $e) {
+            $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
+            $this->redirect('edit', ['id' => $id]);
+        } catch (NotEnoughCreditsException $e) {
+            $this->flashMessage($this->translator->translate('flash_notEnoughCredits'), 'error');
+            // Bez práv na kredity by uživatel skončil na chybové stránce, proto ho necháme v detailu.
+            if($this->getUser()->isAllowed('credit', 'default')){
+                $this->redirect('Credit:default');
+            }
+            $this->redirect('edit', ['id' => $id]);
+        } catch (TranslateApiException $e) {
+            $this->flashMessage($this->translator->translate('flash_translateApiError'), 'error');
+            $this->redirect('edit', ['id' => $id]);
+        }
+        $this->flashMessage($this->translator->translate('flash_emailSendToTranslate'));
+        $this->redirect('edit', ['id' => $id]);
     }
 
     protected function createComponentFormNew():Form
     {
         $form = $this->formFactory->createNew();
         $form->onSuccess[] = function(Form $form, NewFormData $data):void{
-            $this->emailFacade->create($data);
+            $this->emailFacade->create($data, $form);
             $this->flashMessage($this->translator->translate('flash_emailCreated'));
             $this->redirect('list');
         };

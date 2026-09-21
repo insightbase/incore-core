@@ -123,6 +123,14 @@ class Translator implements \Nette\Localization\Translator
     }
 
     /**
+     * Jazyk je nastaven až requestem, v CLI nebo mimo presenter chybí.
+     */
+    public function hasLanguage():bool
+    {
+        return isset($this->language);
+    }
+
+    /**
      * @return LanguageEntity
      */
     public function getLanguage():ActiveRow

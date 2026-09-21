@@ -7,9 +7,11 @@ use App\Component\Image\ImageControlFactory;
 use App\Component\Mail\Exception\SystemNameNotFoundException;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Email;
+use App\Model\Admin\EmailLanguage;
 use App\Model\Admin\EmailLog;
 use App\Model\Admin\Language;
 use App\Model\Admin\Setting;
+use App\Model\Entity\EmailEntity;
 use App\UI\Accessory\ParameterBag;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\TemplateFactory;
@@ -41,6 +43,8 @@ class Sender
         private readonly string              $systemName,
         private readonly Email               $emailModel,
         private readonly EmailLog            $emailLogModel,
+        private readonly EmailLanguage       $emailLanguageModel,
+        private readonly Language            $languageModel,
         private readonly ParameterBag        $parameterBag,
         private readonly Setting             $settingModel,
         private readonly EncryptFacade       $encryptFacade,
@@ -105,15 +109,17 @@ class Sender
             throw new SystemNameNotFoundException()->setSystemName($this->systemName);
         }
 
+        $emailDto = $this->translate($email);
+
         $template = $this->templateFactory->createTemplate();
         $template->getLatte()->addProvider('uiControl', $this->linkGenerator);
         $template->setTranslator($this->translator);
         $template->setting = $this->settingModel->getDefault();
-        $template->email = $email;
+        $template->email = $emailDto;
         $template->imageControl = $this->imageControlFactory->create();
         $template->linkGenerator = $this->linkGenerator;
-        if($email->template !== null){
-            $text = $template->renderToString($this->parameterBag->rootDir . '/' . $email->template);
+        if($emailDto->template !== null){
+            $text = $template->renderToString($this->parameterBag->rootDir . '/' . $emailDto->template);
         }else{
             $text = $template->renderToString(dirname(__FILE__) . '/template.latte');
         }
@@ -125,7 +131,7 @@ class Sender
         if($this->settingModel->getDefault()?->email_sender !== null) {
             $this->message->setFrom($this->settingModel->getDefault()->email_sender);
         }
-        $this->message->setSubject($this->subject ?? $email->subject);
+        $this->message->setSubject($this->subject ?? $emailDto->subject);
         $this->message->setHtmlBody($text);
 
         try {
@@ -137,6 +143,25 @@ class Sender
                 throw $e;
             }
         }
+    }
+
+    /**
+     * Vrátí šablonu v aktuálním jazyce; nevyplněný překlad se doplní z výchozího jazyka.
+     *
+     * @param EmailEntity $email
+     */
+    private function translate(\Nette\Database\Table\ActiveRow $email): EmailDto
+    {
+        $language = $this->translator->hasLanguage()
+            ? $this->translator->getLanguage()
+            : $this->languageModel->getDefault();
+        if (null === $language || $language->is_default) {
+            return EmailDto::create($email);
+        }
+
+        $emailLanguage = $this->emailLanguageModel->getByEmailIdAndLanguage($email->id, $language);
+
+        return EmailDto::create($email, $emailLanguage?->subject, $emailLanguage?->text);
     }
 
     private function log(?string $error = null): void

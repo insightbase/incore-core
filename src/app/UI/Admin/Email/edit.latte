@@ -2,8 +2,9 @@
 
 {layout $layoutFile}
 
-{block h1}{_'header_editFavicon'}{/block}
+{block h1}{_'header_editEmail'}{/block}
 
 {block content}
+    {embed languageSelect, defaultId: $presenter->getParameter('languageId')}{/embed}
     {embed basicForm, formEdit}{/embed}
 {/block}
