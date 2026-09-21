@@ -11,9 +11,6 @@ use App\Component\Log\LogFacade;
 use App\Component\Translator\Translator;
 use App\Event\EventFacade;
 use App\Event\Language\ChangeDefaultEvent;
-use App\Model\Admin\Blog;
-use App\Model\Admin\BlogLanguage;
-use App\Model\Admin\BlogTag;
 use App\Model\Admin\ContactForm;
 use App\Model\Admin\Content;
 use App\Model\Admin\ContentBlockItemGallery;
@@ -29,14 +26,9 @@ use App\Model\Admin\LanguageLocale;
 use App\Model\Admin\LanguageTranslate;
 use App\Model\Admin\Module;
 use App\Model\Admin\Setting;
-use App\Model\Admin\Tag;
-use App\Model\Admin\TagLanguage;
 use App\Model\Entity\ContentLanguageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Accessory\ParameterBag;
-use App\UI\Admin\Accessory\Blog\BlogContentTypeEnum;
-use App\UI\Admin\Accessory\Blog\BlogDto;
-use App\UI\Admin\Blog\BlogFacade;
 use App\UI\Admin\Blog\Form\Entity\InputEntity;
 use App\UI\Admin\Content\Form\BlockItem\EditorJs;
 use App\UI\Admin\Content\Form\BlockItem\Gallery;
@@ -311,40 +303,6 @@ class LanguageFacade
             }
         }
 
-        if($this->moduleModel->getBySystemName('tag') !== null){
-            /** @var Tag $tagModel */
-            $tagModel = $this->container->getByType(Tag::class);
-
-            foreach($tagModel->getTable() as $tag){
-                $json['tag_' . $tag->id] = $tag->name;
-            }
-        }
-
-        if($this->moduleModel->getBySystemName('blog') !== null){
-            /** @var Blog $blogModel */
-            $blogModel = $this->container->getByType(Blog::class);
-
-            foreach($blogModel->getTable() as $blog){
-                $content = BlogDto::fromArray(Json::decode($blog->content, true));
-                foreach($content->content as $key => $value){
-                    if($value->type === BlogContentTypeEnum::String){
-                        $json['blog_' . $blog->id . '_' . $key] = $value->value;
-                    }
-                    if($value->type === BlogContentTypeEnum::EditorJs){
-                        try {
-                            $json['blog_' . $blog->id . '_' . $key] = Json::decode($value->value);
-                        } catch (JsonException $e) {
-                            // Vadný obsah jednoho záznamu nesmí zastavit hromadný překlad
-                            // celého webu - hodnotu jen vynecháme z dávky a chybu zalogujeme.
-                            \Tracy\Debugger::log($e, \Tracy\ILogger::WARNING);
-                        }
-                    }
-                }
-                $json['blog_' . $tag->id . '_name'] = $blog->name;
-                $json['blog_' . $tag->id . '_slug'] = $blog->slug;
-            }
-        }
-
         $json += $this->translationProviderRegistry->collectAll($language);
 
         $this->sendJsonToTranslate($json, $defaultLanguage, $language);
@@ -414,27 +372,6 @@ class LanguageFacade
             /** @var ContentLanguage $contentLanguageModel */
             $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
         }
-        $tagModel = null;
-        if($this->moduleModel->getBySystemName('tag') !== null) {
-            /** @var Tag $tagModel */
-            $tagModel = $this->container->getByType(Tag::class);
-            /** @var TagLanguage $tagLanguageModel */
-            $tagLanguageModel = $this->container->getByType(TagLanguage::class);
-            /** @var BlogFacade $blogFacade */
-            $blogFacade = $this->container->getByType(BlogFacade::class);
-            /** @var BlogTag $blogTagModel */
-            $blogTagModel = $this->container->getByType(BlogTag::class);
-        }
-        $blogModel = null;
-        if($this->moduleModel->getBySystemName('blog') !== null) {
-            /** @var Blog $blogModel */
-            $blogModel = $this->container->getByType(Blog::class);
-            /** @var BlogLanguage $blogLanguageModel */
-            $blogLanguageModel = $this->container->getByType(BlogLanguage::class);
-        }
-
-        $blogsUpdated = [];
-
         $json = $post['value'];
         $firstKey = Arrays::firstKey($json);
         if($firstKey === '0' || $firstKey === 0){
@@ -498,67 +435,6 @@ class LanguageFacade
                     }
 
                     $contentFieldValueLanguage->update(['value' => $text]);
-                }
-            }elseif($type === 'tag' && $tagModel !== null){
-                $tag = $tagModel->get((int)$key);
-                if($tag !== null){
-                    $tagLanguage = $tagLanguageModel->getByTagAndLanguage($tag, $language);
-                    if($tagLanguage === null){
-                        $tagLanguageModel->insert([
-                            'tag_id' => $tag->id,
-                            'language_id' => $language->id,
-                            'name' => $text,
-                        ]);
-                    }else{
-                        $tagLanguage->update(['name' => $text]);
-                    }
-
-                    foreach($blogTagModel->getByTag($tag) as $blogTag){
-                        $blogFacade->refreshContent($blogTag->blog);
-                    }
-                }
-            }elseif($type === 'blog' && $blogModel !== null){
-                $id = explode('_', $key);
-                if(!in_array($id[0], $blogsUpdated)) {
-                    $blog = $blogModel->get((int)$id[0]);
-                    if ($blog !== null) {
-                        $blogLanguage = $blogLanguageModel->getByBlogAndLanguage($blog, $language);
-                        if ($blogLanguage !== null) {
-                            $content = BlogDto::fromArray(Json::decode($blogLanguage->content, true));
-                        } else {
-                            $content = BlogDto::fromArray(Json::decode($blog->content, true));
-                        }
-
-                        $content->name = $json['blog_' . $blog->id . '_name'];
-                        $content->slug = $blogLanguageModel->generateSlug($json['blog_' . $blog->id . '_slug'], $blog,$language,$blogLanguage);
-                        foreach ($content->content as $key1 => $contentValue) {
-                            if ($contentValue->type === BlogContentTypeEnum::String) {
-                                $contentValue->value = $json['blog_' . $blog->id . '_' . $key1];
-                                $content->content[$key1] = $contentValue;
-                            }
-                            if ($contentValue->type === BlogContentTypeEnum::EditorJs) {
-                                $contentValue->value = Json::encode($json['blog_' . $blog->id . '_' . $key1]);
-                                $content->content[$key1] = $contentValue;
-                            }
-                        }
-
-                        if ($blogLanguage !== null) {
-                            $blogLanguageModel->insert([
-                                'name' => $content->name,
-                                'slug' => $content->slug,
-                                'content' => Json::encode($content),
-                                'language_id' => $language->id,
-                                'blog_id' => $blog->id,
-                            ]);
-                        }else {
-                            $blogLanguage->update([
-                                'name' => $content->name,
-                                'slug' => $content->slug,
-                                'content' => Json::encode($content),
-                            ]);
-                        }
-                    }
-                    $blogsUpdated[] = $blog->id;
                 }
             }elseif($type === 'performanceContent'){
                 $id = explode('_', $key);
