@@ -220,6 +220,7 @@ class LanguageFacade
 
     /**
      * Přeloží jedinou položku zdroje registrovaného přes TranslationProvider.
+     * Obálka nad translateProviderItems() pro čitelnost volání z presenterů.
      *
      * @param string $systemName
      * @param int $id
@@ -232,14 +233,34 @@ class LanguageFacade
      */
     public function translateProviderItem(string $systemName, int $id, ActiveRow $language): void
     {
+        $this->translateProviderItems($systemName, [$id], $language);
+    }
+
+    /**
+     * Přeloží vyjmenované položky jednoho zdroje. Všechny odejdou v jedné dávce,
+     * takže překlad stovky položek nestojí sto samostatných volání API.
+     *
+     * @param string $systemName
+     * @param int[] $ids
+     * @param LanguageEntity $language
+     * @return void
+     * @throws BasicAuthNotSetException
+     * @throws TranslateApiException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
+    public function translateProviderItems(string $systemName, array $ids, ActiveRow $language): void
+    {
         $provider = $this->translationProviderRegistry->get($systemName);
-        if ($provider === null) {
+        if ($provider === null || $ids === []) {
             return;
         }
 
         $json = [];
-        foreach ($provider->collect($language, $id) as $item) {
-            $json[\App\Component\Translation\TranslationKey::encode($systemName, $item->id, $item->field)] = $item->value;
+        foreach ($ids as $id) {
+            foreach ($provider->collect($language, $id) as $item) {
+                $json[\App\Component\Translation\TranslationKey::encode($systemName, $item->id, $item->field)] = $item->value;
+            }
         }
 
         if ($json === []) {
