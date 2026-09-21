@@ -113,6 +113,7 @@ class LanguageFacade
         private readonly \App\Component\Image\ImageFacade $imageFacade,
         private readonly \App\Model\Admin\Email $emailModel,
         private readonly \App\Model\Admin\EmailLanguage $emailLanguageModel,
+        private readonly \App\Component\Translation\TranslationProviderRegistry $translationProviderRegistry,
     ) {}
 
     public function create(NewFormData $data): void
@@ -407,7 +408,37 @@ class LanguageFacade
             $this->addEmailToJson($email, $json);
         }
 
+        $json += $this->translationProviderRegistry->collectAll($language);
+
         $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+    }
+
+    /**
+     * Přeloží jedinou položku zdroje registrovaného přes TranslationProvider.
+     *
+     * @param LanguageEntity $language
+     * @throws BasicAuthNotSetException
+     * @throws TranslateApiException
+     * @throws InvalidLinkException
+     * @throws JsonException
+     */
+    public function translateProviderItem(string $systemName, int $id, ActiveRow $language): void
+    {
+        $provider = $this->translationProviderRegistry->get($systemName);
+        if ($provider === null) {
+            return;
+        }
+
+        $json = [];
+        foreach ($provider->collect($language, $id) as $item) {
+            $json[\App\Component\Translation\TranslationKey::encode($systemName, $item->id, $item->field)] = $item->value;
+        }
+
+        if ($json === []) {
+            return;
+        }
+
+        $this->sendJsonToTranslate($json, $this->languageModel->getDefault(), $language);
     }
 
     /**
@@ -484,6 +515,25 @@ class LanguageFacade
             $json = $json[0];
         }
         foreach($json as $key => $text){
+            $translationKey = \App\Component\Translation\TranslationKey::tryDecode((string) $key);
+            if ($translationKey !== null) {
+                $provider = $this->translationProviderRegistry->get($translationKey->systemName);
+                if ($provider === null) {
+                    // Zdroj překladu mezitím zmizel; callback je asynchronní a nemá
+                    // komu chybu ohlásit, proto jen zaznamenáme a pokračujeme dál.
+                    \Tracy\Debugger::log(sprintf('Neznámý zdroj překladu "%s" v callbacku.', $translationKey->systemName), \Tracy\ILogger::WARNING);
+                    continue;
+                }
+
+                try {
+                    $provider->save($translationKey->id, $translationKey->field, $text, $language);
+                } catch (\Throwable $e) {
+                    \Tracy\Debugger::log($e, \Tracy\ILogger::EXCEPTION);
+                }
+
+                continue;
+            }
+
             $key = explode('_', $key);
             $type = Arrays::pick($key, 0);
             $key = implode('_', $key);
