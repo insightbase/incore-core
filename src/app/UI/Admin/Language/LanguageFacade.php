@@ -438,7 +438,12 @@ class LanguageFacade
             return;
         }
 
-        $this->sendJsonToTranslate($json, $this->languageModel->getDefault(), $language);
+        $defaultLanguage = $this->languageModel->getDefault();
+        if ($defaultLanguage === null) {
+            return;
+        }
+
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
     }
 
     /**
