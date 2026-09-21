@@ -89,6 +89,15 @@ class LanguageFacade
 
     private int $bachLimit = 40;
 
+    /**
+     * Když je nastaveno, dávka se místo odeslání do DropCore předá tomuto
+     * callable. Používá ověřovací skript translation_snapshot.php, aby se
+     * daly porovnat klíče před migrací a po ní bez čerpání kreditů.
+     *
+     * @var ?callable(array<string, mixed>): void
+     */
+    public $dryRunCallback = null;
+
     public function __construct(
         private readonly Language          $languageModel,
         private readonly Translator        $translator,
@@ -943,6 +952,12 @@ class LanguageFacade
      */
     private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language):void
     {
+        if ($this->dryRunCallback !== null) {
+            ($this->dryRunCallback)($json);
+
+            return;
+        }
+
         $chunks = array_chunk($json, $this->bachLimit, true);
         $totalChunks = count($chunks);
 
