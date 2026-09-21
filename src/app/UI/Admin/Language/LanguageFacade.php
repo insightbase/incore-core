@@ -13,13 +13,7 @@ use App\Event\EventFacade;
 use App\Event\Language\ChangeDefaultEvent;
 use App\Model\Admin\ContactForm;
 use App\Model\Admin\Content;
-use App\Model\Admin\ContentBlockItemGallery;
-use App\Model\Admin\ContentBlockItemText;
-use App\Model\Admin\ContentFieldValue;
-use App\Model\Admin\ContentFieldValueLanguage;
 use App\Model\Admin\ContentLanguage;
-use App\Model\Admin\ContentValue;
-use App\Model\Admin\ContentValueItem;
 use App\Model\Admin\Enumeration;
 use App\Model\Admin\Language;
 use App\Model\Admin\LanguageLocale;
@@ -30,8 +24,6 @@ use App\Model\Entity\ContentLanguageEntity;
 use App\Model\Entity\LanguageEntity;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Blog\Form\Entity\InputEntity;
-use App\UI\Admin\Content\Form\BlockItem\EditorJs;
-use App\UI\Admin\Content\Form\BlockItem\Gallery;
 use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateException;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
@@ -209,94 +201,13 @@ class LanguageFacade
 
         $json = [];
 
+        // Obsah bloků a polí obsahu je zdroj překladu App\Component\Translation\ContentTranslationProvider
+        // (viz $this->translationProviderRegistry->collectAll() níže). Zde zůstává jen obsah vázaný
+        // na performance (title/description v ContentLanguage) — ten mezi zdroje registrované přes
+        // TranslationProvider nepatří, viz i translatePerformancesContent().
         if($this->moduleModel->getBySystemName('content') !== null){
-            /** @var ContentBlockItemText $contentBlockItemTextModel */
-            $contentBlockItemTextModel = $this->container->getByType(ContentBlockItemText::class);
-            /** @var ContentValue $contentValueModel */
-            $contentValueModel = $this->container->getByType(ContentValue::class);
-            /** @var ContentValueItem $contentValueItemModel */
-            $contentValueItemModel = $this->container->getByType(ContentValueItem::class);
-            /** @var EditorJs $editorJsBlockItem */
-            $editorJsBlockItem = $this->container->getByType(EditorJs::class);
-            /** @var Gallery $galleryBlockItem */
-            $galleryBlockItem = $this->container->getByType(Gallery::class);
-            /** @var ContentBlockItemGallery $contentBlockItemGalleryModel */
-            $contentBlockItemGalleryModel = $this->container->getByType(ContentBlockItemGallery::class);
-
-            foreach($contentValueModel->getByLanguage($defaultLanguage) as $contentValue){
-                $contentValueLng = $contentValueModel->getByContentBlockIdAndContentIdAndLanguageId($contentValue->content_block_id, $contentValue->content_id, $language->id);
-                if($contentValueLng === null){
-                    $data = $contentValue->toArray();
-                    unset($data['id']);
-                    $data['language_id'] = $language->id;
-                    $data['content_value_base_language_id'] = $contentValue->id;
-                    $contentValueLng = $contentValueModel->insert($data);
-                }else{
-                    $contentValueLng->update(['content_value_base_language_id' => $contentValue->id]);
-                }
-
-                foreach($contentValueItemModel->getByContentValue($contentValue) as $contentValueItem){
-                    $contentValueItemLng = $contentValueItemModel->getByContentValueAndContentBlockItem($contentValueLng, $contentValueItem->content_block_item);
-                    if($contentValueItemLng === null){
-                        $contentValueItemLng = $contentValueItemModel->insert([
-                            'content_value_id' => $contentValueLng->id,
-                            'content_block_item_id' => $contentValueItem->content_block_item_id,
-                            'content_value_item_base_language_id' => $contentValueItem->id,
-                        ]);
-                    }else{
-                        $contentValueItemLng->update(['content_value_item_base_language_id' => $contentValueItem->id]);
-                    }
-
-                    if($contentValueItem->content_block_item->type === $galleryBlockItem->getSystemName()){
-                        $contentBlockItemGalleryItems = $contentBlockItemGalleryModel->getByContentValueItem($contentValueItem);
-                        $contentBlockItemGalleryItemsLng = $contentBlockItemGalleryModel->getByContentValueItem($contentValueItemLng);
-
-                        if($contentBlockItemGalleryItems->count('*') > 0 && $contentBlockItemGalleryItemsLng->count('*') === 0) {
-                            foreach ($contentBlockItemGalleryModel->getByContentValueItem($contentValueItem) as $contentBlockItemGallery) {
-                                $data = $contentBlockItemGallery->toArray();
-                                unset($data['id']);
-                                $data['content_value_item_id'] = $contentValueItemLng->id;
-                                $contentBlockItemGalleryModel->insert($data);
-                            }
-                        }
-                    }
-
-                    $contentBlockItemText = $contentBlockItemTextModel->getByContentValueItem($contentValueItem);
-                    if($contentBlockItemText !== null){
-                        $contentBlockItemTextLng = $contentBlockItemTextModel->getByContentValueItem($contentValueItemLng);
-                        if($contentBlockItemTextLng === null){
-                            $data = $contentBlockItemText->toArray();
-                            unset($data['id']);
-                            $data['content_value_item_id'] = $contentValueItemLng->id;
-                            $contentBlockItemTextLng = $contentBlockItemTextModel->insert($data);
-                        }
-
-                        $text = $contentBlockItemText->text;
-                        if($contentValueItem->content_block_item->type === $editorJsBlockItem->getSystemName()){
-                            $text = Json::decode($text, true);
-                        }
-
-                        $json['contentBlockItemText_' . $contentBlockItemTextLng->id] = $text;
-                    }
-                }
-            }
-
-            /** @var ContentFieldValue $contentFieldValueModel */
-            $contentFieldValueModel = $this->container->getByType(ContentFieldValue::class);
-            /** @var \App\UI\Admin\Content\Form\FieldType\EditorJs $editorJsFieldType */
-            $editorJsFieldType = $this->container->getByType(\App\UI\Admin\Content\Form\FieldType\EditorJs::class);
-            foreach($contentFieldValueModel->getTable() as $contentFieldValue){
-                $value = $contentFieldValue->value;
-                if($contentFieldValue->content_field->type === $editorJsFieldType->getSystemName()){
-                    $value = Json::decode($value, true);
-                }
-                $json['contentFieldValue_' . $contentFieldValue->id] = $value;
-            }
-
             /** @var ContentLanguage $contentLanguageModel */
             $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
-
-            $defaultLanguage = $this->languageModel->getDefault();
 
             foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
                 $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
@@ -363,12 +274,11 @@ class LanguageFacade
         // takže když ještě není, překlad přesto aplikujeme a `finished` nastavíme best-effort níže.
         $languageTranslate = $this->languageTranslateModel->getByDropCoreId($post['id']);
 
-        $contentBlockItemTextModel = null;
+        // $contentLanguageModel slouží jen větvi 'performanceContent' níže (obsah bloků a polí
+        // obsahu už zpracuje App\Component\Translation\ContentTranslationProvider výše ve smyčce)
+        // a jako příznak, že je modul content zapnutý, pro mazání cache na konci metody.
+        $contentLanguageModel = null;
         if($this->moduleModel->getBySystemName('content') !== null) {
-            /** @var ContentBlockItemText $contentBlockItemTextModel */
-            $contentBlockItemTextModel = $this->container->getByType(ContentBlockItemText::class);
-            /** @var ContentFieldValueLanguage $contentFieldValueLanguageModel */
-            $contentFieldValueLanguageModel = $this->container->getByType(ContentFieldValueLanguage::class);
             /** @var ContentLanguage $contentLanguageModel */
             $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
         }
@@ -401,42 +311,11 @@ class LanguageFacade
             $type = Arrays::pick($key, 0);
             $key = implode('_', $key);
 
-            if($type === 'contentBlockItemText' && $contentBlockItemTextModel !== null){
-                $contentBlockItemText = $contentBlockItemTextModel->get((int)$key);
-                if($contentBlockItemText !== null){
-                    /** @var EditorJs $editorJsBlockItem */
-                    $editorJsBlockItem = $this->container->getByType(EditorJs::class);
-                    if($contentBlockItemText->content_value_item->content_block_item->type === $editorJsBlockItem->getSystemName()){
-                        $text = Json::encode($text);
-                    }
-                    $contentBlockItemText?->update(['text' => $text]);
-                }
-            }elseif($type === 'contentFieldValue' && $contentBlockItemTextModel !== null){
-                /** @var \App\UI\Admin\Content\Form\FieldType\EditorJs $editorJsFieldType */
-                $editorJsFieldType = $this->container->getByType(\App\UI\Admin\Content\Form\FieldType\EditorJs::class);
-
-                $contentFieldValueLanguage = $contentFieldValueLanguageModel->getByContentIdAndLanguage((int)$key, $language);
-                if($contentFieldValueLanguage === null){
-                    /** @var ContentFieldValue $contentFieldValueModel */
-                    $contentFieldValueModel = $this->container->getByType(ContentFieldValue::class);
-                    $contentFieldValue = $contentFieldValueModel->get((int)$key);
-                    if($contentFieldValue->content_field->type === $editorJsFieldType->getSystemName()){
-                        $text = Json::encode($text);
-                    }
-
-                    $contentFieldValueLanguageModel->insert([
-                        'content_field_value_id' => (int)$key,
-                        'language_id' => $language->id,
-                        'value' => $text,
-                    ]);
-                }else{
-                    if($contentFieldValueLanguage->content_field_value->content_field->type === $editorJsFieldType->getSystemName()){
-                        $text = Json::encode($text);
-                    }
-
-                    $contentFieldValueLanguage->update(['value' => $text]);
-                }
-            }elseif($type === 'performanceContent'){
+            // Obsah bloků a polí obsahu (dřívější typy 'contentBlockItemText' a 'contentFieldValue')
+            // teď přichází jako klíč zdroje překladu (TranslationKey) a zpracuje ho
+            // App\Component\Translation\ContentTranslationProvider::save() výše ve smyčce.
+            // 'performanceContent' zůstává — obsah vázaný na performance se nemigruje.
+            if($type === 'performanceContent' && $contentLanguageModel !== null){
                 $id = explode('_', $key);
                 $contentLanguage = $contentLanguageModel->getByContentIdAndLanguageId((int)$id[0], $language->id);
 
@@ -480,7 +359,7 @@ class LanguageFacade
             }
         }
 
-        if($contentBlockItemTextModel !== null){
+        if($contentLanguageModel !== null){
             $cache = new Cache($this->storage, ContentControl::CACHE_NAMESPACE);
 
             /** @var Content $contentModel */
