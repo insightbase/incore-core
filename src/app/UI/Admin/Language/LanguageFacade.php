@@ -315,6 +315,10 @@ class LanguageFacade
             // teď přichází jako klíč zdroje překladu (TranslationKey) a zpracuje ho
             // App\Component\Translation\ContentTranslationProvider::save() výše ve smyčce.
             // 'performanceContent' zůstává — obsah vázaný na performance se nemigruje.
+            // $contentLanguageModel je null, pokud modul content v instalaci vůbec není
+            // (translatePerformancesContent() klíče 'performanceContent' generuje bez ohledu
+            // na to, protože je volaná jen z prezenteru performance) — v takovém (prakticky
+            // nedosažitelném) případě se klíč jen tiše přeskočí, místo aby spadl na nedefinovanou proměnnou.
             if($type === 'performanceContent' && $contentLanguageModel !== null){
                 $id = explode('_', $key);
                 $contentLanguage = $contentLanguageModel->getByContentIdAndLanguageId((int)$id[0], $language->id);
