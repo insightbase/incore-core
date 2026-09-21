@@ -50,6 +50,7 @@ search:
           - App\Model\DoctrineEntity\Entity
           - Doctrine\Common\DataFixtures\FixtureInterface
           - App\UI\Accessory\Admin\Modules\VisibilityVoter
+          - App\Component\Translation\TranslationProvider
     - in: '%vendorDir%/incore/core/src/app/Model'
       exclude:
           classes:
