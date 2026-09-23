@@ -77,6 +77,7 @@ class LanguageFacade
         private readonly LanguageLocale     $languageLocaleModel,
         private readonly DropCoreConfigProvider $dropCoreConfigProvider,
         private readonly \App\Component\Translation\TranslationProviderRegistry $translationProviderRegistry,
+        private readonly \App\Model\Admin\Translate $translateModel,
     ) {}
 
     public function create(NewFormData $data): void
@@ -219,7 +220,7 @@ class LanguageFacade
         $json += $this->translationProviderRegistry->collectAll($language, true);
 
         if ($json !== []) {
-            $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+            $this->sendJsonToTranslate($json, $defaultLanguage, $language, 'bulk');
         }
 
         return count($json);
@@ -279,7 +280,7 @@ class LanguageFacade
             return;
         }
 
-        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language, $systemName);
     }
 
     /**
@@ -416,13 +417,14 @@ class LanguageFacade
      * @param array $json
      * @param LanguageEntity $defaultLanguage
      * @param LanguageEntity $language
+     * @param string $trigger odkud byl překlad spuštěn (bulk = hromadně za jazyk, jméno zdroje, performance), jen pro metadata
      * @return void
      * @throws BasicAuthNotSetException
      * @throws TranslateApiException
      * @throws InvalidLinkException
      * @throws JsonException
      */
-    private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language):void
+    private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language, string $trigger):void
     {
         if ($this->dryRunCallback !== null) {
             ($this->dryRunCallback)($json);
@@ -464,6 +466,7 @@ class LanguageFacade
                 'model' => 'flash',
                 'callback' => $callback,
                 'mode' => 'async',
+                'metadata' => $this->buildMetadata($shortJson, $trigger, $iterator, $totalChunks),
                 'value' => $shortJson,
             ]);
 
@@ -562,7 +565,7 @@ class LanguageFacade
             $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
         }
 
-        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+        $this->sendJsonToTranslate($json, $defaultLanguage, $language, 'performance');
     }
 
     /**
@@ -586,6 +589,62 @@ class LanguageFacade
                 $json['performanceContent_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
             }
         }
+    }
+
+    /**
+     * Popis dávky pro DropCore, aby bylo v jeho logu vidět, co se překládalo.
+     * DropCore metadata nijak nezpracovává, jen je uloží k úloze.
+     *
+     * @param array<string, mixed> $chunk
+     * @return array<string, mixed>
+     */
+    private function buildMetadata(array $chunk, string $trigger, int $iterator, int $totalChunks): array
+    {
+        $sources = [];
+        foreach (array_keys($chunk) as $key) {
+            $translationKey = \App\Component\Translation\TranslationKey::tryDecode((string) $key);
+            if ($translationKey !== null) {
+                $sources[$translationKey->systemName][$translationKey->id][] = $translationKey->field;
+                continue;
+            }
+
+            // Starý formát klíče `typ_id_pole` (zatím jen performanceContent).
+            $parts = explode('_', (string) $key, 3);
+            $sources[$parts[0]][(int) ($parts[1] ?? 0)][] = $parts[2] ?? '';
+        }
+
+        $summary = [];
+        foreach ($sources as $systemName => $items) {
+            $summary[$systemName] = [
+                'count' => array_sum(array_map('count', $items)),
+                'ids' => array_keys($items),
+            ];
+        }
+
+        // U slovníku UI textů je čitelnější název klíče než ID řádku.
+        if (isset($summary['translate'])) {
+            $summary['translate']['keys'] = array_values(
+                $this->translateModel->getTable()
+                    ->where('id', $summary['translate']['ids'])
+                    ->fetchPairs('id', 'key'),
+            );
+            unset($summary['translate']['ids']);
+        }
+
+        // Identita nese řádek uživatele z Authenticatoru; mimo přihlášení (CLI) je null.
+        $identity = $this->userSecurity->getIdentity();
+        $userName = $identity !== null
+            ? trim(($identity->firstname ?? '') . ' ' . ($identity->lastname ?? ''))
+            : null;
+
+        return [
+            'app' => 'inCore',
+            'trigger' => $trigger,
+            'chunk' => ($iterator + 1) . '/' . $totalChunks,
+            'userId' => $this->userSecurity->getId(),
+            'userName' => $userName !== '' ? $userName : null,
+            'sources' => $summary,
+        ];
     }
 
     private function isTranslated(?string $value, string $defaultValue): bool

@@ -2,6 +2,7 @@
 
 ## 2026-09-23
 ### Změněno (Changed)
+- core - jazyky - požadavek na automatický překlad nese popis, co se překládá (odkud byl spuštěn, které zdroje a položky dávka obsahuje, u překladových klíčů přímo jejich názvy, jméno a příjmení toho, kdo ho spustil), takže je to vidět v logu DropCore
 - core - jazyky - tlačítko „Přeložit“ u jazyka posílá k překladu jen texty, které v daném jazyce ještě přeložené nejsou; už přeložené texty se nepřepisují a nečerpají kredity
 - core - jazyky - když je vše přeložené, nic se neodešle a zobrazí se o tom hláška
 
