@@ -30,16 +30,21 @@ final class TranslationProviderRegistry
 
     /**
      * Sesbírá texty všech providerů do pole připraveného k odeslání.
+     * S `$onlyMissing` vynechá položky, které už zdroj (TranslatedItemsProvider)
+     * v cílovém jazyce přeložené má.
      *
      * @param LanguageEntity $language
      * @return array<string, string|array<string, mixed>>
      */
-    public function collectAll(ActiveRow $language): array
+    public function collectAll(ActiveRow $language, bool $onlyMissing = false): array
     {
         $json = [];
         foreach ($this->getProviders() as $systemName => $provider) {
             try {
                 $items = $provider->collect($language);
+                $translated = $onlyMissing && $provider instanceof TranslatedItemsProvider
+                    ? $provider->getTranslatedItems($language)
+                    : [];
             } catch (\Throwable $e) {
                 // Zdroj (i z cizí aplikace) nesmí pádem shodit hromadný překlad celého webu -
                 // jeho texty jen vynecháme z dávky a chybu zalogujeme, ostatní zdroje pokračují dál.
@@ -49,6 +54,10 @@ final class TranslationProviderRegistry
             }
 
             foreach ($items as $item) {
+                if (in_array($item->field, $translated[$item->id] ?? [], true)) {
+                    continue;
+                }
+
                 $json[TranslationKey::encode($systemName, $item->id, $item->field)] = $item->value;
             }
         }

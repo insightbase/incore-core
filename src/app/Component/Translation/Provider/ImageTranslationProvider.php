@@ -3,6 +3,7 @@
 namespace App\Component\Translation\Provider;
 
 use App\Component\Image\ImageFacade;
+use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
 use App\Model\Admin\Image;
@@ -13,7 +14,7 @@ use Nette\Database\Table\ActiveRow;
 /**
  * Zdroj překladu ALT textu, jména a popisu obrázků.
  */
-final readonly class ImageTranslationProvider implements TranslationProvider
+final readonly class ImageTranslationProvider implements TranslationProvider, TranslatedItemsProvider
 {
     private const array FIELDS = ['alt', 'name', 'description'];
 
@@ -51,6 +52,24 @@ final readonly class ImageTranslationProvider implements TranslationProvider
         }
 
         return $items;
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @return array<int, list<string>>
+     */
+    public function getTranslatedItems(ActiveRow $language): array
+    {
+        $translated = [];
+        foreach ($this->imageLanguageModel->getTable()->where('language_id', $language->id) as $row) {
+            foreach (self::FIELDS as $field) {
+                if ($row->{$field} !== null && $row->{$field} !== '') {
+                    $translated[$row->image_id][] = $field;
+                }
+            }
+        }
+
+        return $translated;
     }
 
     /**

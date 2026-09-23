@@ -2,6 +2,7 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
 use App\Model\Admin\Email;
@@ -12,7 +13,7 @@ use Nette\Database\Table\ActiveRow;
 /**
  * Zdroj překladu předmětu a textu e-mailových šablon.
  */
-final readonly class EmailTranslationProvider implements TranslationProvider
+final readonly class EmailTranslationProvider implements TranslationProvider, TranslatedItemsProvider
 {
     private const array FIELDS = ['subject', 'text'];
 
@@ -49,6 +50,24 @@ final readonly class EmailTranslationProvider implements TranslationProvider
         }
 
         return $items;
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @return array<int, list<string>>
+     */
+    public function getTranslatedItems(ActiveRow $language): array
+    {
+        $translated = [];
+        foreach ($this->emailLanguageModel->getTable()->where('language_id', $language->id) as $row) {
+            foreach (self::FIELDS as $field) {
+                if ($row->{$field} !== null && $row->{$field} !== '') {
+                    $translated[$row->email_id][] = $field;
+                }
+            }
+        }
+
+        return $translated;
     }
 
     /**

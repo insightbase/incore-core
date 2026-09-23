@@ -447,6 +447,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'header_analytics' => 'Google Analytics',
 		'flash_setting_analyticsUpdated' => 'Google Analytics nastaveno',
 		'flash_translationInProgress' => 'Texty byly odeslány k překladu',
+		'flash_nothingToTranslate' => 'Všechny texty už jsou přeložené, nic nebylo odesláno',
 		'languageTranslateLog_title' => 'Log překladů',
 		'languageTranslateLog_detailTitle' => 'Detail požadavku překladu',
 		'languageTranslateLog_back' => 'Zpět na výpis',

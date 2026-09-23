@@ -2,6 +2,7 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
 use App\Model\Admin\StaticPage;
@@ -15,7 +16,7 @@ use Nette\Utils\Json;
  * uloženo jako JSON (EditorJs), proto se v `collect()` dekóduje na pole
  * a v `save()` se zase zakóduje zpět na řetězec.
  */
-final readonly class StaticPageTranslationProvider implements TranslationProvider
+final readonly class StaticPageTranslationProvider implements TranslationProvider, TranslatedItemsProvider
 {
     private const array FIELDS = ['name', 'title', 'description', 'keywords', 'content'];
 
@@ -60,6 +61,24 @@ final readonly class StaticPageTranslationProvider implements TranslationProvide
         }
 
         return $items;
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @return array<int, list<string>>
+     */
+    public function getTranslatedItems(ActiveRow $language): array
+    {
+        $translated = [];
+        foreach ($this->staticPageLanguageModel->getTable()->where('language_id', $language->id) as $row) {
+            foreach (self::FIELDS as $field) {
+                if ($row->{$field} !== null && $row->{$field} !== '') {
+                    $translated[$row->static_page_id][] = $field;
+                }
+            }
+        }
+
+        return $translated;
     }
 
     /**

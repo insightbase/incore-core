@@ -169,6 +169,28 @@ Tři metody rozhraní:
   vrátí a později přijde do `save()`, je id konkrétní hodnoty (`content_value`
   položky nebo pole obsahu) — ne id obsahu, kterým se sběr omezoval.
 
+## Posílat jen nepřeložené texty (`TranslatedItemsProvider`)
+
+Hromadný překlad jazyka (Jazyky → Přeložit) posílá jen texty, které v cílovém
+jazyce ještě přeložené nejsou. Aby to zdroj uměl, implementuje navíc
+volitelné rozhraní `App\Component\Translation\TranslatedItemsProvider`
+s jedinou metodou:
+
+```php
+/** @return array<int, list<string>> id položky => přeložená pole */
+public function getTranslatedItems(ActiveRow $language): array;
+```
+
+Vrací položky (`TranslationItem::$id` a `$field`), které už v jazyce
+`$language` mají překlad — ty se do dávky nezařadí. Metoda se volá až po
+`collect()`, takže může počítat i s jazykovými řádky, které `collect()`
+založil. Kde se jazyková verze zakládá jako kopie výchozího jazyka (obsah,
+blog), bere se hodnota jako přeložená, až když se od výchozího jazyka liší.
+
+Zdroj bez tohoto rozhraní funguje dál, jen při hromadném překladu posílá
+vždy všechno. Překlad jediné položky (`translateProviderItem()`) posílá
+vždy všechno bez ohledu na rozhraní — je to vědomé „přelož znovu“.
+
 ## Registrace v `config/services.neon`
 
 Nette DI najde třídy implementující `TranslationProvider` jen tam, kde je

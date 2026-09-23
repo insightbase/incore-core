@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-23
+### Změněno (Changed)
+- core - jazyky - tlačítko „Přeložit“ u jazyka posílá k překladu jen texty, které v daném jazyce ještě přeložené nejsou; už přeložené texty se nepřepisují a nečerpají kredity
+- core - jazyky - když je vše přeložené, nic se neodešle a zobrazí se o tom hláška
+
 ## 2026-09-21
 ### Přidáno (Added)
 - core - e-maily - předmět a text e-mailové šablony lze nově vyplnit ve všech jazycích, mezi jazyky se přepíná vlaječkami nad formulářem

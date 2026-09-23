@@ -186,15 +186,17 @@ class LanguageFacade
     }
 
     /**
+     * Odešle k překladu texty, které v jazyce `$language` ještě přeložené nejsou.
+     *
      * @param LanguageEntity $language
-     * @return void
+     * @return int počet odeslaných textů
      * @throws BasicAuthNotSetException
      * @throws TranslateInProgressException
      * @throws TranslateApiException
      * @throws InvalidLinkException
      * @throws JsonException
      */
-    public function translate(ActiveRow $language):void
+    public function translate(ActiveRow $language):int
     {
         $defaultLanguage = $this->languageModel->getDefault();
 
@@ -209,13 +211,18 @@ class LanguageFacade
             $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
 
             foreach($contentLanguageModel->getByLanguage($language) as $contentLanguage) {
-                $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage);
+                $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage, true);
             }
         }
 
-        $json += $this->translationProviderRegistry->collectAll($language);
+        // Hromadný překlad posílá jen to, co v cílovém jazyce ještě přeložené není.
+        $json += $this->translationProviderRegistry->collectAll($language, true);
 
-        $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+        if ($json !== []) {
+            $this->sendJsonToTranslate($json, $defaultLanguage, $language);
+        }
+
+        return count($json);
     }
 
     /**
@@ -562,21 +569,27 @@ class LanguageFacade
      * @param ContentLanguageEntity $contentLanguage
      * @param array $json
      * @param LanguageEntity $defaultLanguage
+     * @param bool $onlyMissing vynechat texty, které už jsou přeložené (vyplněné a odlišné od výchozího jazyka)
      * @return void
      */
-    private function addPerformanceContentToJson(ActiveRow $contentLanguage, array &$json, ActiveRow $defaultLanguage):void
+    private function addPerformanceContentToJson(ActiveRow $contentLanguage, array &$json, ActiveRow $defaultLanguage, bool $onlyMissing = false):void
     {
         /** @var ContentLanguage $contentLanguageModel */
         $contentLanguageModel = $this->container->getByType(ContentLanguage::class);
 
         $contentLanguageDefault = $contentLanguageModel->getByContentIdAndLanguageId($contentLanguage->content_id, $defaultLanguage->id);
         if($contentLanguageDefault !== null){
-            if($contentLanguageDefault->title !== null){
+            if($contentLanguageDefault->title !== null && !($onlyMissing && $this->isTranslated($contentLanguage->title, $contentLanguageDefault->title))){
                 $json['performanceContent_' . $contentLanguage->content_id . '_title'] = $contentLanguageDefault->title;
             }
-            if($contentLanguageDefault->description !== null){
+            if($contentLanguageDefault->description !== null && !($onlyMissing && $this->isTranslated($contentLanguage->description, $contentLanguageDefault->description))){
                 $json['performanceContent_' . $contentLanguage->content_id . '_description'] = $contentLanguageDefault->description;
             }
         }
+    }
+
+    private function isTranslated(?string $value, string $defaultValue): bool
+    {
+        return $value !== null && $value !== '' && $value !== $defaultValue;
     }
 }

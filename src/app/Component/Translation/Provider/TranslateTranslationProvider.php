@@ -2,6 +2,7 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
 use App\Model\Admin\Language;
@@ -15,7 +16,7 @@ use Nette\Utils\Json;
 /**
  * Zdroj překladu slovníku UI textů (tabulky `translate` / `translate_language`).
  */
-final readonly class TranslateTranslationProvider implements TranslationProvider
+final readonly class TranslateTranslationProvider implements TranslationProvider, TranslatedItemsProvider
 {
     private const array FIELDS = ['value'];
 
@@ -61,6 +62,24 @@ final readonly class TranslateTranslationProvider implements TranslationProvider
         }
 
         return $items;
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @return array<int, list<string>>
+     */
+    public function getTranslatedItems(ActiveRow $language): array
+    {
+        $translated = [];
+        foreach ($this->translateLanguageModel->getTable()->where('language_id', $language->id) as $row) {
+            foreach (self::FIELDS as $field) {
+                if ($row->{$field} !== '') {
+                    $translated[$row->translate_id][] = $field;
+                }
+            }
+        }
+
+        return $translated;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
 use App\Model\Admin\Language;
@@ -12,7 +13,7 @@ use Nette\Database\Table\ActiveRow;
 /**
  * Zdroj překladu názvů jazyků.
  */
-final readonly class LanguageNameTranslationProvider implements TranslationProvider
+final readonly class LanguageNameTranslationProvider implements TranslationProvider, TranslatedItemsProvider
 {
     private const array FIELDS = ['name'];
 
@@ -45,6 +46,24 @@ final readonly class LanguageNameTranslationProvider implements TranslationProvi
         }
 
         return $items;
+    }
+
+    /**
+     * @param LanguageEntity $language
+     * @return array<int, list<string>>
+     */
+    public function getTranslatedItems(ActiveRow $language): array
+    {
+        $translated = [];
+        foreach ($this->languageLocaleModel->getTable()->where('language_id', $language->id) as $row) {
+            foreach (self::FIELDS as $field) {
+                if ($row->{$field} !== '') {
+                    $translated[$row->locale_id][] = $field;
+                }
+            }
+        }
+
+        return $translated;
     }
 
     /**
