@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2026-09-23
+### Přidáno (Added)
+- forms - kontaktní formuláře - aplikace může po uložení odeslaného formuláře spustit vlastní akci a před odesláním e-mailu ho zastavit (např. u spamu), aniž by musela upravovat samotný formulář
+
 ### Změněno (Changed)
 - core - jazyky - požadavek na automatický překlad nese popis, co se překládá (odkud byl spuštěn, které zdroje a položky dávka obsahuje, u překladových klíčů přímo jejich názvy, jméno a příjmení toho, kdo ho spustil), takže je to vidět v logu DropCore
 - core - jazyky - tlačítko „Přeložit“ u jazyka posílá k překladu jen texty, které v daném jazyce ještě přeložené nejsou; už přeložené texty se nepřepisují a nečerpají kredity
