@@ -3,6 +3,7 @@
 ## 2026-09-24
 ### Přidáno (Added)
 - datagrid - filtry - filtru v mřížce lze nastavit výchozí hodnotu, se kterou se mřížka otevře
+- forms - kontaktní formuláře - aplikace může do přehledu odeslaných záznamů přidat vlastní sloupce a filtry, aniž by musela upravovat samotný přehled
 
 ### Opraveno (Fixed)
 - datagrid - filtry - rozbalovací filtr (např. filtr role v přehledu uživatelů) po výběru hodnoty nebo po opětovném otevření mřížky nezobrazoval vybranou možnost, i když bylo podle ní vyfiltrováno
