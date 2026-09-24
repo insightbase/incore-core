@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-24
+### Přidáno (Added)
+- datagrid - filtry - filtru v mřížce lze nastavit výchozí hodnotu, se kterou se mřížka otevře
+
+### Opraveno (Fixed)
+- datagrid - filtry - rozbalovací filtr (např. filtr role v přehledu uživatelů) po výběru hodnoty nebo po opětovném otevření mřížky nezobrazoval vybranou možnost, i když bylo podle ní vyfiltrováno
+
 ## 2026-09-23
 ### Přidáno (Added)
 - forms - kontaktní formuláře - aplikace může po uložení odeslaného formuláře spustit vlastní akci a před odesláním e-mailu ho zastavit (např. u spamu), aniž by musela upravovat samotný formulář
