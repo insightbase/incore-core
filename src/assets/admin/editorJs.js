@@ -8,6 +8,7 @@ import List from '@editorjs/list';
 import naja from "naja";
 import UploadLinkInlineTool from './editorJs/uploadLinkInlineTool.js';
 import LinkInlineTool from './editorJs/linkInlineTool.js';
+import TextStyleInlineTool from './editorJs/textStyleInlineTool.js';
 import ImageGallery from "./editorJs/ImageGallery.js";
 import Sortable from 'sortablejs';
 import FAQ from './editorJs/faq';
@@ -153,6 +154,14 @@ export function initEditorJs() {
 
         tools.link = {
             class: LinkInlineTool,
+        }
+
+        if (types.includes("textStyle")) {
+            // Aplikace může velikosti a paletu přepsat: window.incoreEditorJsTextStyle = { sizes: [...], colorGroups: [...] }
+            tools.textStyle = {
+                class: TextStyleInlineTool,
+                config: window.incoreEditorJsTextStyle || {},
+            }
         }
 
         window.editors[id] = new EditorJS({

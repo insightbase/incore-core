@@ -15,5 +15,6 @@ enum EditorJsTypeEnum:string
     case Audio = 'audio';
     case Gallery = 'gallery';
     case MultiImage = 'multiImage';
+    case TextStyle = 'textStyle';
 
 }

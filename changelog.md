@@ -4,6 +4,7 @@
 ### Přidáno (Added)
 - datagrid - filtry - filtru v mřížce lze nastavit výchozí hodnotu, se kterou se mřížka otevře
 - forms - kontaktní formuláře - aplikace může do přehledu odeslaných záznamů přidat vlastní sloupce a filtry, aniž by musela upravovat samotný přehled
+- core - textový editor - nový nástroj „Styl textu“ v liště nad označeným textem: velikost písma a barva, u seznamů i pro celý seznam najednou; v nastavení ho lze vypnout a aplikace si může nastavit vlastní velikosti a paletu barev
 
 ### Opraveno (Fixed)
 - datagrid - filtry - rozbalovací filtr (např. filtr role v přehledu uživatelů) po výběru hodnoty nebo po opětovném otevření mřížky nezobrazoval vybranou možnost, i když bylo podle ní vyfiltrováno
