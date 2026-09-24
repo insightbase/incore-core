@@ -7,6 +7,8 @@
 
 ### Opraveno (Fixed)
 - datagrid - filtry - rozbalovací filtr (např. filtr role v přehledu uživatelů) po výběru hodnoty nebo po opětovném otevření mřížky nezobrazoval vybranou možnost, i když bylo podle ní vyfiltrováno
+- datagrid - filtry - textový filtr po načtení mřížky nezobrazoval zadaný text
+- datagrid - filtry - mřížka už nespadne, když odkaz obsahuje filtr, který v ní neexistuje (např. po odebrání filtru)
 
 ## 2026-09-23
 ### Přidáno (Added)
