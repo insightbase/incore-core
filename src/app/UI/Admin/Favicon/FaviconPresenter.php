@@ -90,6 +90,13 @@ class FaviconPresenter extends Presenter
         $this->redirect('default');
     }
 
+    #[NoReturn] public function actionDeleteAll():void
+    {
+        $this->faviconFacade->deleteAll();
+        $this->flashMessage($this->translator->translate('flash_faviconsDeleted'));
+        $this->redirect('default');
+    }
+
     protected function createComponentFormNew():Form
     {
         $form = $this->formFactory->createNew();
@@ -115,6 +122,10 @@ class FaviconPresenter extends Presenter
         $this->submenuFactory->addMenu($this->translator->translate('menu_import'), 'import')
             ->setIsPrimary()
             ->setModalId('formImport')
+        ;
+        $this->submenuFactory->addMenu($this->translator->translate('menu_deleteAll'), 'deleteAll')
+            ->setShowInDropdown()
+            ->setConfirmDelete()
         ;
     }
 }

@@ -165,4 +165,11 @@ readonly class FaviconFacade
     {
         $favicon->delete();
     }
+
+    public function deleteAll():void
+    {
+        $this->faviconModel->truncate();
+        $this->logFacade->create(LogActionEnum::Deleted, 'favicon');
+        $this->cleanCache();
+    }
 }

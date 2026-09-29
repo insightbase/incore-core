@@ -159,6 +159,7 @@ class SettingFixtures extends Fixture implements FixtureInterface, DependentFixt
             $this->getReference(PrivilegeFixtures::EDIT, Privilege::class),
             $this->getReference(PrivilegeFixtures::NEW, Privilege::class),
             $this->getReference(PrivilegeFixtures::IMPORT, Privilege::class),
+            $this->getReference(PrivilegeFixtures::DELETE_ALL, Privilege::class),
         ];
         $modulePrivilegeRepository = $manager->getRepository(ModulePrivilege::class);
         foreach ($privileges as $privilege) {

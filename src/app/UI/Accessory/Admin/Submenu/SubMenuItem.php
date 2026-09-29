@@ -11,6 +11,7 @@ class SubMenuItem
     private ?string $icon = null;
     private string $target = '_self';
     private bool $customLink = false;
+    private bool $confirmDelete = false;
 
     public function __construct(
         private string $name,
@@ -117,6 +118,17 @@ class SubMenuItem
     public function setCustomLink(bool $customLink = true): self
     {
         $this->customLink = $customLink;
+        return $this;
+    }
+
+    public function isConfirmDelete(): bool
+    {
+        return $this->confirmDelete;
+    }
+
+    public function setConfirmDelete(bool $confirmDelete = true): self
+    {
+        $this->confirmDelete = $confirmDelete;
         return $this;
     }
 }

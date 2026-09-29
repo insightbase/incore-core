@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-29
+### Přidáno (Added)
+- core - favicony - v okně importu je odkaz na favicon-generator.org, kde se favicony generují
+- core - favicony - v menu pod třemi tečkami přibyla volba „Smazat vše“, která po potvrzení odstraní všechny favicony najednou (dostupná podle nového oprávnění „Smazat vše“)
+
 ## 2026-09-24
 ### Přidáno (Added)
 - datagrid - filtry - filtru v mřížce lze nastavit výchozí hodnotu, se kterou se mřížka otevře

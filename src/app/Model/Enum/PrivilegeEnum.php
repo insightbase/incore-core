@@ -16,4 +16,5 @@ enum PrivilegeEnum: string
     case Import = 'import';
     case Show = 'show';
     case DeleteItem = 'deleteItem';
+    case DeleteAll = 'deleteAll';
 }

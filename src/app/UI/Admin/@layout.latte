@@ -397,7 +397,7 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 								</button>
 								<div class="dropdown-content menu-default w-full max-w-[220px] hidden" style="opacity: 0;">
 									<div class="menu-item" data-dropdown-dismiss="true" n:foreach="$submenuFactory->getSubMenus() as $subMenuItem">
-										<a class="menu-link" href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && $subMenuItem->isShowInDropdown()">
+										<a n:class="'menu-link', $subMenuItem->isConfirmDelete() ? 'confirmDelete'" {if $subMenuItem->isConfirmDelete()}data-modal-toggle="#confirmDelete"{/if} href="{$presenter->link($subMenuItem->getAction(), $subMenuItem->getParams())}" n:if="$subMenuItem->getModalId() === null && $user->isAllowed(last($moduleTree)?->system_name, $subMenuItem->getAction()) && $subMenuItem->isShowInDropdown()">
                                             <i n:class="$subMenuItem->getIcon()" n:if="$subMenuItem->getIcon() !== null"></i>
 											{$subMenuItem->getName()}
 										</a>
