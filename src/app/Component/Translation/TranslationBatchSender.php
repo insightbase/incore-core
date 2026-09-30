@@ -44,18 +44,30 @@ final readonly class TranslationBatchSender
             $dropCoreId = $this->translateRequestSender->send($batch->request, $batch->languageId, $batchIndex, count($translateIds));
         } catch (NotEnoughCreditsException $e) {
             Debugger::log($e, ILogger::WARNING);
-            $this->languageTranslateModel->markError($batch->id, LanguageTranslate::ERROR_NOT_ENOUGH_CREDITS);
+            $this->languageTranslateModel->markError($batch->id, $batch->claimedAt, LanguageTranslate::ERROR_NOT_ENOUGH_CREDITS);
 
             return true;
         } catch (\Throwable $e) {
             // I neočekávaná chyba musí dávku odemknout, jinak by ji lišta nešla zkusit znovu.
             Debugger::log($e, ILogger::EXCEPTION);
-            $this->languageTranslateModel->markError($batch->id, LanguageTranslate::ERROR_API);
+            $this->languageTranslateModel->markError($batch->id, $batch->claimedAt, LanguageTranslate::ERROR_API);
 
             return true;
         }
 
-        $this->languageTranslateModel->markSent($batch->id, $dropCoreId, $this->earlyCallbackStore->take($dropCoreId));
+        if (!$this->languageTranslateModel->markSent($batch->id, $batch->claimedAt, $dropCoreId)) {
+            // Odesílání trvalo déle než zámek a dávku mezitím odeslal jiný request.
+            Debugger::log(sprintf('Dávka překladu %d byla odeslána po vypršení zámku (DropCore %s).', $batch->id, $dropCoreId), ILogger::WARNING);
+
+            return true;
+        }
+
+        // Až po uložení drop_core_id: callback, který dorazí později, už řádek najde sám
+        // (viz LanguageFacade::processDropCoreCallback()), dřívější si převezmeme tady.
+        $finished = $this->earlyCallbackStore->take($dropCoreId);
+        if ($finished !== null) {
+            $this->languageTranslateModel->markFinished($batch->id, $finished);
+        }
 
         return true;
     }

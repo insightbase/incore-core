@@ -62,7 +62,9 @@ final readonly class DropCoreTranslateSender implements TranslateRequestSender
     private function requestTranslation(DropCoreConfig $dropCoreConfig, string $url, string $body, int $iterator, int $totalChunks): string
     {
         try {
-            $client = new Client();
+            // Timeouty musí být kratší než zámek dávky (LanguageTranslate::LOCK_TIMEOUT, 2 min),
+            // jinak by ji po vypršení zámku mohl odeslat i jiný request.
+            $client = new Client(['timeout' => 60, 'connect_timeout' => 10]);
             $response = $client->request('POST', $url, [
                 'headers' => [
                     'identity-token' => $dropCoreConfig->identityToken,

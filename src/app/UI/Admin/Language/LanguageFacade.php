@@ -495,6 +495,13 @@ class LanguageFacade
             // Dávka ještě nemá uložené drop_core_id (callback předběhl odpověď na požadavek) -
             // dokončení si poznamenáme a TranslationBatchSender ho po uložení drop_core_id převezme.
             $this->earlyCallbackStore->remember((string) $post['id'], new DateTime());
+            // Odesílání mohlo drop_core_id uložit, zatímco se tady ukládal překlad - pak už si
+            // poznámku nepřevezme, proto se na řádek podíváme ještě jednou.
+            $languageTranslate = $this->languageTranslateModel->getByDropCoreId($post['id']);
+            if ($languageTranslate !== null) {
+                $languageTranslate->update(['finished' => new DateTime()]);
+                $this->earlyCallbackStore->take((string) $post['id']);
+            }
         }
 
         $cacheTranslate = new Cache($this->storage, Translator::CACHE_NAMESPACE);

@@ -111,11 +111,14 @@ readonly class LanguageTranslate implements Model
             return null;
         }
 
+        // Sloupec DATETIME nemá zlomky sekund - bez oříznutí by se čas zámku uložil zaokrouhlený
+        // a markSent()/markError() by ho podle $claimedAt nenašly.
+        $now = $now->setTime((int) $now->format('H'), (int) $now->format('i'), (int) $now->format('s'));
         $lockExpired = $now->modify(self::LOCK_TIMEOUT);
         foreach ($this->getSendable($ids, $lockExpired)->order('id')->fetchAll() as $row) {
             $claimed = $this->getSendable([$row->id], $lockExpired)->update(['sending_started' => $now]);
             if ($claimed === 1) {
-                return new PendingTranslateBatch($row->id, $row->language_id, $row->request);
+                return new PendingTranslateBatch($row->id, $row->language_id, $row->request, $now);
             }
         }
 
@@ -123,23 +126,38 @@ readonly class LanguageTranslate implements Model
     }
 
     /**
-     * @param ?\DateTimeInterface $finished callback DropCore už dorazil (předběhl uložení drop_core_id)
+     * Uloží drop_core_id odeslané dávky. Vrací false, když dávku mezitím (po vypršení zámku)
+     * převzal jiný request - jeho výsledek se nepřepisuje.
      */
-    public function markSent(int $id, string $dropCoreId, ?\DateTimeInterface $finished): void
+    public function markSent(int $id, \DateTimeImmutable $claimedAt, string $dropCoreId): bool
     {
-        $this->getTable()->where('id', $id)->update([
-            'drop_core_id' => $dropCoreId,
-            'finished' => $finished,
-            'sending_started' => null,
-        ]);
+        return $this->getTable()
+            ->where('id', $id)
+            ->where('sending_started', $claimedAt)
+            ->update([
+                'drop_core_id' => $dropCoreId,
+                'sending_started' => null,
+                'error' => null,
+            ]) === 1;
     }
 
-    public function markError(int $id, string $error): void
+    public function markFinished(int $id, \DateTimeInterface $finished): void
     {
-        $this->getTable()->where('id', $id)->update([
-            'error' => $error,
-            'sending_started' => null,
-        ]);
+        $this->getTable()->where('id', $id)->update(['finished' => $finished]);
+    }
+
+    /**
+     * Uloží chybu odeslání - jen pokud dávku pořád drží request, který ji zamkl.
+     */
+    public function markError(int $id, \DateTimeImmutable $claimedAt, string $error): void
+    {
+        $this->getTable()
+            ->where('id', $id)
+            ->where('sending_started', $claimedAt)
+            ->update([
+                'error' => $error,
+                'sending_started' => null,
+            ]);
     }
 
     /**

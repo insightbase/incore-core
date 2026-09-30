@@ -11,5 +11,7 @@ final readonly class PendingTranslateBatch
         public int $id,
         public int $languageId,
         public string $request,
+        /** čas zamčení - jen request, který dávku zamkl, smí uložit její výsledek */
+        public \DateTimeImmutable $claimedAt,
     ) {}
 }
