@@ -595,7 +595,7 @@ class LanguageFacade
                 'model' => 'flash',
                 'callback' => $callback,
                 'mode' => 'async',
-                'metadata' => $this->buildMetadata($shortJson, $trigger, $iterator, $totalChunks),
+                'metadata' => $this->buildMetadata($shortJson, $trigger, $defaultLanguage, $language, $iterator, $totalChunks),
                 'value' => $shortJson,
             ]);
 
@@ -758,58 +758,104 @@ class LanguageFacade
 
     /**
      * Popis dávky pro DropCore, aby bylo v jeho logu vidět, co se překládalo.
-     * DropCore metadata nijak nezpracovává, jen je uloží k úloze.
+     * DropCore metadata nijak nezpracovává, jen je uloží k úloze - proto jsou
+     * čitelná česky pro člověka, ne pro stroj.
      *
      * @param array<string, mixed> $chunk
+     * @param LanguageEntity $defaultLanguage
+     * @param LanguageEntity $language
      * @return array<string, mixed>
      */
-    private function buildMetadata(array $chunk, string $trigger, int $iterator, int $totalChunks): array
+    private function buildMetadata(array $chunk, string $trigger, ActiveRow $defaultLanguage, ActiveRow $language, int $iterator, int $totalChunks): array
     {
+        /** @var array<string, array<int, true>> $sources název zdroje => id položek */
         $sources = [];
+        /** @var array<string, int> $textCounts název zdroje => počet textů */
+        $textCounts = [];
         foreach (array_keys($chunk) as $key) {
             $translationKey = \App\Component\Translation\TranslationKey::tryDecode((string) $key);
             if ($translationKey !== null) {
-                $sources[$translationKey->systemName][$translationKey->id][] = $translationKey->field;
-                continue;
+                $systemName = $translationKey->systemName;
+                $id = $translationKey->id;
+            } else {
+                // Starý formát klíče `typ_id_pole` (zatím jen performanceContent).
+                $parts = explode('_', (string) $key, 3);
+                $systemName = $parts[0];
+                $id = (int) ($parts[1] ?? 0);
+            }
+            $sources[$systemName][$id] = true;
+            $textCounts[$systemName] = ($textCounts[$systemName] ?? 0) + 1;
+        }
+
+        $content = [];
+        foreach ($sources as $systemName => $ids) {
+            $ids = array_keys($ids);
+            $description = self::czechCount($textCounts[$systemName], 'text', 'texty', 'textů');
+
+            // U slovníku UI textů je čitelnější název klíče než ID řádku.
+            if ($systemName === 'translate') {
+                $keys = $this->translateModel->getTable()->where('id', $ids)->fetchPairs('id', 'key');
+                $description .= ', klíče: ' . implode(', ', $keys);
+            } else {
+                $description .= ', položky (ID): ' . implode(', ', $ids);
             }
 
-            // Starý formát klíče `typ_id_pole` (zatím jen performanceContent).
-            $parts = explode('_', (string) $key, 3);
-            $sources[$parts[0]][(int) ($parts[1] ?? 0)][] = $parts[2] ?? '';
-        }
-
-        $summary = [];
-        foreach ($sources as $systemName => $items) {
-            $summary[$systemName] = [
-                'count' => array_sum(array_map('count', $items)),
-                'ids' => array_keys($items),
-            ];
-        }
-
-        // U slovníku UI textů je čitelnější název klíče než ID řádku.
-        if (isset($summary['translate'])) {
-            $summary['translate']['keys'] = array_values(
-                $this->translateModel->getTable()
-                    ->where('id', $summary['translate']['ids'])
-                    ->fetchPairs('id', 'key'),
-            );
-            unset($summary['translate']['ids']);
+            $content[$this->getMetadataSourceLabel($systemName)] = $description;
         }
 
         // Identita nese řádek uživatele z Authenticatoru; mimo přihlášení (CLI) je null.
         $identity = $this->userSecurity->getIdentity();
         $userName = $identity !== null
             ? trim(($identity->firstname ?? '') . ' ' . ($identity->lastname ?? ''))
-            : null;
+            : '';
+        $userId = $this->userSecurity->getId();
 
         return [
-            'app' => 'inCore',
-            'trigger' => $trigger,
-            'chunk' => ($iterator + 1) . '/' . $totalChunks,
-            'userId' => $this->userSecurity->getId(),
-            'userName' => $userName !== '' ? $userName : null,
-            'sources' => $summary,
+            'aplikace' => 'inCore',
+            'web' => (new Url($this->linkGenerator->link('Admin:Home:default')))->getHost(),
+            'překlad' => match ($trigger) {
+                'bulk' => 'Hromadný překlad celého jazyka',
+                'performance' => 'Překlad obsahu performance',
+                default => 'Překlad vybraných položek: ' . $this->getMetadataSourceLabel($trigger),
+            },
+            'jazyk' => $defaultLanguage->name . ' → ' . $language->name,
+            'dávka' => ($iterator + 1) . ' z ' . $totalChunks,
+            'spustil' => $userId === null
+                ? 'systém (bez přihlášení)'
+                : ($userName !== '' ? $userName : 'uživatel') . ' (ID ' . $userId . ')',
+            'obsah' => $content,
         ];
+    }
+
+    /**
+     * Název zdroje pro metadata. Překlad popisku se nesmí pokazit odeslání dávky
+     * (mimo administraci nemusí mít Translator nastavený jazyk), proto záloha na systemName.
+     */
+    private function getMetadataSourceLabel(string $systemName): string
+    {
+        if ($systemName === 'performanceContent') {
+            return 'Obsah performance';
+        }
+
+        try {
+            return $this->getSourceLabel($systemName);
+        } catch (\Throwable) {
+            return $systemName;
+        }
+    }
+
+    /**
+     * „1 text“, „3 texty“, „5 textů“.
+     */
+    private static function czechCount(int $count, string $one, string $few, string $many): string
+    {
+        $word = match (true) {
+            $count === 1 => $one,
+            $count >= 2 && $count <= 4 => $few,
+            default => $many,
+        };
+
+        return $count . ' ' . $word;
     }
 
     private function isTranslated(?string $value, string $defaultValue): bool
