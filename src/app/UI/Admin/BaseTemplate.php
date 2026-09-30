@@ -16,10 +16,12 @@ use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
+use Nette\Security\User;
 
 class BaseTemplate extends Template
 {
     public Presenter $presenter;
+    public User $user;
     public string $webpackVersion;
     public string $layoutFile;
     public SubmenuFactory $submenuFactory;
