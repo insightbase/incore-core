@@ -20,6 +20,7 @@ use App\Model\Admin\Enumeration;
 use App\Model\Admin\Language;
 use App\Model\Admin\LanguageLocale;
 use App\Component\Translation\LabeledTranslationProvider;
+use App\Component\Translation\NamedTranslationProvider;
 use App\Component\Translation\TranslationJobFacade;
 use App\Component\Translation\TranslationSendResult;
 use App\Model\Admin\LanguageTranslate;
@@ -38,7 +39,7 @@ use App\UI\Admin\Language\Exception\TranslateInProgressException;
 use App\UI\Admin\Language\Form\NewFormData;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\BadResponseException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Caching\Cache;
@@ -658,7 +659,7 @@ class LanguageFacade
             ]);
         } catch (GuzzleException $e) {
             // 402 Payment Required = na účtu není dost kreditů na překlad.
-            if ($e instanceof RequestException && 402 === $e->getResponse()?->getStatusCode()) {
+            if ($e instanceof BadResponseException && 402 === $e->getResponse()->getStatusCode()) {
                 throw new NotEnoughCreditsException(
                     'Na překlad není dostatek kreditů.',
                     $iterator,
@@ -770,8 +771,6 @@ class LanguageFacade
     {
         /** @var array<string, array<int, true>> $sources název zdroje => id položek */
         $sources = [];
-        /** @var array<string, int> $textCounts název zdroje => počet textů */
-        $textCounts = [];
         foreach (array_keys($chunk) as $key) {
             $translationKey = \App\Component\Translation\TranslationKey::tryDecode((string) $key);
             if ($translationKey !== null) {
@@ -784,23 +783,14 @@ class LanguageFacade
                 $id = (int) ($parts[1] ?? 0);
             }
             $sources[$systemName][$id] = true;
-            $textCounts[$systemName] = ($textCounts[$systemName] ?? 0) + 1;
         }
 
+        // Jen názvy položek, žádná ID ani počty - log DropCore čte člověk.
         $content = [];
         foreach ($sources as $systemName => $ids) {
-            $ids = array_keys($ids);
-            $description = self::czechCount($textCounts[$systemName], 'text', 'texty', 'textů');
-
-            // U slovníku UI textů je čitelnější název klíče než ID řádku.
-            if ($systemName === 'translate') {
-                $keys = $this->translateModel->getTable()->where('id', $ids)->fetchPairs('id', 'key');
-                $description .= ', klíče: ' . implode(', ', $keys);
-            } else {
-                $description .= ', položky (ID): ' . implode(', ', $ids);
-            }
-
-            $content[$this->getMetadataSourceLabel($systemName)] = $description;
+            $names = $this->getMetadataItemNames($systemName, array_keys($ids));
+            $label = $this->getMetadataSourceLabel($systemName);
+            $content[] = $names === [] ? $label : $label . ': ' . implode(', ', $names);
         }
 
         // Identita nese řádek uživatele z Authenticatoru; mimo přihlášení (CLI) je null.
@@ -845,17 +835,30 @@ class LanguageFacade
     }
 
     /**
-     * „1 text“, „3 texty“, „5 textů“.
+     * Názvy položek dávky pro metadata: u slovníku UI textů klíče, jinak
+     * NamedTranslationProvider::getItemNames(). Zdroj bez názvů vrátí prázdné pole
+     * a v metadatech je jen svým názvem. Chyba zdroje nesmí pokazit odeslání dávky.
+     *
+     * @param list<int> $ids
+     * @return list<string>
      */
-    private static function czechCount(int $count, string $one, string $few, string $many): string
+    private function getMetadataItemNames(string $systemName, array $ids): array
     {
-        $word = match (true) {
-            $count === 1 => $one,
-            $count >= 2 && $count <= 4 => $few,
-            default => $many,
-        };
+        try {
+            if ($systemName === 'translate') {
+                return array_values($this->translateModel->getTable()->where('id', $ids)->fetchPairs('id', 'key'));
+            }
 
-        return $count . ' ' . $word;
+            $provider = $this->translationProviderRegistry->get($systemName);
+
+            return $provider instanceof NamedTranslationProvider
+                ? array_values($provider->getItemNames($ids))
+                : [];
+        } catch (\Throwable $e) {
+            \Tracy\Debugger::log($e, \Tracy\ILogger::WARNING);
+
+            return [];
+        }
     }
 
     private function isTranslated(?string $value, string $defaultValue): bool

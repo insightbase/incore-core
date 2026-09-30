@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-30
+### Změněno (Changed)
+- core - jazyky - popis dávky v logu DropCore obsahuje u zdrojů místo ID položek jejich názvy a už neuvádí počet textů; zdroj bez názvů je uveden jen svým jménem. Aplikace svému zdroji textů dodá názvy přes nové rozhraní NamedTranslationProvider
+
+### Opraveno (Fixed)
+- core - jazyky - překlad přes DropCore s knihovnou Guzzle 8 už nespadne na chybu PHP, když požadavek selže bez odpovědi serveru (např. kvůli nepodporované verzi HTTP); zobrazí se běžná hláška o chybě překladu
+
 ## 2026-09-29
 ### Přidáno (Added)
 - core - favicony - v okně importu je odkaz na favicon-generator.org, kde se favicony generují

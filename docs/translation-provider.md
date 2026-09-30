@@ -209,6 +209,27 @@ Vrácená hodnota projde přes `Translator`, takže může být překladový kl�
 (doporučeno) i hotový text. Zdroj bez rozhraní se v liště označí svým
 `systemName`.
 
+## Názvy položek v metadatech (`NamedTranslationProvider`)
+
+Každá dávka odeslaná do DropCore nese česká metadata, aby v jeho logu bylo
+vidět, co se překládalo (`LanguageFacade::buildMetadata()`). DropCore je nijak
+nezpracovává, čte je člověk, proto v nich nejsou ID ani počty textů — jen
+název zdroje a názvy položek, např. `"obsah": ["Články: Jak na to, Novinky"]`.
+Názvy dodá zdroj přes volitelné rozhraní
+`App\Component\Translation\NamedTranslationProvider`:
+
+```php
+/** @return array<int, string> id => název ve výchozím jazyce */
+public function getItemNames(array $ids): array
+{
+    return $this->mujModel->getTable()->where('id', $ids)->fetchPairs('id', 'name');
+}
+```
+
+`$ids` jsou `TranslationItem::$id` položek v dávce. Zdroj bez rozhraní je
+v metadatech jen svým názvem, bez výčtu položek. Slovník UI textů (`translate`)
+posílá místo názvů klíče.
+
 ## Registrace v `config/services.neon`
 
 Nette DI najde třídy implementující `TranslationProvider` jen tam, kde je
