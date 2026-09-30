@@ -214,7 +214,7 @@ Vrácená hodnota projde přes `Translator`, takže může být překladový kl�
 Každá dávka odeslaná do DropCore nese česká metadata, aby v jeho logu bylo
 vidět, co se překládalo (`LanguageFacade::buildMetadata()`). DropCore je nijak
 nezpracovává, čte je člověk, proto v nich nejsou ID ani počty textů — jen
-název zdroje a názvy položek, např. `"obsah": ["Články: Jak na to, Novinky"]`.
+název zdroje a názvy položek, např. `"obsah": {"články": ["Jak na to", "Novinky"]}`.
 Názvy dodá zdroj přes volitelné rozhraní
 `App\Component\Translation\NamedTranslationProvider`:
 
@@ -227,7 +227,7 @@ public function getItemNames(array $ids): array
 ```
 
 `$ids` jsou `TranslationItem::$id` položek v dávce. Zdroj bez rozhraní je
-v metadatech jen svým názvem, bez výčtu položek. Slovník UI textů (`translate`)
+v metadatech jen svým názvem s prázdným seznamem položek. Slovník UI textů (`translate`)
 posílá místo názvů klíče.
 
 ## Registrace v `config/services.neon`

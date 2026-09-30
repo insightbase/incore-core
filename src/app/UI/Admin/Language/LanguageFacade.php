@@ -786,11 +786,12 @@ class LanguageFacade
         }
 
         // Jen názvy položek, žádná ID ani počty - log DropCore čte člověk.
+        // Klíč je název zdroje malými písmeny jako ostatní klíče metadat.
+        /** @var array<string, list<string>> $content */
         $content = [];
         foreach ($sources as $systemName => $ids) {
-            $names = $this->getMetadataItemNames($systemName, array_keys($ids));
-            $label = $this->getMetadataSourceLabel($systemName);
-            $content[] = $names === [] ? $label : $label . ': ' . implode(', ', $names);
+            $label = mb_strtolower($this->getMetadataSourceLabel($systemName));
+            $content[$label] = $this->getMetadataItemNames($systemName, array_keys($ids));
         }
 
         // Identita nese řádek uživatele z Authenticatoru; mimo přihlášení (CLI) je null.
