@@ -2,9 +2,8 @@
 
 namespace App\UI\Admin\Language;
 
-use App\Component\DropCore\DropCoreConfig;
 use App\Component\DropCore\DropCoreConfigProvider;
-use App\Component\DropCore\DropCoreSimulator;
+use App\Component\DropCore\DropCoreEarlyCallbackStore;
 use App\Component\Front\ContactFormComponent\ContactFormControl;
 use App\Component\Front\ContentControl\ContentControl;
 use App\Component\Front\EnumerationControl\EnumerationControl;
@@ -33,13 +32,9 @@ use App\UI\Admin\Language\DataGrid\Exception\DefaultLanguageCannotByDeactivateEx
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
 use App\UI\Admin\Language\Exception\LanguageIsDefaultException;
 use App\UI\Admin\Language\Exception\LanguageNotFoundException;
-use App\UI\Admin\Language\Exception\NotEnoughCreditsException;
 use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\Exception\TranslateInProgressException;
 use App\UI\Admin\Language\Form\NewFormData;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\BadResponseException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\InvalidLinkException;
 use Nette\Caching\Cache;
@@ -56,9 +51,6 @@ use Nette\Utils\JsonException;
 
 class LanguageFacade
 {
-    /** Callbacky DropCore, které dorazily dřív, než se uložil jejich záznam v language_translate. */
-    private const string EARLY_CALLBACK_CACHE_NAMESPACE = 'dropCoreEarlyCallback';
-
     private int $bachLimit = 40;
 
     /**
@@ -88,7 +80,7 @@ class LanguageFacade
         private readonly \App\Component\Translation\TranslationProviderRegistry $translationProviderRegistry,
         private readonly \App\Model\Admin\Translate $translateModel,
         private readonly TranslationJobFacade $translationJobFacade,
-        private readonly DropCoreSimulator $dropCoreSimulator,
+        private readonly DropCoreEarlyCallbackStore $earlyCallbackStore,
     ) {}
 
     public function create(NewFormData $data): void
@@ -230,20 +222,20 @@ class LanguageFacade
         // Hromadný překlad posílá jen to, co v cílovém jazyce ještě přeložené není.
         $json += $this->translationProviderRegistry->collectAll($language, true);
 
-        $sent = [];
+        $translateIds = [];
         try {
             if ($json !== []) {
-                $this->sendJsonToTranslate($json, $defaultLanguage, $language, 'bulk', $sent);
+                $this->enqueueJsonToTranslate($json, $defaultLanguage, $language, 'bulk', $translateIds);
             }
         } finally {
             $this->startJob(
                 fn(): string => $this->translator->translate('translationJob_language%language%', ['language' => $language->name]),
-                $sent,
+                $translateIds,
                 count($json),
             );
         }
 
-        return new TranslationSendResult(count($json), $sent);
+        return new TranslationSendResult(count($json), $translateIds);
     }
 
     /**
@@ -252,7 +244,7 @@ class LanguageFacade
      *
      * @param LanguageEntity $language
      * @param ?string $jobLabel popisek v liště s průběhem; null = odvodí se ze zdroje a jazyka
-     * @return list<string> DropCore ID odeslaných dávek
+     * @return list<int> ID uložených dávek (language_translate)
      * @throws BasicAuthNotSetException
      * @throws TranslateApiException
      * @throws InvalidLinkException
@@ -271,7 +263,7 @@ class LanguageFacade
      * @param int[] $ids
      * @param LanguageEntity $language
      * @param ?string $jobLabel popisek v liště s průběhem; null = odvodí se ze zdroje a jazyka
-     * @return list<string> DropCore ID odeslaných dávek (prázdné, když nebylo co posílat)
+     * @return list<int> ID uložených dávek (language_translate; prázdné, když nebylo co posílat)
      * @throws BasicAuthNotSetException
      * @throws TranslateApiException
      * @throws InvalidLinkException
@@ -279,32 +271,31 @@ class LanguageFacade
      */
     public function translateProviderItems(string $systemName, array $ids, ActiveRow $language, ?string $jobLabel = null): array
     {
-        $sent = [];
+        $translateIds = [];
         try {
-            $this->sendProviderItems($systemName, $ids, $language, $sent);
+            $this->sendProviderItems($systemName, $ids, $language, $translateIds);
         } finally {
             $this->startJob(
                 fn(): string => $jobLabel ?? $this->translator->translate('translationJob_provider%source%%language%', [
                     'source' => $this->getSourceLabel($systemName),
                     'language' => $language->name,
                 ]),
-                $sent,
+                $translateIds,
                 self::jobItemCount($ids),
             );
         }
 
-        return $sent;
+        return $translateIds;
     }
 
     /**
      * Přeloží vyjmenované položky jednoho zdroje do všech jazyků k překladu
      * (tlačítka „Přeložit“ u detailu entity). V liště s průběhem je to jedna
-     * společná úloha - i když se část dávek odeslat nepodaří, sleduje se aspoň to,
-     * co odešlo.
+     * společná úloha - dávky všech jazyků se uloží a lišta je odešle postupně.
      *
      * @param int[] $ids
      * @param ?string $jobLabel popisek v liště s průběhem; null = odvodí se ze zdroje
-     * @return list<string> DropCore ID odeslaných dávek
+     * @return list<int> ID uložených dávek (language_translate)
      * @throws BasicAuthNotSetException
      * @throws TranslateApiException
      * @throws InvalidLinkException
@@ -312,34 +303,34 @@ class LanguageFacade
      */
     public function translateProviderItemsToAllLanguages(string $systemName, array $ids, ?string $jobLabel = null): array
     {
-        $sent = [];
+        $translateIds = [];
         try {
             foreach ($this->languageModel->getToTranslateNotDefault() as $language) {
-                $this->sendProviderItems($systemName, $ids, $language, $sent);
+                $this->sendProviderItems($systemName, $ids, $language, $translateIds);
             }
         } finally {
             $this->startJob(
                 fn(): string => $jobLabel ?? $this->translator->translate('translationJob_provider%source%', [
                     'source' => $this->getSourceLabel($systemName),
                 ]),
-                $sent,
+                $translateIds,
                 self::jobItemCount($ids),
             );
         }
 
-        return $sent;
+        return $translateIds;
     }
 
     /**
      * @param int[] $ids
      * @param LanguageEntity $language
-     * @param list<string> $sentDropCoreIds sem se přidají ID odeslaných dávek
+     * @param list<int> $translateIds sem se přidají ID uložených dávek
      * @throws BasicAuthNotSetException
      * @throws TranslateApiException
      * @throws InvalidLinkException
      * @throws JsonException
      */
-    private function sendProviderItems(string $systemName, array $ids, ActiveRow $language, array &$sentDropCoreIds): void
+    private function sendProviderItems(string $systemName, array $ids, ActiveRow $language, array &$translateIds): void
     {
         $provider = $this->translationProviderRegistry->get($systemName);
         if ($provider === null || $ids === []) {
@@ -362,7 +353,7 @@ class LanguageFacade
             return;
         }
 
-        $this->sendJsonToTranslate($json, $defaultLanguage, $language, $systemName, $sentDropCoreIds);
+        $this->enqueueJsonToTranslate($json, $defaultLanguage, $language, $systemName, $translateIds);
     }
 
     /**
@@ -383,15 +374,15 @@ class LanguageFacade
      * by tam ani neměl nastavený jazyk.
      *
      * @param \Closure(): string $label
-     * @param list<string> $dropCoreIds
+     * @param list<int> $translateIds
      */
-    private function startJob(\Closure $label, array $dropCoreIds, int $itemCount): void
+    private function startJob(\Closure $label, array $translateIds, int $itemCount): void
     {
-        if ($dropCoreIds === [] || !$this->userSecurity->isLoggedIn()) {
+        if ($translateIds === [] || !$this->userSecurity->isLoggedIn()) {
             return;
         }
 
-        $this->translationJobFacade->start($label(), $dropCoreIds, $itemCount);
+        $this->translationJobFacade->start($label(), $translateIds, $itemCount);
     }
 
     /**
@@ -421,8 +412,8 @@ class LanguageFacade
         if($language->is_default){
             throw new LanguageIsDefaultException();
         }
-        // Rychlé (demo) DropCore vystřelí callback dřív, než se stihne uložit language_translate
-        // záznam (insert je až po odpovědi na požadavek). Záznam slouží jen k označení `finished`,
+        // Rychlé (demo) DropCore vystřelí callback dřív, než se k dávce uloží drop_core_id
+        // (uloží se až po odpovědi na požadavek). Záznam slouží jen k označení `finished`,
         // takže když ještě není, překlad přesto aplikujeme a `finished` nastavíme best-effort níže.
         $languageTranslate = $this->languageTranslateModel->getByDropCoreId($post['id']);
 
@@ -501,10 +492,9 @@ class LanguageFacade
         if ($languageTranslate !== null) {
             $languageTranslate->update(['finished' => new DateTime()]);
         } else {
-            // Záznam ještě neexistuje (callback předběhl uložení) - dokončení si poznamenáme,
-            // sendJsonToTranslate() ho po uložení záznamu převezme. Jinak by průběh překladu nikdy nedoběhl.
-            (new Cache($this->storage, self::EARLY_CALLBACK_CACHE_NAMESPACE))
-                ->save((string) $post['id'], new DateTime(), [Cache::Expire => '1 day']);
+            // Dávka ještě nemá uložené drop_core_id (callback předběhl odpověď na požadavek) -
+            // dokončení si poznamenáme a TranslationBatchSender ho po uložení drop_core_id převezme.
+            $this->earlyCallbackStore->remember((string) $post['id'], new DateTime());
         }
 
         $cacheTranslate = new Cache($this->storage, Translator::CACHE_NAMESPACE);
@@ -542,19 +532,21 @@ class LanguageFacade
     }
 
     /**
+     * Rozdělí texty do dávek a uloží je do language_translate k odeslání. Do DropCore je
+     * po jedné posílá lišta s průběhem (TranslationBatchSender) - tady se jen ověří
+     * nastavení, jehož chybu musí uživatel vidět hned.
+     *
      * @param array $json
      * @param LanguageEntity $defaultLanguage
      * @param LanguageEntity $language
      * @param string $trigger odkud byl překlad spuštěn (bulk = hromadně za jazyk, jméno zdroje, performance), jen pro metadata
-     * @param list<string> $sentDropCoreIds sem se průběžně přidávají ID odeslaných dávek, takže
-     *                                      při chybě v půlce v něm zůstane to, co už odešlo
-     * @return void
+     * @param list<int> $translateIds sem se přidají ID uložených dávek
      * @throws BasicAuthNotSetException
-     * @throws TranslateApiException
+     * @throws TranslateApiException chybí nastavení DropCore
      * @throws InvalidLinkException
      * @throws JsonException
      */
-    private function sendJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language, string $trigger, array &$sentDropCoreIds):void
+    private function enqueueJsonToTranslate(array $json, ActiveRow $defaultLanguage, ActiveRow $language, string $trigger, array &$translateIds): void
     {
         if ($this->dryRunCallback !== null) {
             ($this->dryRunCallback)($json);
@@ -565,31 +557,17 @@ class LanguageFacade
         $chunks = array_chunk($json, $this->bachLimit, true);
         $totalChunks = count($chunks);
 
-        // Kredity i překlady používají stejný klíč z nastavení (identity token + store + prostředí).
-        $dropCoreConfig = $this->dropCoreConfigProvider->getConfig();
-        if (null === $dropCoreConfig) {
+        if (null === $this->dropCoreConfigProvider->getConfig()) {
             throw new TranslateApiException(
                 'Pro překlad je potřeba v nastavení vyplnit identity token a prostředí (DropCore).',
                 0,
                 $totalChunks,
             );
         }
+        $callback = $this->buildCallbackUrl($language);
 
         $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
-        $iterator = 0;
-        foreach($chunks as $shortJson) {
-            $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id]);
-            $setting = $this->settingModel->getDefault();
-            if (array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
-                if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
-                    throw new BasicAuthNotSetException();
-                }
-                $callback = new Url($callback);
-                $callback->setUser($setting->basic_auth_user);
-                $callback->setPassword($setting->basic_auth_password);
-                $callback = (string)$callback;
-            }
-
+        foreach ($chunks as $iterator => $shortJson) {
             $body = Json::encode($bodyArray = [
                 'inputLocale' => $defaultLanguage->url,
                 'outputLocale' => $language->url,
@@ -600,102 +578,39 @@ class LanguageFacade
                 'value' => $shortJson,
             ]);
 
-            $url = $dropCoreConfig->apiUrl . '/gen/translate';
-
             FileSystem::write($tempFile . '_' . $iterator, Json::encode([
                 'callback' => $callback,
-                'url' => $url,
                 'body' => $bodyArray,
             ]));
 
-            // Prostředí „simulation“ (jen debug režim): dávku místo DropCore „přeloží“ DropCoreSimulator.
-            $dropCoreId = $dropCoreConfig->simulation
-                ? $this->dropCoreSimulator->enqueue($shortJson, $language->id, $language->url, $iterator, $totalChunks)
-                : $this->requestTranslation($dropCoreConfig, $url, $body, $iterator, $totalChunks);
-
-            $sentDropCoreIds[] = $dropCoreId;
-            $earlyCallbackCache = new Cache($this->storage, self::EARLY_CALLBACK_CACHE_NAMESPACE);
-            $earlyFinished = $earlyCallbackCache->load($dropCoreId);
-            $this->languageTranslateModel->insert([
-                'drop_core_id' => $dropCoreId,
-                'user_id' => $this->userSecurity->getId(),
-                'language_id' => $language->id,
-                'datetime' => new DateTime(),
-                'finished' => $earlyFinished instanceof \DateTimeInterface ? $earlyFinished : null,
-                'request' => $body,
-            ]);
-            if ($earlyFinished !== null) {
-                $earlyCallbackCache->remove($dropCoreId);
-            }
-
-            FileSystem::write($tempFile . '_' . $iterator, Json::encode([
-                'drop_core_id' => $dropCoreId,
-                'callback' => $callback,
-                'url' => $url,
-                'body' => $bodyArray,
-            ]));
-
-            $iterator++;
+            $translateIds[] = $this->languageTranslateModel->insertPending((int) $this->userSecurity->getId(), $language->id, $body);
         }
     }
 
     /**
-     * Odešle jednu dávku do DropCore a vrátí ID úlohy, které DropCore přidělil.
+     * URL callbacku DropCore; za basic auth (REDIRECT_REMOTE_USER) s přihlašovacími údaji z nastavení.
      *
-     * @throws NotEnoughCreditsException
-     * @throws TranslateApiException
+     * @param LanguageEntity $language
+     * @throws BasicAuthNotSetException
+     * @throws InvalidLinkException
      */
-    private function requestTranslation(DropCoreConfig $dropCoreConfig, string $url, string $body, int $iterator, int $totalChunks): string
+    private function buildCallbackUrl(ActiveRow $language): string
     {
-        try {
-            $client = new Client();
-            $response = $client->request('POST', $url, [
-                'headers' => [
-                    'identity-token' => $dropCoreConfig->identityToken,
-                    'store' => $dropCoreConfig->store,
-                    'content-type' => 'application/json',
-                ],
-                'body' => $body,
-            ]);
-        } catch (GuzzleException $e) {
-            // 402 Payment Required = na účtu není dost kreditů na překlad.
-            if ($e instanceof BadResponseException && 402 === $e->getResponse()->getStatusCode()) {
-                throw new NotEnoughCreditsException(
-                    'Na překlad není dostatek kreditů.',
-                    $iterator,
-                    $totalChunks,
-                    $e,
-                );
-            }
-
-            throw new TranslateApiException(
-                'Volání překladového API selhalo: ' . $e->getMessage(),
-                $iterator,
-                $totalChunks,
-                $e,
-            );
+        $callback = $this->linkGenerator->link('Admin:LanguageCallback:translate', ['id' => $language->id])
+            ?? throw new InvalidLinkException('Odkaz na callback DropCore (Admin:LanguageCallback:translate) nejde sestavit.');
+        if (!array_key_exists('REDIRECT_REMOTE_USER', $_SERVER)) {
+            return $callback;
         }
 
-        try {
-            $response = Json::decode((string)$response->getBody(), true);
-        } catch (JsonException $e) {
-            throw new TranslateApiException(
-                'Překladové API vrátilo neplatnou odpověď.',
-                $iterator,
-                $totalChunks,
-                $e,
-            );
+        $setting = $this->settingModel->getDefault();
+        if ($setting?->basic_auth_user === null || $setting?->basic_auth_password === null) {
+            throw new BasicAuthNotSetException();
         }
+        $url = new Url($callback);
+        $url->setUser($setting->basic_auth_user);
+        $url->setPassword($setting->basic_auth_password);
 
-        if (!is_array($response) || !array_key_exists('id', $response)) {
-            throw new TranslateApiException(
-                'Překladové API nevrátilo očekávané ID požadavku.',
-                $iterator,
-                $totalChunks,
-            );
-        }
-
-        return (string) $response['id'];
+        return (string) $url;
     }
 
     /**
@@ -718,20 +633,20 @@ class LanguageFacade
             $this->addPerformanceContentToJson($contentLanguage, $json, $defaultLanguage, true);
         }
 
-        $sent = [];
+        $translateIds = [];
         try {
             if ($json !== []) {
-                $this->sendJsonToTranslate($json, $defaultLanguage, $language, 'performance', $sent);
+                $this->enqueueJsonToTranslate($json, $defaultLanguage, $language, 'performance', $translateIds);
             }
         } finally {
             $this->startJob(
                 fn(): string => $this->translator->translate('translationJob_performance%language%', ['language' => $language->name]),
-                $sent,
+                $translateIds,
                 count($json),
             );
         }
 
-        return new TranslationSendResult(count($json), $sent);
+        return new TranslationSendResult(count($json), $translateIds);
     }
 
     /**

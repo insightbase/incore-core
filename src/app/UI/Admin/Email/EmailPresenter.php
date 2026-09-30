@@ -18,7 +18,6 @@ use App\UI\Admin\Email\Form\EditFormData;
 use App\UI\Admin\Email\Form\FormFactory;
 use App\UI\Admin\Email\Form\NewFormData;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
-use App\UI\Admin\Language\Exception\NotEnoughCreditsException;
 use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\LanguageFacade;
 use JetBrains\PhpStorm\NoReturn;
@@ -117,13 +116,6 @@ class EmailPresenter extends Presenter
             );
         } catch (BasicAuthNotSetException $e) {
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
-            $this->redirect('edit', ['id' => $id]);
-        } catch (NotEnoughCreditsException $e) {
-            $this->flashMessage($this->translator->translate('flash_notEnoughCredits'), 'error');
-            // Bez práv na kredity by uživatel skončil na chybové stránce, proto ho necháme v detailu.
-            if($this->getUser()->isAllowed('credit', 'default')){
-                $this->redirect('Credit:default');
-            }
             $this->redirect('edit', ['id' => $id]);
         } catch (TranslateApiException $e) {
             $this->flashMessage($this->translator->translate('flash_translateApiError'), 'error');

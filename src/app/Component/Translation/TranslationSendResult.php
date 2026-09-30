@@ -3,16 +3,16 @@
 namespace App\Component\Translation;
 
 /**
- * Výsledek odeslání textů do DropCore: kolik textů odešlo a v jakých dávkách
- * (ID dávek sleduje lišta s průběhem, viz TranslationJobFacade).
+ * Výsledek založení překladu: kolik textů se uložilo k odeslání a v jakých dávkách
+ * (ID řádků language_translate; odesílá je lišta s průběhem, viz TranslationJobFacade).
  */
 final readonly class TranslationSendResult
 {
     /**
-     * @param list<string> $dropCoreIds
+     * @param list<int> $translateIds
      */
     public function __construct(
         public int $itemCount,
-        public array $dropCoreIds,
+        public array $translateIds,
     ) {}
 }

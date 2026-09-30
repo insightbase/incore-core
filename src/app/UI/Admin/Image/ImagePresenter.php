@@ -14,7 +14,6 @@ use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Accessory\ParameterBag;
 use App\UI\Admin\Image\DataGrid\DefaultDataGridEntityFactory;
 use App\UI\Admin\Language\Exception\BasicAuthNotSetException;
-use App\UI\Admin\Language\Exception\NotEnoughCreditsException;
 use App\UI\Admin\Language\Exception\TranslateApiException;
 use App\UI\Admin\Language\LanguageFacade;
 use JetBrains\PhpStorm\NoReturn;
@@ -111,13 +110,6 @@ class ImagePresenter extends Presenter
             );
         } catch (BasicAuthNotSetException $e) {
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
-            $this->redirect('edit', ['id' => $id]);
-        } catch (NotEnoughCreditsException $e) {
-            $this->flashMessage($this->translator->translate('flash_notEnoughCredits'), 'error');
-            // Bez práv na kredity by uživatel skončil na chybové stránce, proto ho necháme v detailu.
-            if($this->getUser()->isAllowed('credit', 'default')){
-                $this->redirect('Credit:default');
-            }
             $this->redirect('edit', ['id' => $id]);
         } catch (TranslateApiException $e) {
             $this->flashMessage($this->translator->translate('flash_translateApiError'), 'error');
