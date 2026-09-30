@@ -287,10 +287,11 @@ entity:
 - **`translateProviderItem(...)`** — totéž pro jedinou položku.
 
 Metody si najdou provider podle `systemName`, zavolají jeho `collect()` s
-omezením na daná `$id` a odešlou výsledek k překladu — stejnou cestou (a se
-stejnými výjimkami `BasicAuthNotSetException`, `NotEnoughCreditsException`,
-`TranslateApiException`), jako hromadný překlad. Vracejí ID odeslaných dávek
-DropCore. Reálné použití v jádru — tlačítko „Přeložit“ u slovníku UI textů,
+omezením na daná `$id` a uloží výsledek k překladu — stejnou cestou (a se
+stejnými výjimkami `BasicAuthNotSetException` a `TranslateApiException` – ta
+jen při chybějícím nastavení DropCore), jako hromadný překlad. Vracejí ID dávek
+uložených v `language_translate` – do DropCore je postupně odešle lišta
+s průběhem. Reálné použití v jádru — tlačítko „Přeložit“ u slovníku UI textů,
 `incore-core/src/app/UI/Admin/Translate/TranslatePresenter.php`:
 
 ```php
@@ -306,9 +307,6 @@ public function actionTranslate(int $id): void
     } catch (BasicAuthNotSetException $e) {
         $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
         $this->redirect('default');
-    } catch (NotEnoughCreditsException $e) {
-        $this->flashMessage($this->translator->translate('flash_notEnoughCredits'), 'error');
-        $this->redirect($this->getUser()->isAllowed('credit', 'default') ? 'Credit:default' : 'default');
     } catch (TranslateApiException $e) {
         $this->flashMessage($this->translator->translate('flash_translateApiError'), 'error');
         $this->redirect('default');
@@ -320,19 +318,30 @@ public function actionTranslate(int $id): void
 
 ## Lišta s průběhem překladu
 
-Každé volání `LanguageFacade`, které odešle texty do DropCore
-(`translate()`, `translatePerformancesContent()`, `translateProviderItem(s)()`,
-`translateProviderItemsToAllLanguages()`), samo založí úlohu v liště s průběhem
-(`App\Component\Translation\TranslationJobFacade`). Presenter nemusí nic
-dalšího dělat — stačí případně předat vlastní popisek `$jobLabel`. Bez něj se
-použije „Překlad: {název zdroje}“ (resp. „… → {jazyk}“ u jednoho jazyka),
-kde název zdroje pochází z `LabeledTranslationProvider::getLabel()`.
+Každé volání `LanguageFacade`, které spouští překlad (`translate()`,
+`translatePerformancesContent()`, `translateProviderItem(s)()`,
+`translateProviderItemsToAllLanguages()`), texty do DropCore **neodesílá** –
+rozdělí je do dávek, uloží do `language_translate` (bez `drop_core_id`) a
+založí úlohu v liště s průběhem (`App\Component\Translation\TranslationJobFacade`).
+Presenter nemusí nic dalšího dělat – stačí případně předat vlastní popisek
+`$jobLabel`. Bez něj se použije „Překlad: {název zdroje}“ (resp. „… → {jazyk}“
+u jednoho jazyka), kde název zdroje pochází z `LabeledTranslationProvider::getLabel()`.
 
-Úloha je hotová, když všechny její dávky mají v `language_translate`
-vyplněný čas `finished` — ten nastaví callback DropCore. Lišta se ptá na stav
-každé 3 s (`TranslationJob:status`), úlohy patří přihlášenému uživateli a
-nedoběhlá úloha vyprší po 1 dni. Když odeslání spadne v půlce, úloha se
-založí aspoň s dávkami, které stihly odejít.
+Lišta pak dávky po jedné odesílá (`TranslationJob:send`, vyplní `drop_core_id`)
+a zobrazuje „Odesílání X/N“, potom „Překládání X/N“. Úloha je hotová, když
+všechny dávky mají vyplněný čas `finished` – ten nastaví callback DropCore.
+Odesílání pokračuje na libovolné stránce administrace; zavřením prohlížeče se
+nic neztratí. Dvě otevřené záložky stejnou dávku neodešlou dvakrát (dávka se
+při odesílání zamkne na 2 minuty).
+
+Když odeslání selže (nedostatek kreditů, chyba API), úloha se zastaví, chyba se
+uloží k dávce (`language_translate.error`, vidět i v logu překladů) a lišta
+nabídne „Zkusit znovu“ nebo „Zrušit“ (smaže neodeslané dávky). Presenter se o
+tyto chyby nestará – hned při spuštění se hlásí jen chybějící nastavení
+DropCore (`TranslateApiException`) a basic auth (`BasicAuthNotSetException`).
+
+Úlohy patří přihlášenému uživateli a nedoběhlá úloha vyprší po 1 dni.
 
 Lokálně (např. `incore.local`) callback z DropCore nedorazí, protože adresa
-není z internetu dostupná — lišta tam u skutečného překladu zůstane stát.
+není z internetu dostupná – lišta tam u skutečného překladu zůstane stát
+na „Překládání“.

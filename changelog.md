@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-01
+### Změněno (Changed)
+- core - jazyky - spuštění překladu už nečeká na odeslání textů do DropCore: dávky se jen uloží a postupně je odešle lišta s průběhem (zobrazuje „Odesílání“ a „Překládání“); odesílání pokračuje i po přechodu na jinou stránku administrace
+- core - jazyky - chybu při odesílání překladu (např. nedostatek kreditů) ukáže lišta s průběhem s možností „Zkusit znovu“ nebo „Zrušit“; chyba je vidět i v novém sloupci logu překladů
+- core - jazyky - pro aplikace: metody LanguageFacade::translate*() vracejí ID záznamů language_translate místo ID DropCore a už nevyhazují NotEnoughCreditsException; po nasazení je potřeba spustit db:update
+
 ## 2026-09-30
 ### Změněno (Changed)
 - core - jazyky - popis dávky v logu DropCore obsahuje u zdrojů místo ID položek jejich názvy a už neuvádí počet textů; zdroj bez názvů je uveden jen svým jménem. Aplikace svému zdroji textů dodá názvy přes nové rozhraní NamedTranslationProvider

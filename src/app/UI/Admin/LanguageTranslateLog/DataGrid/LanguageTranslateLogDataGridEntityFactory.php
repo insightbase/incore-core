@@ -34,6 +34,7 @@ readonly class LanguageTranslateLogDataGridEntityFactory
             )
             ->addColumn($this->userColumnEntityFactory->create('user_id', $this->translator->translate('column_languageTranslateLog_user')))
             ->addColumn(new ColumnEntity('drop_core_id', $this->translator->translate('column_languageTranslateLog_dropCoreId')))
+            ->addColumn(new ColumnEntity('error', $this->translator->translate('column_languageTranslateLog_error')))
             ->addColumn(new DateTimeColumnEntity('finished', $this->translator->translate('column_languageTranslateLog_finished')))
             ->addColumn(
                 (new ColumnEntity('request', $this->translator->translate('column_languageTranslateLog_request')))

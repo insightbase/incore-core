@@ -1,6 +1,8 @@
-// Lišta s průběhem překladů odeslaných do DropCore (kontejner #translation_jobs v @layout.latte).
-// Stav úloh vrací TranslationJobPresenter::actionStatus(); běžící úlohy se dotazují dokola,
-// dokud DropCore callbacky neoznačí všechny dávky jako hotové.
+// Lišta s průběhem překladů (kontejner #translation_jobs v @layout.latte).
+// Dávky úlohy leží v language_translate; lišta je po jedné odesílá do DropCore
+// (TranslationJob:send) a potom se ptá na stav (TranslationJob:status), dokud DropCore
+// callbacky neoznačí všechny dávky jako hotové. Chyba odeslání úlohu zastaví
+// a nabídne „Zkusit znovu“ nebo „Zrušit“.
 
 const POLL_INTERVAL = 3000;
 
@@ -8,19 +10,77 @@ const container = document.getElementById('translation_jobs');
 
 if (container !== null) {
     let pollTimer = null;
+    let sending = false;
 
     const fetchJson = (url) => fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest'}})
         .then((response) => response.ok ? response.json() : null);
 
-    const createIcon = (done) => {
+    const jobUrl = (template, job) => template.replace('__id__', encodeURIComponent(job.id));
+
+    const isSending = (job) => job.error === null && job.sent < job.total;
+
+    const createIcon = (job) => {
         const icon = document.createElement('i');
-        icon.className = done ? 'ki-filled ki-check-circle text-success text-lg' : 'ki-filled ki-arrows-circle text-primary text-lg animate-spin';
+        if (job.error !== null) {
+            icon.className = 'ki-filled ki-information-2 text-danger text-lg';
+        } else if (job.done) {
+            icon.className = 'ki-filled ki-check-circle text-success text-lg';
+        } else {
+            icon.className = 'ki-filled ki-arrows-circle text-primary text-lg animate-spin';
+        }
         return icon;
+    };
+
+    const createButton = (text, className, onClick) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = className;
+        button.textContent = text;
+        button.addEventListener('click', onClick);
+        return button;
     };
 
     const dismiss = (job, card) => {
         card.remove();
-        fetchJson(container.dataset.dismissUrl.replace('__id__', encodeURIComponent(job.id))).catch(() => {});
+        fetchJson(jobUrl(container.dataset.dismissUrl, job)).catch(() => {});
+    };
+
+    const counterText = (job) => {
+        if (job.done) {
+            return container.dataset.textDone + (job.itemCount > 0 ? ' (' + job.itemCount + ')' : '');
+        }
+        if (job.error !== null) {
+            return '';
+        }
+        return isSending(job)
+            ? container.dataset.textSending + ' ' + job.sent + '/' + job.total
+            : container.dataset.textTranslating + ' ' + job.finished + '/' + job.total;
+    };
+
+    const renderError = (job, body) => {
+        const message = document.createElement('div');
+        message.className = 'text-2sm text-danger';
+        message.textContent = job.error === 'notEnoughCredits'
+            ? container.dataset.textErrorCredits
+            : container.dataset.textErrorApi;
+        body.appendChild(message);
+
+        const actions = document.createElement('div');
+        actions.className = 'flex items-center gap-2';
+        actions.appendChild(createButton(container.dataset.textRetry, 'btn btn-xs btn-primary', () => {
+            fetchJson(jobUrl(container.dataset.retryUrl, job)).then((data) => handle(data)).catch(() => {});
+        }));
+        actions.appendChild(createButton(container.dataset.textCancel, 'btn btn-xs btn-light', () => {
+            fetchJson(jobUrl(container.dataset.cancelUrl, job)).then((data) => handle(data)).catch(() => {});
+        }));
+        if (job.error === 'notEnoughCredits' && container.dataset.creditUrl) {
+            const link = document.createElement('a');
+            link.href = container.dataset.creditUrl;
+            link.className = 'text-2sm link';
+            link.textContent = container.dataset.textCredits;
+            actions.appendChild(link);
+        }
+        body.appendChild(actions);
     };
 
     const renderJob = (job) => {
@@ -34,7 +94,7 @@ if (container !== null) {
 
         const header = document.createElement('div');
         header.className = 'flex items-center gap-2';
-        header.appendChild(createIcon(job.done));
+        header.appendChild(createIcon(job));
 
         const label = document.createElement('span');
         label.className = 'text-sm font-medium text-gray-900 grow';
@@ -43,9 +103,7 @@ if (container !== null) {
 
         const counter = document.createElement('span');
         counter.className = 'text-2sm text-gray-600';
-        counter.textContent = job.done
-            ? container.dataset.textDone + (job.itemCount > 0 ? ' (' + job.itemCount + ')' : '')
-            : job.finished + '/' + job.total;
+        counter.textContent = counterText(job);
         header.appendChild(counter);
 
         if (job.done) {
@@ -59,7 +117,9 @@ if (container !== null) {
         }
         body.appendChild(header);
 
-        if (job.done) {
+        if (job.error !== null) {
+            renderError(job, body);
+        } else if (job.done) {
             const reload = document.createElement('a');
             reload.href = '#';
             reload.className = 'text-2sm link';
@@ -75,7 +135,8 @@ if (container !== null) {
             progress.className = 'progress progress-primary';
             const bar = document.createElement('div');
             bar.className = 'progress-bar';
-            bar.style.width = (job.total > 0 ? Math.round(job.finished / job.total * 100) : 0) + '%';
+            const current = isSending(job) ? job.sent : job.finished;
+            bar.style.width = (job.total > 0 ? Math.round(current / job.total * 100) : 0) + '%';
             progress.appendChild(bar);
             body.appendChild(progress);
         }
@@ -84,17 +145,49 @@ if (container !== null) {
         return card;
     };
 
+    // Vykreslí úlohy a rozhodne, co dál: hned odeslat další dávku, nebo za chvíli zjistit stav.
+    // sendImmediately = false, když poslední send nic neodeslal (dávku drží jiná záložka) -
+    // pak se čeká, aby se lišta s druhou záložkou nepřetahovala naprázdno.
+    const handle = (data, sendImmediately = true) => {
+        clearTimeout(pollTimer);
+        if (data === null) {
+            pollTimer = setTimeout(refresh, POLL_INTERVAL);
+            return;
+        }
+
+        const jobs = data.jobs ?? [];
+        container.replaceChildren(...jobs.map(renderJob));
+
+        const toSend = jobs.find(isSending);
+        if (toSend !== undefined && sendImmediately) {
+            send(toSend);
+            return;
+        }
+        if (jobs.some((job) => !job.done && job.error === null)) {
+            pollTimer = setTimeout(refresh, POLL_INTERVAL);
+        }
+    };
+
+    const send = (job) => {
+        if (sending) {
+            return;
+        }
+        sending = true;
+        fetchJson(jobUrl(container.dataset.sendUrl, job))
+            .then((data) => {
+                sending = false;
+                handle(data, data?.sent === true);
+            })
+            .catch(() => {
+                sending = false;
+                clearTimeout(pollTimer);
+                pollTimer = setTimeout(refresh, POLL_INTERVAL);
+            });
+    };
+
     const refresh = () => {
         fetchJson(container.dataset.statusUrl)
-            .then((data) => {
-                const jobs = data?.jobs ?? [];
-                container.replaceChildren(...jobs.map(renderJob));
-
-                clearTimeout(pollTimer);
-                if (jobs.some((job) => !job.done)) {
-                    pollTimer = setTimeout(refresh, POLL_INTERVAL);
-                }
-            })
+            .then((data) => handle(data))
             .catch(() => {});
     };
 

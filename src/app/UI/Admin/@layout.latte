@@ -481,10 +481,21 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	class="flex flex-col gap-2"
 	style="position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60; width: 380px; max-width: calc(100vw - 2.5rem);"
 	data-status-url="{link TranslationJob:status}"
+	data-send-url="{link TranslationJob:send, id: '__id__'}"
+	data-retry-url="{link TranslationJob:retry, id: '__id__'}"
+	data-cancel-url="{link TranslationJob:cancel, id: '__id__'}"
 	data-dismiss-url="{link TranslationJob:dismiss, id: '__id__'}"
+	data-credit-url="{if $user->isAllowed('credit', 'default')}{link Credit:default}{/if}"
 	data-text-done="{_'translationJob_done'}"
 	data-text-reload="{_'translationJob_reload'}"
 	data-text-close="{_'translationJob_close'}"
+	data-text-sending="{_'translationJob_sending'}"
+	data-text-translating="{_'translationJob_translating'}"
+	data-text-error-credits="{_'translationJob_errorCredits'}"
+	data-text-error-api="{_'translationJob_errorApi'}"
+	data-text-retry="{_'translationJob_retry'}"
+	data-text-cancel="{_'translationJob_cancel'}"
+	data-text-credits="{_'translationJob_credits'}"
 ></div>
 <!-- End of Page -->
 <!-- Scripts -->
