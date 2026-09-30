@@ -191,6 +191,24 @@ Zdroj bez tohoto rozhraní funguje dál, jen při hromadném překladu posílá
 vždy všechno. Překlad jediné položky (`translateProviderItem()`) posílá
 vždy všechno bez ohledu na rozhraní — je to vědomé „přelož znovu“.
 
+## Čitelný název zdroje (`LabeledTranslationProvider`)
+
+Každý překlad odeslaný do DropCore se zobrazí v liště s průběhem vpravo dole
+v administraci (viz „Lišta s průběhem překladu“ níže). Aby v ní zdroj nebyl
+označený technickým `systemName`, implementuje navíc volitelné rozhraní
+`App\Component\Translation\LabeledTranslationProvider`:
+
+```php
+public function getLabel(): string
+{
+    return 'translationSource_mujZdroj'; // překladový klíč, nebo rovnou text
+}
+```
+
+Vrácená hodnota projde přes `Translator`, takže může být překladový klíč
+(doporučeno) i hotový text. Zdroj bez rozhraní se v liště označí svým
+`systemName`.
+
 ## Registrace v `config/services.neon`
 
 Nette DI najde třídy implementující `TranslationProvider` jen tam, kde je
@@ -234,22 +252,24 @@ hodnotu vrátit (`App\Component\Translation\TranslationKey`).
   JSON/EditorJs (viz sekce výše) — jiný typ (např. `int`, `bool`) provider
   nesmí vracet ani přijímat.
 
-## Překlad jediné položky z presenteru
+## Překlad jednotlivých položek z presenteru
 
 Kromě hromadného překladu celého jazyka umí `LanguageFacade` přeložit i
-jedinou položku zdroje — typicky tlačítko „Přeložit“ u detailu konkrétní
-entity. Presenter zavolá `translateProviderItem()` se jménem zdroje,
-id entity a cílovým jazykem:
+vybrané položky zdroje — typicky tlačítko „Přeložit“ u detailu konkrétní
+entity:
 
-```php
-$this->languageFacade->translateProviderItem('mujZdroj', $id, $language);
-```
+- **`translateProviderItemsToAllLanguages(string $systemName, array $ids, ?string $jobLabel = null)`**
+  — přeloží položky do všech jazyků k překladu. V liště s průběhem je to
+  jedna společná úloha. Pro tlačítka „Přeložit“ u detailu je to správná volba.
+- **`translateProviderItems(string $systemName, array $ids, ActiveRow $language, ?string $jobLabel = null)`**
+  — přeloží položky do jednoho jazyka (např. hromadná akce s výběrem jazyka).
+- **`translateProviderItem(...)`** — totéž pro jedinou položku.
 
-Metoda si najde provider podle `systemName`, zavolá jeho `collect()` s
-omezením na dané `$id` a odešle výsledek k překladu — stejnou cestou
-(a se stejnými výjimkami `BasicAuthNotSetException`,
-`NotEnoughCreditsException`, `TranslateApiException`), jako hromadný
-překlad. Reálné použití v jádru — tlačítko „Přeložit“ u slovníku UI textů,
+Metody si najdou provider podle `systemName`, zavolají jeho `collect()` s
+omezením na daná `$id` a odešlou výsledek k překladu — stejnou cestou (a se
+stejnými výjimkami `BasicAuthNotSetException`, `NotEnoughCreditsException`,
+`TranslateApiException`), jako hromadný překlad. Vracejí ID odeslaných dávek
+DropCore. Reálné použití v jádru — tlačítko „Přeložit“ u slovníku UI textů,
 `incore-core/src/app/UI/Admin/Translate/TranslatePresenter.php`:
 
 ```php
@@ -257,9 +277,11 @@ public function actionTranslate(int $id): void
 {
     $this->exist($id);
     try {
-        foreach ($this->languageModel->getToTranslateNotDefault() as $language) {
-            $this->languageFacade->translateProviderItem('translate', $this->translate->id, $language);
-        }
+        $this->languageFacade->translateProviderItemsToAllLanguages(
+            'translate',
+            [$this->translate->id],
+            $this->translator->translate('translationJob_translate%key%', ['key' => $this->translate->key]),
+        );
     } catch (BasicAuthNotSetException $e) {
         $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
         $this->redirect('default');
@@ -274,3 +296,22 @@ public function actionTranslate(int $id): void
     $this->redirect('default');
 }
 ```
+
+## Lišta s průběhem překladu
+
+Každé volání `LanguageFacade`, které odešle texty do DropCore
+(`translate()`, `translatePerformancesContent()`, `translateProviderItem(s)()`,
+`translateProviderItemsToAllLanguages()`), samo založí úlohu v liště s průběhem
+(`App\Component\Translation\TranslationJobFacade`). Presenter nemusí nic
+dalšího dělat — stačí případně předat vlastní popisek `$jobLabel`. Bez něj se
+použije „Překlad: {název zdroje}“ (resp. „… → {jazyk}“ u jednoho jazyka),
+kde název zdroje pochází z `LabeledTranslationProvider::getLabel()`.
+
+Úloha je hotová, když všechny její dávky mají v `language_translate`
+vyplněný čas `finished` — ten nastaví callback DropCore. Lišta se ptá na stav
+každé 3 s (`TranslationJob:status`), úlohy patří přihlášenému uživateli a
+nedoběhlá úloha vyprší po 1 dni. Když odeslání spadne v půlce, úloha se
+založí aspoň s dávkami, které stihly odejít.
+
+Lokálně (např. `incore.local`) callback z DropCore nedorazí, protože adresa
+není z internetu dostupná — lišta tam u skutečného překladu zůstane stát.

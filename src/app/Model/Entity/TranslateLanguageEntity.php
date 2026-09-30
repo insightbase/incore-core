@@ -8,7 +8,7 @@ use Nette\Database\Table\ActiveRow;
 
 /**
  * @property-read int $id
- * @property-read string $value
+ * @property-read ?string $value
  * @property-read LanguageEntity $language
  * @property-read int $language_id
  * @property-read TranslateEntity $translate

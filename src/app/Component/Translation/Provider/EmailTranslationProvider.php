@@ -2,6 +2,7 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\Translation\LabeledTranslationProvider;
 use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
@@ -13,7 +14,7 @@ use Nette\Database\Table\ActiveRow;
 /**
  * Zdroj překladu předmětu a textu e-mailových šablon.
  */
-final readonly class EmailTranslationProvider implements TranslationProvider, TranslatedItemsProvider
+final readonly class EmailTranslationProvider implements TranslationProvider, TranslatedItemsProvider, LabeledTranslationProvider
 {
     private const array FIELDS = ['subject', 'text'];
 
@@ -25,6 +26,11 @@ final readonly class EmailTranslationProvider implements TranslationProvider, Tr
     public function getSystemName(): string
     {
         return 'email';
+    }
+
+    public function getLabel(): string
+    {
+        return 'translationSource_email';
     }
 
     /**

@@ -56,6 +56,9 @@ readonly class MyAccountFormFactory
         $form->addDropzoneImage(DropzoneImageLocationEnum::UserAvatar, 'avatar_id', $this->translator->translate('input_avatar'))
             ->setNullable()
         ;
+        $form->addText('dropcore_identity_token', $this->translator->translate('input_userDropCoreIdentityToken'))
+            ->setNullable()
+        ;
         $form->addSubmit('send', $this->translator->translate('input_update'));
 
         $form->setDefaults([
@@ -63,6 +66,7 @@ readonly class MyAccountFormFactory
             'lastname' => $user->lastname,
             'email' => $user->email,
             'avatar_id' => $user->avatar_id,
+            'dropcore_identity_token' => $user->dropcore_identity_token,
         ]);
 
         $form->applyMaxLengthFromEntity(\App\Model\DoctrineEntity\User::class);

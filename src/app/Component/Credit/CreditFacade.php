@@ -28,7 +28,8 @@ readonly class CreditFacade
         }
 
         $config = $this->configProvider->getConfig();
-        if (null === $config) {
+        // Simulace DropCore nemá žádný účet kreditů.
+        if (null === $config || $config->simulation) {
             return null;
         }
 

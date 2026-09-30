@@ -20,6 +20,7 @@ use Nette\Utils\DateTime;
  * @property-read ?DateTime $forgot_password_expire
  * @property-read ?ImageEntity $avatar
  * @property-read ?int $avatar_id
+ * @property-read ?string $dropcore_identity_token
  */
 class UserEntity extends ActiveRow
 {

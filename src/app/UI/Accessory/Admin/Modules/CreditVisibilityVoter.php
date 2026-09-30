@@ -2,9 +2,8 @@
 
 namespace App\UI\Accessory\Admin\Modules;
 
-use App\Model\Admin\Setting;
+use App\Component\DropCore\DropCoreConfigProvider;
 use App\Model\Entity\ModuleEntity;
-use App\Model\Entity\SettingEntity;
 use Nette\Database\Table\ActiveRow;
 
 class CreditVisibilityVoter implements VisibilityVoter
@@ -12,7 +11,7 @@ class CreditVisibilityVoter implements VisibilityVoter
     private const string MODULE_CREDIT = 'credit';
 
     public function __construct(
-        private readonly Setting $settingModel,
+        private readonly DropCoreConfigProvider $dropCoreConfigProvider,
     ) {}
 
     /**
@@ -24,10 +23,6 @@ class CreditVisibilityVoter implements VisibilityVoter
             return true;
         }
 
-        /** @var ?SettingEntity $setting */
-        $setting = $this->settingModel->getDefault();
-        $token = $setting?->dropcore_identity_token;
-
-        return null !== $token && '' !== $token;
+        return null !== $this->dropCoreConfigProvider->getIdentityToken();
     }
 }

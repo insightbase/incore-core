@@ -474,6 +474,18 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 	</div>
 {/ifset}
 {/snippet}
+{* Lišta s průběhem překladů odeslaných do DropCore, obsluhuje assets/admin/translationJobs.js *}
+<div
+	n:if="$user->isLoggedIn() && !$presenter->isLinkCurrent('Sign:*')"
+	id="translation_jobs"
+	class="flex flex-col gap-2"
+	style="position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60; width: 380px; max-width: calc(100vw - 2.5rem);"
+	data-status-url="{link TranslationJob:status}"
+	data-dismiss-url="{link TranslationJob:dismiss, id: '__id__'}"
+	data-text-done="{_'translationJob_done'}"
+	data-text-reload="{_'translationJob_reload'}"
+	data-text-close="{_'translationJob_close'}"
+></div>
 <!-- End of Page -->
 <!-- Scripts -->
 <script src="/incore/admin.bundle.js?v={$webpackVersion}" n:nonce></script>

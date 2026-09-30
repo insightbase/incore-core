@@ -10,6 +10,7 @@ use App\Component\Datagrid\Entity\FilterEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
 use App\Component\Datagrid\Enum\FilterTypeEnum;
 use App\Component\EditorJs\EditorJsFacade;
+use App\Component\EditorJs\EditorJsJson;
 use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\Model\Admin\Translate;
@@ -53,7 +54,7 @@ readonly class DefaultDataGridEntityFactory
                     ->setEnableSearchGlobal()
                     ->setGetColumnCallback(function (ActiveRow $row, bool $original) use ($language): string {
                         $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($row, $language);
-                        if (null === $translateLanguage) {
+                        if (null === $translateLanguage || null === $translateLanguage->value) {
                             return '';
                         }
 
@@ -76,13 +77,14 @@ readonly class DefaultDataGridEntityFactory
                         $id = explode('-', $id);
                         $translateLanguage = $this->translateLanguageModel->getByTranslateIdAndLanguageId((int) $id[0], (int) $id[1]);
                         if ($translateLanguage) {
-                            if ('' === $value) {
+                            // Prázdný text i prázdný EditorJs (JSON bez bloků) = bez překladu.
+                            if (EditorJsJson::isEmpty($value)) {
                                 $translateLanguage->delete();
                             } else {
                                 $translateLanguage->update(['value' => $value]);
                             }
                         } else {
-                            if ('' !== $value) {
+                            if (!EditorJsJson::isEmpty($value)) {
                                 $this->translateLanguageModel->insert([
                                     'translate_id' => $id[0],
                                     'language_id' => $id[1],
@@ -133,7 +135,7 @@ readonly class DefaultDataGridEntityFactory
                 (new FilterEntity($this->translator->translate('filter_onlyNotTranslated'), FilterTypeEnum::Checkbox))
                     ->setOnChangeCallback(function (Selection $model, string $value): void {
                         if ($value !== '' && $value !== 'false') {
-                            $model->where('translate.id NOT IN ?', $this->translateLanguageModel->getTable()->select('translate.id'));
+                            $model->where('translate.id NOT IN ?', $this->translateLanguageModel->getTable()->where('value IS NOT NULL')->select('translate.id'));
                         }
                     })
             );

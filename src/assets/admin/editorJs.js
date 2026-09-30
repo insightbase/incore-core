@@ -180,7 +180,8 @@ export function initEditorJs() {
         element.onsubmit = function (event) {
             Array.from(document.getElementsByClassName('editorJsText')).forEach((elementEditor) => {
                 window.editors[elementEditor.getAttribute('data-for-editor-id')].save().then((data) => {
-                    elementEditor.value = JSON.stringify(data);
+                    // Prázdný editor se odešle jako prázdná hodnota, ne jako JSON bez bloků.
+                    elementEditor.value = data.blocks.length > 0 ? JSON.stringify(data) : '';
                 })
             });
         };

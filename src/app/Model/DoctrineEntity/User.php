@@ -41,4 +41,8 @@ class User implements Entity
     #[ORM\ManyToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     public ?Image $avatar = null;
+
+    /** Osobní DropCore identity token; je-li vyplněn, použije se místo tokenu z nastavení. */
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    public ?string $dropcore_identity_token = null;
 }

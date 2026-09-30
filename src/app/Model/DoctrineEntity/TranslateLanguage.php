@@ -13,8 +13,8 @@ class TranslateLanguage implements Entity
     #[ORM\Column(type: 'integer')]
     public int $id;
 
-    #[ORM\Column(type: 'text')]
-    public string $value;
+    #[ORM\Column(type: 'text', nullable: true)]
+    public ?string $value = null;
 
     #[ORM\ManyToOne(targetEntity: Language::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -24,7 +24,7 @@ class TranslateLanguage implements Entity
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     public Translate $translate;
 
-    public function setValue(string $value): self
+    public function setValue(?string $value): self
     {
         $this->value = $value;
         return $this;

@@ -8,6 +8,7 @@ use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsTypeEnum;
 use App\UI\Accessory\Admin\Form\Form;
+use App\UI\Accessory\ParameterBag;
 use Nette\Database\Table\ActiveRow;
 
 readonly class FormFactory
@@ -15,6 +16,7 @@ readonly class FormFactory
     public function __construct(
         private \App\UI\Accessory\Admin\Form\FormFactory $formFactory,
         private Translator                               $translator,
+        private ParameterBag                             $parameterBag,
     ) {}
 
     /**
@@ -50,6 +52,9 @@ readonly class FormFactory
         return $form;
     }
 
+    /**
+     * @param ?SettingEntity $setting
+     */
     public function createEdit(?ActiveRow $setting): Form
     {
         $form = $this->formFactory->create();
@@ -139,7 +144,9 @@ readonly class FormFactory
         $form->addGroup($this->translator->translate('field_dropCore'));
         $form->addText('dropcore_identity_token', $this->translator->translate('input_dropCoreIdentityToken'))
             ->setNullable();
-        $form->addSelect('dropcore_env', $this->translator->translate('input_dropCoreEnv'), DropCoreEnvEnum::getToSelect())
+        // Simulace je jen pro vývoj; uloženou hodnotu ale nabídneme vždy, jinak by select neměl výchozí hodnotu kam dát.
+        $withSimulation = $this->parameterBag->debugMode || $setting?->dropcore_env === DropCoreEnvEnum::Simulation->value;
+        $form->addSelect('dropcore_env', $this->translator->translate('input_dropCoreEnv'), DropCoreEnvEnum::getToSelect($withSimulation))
             ->setPrompt('---');
         $form->addText('credit_id', $this->translator->translate('input_dropCoreCreditId'))
             ->setNullable();
@@ -156,7 +163,7 @@ readonly class FormFactory
         }
 
         // Null (empty selection) = all plugins enabled. A non-empty selection enables only the chosen ones.
-        $stored = $setting?->editor_js_enabled_types ?? null;
+        $stored = $setting->editor_js_enabled_types ?? null;
         $enabledDefault = $stored === null
             ? []
             : array_values(array_filter(explode(';', $stored)));

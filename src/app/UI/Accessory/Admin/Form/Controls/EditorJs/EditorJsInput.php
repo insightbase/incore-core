@@ -2,6 +2,7 @@
 
 namespace App\UI\Accessory\Admin\Form\Controls\EditorJs;
 
+use App\Component\EditorJs\EditorJsJson;
 use App\Model\Admin\Setting;
 use Nette;
 use Nette\Forms\Controls\TextInput;
@@ -20,6 +21,16 @@ class EditorJsInput extends TextInput
         Stringable|string|null                           $label = null, ?int $maxLength = null)
     {
         parent::__construct($label, $maxLength);
+    }
+
+    /**
+     * Prázdný editor (`''` i JSON bez bloků) vrací null, aby se prázdná hodnota ukládala jako NULL.
+     */
+    public function getValue(): mixed
+    {
+        $value = parent::getValue();
+
+        return is_string($value) && EditorJsJson::isEmpty($value) ? null : $value;
     }
 
     public function getControl(): Nette\Utils\Html

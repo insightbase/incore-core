@@ -2,6 +2,8 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\EditorJs\EditorJsJson;
+use App\Component\Translation\LabeledTranslationProvider;
 use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
@@ -16,7 +18,7 @@ use Nette\Utils\Json;
  * uloženo jako JSON (EditorJs), proto se v `collect()` dekóduje na pole
  * a v `save()` se zase zakóduje zpět na řetězec.
  */
-final readonly class StaticPageTranslationProvider implements TranslationProvider, TranslatedItemsProvider
+final readonly class StaticPageTranslationProvider implements TranslationProvider, TranslatedItemsProvider, LabeledTranslationProvider
 {
     private const array FIELDS = ['name', 'title', 'description', 'keywords', 'content'];
 
@@ -28,6 +30,11 @@ final readonly class StaticPageTranslationProvider implements TranslationProvide
     public function getSystemName(): string
     {
         return 'staticPage';
+    }
+
+    public function getLabel(): string
+    {
+        return 'translationSource_staticPage';
     }
 
     /**
@@ -47,7 +54,7 @@ final readonly class StaticPageTranslationProvider implements TranslationProvide
         foreach ($staticPages as $staticPage) {
             foreach (self::FIELDS as $field) {
                 if ($field === 'content') {
-                    if ($staticPage->content !== null && $staticPage->content !== '') {
+                    if (!EditorJsJson::isEmpty($staticPage->content)) {
                         $items[] = new TranslationItem($staticPage->id, $field, Json::decode($staticPage->content, true));
                     }
 
@@ -72,7 +79,7 @@ final readonly class StaticPageTranslationProvider implements TranslationProvide
         $translated = [];
         foreach ($this->staticPageLanguageModel->getTable()->where('language_id', $language->id) as $row) {
             foreach (self::FIELDS as $field) {
-                if ($row->{$field} !== null && $row->{$field} !== '') {
+                if (!EditorJsJson::isEmpty($row->{$field})) {
                     $translated[$row->static_page_id][] = $field;
                 }
             }

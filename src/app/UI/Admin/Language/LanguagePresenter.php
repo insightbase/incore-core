@@ -53,7 +53,7 @@ class LanguagePresenter extends Presenter
             $this->redirect('default');
         }
         try {
-            $count = $this->languageFacade->translate($this->language);
+            $result = $this->languageFacade->translate($this->language);
         } catch (Exception\TranslateInProgressException $e) {
             $this->flashMessage($this->translator->translate('flash_anotherTranslationInProgress'), 'error');
             $this->redirect('default');
@@ -72,7 +72,7 @@ class LanguagePresenter extends Presenter
             ), 'error');
             $this->redirect('default');
         }
-        $this->flashMessage($this->translator->translate($count > 0 ? 'flash_translationInProgress' : 'flash_nothingToTranslate'));
+        $this->flashMessage($this->translator->translate($result->itemCount > 0 ? 'flash_translationInProgress' : 'flash_nothingToTranslate'));
         $this->redirect('default');
     }
 

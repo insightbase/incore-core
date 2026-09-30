@@ -92,9 +92,11 @@ class TranslatePresenter extends Presenter
     {
         $this->exist($id);
         try {
-            foreach($this->languageModel->getToTranslateNotDefault() as $language) {
-                $this->languageFacade->translateProviderItem('translate', $this->translate->id, $language);
-            }
+            $this->languageFacade->translateProviderItemsToAllLanguages(
+                'translate',
+                [$this->translate->id],
+                $this->translator->translate('translationJob_translate%key%', ['key' => $this->translate->key]),
+            );
         } catch (BasicAuthNotSetException $e) {
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
             $this->redirect('default');

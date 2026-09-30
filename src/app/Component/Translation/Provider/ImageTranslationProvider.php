@@ -3,6 +3,7 @@
 namespace App\Component\Translation\Provider;
 
 use App\Component\Image\ImageFacade;
+use App\Component\Translation\LabeledTranslationProvider;
 use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
@@ -14,7 +15,7 @@ use Nette\Database\Table\ActiveRow;
 /**
  * Zdroj překladu ALT textu, jména a popisu obrázků.
  */
-final readonly class ImageTranslationProvider implements TranslationProvider, TranslatedItemsProvider
+final readonly class ImageTranslationProvider implements TranslationProvider, TranslatedItemsProvider, LabeledTranslationProvider
 {
     private const array FIELDS = ['alt', 'name', 'description'];
 
@@ -27,6 +28,11 @@ final readonly class ImageTranslationProvider implements TranslationProvider, Tr
     public function getSystemName(): string
     {
         return 'image';
+    }
+
+    public function getLabel(): string
+    {
+        return 'translationSource_image';
     }
 
     /**

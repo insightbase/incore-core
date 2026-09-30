@@ -104,9 +104,11 @@ class ImagePresenter extends Presenter
     {
         $this->exist($id);
         try {
-            foreach($this->languageModel->getToTranslateNotDefault() as $language) {
-                $this->languageFacade->translateProviderItem('image', $this->image->id, $language);
-            }
+            $this->languageFacade->translateProviderItemsToAllLanguages(
+                'image',
+                [$this->image->id],
+                $this->translator->translate('translationJob_image%name%', ['name' => $this->image->name ?? $this->image->alt ?? ('#' . $this->image->id)]),
+            );
         } catch (BasicAuthNotSetException $e) {
             $this->flashMessage($this->translator->translate('flash_basicAuthNotSet'), 'error');
             $this->redirect('edit', ['id' => $id]);

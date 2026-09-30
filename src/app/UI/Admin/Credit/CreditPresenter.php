@@ -5,6 +5,7 @@ namespace App\UI\Admin\Credit;
 use App\Component\Credit\CreditFacade;
 use App\Component\DropCore\ConsolePageEnum;
 use App\Component\DropCore\ConsoleUrlBuilder;
+use App\Component\DropCore\DropCoreConfigProvider;
 use App\Model\Admin\Setting;
 use App\Model\Entity\SettingEntity;
 use App\UI\Accessory\Admin\PresenterTrait\RequireLoggedUserTrait;
@@ -22,6 +23,7 @@ class CreditPresenter extends Presenter
         private readonly Setting $settingModel,
         private readonly ConsoleUrlBuilder $consoleUrlBuilder,
         private readonly CreditFacade $creditFacade,
+        private readonly DropCoreConfigProvider $dropCoreConfigProvider,
     ) {
         parent::__construct();
     }
@@ -43,13 +45,13 @@ class CreditPresenter extends Presenter
 
         /** @var ?SettingEntity $setting */
         $setting = $this->settingModel->getDefault();
-        $token = $setting?->dropcore_identity_token;
+        $token = $this->dropCoreConfigProvider->getIdentityToken();
         $env = $setting?->dropcore_env;
 
         $this->template->activePage = $activePage;
         $this->template->pages = ConsolePageEnum::cases();
-        $this->template->hasToken = null !== $token && '' !== $token;
-        $this->template->consoleUrl = $this->template->hasToken
+        $this->template->hasToken = null !== $token;
+        $this->template->consoleUrl = null !== $token
             ? $this->consoleUrlBuilder->build($token, $activePage, $env, $this->buildPaymentCallback($activePage))
             : null;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Component\Translation\Provider;
 
+use App\Component\EditorJs\EditorJsJson;
+use App\Component\Translation\LabeledTranslationProvider;
 use App\Component\Translation\TranslatedItemsProvider;
 use App\Component\Translation\TranslationItem;
 use App\Component\Translation\TranslationProvider;
@@ -16,7 +18,7 @@ use Nette\Utils\Json;
 /**
  * Zdroj překladu slovníku UI textů (tabulky `translate` / `translate_language`).
  */
-final readonly class TranslateTranslationProvider implements TranslationProvider, TranslatedItemsProvider
+final readonly class TranslateTranslationProvider implements TranslationProvider, TranslatedItemsProvider, LabeledTranslationProvider
 {
     private const array FIELDS = ['value'];
 
@@ -29,6 +31,11 @@ final readonly class TranslateTranslationProvider implements TranslationProvider
     public function getSystemName(): string
     {
         return 'translate';
+    }
+
+    public function getLabel(): string
+    {
+        return 'translationSource_translate';
     }
 
     /**
@@ -52,7 +59,8 @@ final readonly class TranslateTranslationProvider implements TranslationProvider
         $items = [];
         foreach ($translates as $translate) {
             $translateLanguage = $this->translateLanguageModel->getByTranslateAndLanguage($translate, $defaultLanguage);
-            if ($translateLanguage !== null) {
+            // Prázdná hodnota (NULL i prázdný EditorJs) nemá co překládat.
+            if ($translateLanguage !== null && !EditorJsJson::isEmpty($translateLanguage->value)) {
                 $value = $translateLanguage->value;
                 if ($translateLanguage->translate->type === TranslateTypeEnum::Html->value) {
                     $value = Json::decode($value, true);
@@ -73,7 +81,7 @@ final readonly class TranslateTranslationProvider implements TranslationProvider
         $translated = [];
         foreach ($this->translateLanguageModel->getTable()->where('language_id', $language->id) as $row) {
             foreach (self::FIELDS as $field) {
-                if ($row->{$field} !== '') {
+                if (!EditorJsJson::isEmpty($row->{$field})) {
                     $translated[$row->translate_id][] = $field;
                 }
             }

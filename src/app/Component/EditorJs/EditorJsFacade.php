@@ -12,8 +12,12 @@ readonly class EditorJsFacade
     {
     }
 
-    public function renderJson(string $json):Html
+    public function renderJson(?string $json):Html
     {
+        if (EditorJsJson::isEmpty($json)) {
+            return Html::el();
+        }
+
         return $this->rendererFactory->create()->render($json);
     }
 }

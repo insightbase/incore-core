@@ -115,6 +115,10 @@ class Translator implements \Nette\Localization\Translator
         return $this->cache->load($language->id, function () use ($language): array {
             $messages = [];
             foreach ($this->translateLanguageModel->getByLanguage($language) as $translateLanguage) {
+                // Prázdný překlad (NULL) se nenačte, aby se použil výchozí jazyk.
+                if ($translateLanguage->value === null) {
+                    continue;
+                }
                 $messages[$translateLanguage->translate->key] = $translateLanguage->value;
             }
 
