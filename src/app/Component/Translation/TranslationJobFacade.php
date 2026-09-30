@@ -10,8 +10,9 @@ use Nette\Utils\Random;
 
 /**
  * Rozpracované překlady přihlášeného uživatele, které admin zobrazuje v liště s průběhem.
- * Úloha je seznam dávek odeslaných do DropCore; hotová je, když všechny její dávky
- * mají v `language_translate` vyplněný `finished` (nastaví ho callback DropCore).
+ * Úloha je seznam dávek v `language_translate`. Lišta je po jedné odesílá do DropCore
+ * (sendNext() vyplní `drop_core_id`); hotová je, když všechny mají vyplněný `finished`
+ * (nastaví ho callback DropCore).
  */
 final readonly class TranslationJobFacade
 {
@@ -21,15 +22,16 @@ final readonly class TranslationJobFacade
         private Storage $storage,
         private User $userSecurity,
         private LanguageTranslate $languageTranslateModel,
+        private TranslationBatchSender $translationBatchSender,
     ) {}
 
     /**
-     * @param list<string> $dropCoreIds dávky vrácené z LanguageFacade (translate*, translateProviderItem(s))
+     * @param list<int> $translateIds dávky vrácené z LanguageFacade (translate*, translateProviderItem(s))
      * @param int $itemCount počet přeložených položek pro souhrn v liště; 0 = souhrn se nezobrazí
      */
-    public function start(string $label, array $dropCoreIds, int $itemCount = 0): void
+    public function start(string $label, array $translateIds, int $itemCount = 0): void
     {
-        if ($dropCoreIds === []) {
+        if ($translateIds === []) {
             return;
         }
 
@@ -38,35 +40,66 @@ final readonly class TranslationJobFacade
         $jobs[$id] = [
             'id' => $id,
             'label' => $label,
-            'dropCoreIds' => $dropCoreIds,
+            'translateIds' => $translateIds,
             'itemCount' => $itemCount,
         ];
         $this->save($jobs);
     }
 
     /**
-     * @return list<array{id: string, label: string, itemCount: int, total: int, finished: int, done: bool}>
+     * @return list<array{id: string, label: string, itemCount: int, total: int, sent: int, finished: int, error: ?string, done: bool}>
      */
     public function getStatuses(): array
     {
         $statuses = [];
         foreach ($this->load() as $job) {
-            $total = count($job['dropCoreIds']);
-            $finished = $this->languageTranslateModel->getTable()
-                ->where('drop_core_id', $job['dropCoreIds'])
-                ->where('finished IS NOT NULL')
-                ->count('*');
+            $progress = $this->languageTranslateModel->getProgress($job['translateIds']);
             $statuses[] = [
                 'id' => $job['id'],
                 'label' => $job['label'],
                 'itemCount' => $job['itemCount'],
-                'total' => $total,
-                'finished' => min($finished, $total),
-                'done' => $finished >= $total,
+                'total' => $progress['total'],
+                'sent' => $progress['sent'],
+                'finished' => min($progress['finished'], $progress['total']),
+                'error' => $progress['error'],
+                'done' => $progress['finished'] >= $progress['total'],
             ];
         }
 
         return $statuses;
+    }
+
+    /**
+     * Odešle další dávku úlohy do DropCore. Vrací true, když nějakou dávku zpracoval.
+     */
+    public function sendNext(string $id): bool
+    {
+        $job = $this->load()[$id] ?? null;
+
+        return $job !== null && $this->translationBatchSender->sendNext($job['translateIds']);
+    }
+
+    /**
+     * „Zkusit znovu“ po chybě odeslání - dávky s chybou se znovu zařadí k odeslání.
+     */
+    public function retry(string $id): void
+    {
+        $job = $this->load()[$id] ?? null;
+        if ($job !== null) {
+            $this->languageTranslateModel->clearErrors($job['translateIds']);
+        }
+    }
+
+    /**
+     * „Zrušit“ - smaže neodeslané dávky a úlohu z lišty. Odeslané dávky doběhnou.
+     */
+    public function cancel(string $id): void
+    {
+        $job = $this->load()[$id] ?? null;
+        if ($job !== null) {
+            $this->languageTranslateModel->deleteUnsent($job['translateIds'], new \DateTimeImmutable());
+        }
+        $this->dismiss($id);
     }
 
     public function dismiss(string $id): void
@@ -77,7 +110,7 @@ final readonly class TranslationJobFacade
     }
 
     /**
-     * @return array<string, array{id: string, label: string, dropCoreIds: list<string>, itemCount: int}>
+     * @return array<string, array{id: string, label: string, translateIds: list<int>, itemCount: int}>
      */
     private function load(): array
     {
@@ -87,12 +120,16 @@ final readonly class TranslationJobFacade
         }
 
         $jobs = (new Cache($this->storage, self::CACHE_NAMESPACE))->load($key);
+        if (!is_array($jobs)) {
+            return [];
+        }
 
-        return is_array($jobs) ? $jobs : [];
+        // Úlohy z doby před asynchronním odesíláním (klíč dropCoreIds) lišta už neumí zobrazit.
+        return array_filter($jobs, static fn(mixed $job): bool => isset($job['translateIds']));
     }
 
     /**
-     * @param array<string, array{id: string, label: string, dropCoreIds: list<string>, itemCount: int}> $jobs
+     * @param array<string, array{id: string, label: string, translateIds: list<int>, itemCount: int}> $jobs
      */
     private function save(array $jobs): void
     {
