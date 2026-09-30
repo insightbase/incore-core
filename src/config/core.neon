@@ -19,6 +19,7 @@ parameters:
 services:
     - App\Component\Translator\Translator
     - App\Component\Translation\TranslationProviderRegistry
+    - App\Component\Translation\TranslationBatchSender
 
     routerFactory: App\Core\RouterFactory
     router: @routerFactory::createRouter()
