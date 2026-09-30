@@ -30,6 +30,8 @@ services:
     - App\Component\DropCore\ConsoleUrlBuilder(%dropCore.consoleUrl%)
     - App\Component\DropCore\DropCoreConfigProvider(apiUrlDemo: %dropCore.apiUrlDemo%, apiUrlProd: %dropCore.apiUrlProd%)
     - App\Component\DropCore\DropCoreSimulator(delay: %dropCore.simulation.delay%, failAtBatch: %dropCore.simulation.failAtBatch%)
+    - App\Component\DropCore\DropCoreEarlyCallbackStore
+    - App\Component\DropCore\DropCoreTranslateSender
     - App\Component\Credit\CreditClient
 
     - App\Component\Translator\Extractor\LatteExtractor
