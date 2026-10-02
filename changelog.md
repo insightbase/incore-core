@@ -3,10 +3,11 @@
 ## 2026-10-02
 ### Přidáno (Added)
 - core - obrázky - autor obrázku má jazykové verze (v editaci obrázku se přepíná s jazykem jako alt, název a popis) a překládá se při hromadném překladu jazyka; po nasazení je potřeba spustit db:update (nový sloupec image_language.author)
+- content - jazyky - hromadný překlad jazyka překládá i kategorie blogu (slug se odvodí z přeloženého názvu) a název a perex obsahu; dřív se nepřekládaly vůbec. Po nasazení je potřeba `composer dump-autoload` (moduly mají classmap autoload)
 
 ### Opraveno (Fixed)
-- app - jazyky - `config/services.neon` registruje zdroje překladu (TranslationProvider) z `%appDir%`; dokumentace to uváděla, ale řádek chyběl, takže provider cílové aplikace se do překladu tiše nezapojil. **Cílové aplikace založené ze starší verze incore-app si musí řádek `- App\Component\Translation\TranslationProvider` doplnit do `search: implements:` ve vlastním `config/services.neon`**
-- content, forms, enumeration - jazyky - hromadný překlad jazyka znovu překládá pole kontaktních formulářů, řádky a hodnoty číselníků, tagy, články blogu a obsah; při převodu na zdroje překladu (TranslationProvider) z jádra zmizely, ale v modulech se jejich zdroje nezaložily. Nově se překládají i kategorie blogu a název a perex obsahu (dřív se nepřekládaly vůbec). U obsahu s několika bloky stejného typu se texty bloků už nepřepisují navzájem - jazyková kopie bloku se dohledává podle bloku výchozího jazyka, ze kterého vznikla. Slug tagů, článků a kategorií se odvodí z přeloženého názvu. Po nasazení je potřeba `composer dump-autoload` (moduly mají classmap autoload)
+- content - jazyky - u obsahu s několika bloky stejného typu se texty bloků při překladu přepisovaly navzájem a část z nich se vůbec neodeslala; jazyková kopie bloku se teď dohledává podle bloku výchozího jazyka, ze kterého vznikla
+- jazyky - pro aplikace: provider cílové aplikace se zapojí do překladu, jen když její `config/services.neon` má v `search: implements:` řádek `- App\Component\Translation\TranslationProvider` (incore-app ho má); bez něj ho hromadný překlad bez chyby přeskočí. `save()` providera běží v anonymním callbacku DropCore bez přihlášeného uživatele - viz docs/translation-provider.md
 
 ## 2026-10-01
 ### Změněno (Changed)

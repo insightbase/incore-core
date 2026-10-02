@@ -161,7 +161,7 @@ Tři metody rozhraní:
   jednou pro každé přeložené pole. `BlogTranslationProvider::save()` na tom
   přímo staví: při každém volání načte aktuální jazykovou mutaci, přepíše
   jen pole podle `$field` a celý obsah uloží zpátky, takže se postupná
-  volání pro `name` i jednotlivé položky JSON obsahu skládají do
+  volání pro `name`, `slug` i jednotlivé položky JSON obsahu skládají do
   jednoho výsledku, aniž by jedno volání přepsalo výsledek druhého.
   Pole jedné entity navíc mohou skončit v různých dávkách (dávka má nejvýš
   40 textů), takže `save()` nesmí počítat s tím, že dostane všechna pole naráz.
