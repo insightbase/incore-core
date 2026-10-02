@@ -106,6 +106,7 @@ readonly class ImageFacade
                 'alt' => $translates['alt'] ?? null,
                 'name' => $translates['name'] ?? null,
                 'description' => $translates['description'] ?? null,
+                'author' => $translates['author'] ?? null,
             ];
             $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($image->id, $language);
             if($imageLanguage === null){

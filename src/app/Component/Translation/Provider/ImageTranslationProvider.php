@@ -17,7 +17,7 @@ use Nette\Database\Table\ActiveRow;
  */
 final readonly class ImageTranslationProvider implements TranslationProvider, TranslatedItemsProvider, LabeledTranslationProvider
 {
-    private const array FIELDS = ['alt', 'name', 'description'];
+    private const array FIELDS = ['alt', 'name', 'description', 'author'];
 
     public function __construct(
         private Image $imageModel,

@@ -30,7 +30,8 @@ readonly class FormFactory
             ->setNullable()
             ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE);
         $form->addTextArea('author', $this->translator->translate('input_author'))
-            ->setNullable();
+            ->setNullable()
+            ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE);
         $form->addHidden('image_id')
             ->setRequired()
             ->addRule($form::Integer)
