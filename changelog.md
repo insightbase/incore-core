@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-02
+### Přidáno (Added)
+- core - obrázky - autor obrázku má jazykové verze (v editaci obrázku se přepíná s jazykem jako alt, název a popis) a překládá se při hromadném překladu jazyka; po nasazení je potřeba spustit db:update (nový sloupec image_language.author)
+
+### Opraveno (Fixed)
+- app - jazyky - `config/services.neon` registruje zdroje překladu (TranslationProvider) z `%appDir%`; dokumentace to uváděla, ale řádek chyběl, takže provider cílové aplikace se do překladu tiše nezapojil. **Cílové aplikace založené ze starší verze incore-app si musí řádek `- App\Component\Translation\TranslationProvider` doplnit do `search: implements:` ve vlastním `config/services.neon`**
+- content, forms, enumeration - jazyky - hromadný překlad jazyka znovu překládá pole kontaktních formulářů, řádky a hodnoty číselníků, tagy, články blogu a obsah; při převodu na zdroje překladu (TranslationProvider) z jádra zmizely, ale v modulech se jejich zdroje nezaložily. Nově se překládají i kategorie blogu a název a perex obsahu (dřív se nepřekládaly vůbec). U obsahu s několika bloky stejného typu se texty bloků už nepřepisují navzájem - jazyková kopie bloku se dohledává podle bloku výchozího jazyka, ze kterého vznikla. Slug tagů, článků a kategorií se odvodí z přeloženého názvu. Po nasazení je potřeba `composer dump-autoload` (moduly mají classmap autoload)
+
 ## 2026-10-01
 ### Změněno (Changed)
 - core - jazyky - spuštění překladu už nečeká na odeslání textů do DropCore: dávky se jen uloží a postupně je odešle lišta s průběhem (zobrazuje „Odesílání“ a „Překládání“); odesílání pokračuje i po přechodu na jinou stránku administrace

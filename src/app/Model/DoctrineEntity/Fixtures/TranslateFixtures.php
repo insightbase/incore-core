@@ -554,6 +554,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'translationSource_tag' => 'Tagy',
 		'translationSource_content' => 'Obsah',
 		'translationSource_blog' => 'Blog',
+		'translationSource_blogCategory' => 'Kategorie blogu',
 		'translationSource_staticPage' => 'Statické stránky',
 		'translationSource_language' => 'Názvy jazyků',
 		'translationSource_image' => 'Obrázky',

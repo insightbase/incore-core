@@ -161,8 +161,20 @@ Tři metody rozhraní:
   jednou pro každé přeložené pole. `BlogTranslationProvider::save()` na tom
   přímo staví: při každém volání načte aktuální jazykovou mutaci, přepíše
   jen pole podle `$field` a celý obsah uloží zpátky, takže se postupná
-  volání pro `name`, `slug` i jednotlivé položky JSON obsahu skládají do
+  volání pro `name` i jednotlivé položky JSON obsahu skládají do
   jednoho výsledku, aniž by jedno volání přepsalo výsledek druhého.
+  Pole jedné entity navíc mohou skončit v různých dávkách (dávka má nejvýš
+  40 textů), takže `save()` nesmí počítat s tím, že dostane všechna pole naráz.
+- **`save()` běží bez přihlášeného uživatele.** Volá ho callback DropCore, což je
+  anonymní HTTP požadavek na `Admin:LanguageCallback:translate`. `save()` proto
+  nesmí potřebovat `Nette\Security\User` ani nic, co na něm závisí (např.
+  `LogFacade`, který vyžaduje `user_id`). Výjimku ze `save()` callback jen
+  zaloguje a pokračuje dalším textem, takže se taková chyba projeví jen
+  chybějícím překladem. Pozor: **simulace DropCore tohle neodhalí**, protože
+  dávky „vrací“ v požadavku lišty s průběhem, kde přihlášený uživatel je.
+- **Cache si `save()` maže sám.** Callback maže jen cache jádra a modulů inCore
+  (UI texty, číselníky, formuláře, obsah). Vlastní cache cílové aplikace,
+  ve které je přeložená hodnota, musí `save()` invalidovat sám.
 - **`$id` v `collect()` a v `save()` nemusí označovat tutéž entitu.** U
   `ContentTranslationProvider` `collect()` parametr `$id` filtruje podle
   `content_id` (obsahu jako celku), ale `TranslationItem::$id`, který se
@@ -249,8 +261,18 @@ search:
 
 (Přesně takhle to má nastavené `incore-app/config/services.neon` — pokud
 provider přidáváte přímo do `incore-app`, řádek už tam je a nic dalšího
-dělat nemusíte. Pokud provider přidáváte do samostatného balíčku, přidejte
-tam analogickou sekci `search` s vaším adresářem místo `%appDir%`.)
+dělat nemusíte. Cílová aplikace založená ze starší verze `incore-app` ho
+mít nemusí – bez něj se provider nezaregistruje a hromadný překlad ho
+**bez jakékoli chyby** přeskočí. Pokud provider přidáváte do samostatného
+balíčku, přidejte tam analogickou sekci `search` s vaším adresářem místo
+`%appDir%`.)
+
+Rychlá kontrola, že je provider zaregistrovaný (v kontejneru aplikace):
+
+```php
+$registry = $container->getByType(App\Component\Translation\TranslationProviderRegistry::class);
+var_dump($registry->get('mujZdroj') !== null);
+```
 
 ## Pravidla pro `systemName`
 
