@@ -500,6 +500,7 @@ export default class MultiImageRowTool {
         min-width: 0;
         overflow: hidden;
         position: relative;
+        isolation: isolate; /* z-index ikony jen uvnitř položky, ne nad menu Editor.js */
       }
 
       .multi-image-row-image {

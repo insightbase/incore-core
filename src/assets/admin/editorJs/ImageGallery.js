@@ -595,6 +595,7 @@ export default class ImageGallery {
       /* ── Items ── */
       .gallery-item {
         position: relative;
+        isolation: isolate; /* z-index ikon jen uvnitř položky, ne nad menu Editor.js */
         width: 40px;
         height: 40px;
         flex-shrink: 0;

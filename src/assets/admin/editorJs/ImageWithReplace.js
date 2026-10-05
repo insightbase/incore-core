@@ -186,7 +186,7 @@ function ensureStyles() {
     style.id = STYLE_ID;
     style.textContent = `
       .image-with-meta .image-tool__caption { display: none !important; }
-      .image-with-meta .image-tool__image { position: relative; }
+      .image-with-meta .image-tool__image { position: relative; isolation: isolate; }
       .image-with-meta__btn { position: absolute; top: 8px; right: 8px; z-index: 2; }
       .image-with-meta:not(.image-tool--filled) .image-with-meta__btn { display: none; }
     `;
