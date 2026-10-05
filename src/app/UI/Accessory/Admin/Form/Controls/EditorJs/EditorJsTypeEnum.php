@@ -13,6 +13,7 @@ enum EditorJsTypeEnum:string
     case Spotify = 'spotify';
     case YouTube = 'youtube';
     case Audio = 'audio';
+    case Image = 'image';
     case Gallery = 'gallery';
     case MultiImage = 'multiImage';
     case TextStyle = 'textStyle';

@@ -2,6 +2,7 @@
 
 ## 2026-10-05
 ### Přidáno (Added)
+- core - editor - do editoru jde vložit samostatný obrázek (blok Image); dřív byla na výběr jen galerie a řada obrázků. Pokud má web v nastavení vybrané jen některé pluginy editoru, je potřeba „image“ zapnout
 - core - editor - obrázkům v editoru (obrázek, galerie, řada obrázků) jde přes ikonku tužky nastavit alt, popis a autora; na webu se alt použije u obrázku a popis s autorem se zobrazí pod ním (u galerie i jako titulek pro lightbox)
 
 ### Opraveno (Fixed)
