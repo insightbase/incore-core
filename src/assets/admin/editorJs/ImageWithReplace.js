@@ -1,13 +1,59 @@
 // ImageWithReplace.js
 import ImageTool from '@editorjs/image';
+import { openImageMetaModal, createImageMetaButton, hasImageMeta, editIcon } from './imageMetaModal.js';
+
+const STYLE_ID = 'editorjs-image-with-replace-styles';
 
 /**
- * Rozšíření @editorjs/image, které přidá do settings menu tlačítko „Vyměnit obrázek“.
+ * Rozšíření @editorjs/image, které přidá do settings menu tlačítko „Vyměnit obrázek“
+ * a modal pro alt, popis (caption) a autora. Popis se edituje jen v modalu, vestavěné
+ * caption pole pod obrázkem je skryté (zůstává ale zdrojem hodnoty pro save()).
  * Nepoužívá tune ani actions → stabilní mount, žádné classList chyby.
  */
 export default class ImageWithReplace extends ImageTool {
+    constructor(params) {
+        super(params);
+        this._readOnly = !!params.readOnly;
+        this._meta = {
+            alt: params.data?.alt || '',
+            author: params.data?.author || '',
+        };
+    }
+
+    render() {
+        const wrapper = super.render();
+        ensureStyles();
+        wrapper.classList.add('image-with-meta');
+
+        if (!this._readOnly) {
+            this._metaButton = createImageMetaButton(() => this.handleEditMeta());
+            this._metaButton.classList.add('image-with-meta__btn');
+            this.ui.nodes.imageContainer.appendChild(this._metaButton);
+            this._refreshMetaButton();
+        }
+
+        return wrapper;
+    }
+
+    save() {
+        return {
+            ...super.save(),
+            alt: this._meta.alt,
+            author: this._meta.author,
+        };
+    }
+
     renderSettings() {
         const base = super.renderSettings?.(); // může vrátit pole settings objektů
+
+        const metaItem = {
+            name: 'imageMeta',
+            label: 'Alt, popis, autor',
+            title: 'Alt, popis, autor',
+            icon: editIcon,
+            closeOnActivate: true,
+            onActivate: () => this.handleEditMeta(),
+        };
 
         const replaceItem = {
             name: 'replaceImage',
@@ -22,8 +68,35 @@ export default class ImageWithReplace extends ImageTool {
             onActivate: () => this.handleReplace(), // otevře file-picker a vymění URL
         };
 
-        if (Array.isArray(base)) return [...base, replaceItem];
-        return [replaceItem];
+        if (Array.isArray(base)) return [...base, metaItem, replaceItem];
+        return [metaItem, replaceItem];
+    }
+
+    async handleEditMeta() {
+        const captionNode = this.ui.nodes.caption;
+        const captionText = htmlToText(captionNode.innerHTML);
+
+        const result = await openImageMetaModal({
+            alt: this._meta.alt,
+            caption: captionText,
+            author: this._meta.author,
+        });
+        if (!result) return;
+
+        this._meta.alt = result.alt;
+        this._meta.author = result.author;
+        // Nezměněný popis necháme jak je, ať se neztratí případné inline formátování.
+        if (result.caption !== captionText.trim()) {
+            captionNode.textContent = result.caption;
+        }
+        this._refreshMetaButton();
+        this.block?.dispatchChange?.();
+    }
+
+    _refreshMetaButton() {
+        if (!this._metaButton) return;
+        const filled = hasImageMeta({ ...this._meta, caption: this.ui.nodes.caption.textContent });
+        this._metaButton.classList.toggle('image-meta-btn--filled', filled);
     }
 
     async handleReplace() {
@@ -52,7 +125,8 @@ export default class ImageWithReplace extends ImageTool {
                     const url = await uploadByFile(byFile, field, file, { headers, extra });
 
                     // Bezpečný update – neposíláme withBorder/withBackground/stretched
-                    await safeUpdateImageBlock(this.api, url, this.data?.caption);
+                    const { caption, alt, author } = this.save();
+                    await safeUpdateImageBlock(this.api, url, { caption, alt, author });
 
                     this.api.toolbar.close();
                     this.api.notifier.show({ message: 'Obrázek vyměněn.', style: 'success' });
@@ -86,7 +160,7 @@ async function uploadByFile(endpoint, field, file, { headers = {}, extra = {} } 
     return json?.file?.url || json?.data?.file?.url;
 }
 
-async function safeUpdateImageBlock(api, newUrl, caption = '') {
+async function safeUpdateImageBlock(api, newUrl, { caption = '', alt = '', author = '' } = {}) {
     // najdeme aktuálně vybraný blok a pošleme jen hodnoty, které jsou bezpečné
     const i = api.blocks.getCurrentBlockIndex();
     const block = api.blocks.getBlockByIndex(i);
@@ -94,6 +168,27 @@ async function safeUpdateImageBlock(api, newUrl, caption = '') {
     await api.blocks.update(block.id, {
         file: { url: newUrl },
         url: newUrl,           // pro zpětnou kompatibilitu
-        caption: caption ?? ''
+        caption: caption ?? '',
+        alt,
+        author,
     });
+}
+
+function htmlToText(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html || '';
+    return div.textContent || '';
+}
+
+function ensureStyles() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      .image-with-meta .image-tool__caption { display: none !important; }
+      .image-with-meta .image-tool__image { position: relative; }
+      .image-with-meta__btn { position: absolute; top: 8px; right: 8px; z-index: 2; }
+      .image-with-meta:not(.image-tool--filled) .image-with-meta__btn { display: none; }
+    `;
+    document.head.appendChild(style);
 }

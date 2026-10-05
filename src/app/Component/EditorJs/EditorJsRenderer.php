@@ -149,6 +149,21 @@ class EditorJsRenderer
                     $wrapper->addHtml(Html::el('div')->addHtml($audio));
                     $html->addHtml($wrapper);
                 })(); break;
+                case 'image': (function() use ($block, $html):void{
+                    $data = $block['data'];
+                    // Starší data mohou mít URL i přímo v data.url.
+                    $url = $data['file']['url'] ?? $data['url'] ?? null;
+                    if($url === null || $url === ''){
+                        return;
+                    }
+                    $figure = Html::el('figure', ['class' => 'editor-image']);
+                    $figure->addHtml(Html::el('img', ['src' => $url, 'alt' => $data['alt'] ?? '', 'loading' => 'lazy']));
+                    $figcaption = $this->createFigcaption($data);
+                    if($figcaption !== null){
+                        $figure->addHtml($figcaption);
+                    }
+                    $html->addHtml($figure);
+                })(); break;
                 case 'gallery': (function() use ($block, $html):void{
                     $files = $block['data']['files'] ?? [];
                     if(count($files) === 0){
@@ -166,7 +181,20 @@ class EditorJsRenderer
                             'target' => '_blank',
                             'rel' => 'noopener noreferrer',
                         ]);
-                        $link->addHtml(Html::el('img', ['src' => $url, 'alt' => '', 'loading' => 'lazy']));
+                        // Popis a autor pro lightbox.
+                        if(!empty($file['caption'])){
+                            $link->setAttribute('title', strip_tags($file['caption']));
+                            $link->setAttribute('data-caption', $file['caption']);
+                        }
+                        if(!empty($file['author'])){
+                            $link->setAttribute('data-author', $file['author']);
+                        }
+                        $link->addHtml(Html::el('img', ['src' => $url, 'alt' => $file['alt'] ?? '', 'loading' => 'lazy']));
+                        // Popisek je uvnitř odkazu (struktura galerie zůstává), proto span a popis bez HTML.
+                        $caption = $this->createFigcaption($file, 'span', 'editor-image__figcaption gallery__caption', true);
+                        if($caption !== null){
+                            $link->addHtml($caption);
+                        }
                         $gallery->addHtml($link);
                     }
                     $html->addHtml($gallery);
@@ -200,6 +228,10 @@ class EditorJsRenderer
                                 $figure->addHtml(Html::el('a', ['href' => $img['link'], 'target' => '_blank', 'rel' => 'noopener noreferrer'])->addHtml($imgEl));
                             }else{
                                 $figure->addHtml($imgEl);
+                            }
+                            $figcaption = $this->createFigcaption($img);
+                            if($figcaption !== null){
+                                $figure->addHtml($figcaption);
                             }
                             $rowEl->addHtml($figure);
                         }
@@ -321,6 +353,43 @@ class EditorJsRenderer
             $src .= '?start=' . $start;
         }
         return $src;
+    }
+
+    /**
+     * Popisek obrázku z popisu (caption, může obsahovat inline HTML z editoru) a autora.
+     * Bez popisu i autora vrací null.
+     *
+     * @param array<string, mixed> $data
+     * @param bool $plainCaption popis bez HTML (např. uvnitř odkazu, kde by vnořený odkaz byl nevalidní)
+     * @return Html|null
+     */
+    private function createFigcaption(array $data, string $tag = 'figcaption', string $class = 'editor-image__figcaption', bool $plainCaption = false):?Html
+    {
+        $caption = trim((string)($data['caption'] ?? ''));
+        if($plainCaption){
+            $caption = trim(html_entity_decode(strip_tags($caption), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        }
+        $author = trim((string)($data['author'] ?? ''));
+        if($caption === '' && $author === ''){
+            return null;
+        }
+        // Výchozí vzhled inline (frontend pro tyto třídy nemusí mít styly), web ho může přepsat přes třídy.
+        // inline-block zastaví podtržení zděděné z odkazu galerie, width:100 % ho dá pod obrázek.
+        $figcaption = Html::el($tag, [
+            'class' => $class,
+            'style' => 'display:inline-block;width:100%;margin-top:6px;font-size:0.875em;opacity:0.75;text-decoration:none;',
+        ]);
+        if($caption !== ''){
+            $captionEl = Html::el('span', ['class' => 'editor-image__caption']);
+            $figcaption->addHtml($plainCaption ? $captionEl->setText($caption) : $captionEl->setHtml($caption));
+        }
+        if($caption !== '' && $author !== ''){
+            $figcaption->addText(' · ');
+        }
+        if($author !== ''){
+            $figcaption->addHtml(Html::el('span', ['class' => 'editor-image__author'])->setText($author));
+        }
+        return $figcaption;
     }
 
     private function addListItems(string $mainTag, Html $html, array $items):Html{

@@ -1,3 +1,5 @@
+import { openImageMetaModal, createImageMetaButton, hasImageMeta } from './imageMetaModal.js';
+
 export default class MultiImageRowTool {
   static get styleId() {
     return "multi-image-row-tool-styles";
@@ -207,14 +209,23 @@ export default class MultiImageRowTool {
           widthWrap.appendChild(widthInput);
           widthWrap.appendChild(widthValue);
 
-          const altInput = document.createElement("input");
-          altInput.type = "text";
-          altInput.placeholder = "Alt text";
-          altInput.value = image.alt || "";
-          altInput.className = "multi-image-row-alt";
-          altInput.addEventListener("input", (event) => {
-            this.data.images[index].alt = event.target.value;
+          const metaBtn = createImageMetaButton(async () => {
+            const current = this.data.images[index];
+            const result = await openImageMetaModal(current);
+            if (!result) {
+              return;
+            }
+            // Prázdné hodnoty neukládáme, ať data zůstanou čistá.
+            ["alt", "caption", "author"].forEach((key) => {
+              if (result[key] !== "") current[key] = result[key];
+              else delete current[key];
+            });
+            img.alt = current.alt || "";
+            metaBtn.classList.toggle("image-meta-btn--filled", hasImageMeta(current));
           });
+          metaBtn.classList.add("multi-image-row-meta");
+          metaBtn.classList.toggle("image-meta-btn--filled", hasImageMeta(image));
+          item.appendChild(metaBtn);
 
           const linkInput = document.createElement("input");
           linkInput.type = "url";
@@ -243,7 +254,6 @@ export default class MultiImageRowTool {
           });
 
           toolbar.appendChild(widthWrap);
-          toolbar.appendChild(altInput);
           toolbar.appendChild(linkInput);
           toolbar.appendChild(removeBtn);
           item.appendChild(toolbar);
@@ -423,7 +433,6 @@ export default class MultiImageRowTool {
       }
 
       .multi-image-row-input,
-      .multi-image-row-alt,
       .multi-image-row-link {
         border: 1px solid var(--multi-image-row-line);
         border-radius: 8px;
@@ -490,6 +499,7 @@ export default class MultiImageRowTool {
         background: #fff;
         min-width: 0;
         overflow: hidden;
+        position: relative;
       }
 
       .multi-image-row-image {
@@ -507,8 +517,11 @@ export default class MultiImageRowTool {
         min-width: 0;
       }
 
-      .multi-image-row-alt {
-        min-width: 0;
+      .multi-image-row-meta {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 2;
       }
 
       .multi-image-row-remove {

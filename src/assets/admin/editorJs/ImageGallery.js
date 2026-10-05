@@ -2,7 +2,7 @@
  * ImageGallery — Editor.js block tool
  *
  * Replaces the old @editorjs/gallery tool.
- * Identical save output: { files: [{url},...], caption: string, style: string }
+ * Save output: { files: [{url, alt?, caption?, author?},...], caption: string, style: string }
  *
  * Register as:
  *   gallery: {
@@ -18,6 +18,8 @@
  *     }
  *   }
  */
+import { openImageMetaModal, createImageMetaButton, hasImageMeta } from './imageMetaModal.js';
+
 export default class ImageGallery {
 
   // ─── Static ──────────────────────────────────────────────────────────────────
@@ -100,7 +102,7 @@ export default class ImageGallery {
       grid.className = 'gallery-grid';
       this.nodes.grid = grid;
 
-      this.data.files.forEach((file) => this._addItem(file.url));
+      this.data.files.forEach((file) => this._addItem(file));
       content.appendChild(grid);
 
       if (!this.readOnly) {
@@ -222,7 +224,7 @@ export default class ImageGallery {
     this.sortable = new this.config.sortableJs(this.nodes.grid, {
       animation: 150,
       ghostClass: 'gallery-item--ghost',
-      filter: '.gallery-item-delete',
+      filter: '.gallery-item-delete, .gallery-item-meta',
       onStart: () => this.nodes.grid.classList.add('gallery-grid--dragging'),
       onEnd: (evt) => {
         this.nodes.grid.classList.remove('gallery-grid--dragging');
@@ -237,7 +239,8 @@ export default class ImageGallery {
 
   // ─── Item DOM ─────────────────────────────────────────────────────────────────
 
-  _addItem(url) {
+  _addItem(file) {
+    const url = file.url;
     const item = document.createElement('div');
     item.className = 'gallery-item';
     item.draggable = !this.readOnly;
@@ -245,7 +248,7 @@ export default class ImageGallery {
     // Thumbnail
     const img = document.createElement('img');
     img.src = url;
-    img.alt = 'Gallery image';
+    img.alt = file.alt || '';
     img.className = 'gallery-item-img';
     img.loading = 'lazy';
 
@@ -287,6 +290,11 @@ export default class ImageGallery {
       });
 
       item.appendChild(deleteBtn);
+
+      const metaBtn = createImageMetaButton(() => this._editMeta(item, metaBtn));
+      metaBtn.classList.add('gallery-item-meta');
+      metaBtn.classList.toggle('image-meta-btn--filled', hasImageMeta(file));
+      item.appendChild(metaBtn);
     }
 
     this.nodes.grid.appendChild(item);
@@ -302,6 +310,23 @@ export default class ImageGallery {
     this.nodes.grid.appendChild(item);
     this._checkLimit();
     return item;
+  }
+
+  async _editMeta(item, metaBtn) {
+    const idx = this._indexOfItem(item);
+    if (idx === -1) return;
+    const file = this.data.files[idx];
+
+    const result = await openImageMetaModal(file);
+    if (!result) return;
+
+    // Prázdné hodnoty neukládáme, ať data zůstanou čistá.
+    ['alt', 'caption', 'author'].forEach((key) => {
+      if (result[key] !== '') file[key] = result[key];
+      else delete file[key];
+    });
+    item.querySelector('.gallery-item-img').alt = file.alt || '';
+    metaBtn.classList.toggle('image-meta-btn--filled', hasImageMeta(file));
   }
 
   _indexOfItem(itemEl) {
@@ -342,7 +367,7 @@ export default class ImageGallery {
         const url = e.target.result;
         skeleton.remove();
         this.data.files.push({ url });
-        this._addItem(url);
+        this._addItem({ url });
       };
       reader.onerror = () => {
         skeleton.remove();
@@ -371,7 +396,7 @@ export default class ImageGallery {
         const res = xhr.response || this._safeParse(xhr.responseText);
         if (res?.success === 1 && res?.file?.url) {
           this.data.files.push({ url: res.file.url });
-          this._addItem(res.file.url);
+          this._addItem({ url: res.file.url });
         } else {
           this._onUploadError(`Bad response: ${JSON.stringify(res)}`);
         }
@@ -618,6 +643,20 @@ export default class ImageGallery {
         background: #fff1f1;
         border-color: #f64e60;
         transform: scale(1.15);
+      }
+      .gallery-item-meta.image-meta-btn {
+        position: absolute;
+        bottom: -3px;
+        left: -3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        z-index: 2;
+      }
+      .gallery-item-meta svg {
+        width: 10px;
+        height: 10px;
+        pointer-events: none;
       }
       .gallery-item-overlay {
         position: absolute;

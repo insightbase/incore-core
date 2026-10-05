@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-05
+### Přidáno (Added)
+- core - editor - obrázkům v editoru (obrázek, galerie, řada obrázků) jde přes ikonku tužky nastavit alt, popis a autora; na webu se alt použije u obrázku a popis s autorem se zobrazí pod ním (u galerie i jako titulek pro lightbox)
+
+### Opraveno (Fixed)
+- core - editor - stránka s blokem obrázku z editoru se na webu už nezobrazí s chybou; při výměně obrázku se zachová jeho popis
+
 ## 2026-10-02
 ### Přidáno (Added)
 - core - obrázky - autor obrázku má jazykové verze (v editaci obrázku se přepíná s jazykem jako alt, název a popis) a překládá se při hromadném překladu jazyka; po nasazení je potřeba spustit db:update (nový sloupec image_language.author)
