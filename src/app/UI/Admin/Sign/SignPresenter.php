@@ -13,6 +13,7 @@ use App\UI\Admin\Sign\Form\SignFormFactory;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
+use Nette\Http\Request;
 use Nette\Security\AuthenticationException;
 
 /**
@@ -61,10 +62,10 @@ class SignPresenter extends Presenter
         $this->redirect('Sign:login');
     }
 
-    #[NoReturn]
     public function actionStopImpersonation(): void
     {
-        if (!$this->getHttpRequest()->isSameSite()) {
+        $httpRequest = $this->getHttpRequest();
+        if (!$httpRequest instanceof Request || !$httpRequest->isSameSite()) {
             throw new ForbiddenRequestException();
         }
         $this->impersonationFacade->stop();

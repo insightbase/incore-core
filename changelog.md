@@ -4,9 +4,13 @@
 ### Přidáno (Added)
 - core - role - u role jde pro modul zapnout „Omezit na vybrané položky“ a zaškrtnout, se kterými položkami smí role pracovat; role pak v seznamu i v menu vidí jen tyto položky a otevření jiné položky přes adresu skončí chybou 403. Položku, kterou omezená role sama vytvoří, dostane automaticky. Super admin a role bez omezení fungují beze změny. Po nasazení je potřeba spustit db:update (nové tabulky a překlady)
 - forms - kontaktní formuláře jdou roli povolit jednotlivě (první modul, který omezení na položky podporuje); smazaný formulář se rolím odebere
+- users - super admin se v seznamu uživatelů může přes „Přihlásit se jako“ přihlásit jako jiný uživatel (ne jako jiný super admin) a vidět administraci s jeho právy; lišta nahoře ukazuje, za koho je přihlášen, a vrátí ho na vlastní účet. Začátek a konec se zapisují do logu. Po nasazení je potřeba spustit db:update (překlady)
 
 ### Změněno (Changed)
 - forms - úprava, záznamy a mazání formuláře a mazání záznamu kontrolují oprávnění role i při zadání adresy ručně; role, která dané oprávnění nemá, dostane chybu 403 (dřív se akce přes adresu provedla, jen tlačítko nebylo vidět)
+
+### Opraveno (Fixed)
+- core - přihlášení - smazaný uživatel, který byl přihlášen, se odhlásí místo chyby na každé stránce
 
 ## 2026-10-05
 ### Přidáno (Added)
