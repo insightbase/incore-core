@@ -80,7 +80,10 @@ final class ImpersonationFacade
     public function stop(): void
     {
         $impersonatorId = $this->getImpersonatorId();
-        if (null === $impersonatorId) {
+        if (null === $impersonatorId || !$this->user->isLoggedIn()) {
+            // odhlášená session (smazaný cíl, vypršení) nesmí návratem získat účet super admina bez hesla
+            $this->clear();
+
             return;
         }
         $impersonatedId = (int) $this->user->getId();
