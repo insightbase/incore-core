@@ -21,6 +21,10 @@ readonly class Authenticator implements \Nette\Security\Authenticator, IdentityH
     public function wakeupIdentity(IIdentity $identity): ?IIdentity
     {
         $user = $this->userModel->get($identity->getId());
+        if (null === $user) {
+            // smazaný uživatel (i během impersonace) se odhlásí místo pádu každého požadavku
+            return null;
+        }
         $userArray = $user->toArray();
         unset($userArray['password']);
 

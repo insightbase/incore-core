@@ -29,6 +29,8 @@ enum LogActionEnum:string
     case UpdatedGroup = 'updatedGroup';
 
     case DeletedGroup = 'deletedGroup';
+    case ImpersonationStarted = 'impersonationStarted';
+    case ImpersonationEnded = 'impersonationEnded';
 
     public function translate(Translator $translator):string
     {
@@ -52,6 +54,8 @@ enum LogActionEnum:string
             self::UpdatedGroup => $translator->translate('action_updatedGroup'),
             self::DeletedGroup => $translator->translate('action_deletedGroup'),
             self::ChangeActiveAdmin => $translator->translate('action_changeActiveAdmin'),
+            self::ImpersonationStarted => $translator->translate('action_impersonationStarted'),
+            self::ImpersonationEnded => $translator->translate('action_impersonationEnded'),
         };
     }
 }
