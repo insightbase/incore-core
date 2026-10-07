@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-07
+### Přidáno (Added)
+- core - role - u role jde pro modul zapnout „Omezit na vybrané položky“ a zaškrtnout, se kterými položkami smí role pracovat; role pak v seznamu i v menu vidí jen tyto položky a otevření jiné položky přes adresu skončí chybou 403. Položku, kterou omezená role sama vytvoří, dostane automaticky. Super admin a role bez omezení fungují beze změny. Po nasazení je potřeba spustit db:update (nové tabulky a překlady)
+- forms - kontaktní formuláře jdou roli povolit jednotlivě (první modul, který omezení na položky podporuje); smazaný formulář se rolím odebere
+
 ## 2026-10-05
 ### Přidáno (Added)
 - core - editor - do editoru jde vložit samostatný obrázek (blok Image); dřív byla na výběr jen galerie a řada obrázků. Pokud má web v nastavení vybrané jen některé pluginy editoru, je potřeba „image“ zapnout
