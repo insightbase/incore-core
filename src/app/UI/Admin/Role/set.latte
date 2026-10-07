@@ -6,4 +6,7 @@
 
 {block content}
     {embed basicForm, formAuthorizationSet}{/embed}
+    <p n:if="isset($control['formAuthorizationSet']['itemRestricted'])" class="text-sm text-gray-600 max-w-2xl">
+        {_'help_itemRestricted'}
+    </p>
 {/block}

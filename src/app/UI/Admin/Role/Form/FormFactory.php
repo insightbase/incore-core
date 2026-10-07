@@ -3,8 +3,11 @@
 namespace App\UI\Admin\Role\Form;
 
 use App\Component\Translator\Translator;
+use App\Core\Admin\ItemPermission\ItemPermissionProviderRegistry;
 use App\Model\Admin\ModulePrivilege;
 use App\Model\Admin\Permission;
+use App\Model\Admin\PermissionItem;
+use App\Model\Admin\PermissionItemRestriction;
 use App\Model\Admin\Role;
 use App\Model\Entity\ModuleEntity;
 use App\Model\Entity\RoleEntity;
@@ -20,6 +23,9 @@ readonly class FormFactory
         private ModulePrivilege                          $modulePrivilege,
         private Permission                               $permissionModel,
         private Role                                     $roleModel,
+        private ItemPermissionProviderRegistry           $itemPermissionProviderRegistry,
+        private PermissionItemRestriction                $permissionItemRestrictionModel,
+        private PermissionItem                           $permissionItemModel,
     ) {}
 
     /**
@@ -36,13 +42,33 @@ readonly class FormFactory
         }
         $form->addCheckboxList('privileges', $this->translator->translate('input_privileges'), $privileges);
 
+        $provider = $this->itemPermissionProviderRegistry->get($module->system_name);
+        $items = $provider?->getItems() ?? [];
+        if ($provider !== null) {
+            $form->addCheckbox('itemRestricted', $this->translator->translate('input_itemRestricted'))
+                ->addCondition(\Nette\Forms\Form::Equal, true)
+                ->toggle('itemsWrapper')
+            ;
+            $form->addCheckboxList('items', $this->translator->translate('input_items'), $items)
+                ->setOption('id', 'itemsWrapper')
+            ;
+        }
+
         $form->addSubmit('send', 'send_update');
 
-        $defaultPrivilege = [];
+        $defaults = ['privileges' => []];
         foreach ($this->permissionModel->getByRoleAndModule($role, $module) as $permission) {
-            $defaultPrivilege[] = $permission->privilege->id;
+            $defaults['privileges'][] = $permission->privilege->id;
         }
-        $form->setDefaults(['privileges' => $defaultPrivilege]);
+        if ($provider !== null) {
+            $defaults['itemRestricted'] = $this->permissionItemRestrictionModel->exists($role->id, $module->id);
+            // jen ID, která provider zná - osiřelé ID (položka smazaná mimo facade) by CheckboxList shodilo
+            $defaults['items'] = array_values(array_intersect(
+                $this->permissionItemModel->getItemIds($role->id, $module->id),
+                array_keys($items),
+            ));
+        }
+        $form->setDefaults($defaults);
 
         return $form;
     }
