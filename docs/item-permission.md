@@ -14,7 +14,9 @@ a super admina se netýká. Modul ho podporuje, když:
    - seznam: `$facade->filterSelection($selection, MODULE)` (sloupec jde změnit třetím parametrem),
    - akce nad položkou: `$facade->checkItem(MODULE, $id, 'edit')` ještě před načtením a výstupem; vyhodí 403,
    - po vytvoření položky: `$facade->grantToCurrentRole(MODULE, $newId)`,
-   - po smazání položky: `$facade->removeItem(MODULE, $id)`.
+   - po smazání položky: `$facade->removeItem(MODULE, $id)`,
+   - signály gridu, které nesou ID řádku z URL (`columnClick`, inline edit, řazení), musí ověřit,
+     že řádek patří k povolené položce — kontrola v akci presenteru hlídá jen ID položky v adrese.
 
 Vlastní dotazy na ACL nad položkou vždy přes objekt
 `new ItemResource(MODULE, $id)`, nikdy stringem modulu — string je dotaz na
