@@ -20,6 +20,7 @@ services:
     - App\Component\Translator\Translator
     - App\Component\Translation\TranslationProviderRegistry
     - App\Component\Translation\TranslationBatchSender
+    - App\Core\Admin\ItemPermission\ItemPermissionProviderRegistry
 
     routerFactory: App\Core\RouterFactory
     router: @routerFactory::createRouter()
@@ -61,6 +62,7 @@ search:
           - Doctrine\Common\DataFixtures\FixtureInterface
           - App\UI\Accessory\Admin\Modules\VisibilityVoter
           - App\Component\Translation\TranslationProvider
+          - App\Core\Admin\ItemPermission\ItemPermissionProvider
     - in: '%vendorDir%/incore/core/src/app/Model'
       exclude:
           classes:
