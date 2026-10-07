@@ -3,6 +3,7 @@
 namespace App\UI\Admin;
 
 use App\Component\Image\ImageFacade;
+use App\Core\Admin\Impersonation\ImpersonationFacade;
 use App\Model\Admin\Module;
 use App\Model\Entity\ImageEntity;
 use App\Model\Entity\LanguageEntity;
@@ -68,5 +69,7 @@ class BaseTemplate extends Template
     public?ActiveRow $loggedUser = null;
     public ?string $urlBack = null;
     public ModuleFacade $moduleFacade;
+
+    public ImpersonationFacade $impersonationFacade;
     public bool $showH1;
 }

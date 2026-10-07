@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\Sign;
 
+use App\Core\Admin\Impersonation\ImpersonationFacade;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\PresenterTrait\StoreRequestTrait;
@@ -10,6 +11,7 @@ use App\UI\Admin\Sign\Form\ResetPasswordFormData;
 use App\UI\Admin\Sign\Form\SignFormData;
 use App\UI\Admin\Sign\Form\SignFormFactory;
 use JetBrains\PhpStorm\NoReturn;
+use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
 use Nette\Security\AuthenticationException;
 
@@ -26,6 +28,7 @@ class SignPresenter extends Presenter
     public function __construct(
         private readonly SignFormFactory $signFormFactory,
         private readonly SignFacade $signFacade,
+        private readonly ImpersonationFacade $impersonationFacade,
     ) {
         parent::__construct();
     }
@@ -52,15 +55,27 @@ class SignPresenter extends Presenter
     #[NoReturn]
     public function actionLogout(): void
     {
+        $this->impersonationFacade->clear();
         $this->getUser()->logout();
         $this->flashMessage($this->translator->translate('flash_userLoggedOut'));
         $this->redirect('Sign:login');
     }
 
+    #[NoReturn]
+    public function actionStopImpersonation(): void
+    {
+        if (!$this->getHttpRequest()->isSameSite()) {
+            throw new ForbiddenRequestException();
+        }
+        $this->impersonationFacade->stop();
+        $this->flashMessage($this->translator->translate('flash_impersonationEnded'));
+        $this->redirect('Home:default');
+    }
+
     protected function startup(): void
     {
         parent::startup();
-        if ($this->getUser()->isLoggedIn() && 'logout' !== $this->getAction()) {
+        if ($this->getUser()->isLoggedIn() && !in_array($this->getAction(), ['logout', 'stopImpersonation'], true)) {
             $this->redirect('Home:default');
         }
     }
@@ -70,6 +85,8 @@ class SignPresenter extends Presenter
         $form = $this->signFormFactory->create();
         $form->onSuccess[] = function (Form $form, SignFormData $data): void {
             try {
+                // stará sekce po vypršelém přihlášení by jinak tvrdila, že nový uživatel impersonuje
+                $this->impersonationFacade->clear();
                 $this->signFacade->login($data);
             } catch (AuthenticationException $e) {
                 $this->flashMessage($e->getMessage(), 'error');

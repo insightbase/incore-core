@@ -355,6 +355,19 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 			<!-- End of Header -->
 			<!-- Content -->
 			<main class="grow content pt-5" id="content" role="content">
+				{if $impersonationFacade->isActive()}
+					{var $impersonated = $impersonationFacade->getImpersonatedUser()}
+					<div class="container-fixed pb-5" id="impersonation-banner">
+						<div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warning bg-warning-light px-5 py-3">
+							<span>
+								{_'impersonation_banner'}
+								<strong>{$impersonated?->firstname} {$impersonated?->lastname}</strong>
+								({$impersonated?->email}, {$impersonated?->role->name})
+							</span>
+							<a n:href="Sign:stopImpersonation" class="btn btn-sm btn-warning">{_'impersonation_stop'}</a>
+						</div>
+					</div>
+				{/if}
 				<!-- Container -->
 				<div class="container-fixed" id="content_container">
 				</div>
