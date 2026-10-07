@@ -18,7 +18,10 @@ readonly class PermissionItemRestriction implements Model
      */
     public function getTable(): Selection
     {
-        return $this->explorer->table('permission_item_restriction');
+        /** @var Selection<PermissionItemRestrictionEntity> $selection */
+        $selection = $this->explorer->table('permission_item_restriction');
+
+        return $selection;
     }
 
     /**

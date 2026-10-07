@@ -18,7 +18,10 @@ readonly class PermissionItem implements Model
      */
     public function getTable(): Selection
     {
-        return $this->explorer->table('permission_item');
+        /** @var Selection<PermissionItemEntity> $selection */
+        $selection = $this->explorer->table('permission_item');
+
+        return $selection;
     }
 
     /**
