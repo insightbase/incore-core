@@ -7,7 +7,6 @@ use App\Console\Exception\NoEntitiesFoundException;
 use App\Core\DbParameterBag;
 use App\Model\DoctrineEntity\NoGenerateTable;
 use App\Service\Admin\GenerateDbFacade;
-use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Table;
@@ -20,7 +19,8 @@ use Nette\DI\Container;
 
 class FixDbPresenter extends Presenter
 {
-    use StandardTemplateTrait;
+    // bez StandardTemplateTrait: jeho onStartup sestavuje ACL z tabulek, které fix-db
+    // teprve zakládá, takže by po přidání nové tabulky spadl dřív, než ji vytvoří
 
     public function __construct(
         private readonly Container        $container,
