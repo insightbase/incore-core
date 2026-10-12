@@ -6,6 +6,9 @@
 - core - role - nastavit oprávnění jde jen u modulu, který přihlášený uživatel sám vidí (stejně jako v seznamu modulů); dřív to přes adresu šlo u libovolného modulu
 - forms - výpis kontaktních formulářů vyžaduje oprávnění „Default“ a vytvoření formuláře oprávnění „Vytvoření“ (new) i při zadání adresy nebo odeslání formuláře ručně; dřív bez „Default“ zmizela jen položka v menu
 
+### Opraveno (Fixed)
+- datagrid - u řádku, který nemá žádnou dostupnou akci (např. vlastní role v seznamu rolí), se už nezobrazuje tlačítko s prázdným menu
+
 ## 2026-10-07
 ### Přidáno (Added)
 - core - role - u role jde pro modul zapnout „Omezit na vybrané položky“ a zaškrtnout, se kterými položkami smí role pracovat; role pak v seznamu i v menu vidí jen tyto položky a otevření jiné položky přes adresu skončí chybou 403. Položku, kterou omezená role sama vytvoří, dostane automaticky. Super admin a role bez omezení fungují beze změny. Po nasazení je potřeba spustit db:update (nové tabulky a překlady)
