@@ -91,6 +91,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_search' => 'Hledat',
 		'%itemFrom%-%itemTo% z %count%' => '%itemFrom%-%itemTo% z %count%',
 		'flash_badLink' => 'Špatný odkaz',
+		'flash_noPermission' => 'Nemáte oprávnění k této akci',
 		'header_contactForms' => 'Formuláře',
 		'header_newForm' => 'Nový formulář',
 		'header_formEdit' => 'Editace formuláře',

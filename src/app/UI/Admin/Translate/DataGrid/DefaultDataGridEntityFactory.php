@@ -15,6 +15,7 @@ use App\Component\Translator\Translator;
 use App\Model\Admin\Language;
 use App\Model\Admin\Translate;
 use App\Model\Admin\TranslateLanguage;
+use App\Model\Enum\PrivilegeEnum;
 use App\Model\Enum\TranslateTypeEnum;
 use App\UI\Accessory\Admin\Form\Controls\EditorJs\EditorJsTypeEnum;
 use App\UI\Accessory\ParameterBag;
@@ -48,6 +49,8 @@ readonly class DefaultDataGridEntityFactory
                     ->setEnableSearchGlobal()
             )
         ;
+        // modul překladů nemá privilegium edit; ve výkonech je grid v akci translates
+        $privilege = $this->application->getPresenter()->getName() === 'Admin:Performance' ? 'translates' : PrivilegeEnum::Translate->value;
         foreach ($this->languageModel->getToTranslate() as $language) {
             $entity->addColumn(
                 (new ColumnEntity(':translate_language.value', $language->name.' ( '.$language->locale.' )'))
@@ -69,6 +72,7 @@ readonly class DefaultDataGridEntityFactory
                         };
                     })
                     ->setInlineEdit($this->inlineEditFactory->create($language))
+                    ->setPrivilege($privilege)
                     ->setNoEscape()
                     ->setGetInlineEditIdCallback(function (ActiveRow $row) use ($language): string {
                         return $row['id'].'-'.$language->id;
