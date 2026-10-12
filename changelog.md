@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-12
+### Změněno (Changed)
+- core - role - oprávnění vlastní role může měnit jen super admin; ostatním se u jejich role v seznamu rolí neukáže „Oprávnění“ a přes adresu dostanou hlášku. Dřív si šlo odebrat „Default“ a ztratit přístup k modulu i k jeho nastavení, nebo si naopak přidat práva navíc. Po nasazení je potřeba spustit db:update (překlady)
+- core - role - nastavit oprávnění jde jen u modulu, který přihlášený uživatel sám vidí (stejně jako v seznamu modulů); dřív to přes adresu šlo u libovolného modulu
+- forms - výpis kontaktních formulářů vyžaduje oprávnění „Default“ a vytvoření formuláře oprávnění „Vytvoření“ (new) i při zadání adresy nebo odeslání formuláře ručně; dřív bez „Default“ zmizela jen položka v menu
+
 ## 2026-10-07
 ### Přidáno (Added)
 - core - role - u role jde pro modul zapnout „Omezit na vybrané položky“ a zaškrtnout, se kterými položkami smí role pracovat; role pak v seznamu i v menu vidí jen tyto položky a otevření jiné položky přes adresu skončí chybou 403. Položku, kterou omezená role sama vytvoří, dostane automaticky. Super admin a role bez omezení fungují beze změny. Po nasazení je potřeba spustit db:update (nové tabulky a překlady)
