@@ -8,12 +8,14 @@ use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Entity\DeleteMenuEntity;
 use App\Component\Datagrid\Entity\MenuEntity;
 use App\Component\Translator\Translator;
+use App\UI\Admin\Role\RoleFacade;
 use Nette\Database\Table\ActiveRow;
 
 readonly class DefaultEntityFactory
 {
     public function __construct(
         private Translator $translator,
+        private RoleFacade $roleFacade,
     ) {}
 
     public function create(): DataGridEntity
@@ -35,6 +37,9 @@ readonly class DefaultEntityFactory
         $entity->addMenu(
             (new MenuEntity($this->translator->translate('menu_authorization'), 'authorization'))
                 ->setIcon('ki-filled ki-key')
+                ->setShowCallback(function (ActiveRow $row): bool {
+                    return $this->roleFacade->canSetAuthorization($row['system_name']);
+                })
         );
         $entity->addMenu(
             (new DeleteMenuEntity($this->translator->translate('menu_delete'), 'delete'))

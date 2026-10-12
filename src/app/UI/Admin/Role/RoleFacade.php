@@ -11,12 +11,15 @@ use App\Model\Admin\PermissionItemRestriction;
 use App\Model\Admin\Role;
 use App\Model\Entity\ModuleEntity;
 use App\Model\Entity\RoleEntity;
+use App\Model\Enum\RoleEnum;
+use App\UI\Admin\Role\Exception\OwnRoleAuthorizationException;
 use App\UI\Admin\Role\Exception\SystematicRoleException;
 use App\UI\Admin\Role\Form\AuthorizationSetData;
 use App\UI\Admin\Role\Form\EditData;
 use App\UI\Admin\Role\Form\NewData;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
+use Nette\Security\User;
 
 readonly class RoleFacade
 {
@@ -28,7 +31,18 @@ readonly class RoleFacade
         private ItemPermissionProviderRegistry $itemPermissionProviderRegistry,
         private PermissionItemRestriction $permissionItemRestrictionModel,
         private PermissionItem $permissionItemModel,
+        private User $user,
     ) {}
+
+    /**
+     * Vlastní roli může měnit oprávnění jen super admin - jinak by si uživatel mohl
+     * odebrat přístup (a zamknout se) nebo naopak přidat práva, která nemá.
+     */
+    public function canSetAuthorization(string $roleSystemName): bool
+    {
+        return $this->user->isInRole(RoleEnum::SUPER_ADMIN->value)
+            || !$this->user->isInRole($roleSystemName);
+    }
 
     public function create(NewData $data): void
     {
@@ -51,9 +65,14 @@ readonly class RoleFacade
     /**
      * @param RoleEntity   $role
      * @param ModuleEntity $module
+     *
+     * @throws OwnRoleAuthorizationException
      */
     public function setAuthorization(ActiveRow $role, ActiveRow $module, AuthorizationSetData $data): void
     {
+        if (!$this->canSetAuthorization($role->system_name)) {
+            throw new OwnRoleAuthorizationException();
+        }
         $this->explorer->transaction(function () use ($role, $module, $data): void {
             foreach ($data->privileges as $privilegeId) {
                 $permission = $this->permissionModel->getByRoleAndModuleAndPrivilegeId($role, $module, $privilegeId);

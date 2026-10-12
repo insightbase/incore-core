@@ -343,6 +343,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'flash_roleIsSystemicCannotEdit' => 'Nemůžete upravovat systémové role',
 		'flash_roleIsSystemicCannotDelete' => 'Nemůžete mazat systémové role',
 		'flash_roleDeleted' => 'Role smazána',
+		'flash_roleOwnCannotSetAuthorization' => 'Oprávnění vlastní role nemůžete měnit.',
 		'input_key' => 'Klíč',
 		'input_isPerformance' => 'Zobrazovat v performance',
 		'flash_keyCreated' => 'Klíč vytvořen',

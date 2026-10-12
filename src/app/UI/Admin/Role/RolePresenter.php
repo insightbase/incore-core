@@ -14,6 +14,7 @@ use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\Admin\Submenu\SubmenuFactory;
 use App\UI\Admin\Role\DataGrid\DefaultEntityFactory;
 use App\UI\Admin\Role\DataGrid\ModuleEntityFactory;
+use App\UI\Admin\Role\Exception\OwnRoleAuthorizationException;
 use App\UI\Admin\Role\Exception\SystematicRoleException;
 use App\UI\Admin\Role\Form\AuthorizationSetData;
 use App\UI\Admin\Role\Form\EditData;
@@ -54,12 +55,14 @@ class RolePresenter extends Presenter
     public function actionSet(int $id, int $roleId): void
     {
         $this->exist($roleId);
+        $this->checkCanSetAuthorization();
         $this->existModule($id);
     }
 
     public function actionAuthorization(int $id): void
     {
         $this->exist($id);
+        $this->checkCanSetAuthorization();
     }
 
     public function actionEdit(int $id): void
@@ -87,7 +90,12 @@ class RolePresenter extends Presenter
     {
         $form = $this->formFactory->createAuthorizationSet($this->role, $this->module);
         $form->onSuccess[] = function (Form $form, AuthorizationSetData $data): void {
-            $this->roleFacade->setAuthorization($this->role, $this->module, $data);
+            try {
+                $this->roleFacade->setAuthorization($this->role, $this->module, $data);
+            } catch (OwnRoleAuthorizationException $e) {
+                $this->flashMessage($this->translator->translate('flash_roleOwnCannotSetAuthorization'), 'error');
+                $this->redirect('default');
+            }
             $this->flashMessage($this->translator->translate('flash_roleAuthorizationSet'));
             $this->redirect('authorization', $this->role->id);
         };
@@ -143,9 +151,18 @@ class RolePresenter extends Presenter
         return $this->dataGridFactory->create($this->roleModel->getToGrid(), $this->defaultEntityFactory->create());
     }
 
+    private function checkCanSetAuthorization(): void
+    {
+        if (!$this->roleFacade->canSetAuthorization($this->role->system_name)) {
+            $this->flashMessage($this->translator->translate('flash_roleOwnCannotSetAuthorization'), 'error');
+            $this->redirect('default');
+        }
+    }
+
+    /** Jen modul, který může nastavovat i přihlášený uživatel (stejný výběr jako grid modulů). */
     private function existModule(int $id): void
     {
-        $module = $this->moduleModel->get($id);
+        $module = $this->moduleModel->getToGridAuthorizationSet($this->getUser())->get($id);
         if (null === $module) {
             $this->error($this->translator->translate('flash_moduleNotFound'));
         }
