@@ -41,6 +41,14 @@ html {
   background-image: unset !important;
 }
 
+/* Přepínač v datagridu bez oprávnění - vnitřní prvek má inert (nebere klik),
+   kurzor proto nese obal. */
+.dataGridDisabled {
+  display: inline-block;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .color-dark {
   color: var(--tw-dark);
 }

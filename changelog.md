@@ -9,6 +9,7 @@
 
 ### Opraveno (Fixed)
 - datagrid - u řádku, který nemá žádnou dostupnou akci (např. vlastní role v seznamu rolí), se už nezobrazuje tlačítko s prázdným menu
+- datagrid - přepínač, ke kterému role nemá oprávnění, je neaktivní (utlumený) a nejde na něj kliknout ani ho přepnout klávesnicí; dřív se po kliknutí vizuálně přepnul, i když se změna neuložila. Platí i pro přepínače, které si aplikace skládá sama přes setGetColumnCallback(). U modulu omezeného na vybrané položky se kontroluje konkrétní položka řádku
 
 ## 2026-10-07
 ### Přidáno (Added)
