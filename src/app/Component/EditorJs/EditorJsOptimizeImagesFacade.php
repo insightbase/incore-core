@@ -74,8 +74,8 @@ readonly class EditorJsOptimizeImagesFacade
             $sizeAfter = (int) filesize($dir . '/' . $newName);
             $output->write(' -> ' . $this->formatBytes($sizeAfter) . ')');
 
-            // náhled starého souboru už neplatí, nový vznikne při prvním zobrazení
-            $this->editorJsImageFacade->deleteThumbnail($name);
+            // náhled a FullHD verze starého souboru už neplatí, nové vzniknou při prvním zobrazení
+            $this->editorJsImageFacade->deleteDerivatives($name);
 
             if ($newName !== $name) {
                 $rows = $this->replaceReferences($columns, $name, $newName);

@@ -182,7 +182,7 @@ class EditorJsRenderer
                             continue;
                         }
                         $link = Html::el('a', [
-                            'href' => $url,
+                            'href' => $this->editorJsImageFacade->getGalleryImageUrl($url),
                             'class' => 'gallery__item',
                             'target' => '_blank',
                             'rel' => 'noopener noreferrer',

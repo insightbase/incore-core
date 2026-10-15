@@ -16,13 +16,15 @@ use Nette\Utils\ImageType;
 /**
  * Soubory nahrané přes editor.js (www/editor-js). Rastrové obrázky se při
  * uložení zmenší max. na FullHD a převedou do WebP; originál se nikam
- * neukládá. Náhledy pro galerie (www/editor-js/thumb) vznikají líně až při
- * prvním zobrazení - viz Admin:EditorJsThumbnail.
+ * neukládá. Náhledy pro galerie (www/editor-js/thumb) a FullHD verze starších
+ * velkých originálů (www/editor-js/large) vznikají líně až při prvním
+ * zobrazení - viz Admin:EditorJsThumbnail.
  */
 readonly class EditorJsImageFacade
 {
     public const DirName = 'editor-js';
     private const ThumbDirName = 'thumb';
+    private const LargeDirName = 'large';
     private const MaxWidth = 1920;
     private const MaxHeight = 1080;
     private const ThumbSize = 600;
@@ -149,9 +151,25 @@ readonly class EditorJsImageFacade
         if (!$this->isOptimizable($this->getDir() . '/' . $name)) {
             return $url;
         }
-        // relativně - LinkGenerator mimo HTTP požadavek (konzole) zná jen example.com
-        $link = new Url($this->linkGenerator->link('Admin:EditorJsThumbnail:default', ['name' => $name]));
-        return $link->getPath() . '?' . $link->getQuery();
+        return $this->getPresenterLink('default', $name);
+    }
+
+    /**
+     * URL obrázku pro otevření v galerii (lightbox). Soubory, které už jsou
+     * WebP max. FullHD, vrací beze změny; starší velké originály (nahrané
+     * před optimalizací uploadu) přes Admin:EditorJsThumbnail:large, který
+     * FullHD WebP verzi vygeneruje při prvním otevření.
+     */
+    public function getGalleryImageUrl(string $url): string
+    {
+        $name = $this->getLocalName($url);
+        if ($name === null || !$this->needsOptimization($this->getDir() . '/' . $name)) {
+            return $url;
+        }
+        if (is_file($this->getLargePath($name))) {
+            return $this->getUrl(self::LargeDirName . '/' . $this->getDerivativeName($name));
+        }
+        return $this->getPresenterLink('large', $name);
     }
 
     public function hasThumbnail(string $name): bool
@@ -161,12 +179,17 @@ readonly class EditorJsImageFacade
 
     public function getThumbnailUrl(string $name): string
     {
-        return $this->getUrl(self::ThumbDirName . '/' . $this->getThumbnailName($name));
+        return $this->getUrl(self::ThumbDirName . '/' . $this->getDerivativeName($name));
     }
 
     public function getThumbnailPath(string $name): string
     {
-        return $this->getDir() . '/' . self::ThumbDirName . '/' . $this->getThumbnailName($name);
+        return $this->getDir() . '/' . self::ThumbDirName . '/' . $this->getDerivativeName($name);
+    }
+
+    public function getLargePath(string $name): string
+    {
+        return $this->getDir() . '/' . self::LargeDirName . '/' . $this->getDerivativeName($name);
     }
 
     /**
@@ -179,15 +202,37 @@ readonly class EditorJsImageFacade
             return;
         }
 
-        $image = $this->loadImage($this->getDir() . '/' . $name);
+        // z FullHD verze, pokud už je - dekódovat 16MB originál je pomalé
+        $large = $this->getLargePath($name);
+        $image = $this->loadImage(is_file($large) ? $large : $this->getDir() . '/' . $name);
         $image->resize(self::ThumbSize, self::ThumbSize, Image::ShrinkOnly);
         FileSystem::createDir(dirname($path));
         $this->saveWebp($image, $path);
     }
 
-    public function deleteThumbnail(string $name): void
+    /**
+     * Vygeneruje FullHD WebP verzi obrázku editor-js/$name, pokud ještě neexistuje.
+     */
+    public function createLarge(string $name): void
+    {
+        $path = $this->getLargePath($name);
+        if (is_file($path)) {
+            return;
+        }
+
+        $image = $this->loadImage($this->getDir() . '/' . $name);
+        $image->resize(self::MaxWidth, self::MaxHeight, Image::ShrinkOnly);
+        FileSystem::createDir(dirname($path));
+        $this->saveWebp($image, $path);
+    }
+
+    /**
+     * Smaže náhled i FullHD verzi - po převodu/přepsání souboru už neplatí.
+     */
+    public function deleteDerivatives(string $name): void
     {
         FileSystem::delete($this->getThumbnailPath($name));
+        FileSystem::delete($this->getLargePath($name));
     }
 
     public function getWebpName(string $name): string
@@ -213,12 +258,22 @@ readonly class EditorJsImageFacade
     }
 
     /**
-     * Náhled je vždy WebP; u ještě nepřevedených souborů (foto.jpeg) se přípona
-     * přidává (foto.jpeg.webp), aby se nepotkal s náhledem jiného foto.webp.
+     * Náhled i FullHD verze jsou vždy WebP; u ještě nepřevedených souborů
+     * (foto.jpeg) se přípona přidává (foto.jpeg.webp), aby se nepotkaly
+     * s odvozeninami jiného foto.webp.
      */
-    private function getThumbnailName(string $name): string
+    private function getDerivativeName(string $name): string
     {
         return str_ends_with(strtolower($name), '.webp') ? $name : $name . '.webp';
+    }
+
+    /**
+     * Relativně - LinkGenerator mimo HTTP požadavek (konzole) zná jen example.com.
+     */
+    private function getPresenterLink(string $action, string $name): string
+    {
+        $link = new Url($this->linkGenerator->link('Admin:EditorJsThumbnail:' . $action, ['name' => $name]));
+        return $link->getPath() . '?' . $link->getQuery();
     }
 
     private function loadImage(string $path): Image
