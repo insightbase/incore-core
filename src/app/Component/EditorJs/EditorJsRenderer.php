@@ -8,6 +8,12 @@ use Nette\Utils\JsonException;
 
 class EditorJsRenderer
 {
+    public function __construct(
+        private readonly EditorJsImageFacade $editorJsImageFacade,
+    )
+    {
+    }
+
     /**
      * @param string $json
      * @return Html
@@ -189,7 +195,7 @@ class EditorJsRenderer
                         if(!empty($file['author'])){
                             $link->setAttribute('data-author', $file['author']);
                         }
-                        $link->addHtml(Html::el('img', ['src' => $url, 'alt' => $file['alt'] ?? '', 'loading' => 'lazy']));
+                        $link->addHtml(Html::el('img', ['src' => $this->editorJsImageFacade->getGalleryThumbnailUrl($url), 'alt' => $file['alt'] ?? '', 'loading' => 'lazy']));
                         // Popisek je uvnitř odkazu (struktura galerie zůstává), proto span a popis bez HTML.
                         $caption = $this->createFigcaption($file, 'span', 'editor-image__figcaption gallery__caption', true);
                         if($caption !== null){

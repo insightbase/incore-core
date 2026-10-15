@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-15
+### Změněno (Changed)
+- core - editor - obrázky nahrané do editoru (obrázek, galerie, řada obrázků, partner) se při nahrání zmenší max. na FullHD (1920×1080) a uloží jako WebP; originál se neukládá. Fotky z foťáku/mobilu na výšku se narovnají podle EXIF. GIF (animace), audio a ostatní soubory se ukládají beze změny. Soubor se stejným názvem už nepřepíše dřív nahraný, dostane příponu -1, -2…
+- core - editor - galerie na webu zobrazuje v mřížce náhled (max. 600 px, WebP), plný obrázek až v odkazu/lightboxu. Náhled vzniká líně při prvním zobrazení přes Admin:EditorJsThumbnail a ukládá se do www/editor-js/thumb; vlastní šablony ho získají přes EditorJsImageFacade::getGalleryThumbnailUrl()
+
+### Přidáno (Added)
+- core - editor - příkaz `editor-js:optimize-images` (s `--dry-run`) převede už nahrané obrázky z editoru na WebP max. FullHD, přepíše na ně odkazy ve všech textových sloupcích DB a smaže originály. Před spuštěním zálohovat DB
+
 ## 2026-10-12
 ### Změněno (Changed)
 - core - role - oprávnění vlastní role může měnit jen super admin; ostatním se u jejich role v seznamu rolí neukáže „Oprávnění“ a přes adresu dostanou hlášku. Dřív si šlo odebrat „Default“ a ztratit přístup k modulu i k jeho nastavení, nebo si naopak přidat práva navíc. Po nasazení je potřeba spustit db:update (překlady)
