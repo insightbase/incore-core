@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-19
+### Přidáno (Added)
+- core - obrázky - podpora fotek z iPhonu (HEIC/HEIF). V editoru (obrázek, galerie, řada obrázků, partner) se při nahrání převedou na WebP max. FullHD jako ostatní obrázky, v nahrávání obrázků (Dropzone) se uloží jako JPEG. Výběr souboru i přetažení HEIC povolí i v prohlížečích, které jeho typ nepoznají. Už nahrané HEIC soubory v editoru převede `editor-js:optimize-images` (přepíše i odkazy v DB). Převod potřebuje na serveru nástroj `heif-dec` (nebo starší `heif-convert`) z libheif a povolenou funkci `proc_open`; na Debianu/Ubuntu `apt install libheif-examples libheif-plugin-libde265`. Bez něj se HEIC ukládá beze změny jako dřív
+
+### Opraveno (Fixed)
+- core - obrázky - zmenšení na max. rozlišení z nastavení po nahrání obrázku po částech (chunk) hledalo soubor ve špatné cestě (chybějící lomítko)
 ## 2026-10-15
 ### Změněno (Changed)
 - core - editor - obrázky nahrané do editoru (obrázek, galerie, řada obrázků, partner) se při nahrání zmenší max. na FullHD (1920×1080) a uloží jako WebP; originál se neukládá. Fotky z foťáku/mobilu na výšku se narovnají podle EXIF. GIF (animace), audio a ostatní soubory se ukládají beze změny. Soubor se stejným názvem už nepřepíše dřív nahraný, dostane příponu -1, -2…

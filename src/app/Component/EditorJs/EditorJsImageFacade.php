@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Component\EditorJs;
 
+use App\Component\Image\HeicConverter;
 use App\UI\Accessory\ParameterBag;
 use Nette\Application\LinkGenerator;
 use Nette\Http\FileUpload;
@@ -18,7 +19,8 @@ use Nette\Utils\ImageType;
  * uložení zmenší max. na FullHD a převedou do WebP; originál se nikam
  * neukládá. Náhledy pro galerie (www/editor-js/thumb) a FullHD verze starších
  * velkých originálů (www/editor-js/large) vznikají líně až při prvním
- * zobrazení - viz Admin:EditorJsThumbnail.
+ * zobrazení - viz Admin:EditorJsThumbnail. Fotky z iPhonu (HEIC) se převádí
+ * stejně, pokud je na serveru libheif - viz HeicConverter.
  */
 readonly class EditorJsImageFacade
 {
@@ -37,6 +39,7 @@ readonly class EditorJsImageFacade
     public function __construct(
         private ParameterBag  $parameterBag,
         private LinkGenerator $linkGenerator,
+        private HeicConverter $heicConverter,
     ) {}
 
     public function getDir(): string
@@ -76,11 +79,14 @@ readonly class EditorJsImageFacade
 
     public function isOptimizable(string $path): bool
     {
+        if (!Image::isTypeSupported(ImageType::WEBP)) {
+            return false;
+        }
         $type = Image::detectTypeFromFile($path);
-        return $type !== null
-            && in_array($type, self::OptimizableTypes, true)
-            && Image::isTypeSupported($type)
-            && Image::isTypeSupported(ImageType::WEBP);
+        if ($type === null) {
+            return $this->heicConverter->isHeic($path) && $this->heicConverter->isSupported();
+        }
+        return in_array($type, self::OptimizableTypes, true) && Image::isTypeSupported($type);
     }
 
     /**
@@ -92,6 +98,7 @@ readonly class EditorJsImageFacade
         if (!$this->isOptimizable($path)) {
             return false;
         }
+        // HEIC GD nepozná ($type null) - převádí se vždy
         $type = Image::detectTypeFromFile($path, $width, $height);
         return $type !== ImageType::WEBP || $width > self::MaxWidth || $height > self::MaxHeight;
     }
@@ -279,6 +286,9 @@ readonly class EditorJsImageFacade
     private function loadImage(string $path): Image
     {
         $this->raiseMemoryLimit();
+        if ($this->heicConverter->isHeic($path)) {
+            return $this->heicConverter->withPng($path, $this->parameterBag->tempDir, Image::fromFile(...));
+        }
         $image = Image::fromFile($path, $type);
         if ($type === ImageType::JPEG) {
             $this->applyExifOrientation($image, $path);

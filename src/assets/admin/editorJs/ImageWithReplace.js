@@ -107,7 +107,7 @@ export default class ImageWithReplace extends ImageTool {
             // otevřeme systémový file-picker
             const input = document.createElement('input');
             input.type = 'file';
-            input.accept = 'image/*';
+            input.accept = 'image/*,.heic,.heif';
 
             input.onchange = async () => {
                 const file = input.files?.[0];

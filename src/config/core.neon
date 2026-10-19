@@ -35,6 +35,7 @@ services:
     - App\Component\DropCore\DropCoreEarlyCallbackStore
     - App\Component\DropCore\DropCoreTranslateSender
     - App\Component\Credit\CreditClient
+    - App\Component\Image\HeicConverter
 
     - App\Component\Translator\Extractor\LatteExtractor
     - App\Component\Translator\Extraxtor\NetteTranslatorExtractor

@@ -144,7 +144,7 @@ export default class ImageGallery {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
-    fileInput.accept = this.config.types || 'image/*';
+    fileInput.accept = this.config.types || 'image/*,.heic,.heif';
     fileInput.hidden = true;
     dropZone.appendChild(fileInput);
 
@@ -175,7 +175,7 @@ export default class ImageGallery {
     dropZone.addEventListener('drop', (e) => {
       e.preventDefault();
       dropZone.classList.remove('gallery-empty-state--drag');
-      const files = Array.from(e.dataTransfer?.files || []).filter(f => f.type.startsWith('image/'));
+      const files = Array.from(e.dataTransfer?.files || []).filter(f => f.type.startsWith('image/') || /\.hei[cf]$/i.test(f.name));
       if (files.length > 0) this._handleFiles(files);
     });
 
@@ -340,7 +340,7 @@ export default class ImageGallery {
     const input = document.createElement('input');
     input.type     = 'file';
     input.multiple = true;
-    input.accept   = this.config.types || 'image/*';
+    input.accept   = this.config.types || 'image/*,.heic,.heif';
     input.style.display = 'none';
     document.body.appendChild(input);
 

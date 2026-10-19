@@ -82,7 +82,7 @@ export default class MultiImageRowTool {
 
     this.fileInput = document.createElement("input");
     this.fileInput.type = "file";
-    this.fileInput.accept = "image/*";
+    this.fileInput.accept = "image/*,.heic,.heif";
     this.fileInput.multiple = true;
     this.fileInput.className = "multi-image-row-file";
 

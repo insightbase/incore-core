@@ -4,7 +4,9 @@ namespace App\UI\Admin\Image;
 
 use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\DataGridFactory;
+use App\Component\Image\Exception\HeicConversionException;
 use App\Component\Image\Form\FormFactory;
+use App\Component\Image\HeicConverter;
 use App\Model\Admin\Setting;
 use App\Model\Entity\ImageEntity;
 use App\UI\Accessory\Admin\Form\Form;
@@ -22,7 +24,10 @@ use Nette\Http\FileUpload;
 use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Image;
+use Nette\Utils\ImageType;
 use Nette\Utils\Random;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ImagePresenter extends Presenter
 {
@@ -42,6 +47,7 @@ class ImagePresenter extends Presenter
         private readonly Setting                      $settingModel,
         private readonly SubmenuFactory               $submenuFactory,
         private readonly LanguageFacade               $languageFacade,
+        private readonly HeicConverter                $heicConverter,
     ) {
         parent::__construct();
     }
@@ -156,7 +162,12 @@ class ImagePresenter extends Presenter
                 $suffix = Arrays::last(explode('.', $file->getSanitizedName()));
 
                 $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
-                FileSystem::copy($finalFile, $this->parameterBag->uploadDir . '/' . $fileName);
+                $heicName = $this->saveHeicAsJpeg($finalFile, $fileName);
+                if ($heicName !== null) {
+                    $fileName = $heicName;
+                } else {
+                    FileSystem::copy($finalFile, $this->parameterBag->uploadDir . '/' . $fileName);
+                }
 
                 // Smazání chunků
                 FileSystem::delete($tempDir);
@@ -170,7 +181,7 @@ class ImagePresenter extends Presenter
                 if($file->isImage()) {
                     $setting = $this->settingModel->getDefault();
                     if($setting?->max_image_resolution !== null){
-                        $netteImage = Image::fromFile($this->parameterBag->uploadDir . $fileName);
+                        $netteImage = Image::fromFile($this->parameterBag->uploadDir . '/' . $fileName);
                         $netteImage->resize($setting->max_image_resolution, $setting->max_image_resolution, Image::ShrinkOnly);
                         $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
                     }
@@ -187,6 +198,8 @@ class ImagePresenter extends Presenter
                     $suffix = Arrays::last(explode('.', $file->getSanitizedName()));
 
                     $fileName = md5(time() . '_' . Random::generate()) . '.' . $suffix;
+                    $heicName = $this->saveHeicAsJpeg($file->getTemporaryFile(), $fileName);
+                    $fileName = $heicName ?? $fileName;
 
                     $image = $this->imageModel->insert([
                         'original_name' => $file->getUntrustedName(),
@@ -195,15 +208,17 @@ class ImagePresenter extends Presenter
                     ]);
 
                     FileSystem::createDir($this->parameterBag->uploadDir);
-                    if($file->isImage()) {
-                        $netteImage = $file->toImage();
-                        $setting = $this->settingModel->getDefault();
-                        if($setting?->max_image_resolution !== null){
-                            $netteImage->resize($setting->max_image_resolution, $setting->max_image_resolution, Image::ShrinkOnly);
+                    if ($heicName === null) {
+                        if($file->isImage()) {
+                            $netteImage = $file->toImage();
+                            $setting = $this->settingModel->getDefault();
+                            if($setting?->max_image_resolution !== null){
+                                $netteImage->resize($setting->max_image_resolution, $setting->max_image_resolution, Image::ShrinkOnly);
+                            }
+                            $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
+                        }else{
+                            $file->move($this->parameterBag->uploadDir . '/' . $fileName);
                         }
-                        $netteImage->save($this->parameterBag->uploadDir . '/' . $fileName);
-                    }else{
-                        $file->move($this->parameterBag->uploadDir . '/' . $fileName);
                     }
                     $this->payload->file = $fileName;
                     $this->payload->imageId = $image->id;
@@ -215,5 +230,34 @@ class ImagePresenter extends Presenter
             }
             $this->sendPayload();
         }
+    }
+
+    /**
+     * Fotku z iPhonu (HEIC) uloží do uploadDir jako JPEG - GD ani prohlížeče
+     * HEIC neumí. Vrátí nový název souboru, nebo null, pokud nejde o HEIC
+     * (případně ho na serveru nejde převést - pak se uloží beze změny).
+     */
+    private function saveHeicAsJpeg(string $source, string $fileName): ?string
+    {
+        if (!$this->heicConverter->isHeic($source) || !$this->heicConverter->isSupported()) {
+            return null;
+        }
+
+        $jpegName = pathinfo($fileName, PATHINFO_FILENAME) . '.jpg';
+        try {
+            $this->heicConverter->withPng($source, $this->parameterBag->tempDir, function (string $png) use ($jpegName): void {
+                $netteImage = Image::fromFile($png);
+                $setting = $this->settingModel->getDefault();
+                if ($setting?->max_image_resolution !== null) {
+                    $netteImage->resize($setting->max_image_resolution, $setting->max_image_resolution, Image::ShrinkOnly);
+                }
+                FileSystem::createDir($this->parameterBag->uploadDir);
+                $netteImage->save($this->parameterBag->uploadDir . '/' . $jpegName, 90, ImageType::JPEG);
+            });
+        } catch (HeicConversionException $e) {
+            Debugger::log($e, ILogger::WARNING);
+            return null;
+        }
+        return $jpegName;
     }
 }

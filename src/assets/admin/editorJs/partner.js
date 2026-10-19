@@ -179,7 +179,7 @@ export default class Partner {
 
         const fileInput = document.createElement("input");
         fileInput.type = "file";
-        fileInput.accept = "image/*";
+        fileInput.accept = "image/*,.heic,.heif";
         fileInput.style.display = "none";
 
         const status = document.createElement("div");
@@ -239,7 +239,7 @@ export default class Partner {
             if (!byFile) return;
             const file = e.dataTransfer?.files?.[0];
             if (!file) return;
-            if (!file.type?.startsWith("image/")) {
+            if (!file.type?.startsWith("image/") && !/\.hei[cf]$/i.test(file.name)) {
                 this._setStatus("Soubor není obrázek.", true);
                 return;
             }
