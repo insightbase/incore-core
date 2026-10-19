@@ -56,7 +56,10 @@ class PreviewPresenter extends Presenter
             $previewName = $this->imageFacade->getPreviewName($imageDto, $width, $height, $type);
             if (!file_exists($this->parameterBag->previewDir . '/' . $previewName)) {
                 $image = $this->imageFacade->generatePreview($imageDto, $width, $height, $type);
-                $image?->save($this->parameterBag->previewDir . '/' . $previewName, 92);
+                if ($image === null) { // soubor na disku chybí
+                    $this->error();
+                }
+                $image->save($this->parameterBag->previewDir . '/' . $previewName, 92);
             }else{
                 $image = Image::fromFile($this->parameterBag->previewDir . '/' . $previewName);
             }

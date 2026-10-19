@@ -6,6 +6,7 @@
 
 ### Opraveno (Fixed)
 - core - obrázky - zmenšení na max. rozlišení z nastavení po nahrání obrázku po částech (chunk) hledalo soubor ve špatné cestě (chybějící lomítko)
+- core - obrázky - náhled obrázku (Admin:Preview), jehož soubor na disku chybí, vrací 404 místo chyby 500 (Call to a member function send() on null)
 ## 2026-10-15
 ### Změněno (Changed)
 - core - editor - obrázky nahrané do editoru (obrázek, galerie, řada obrázků, partner) se při nahrání zmenší max. na FullHD (1920×1080) a uloží jako WebP; originál se neukládá. Fotky z foťáku/mobilu na výšku se narovnají podle EXIF. GIF (animace), audio a ostatní soubory se ukládají beze změny. Soubor se stejným názvem už nepřepíše dřív nahraný, dostane příponu -1, -2…
