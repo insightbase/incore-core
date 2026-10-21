@@ -9,10 +9,12 @@ use Nette\Utils\FileSystem;
 
 /**
  * Fotky z iPhonu (HEIC/HEIF) - GD je neumí a prohlížeče kromě Safari je
- * nezobrazí, proto se převádí do PNG přes nástroj z libheif (heif-dec,
- * ve starších verzích heif-convert; Debian: balíček libheif-examples
- * + libheif-plugin-libde265). PNG je bezeztrátové a nenese EXIF orientaci -
- * libheif fotku při dekódování sám narovná.
+ * nezobrazí, proto se převádí do PNG. Přednostně přes Imagick (ImageMagick
+ * s delegátem heic) - funguje i na hostingu se zakázaným proc_open;
+ * jinak přes nástroj z libheif (heif-dec, ve starších verzích heif-convert;
+ * Debian: balíček libheif-examples + libheif-plugin-libde265). PNG je
+ * bezeztrátové a nenese EXIF orientaci - libheif fotku při dekódování
+ * sám narovná (i pod Imagickem).
  */
 class HeicConverter
 {
@@ -22,6 +24,8 @@ class HeicConverter
     private const Brands = ['heic', 'heix', 'heim', 'heis', 'hevc', 'hevx', 'hevm', 'hevs', 'mif1', 'msf1'];
 
     private string|false|null $binary = null;
+
+    private ?bool $imagick = null;
 
     /**
      * Je soubor HEIC/HEIF? Pozná se podle hlavičky (ftyp), ne přípony.
@@ -40,7 +44,7 @@ class HeicConverter
      */
     public function isSupported(): bool
     {
-        return $this->getBinary() !== null;
+        return $this->isImagickSupported() || $this->getBinary() !== null;
     }
 
     /**
@@ -50,8 +54,19 @@ class HeicConverter
     public function convertToPng(string $source, string $target): void
     {
         $binary = $this->getBinary();
+        if ($this->isImagickSupported()) {
+            try {
+                $this->convertWithImagick($source, $target);
+                return;
+            } catch (HeicConversionException $e) {
+                if ($binary === null) {
+                    throw $e;
+                }
+                // zkusí ještě libheif
+            }
+        }
         if ($binary === null) {
-            throw new HeicConversionException('Převod HEIC není na serveru k dispozici (chybí heif-dec z libheif).');
+            throw new HeicConversionException('Převod HEIC není na serveru k dispozici (chybí Imagick s podporou HEIC i heif-dec z libheif).');
         }
 
         // vlastní adresář - soubor s víc obrázky se zapíše jako image-1.png, image-2.png...
@@ -70,6 +85,31 @@ class HeicConverter
         } finally {
             FileSystem::delete($dir);
         }
+    }
+
+    /**
+     * Imagick čte jen hlavní (primary) obrázek souboru, už otočený podle irot -
+     * proto se neotáčí znovu a EXIF (orientace) se zahodí.
+     * @throws HeicConversionException
+     */
+    private function convertWithImagick(string $source, string $target): void
+    {
+        try {
+            $image = new \Imagick($source);
+            $image->setIteratorIndex(0);
+            $image->stripImage();
+            $image->setImageFormat('png');
+            $image->writeImage('png:' . $target);
+            $image->clear();
+        } catch (\ImagickException $e) {
+            FileSystem::delete($target);
+            throw new HeicConversionException('Převod HEIC přes Imagick selhal: ' . $e->getMessage(), previous: $e);
+        }
+    }
+
+    private function isImagickSupported(): bool
+    {
+        return $this->imagick ??= extension_loaded('imagick') && \Imagick::queryFormats('HEIC') !== [];
     }
 
     /**

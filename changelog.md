@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-21
+### Změněno (Changed)
+- core - obrázky - HEIC/HEIF se převádí přednostně přes PHP rozšíření Imagick (ImageMagick s podporou HEIC), takže funguje i na hostingu se zakázaným `proc_open`/`exec` a bez instalace libheif nástrojů. `heif-dec` z libheif zůstává jako záloha, když Imagick HEIC neumí nebo převod selže
+
 ## 2026-10-19
 ### Přidáno (Added)
 - core - obrázky - podpora fotek z iPhonu (HEIC/HEIF). V editoru (obrázek, galerie, řada obrázků, partner) se při nahrání převedou na WebP max. FullHD jako ostatní obrázky, v nahrávání obrázků (Dropzone) se uloží jako JPEG. Výběr souboru i přetažení HEIC povolí i v prohlížečích, které jeho typ nepoznají. Už nahrané HEIC soubory v editoru převede `editor-js:optimize-images` (přepíše i odkazy v DB). Převod potřebuje na serveru nástroj `heif-dec` (nebo starší `heif-convert`) z libheif a povolenou funkci `proc_open`; na Debianu/Ubuntu `apt install libheif-examples libheif-plugin-libde265`. Bez něj se HEIC ukládá beze změny jako dřív
