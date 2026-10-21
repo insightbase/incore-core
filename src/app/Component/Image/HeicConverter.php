@@ -95,7 +95,9 @@ class HeicConverter
     private function convertWithImagick(string $source, string $target): void
     {
         try {
-            $image = new \Imagick($source);
+            // formát natvrdo - ImageMagick 6 pozná podle hlavičky jen heic/heix/mif1
+            // (ne např. msf1) a nahraný soubor nemá příponu
+            $image = new \Imagick('heic:' . $source);
             $image->setIteratorIndex(0);
             $image->stripImage();
             $image->setImageFormat('png');

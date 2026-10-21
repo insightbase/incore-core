@@ -2,7 +2,7 @@
 
 ## 2026-10-21
 ### Změněno (Changed)
-- core - obrázky - HEIC/HEIF se převádí přednostně přes PHP rozšíření Imagick (ImageMagick s podporou HEIC), takže funguje i na hostingu se zakázaným `proc_open`/`exec` a bez instalace libheif nástrojů. `heif-dec` z libheif zůstává jako záloha, když Imagick HEIC neumí nebo převod selže
+- core - obrázky - HEIC/HEIF se převádí přednostně přes PHP rozšíření Imagick (ImageMagick s podporou HEIC), takže funguje i na hostingu se zakázaným `proc_open`/`exec` a bez instalace libheif nástrojů. `heif-dec` z libheif zůstává jako záloha, když Imagick HEIC neumí nebo převod selže. Formát se Imagicku předává natvrdo (`heic:`) - ImageMagick 6 podle hlavičky nepozná např. HEIF sekvence (značka msf1) a nahraný soubor nemá příponu
 
 ## 2026-10-19
 ### Přidáno (Added)
