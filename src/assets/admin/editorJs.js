@@ -88,7 +88,9 @@ export function initEditorJs() {
                     config: {
                     endpoints: {
                         byFile: element.getAttribute('data-upload-url'), // Your backend file uploader endpoint
-                    }
+                    },
+                    // výchozí "image/*" - prohlížeč na macOS by HEIC zašedil
+                    types: 'image/*,.heic,.heif',
                 },
             }
         }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-22
+### Opraveno (Fixed)
+- core - editor - blok Obrázek: při výběru souboru byly v macOS fotky HEIC zašedlé (knihovna @editorjs/image má výchozí `image/*`), nástroj dostal `types: 'image/*,.heic,.heif'` jako galerie a výměna obrázku
+
 ## 2026-10-21
 ### Změněno (Changed)
 - core - obrázky - HEIC/HEIF se převádí přednostně přes PHP rozšíření Imagick (ImageMagick s podporou HEIC), takže funguje i na hostingu se zakázaným `proc_open`/`exec` a bez instalace libheif nástrojů. `heif-dec` z libheif zůstává jako záloha, když Imagick HEIC neumí nebo převod selže. Formát se Imagicku předává natvrdo (`heic:`) - ImageMagick 6 podle hlavičky nepozná např. HEIF sekvence (značka msf1) a nahraný soubor nemá příponu
