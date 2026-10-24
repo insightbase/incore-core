@@ -32,4 +32,9 @@ class ImageLanguage implements Entity
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $author = null;
+
+    /** vlastní soubor obrázku pro jazyk (nahraný obrázek), texty zůstávají z image_language */
+    #[ORM\ManyToOne(targetEntity: Image::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    public ?Image $file = null;
 }

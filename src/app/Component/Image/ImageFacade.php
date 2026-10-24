@@ -97,7 +97,7 @@ readonly class ImageFacade
             throw new ImageNotFoundException();
         }
         $updateData = (array)$data;
-        unset($updateData['image_id']);
+        unset($updateData['image_id'], $updateData['file_id']);
         $image->update($updateData);
 
         foreach($this->languageModel->getToTranslateNotDefault() as $language){
@@ -107,6 +107,7 @@ readonly class ImageFacade
                 'name' => $translates['name'] ?? null,
                 'description' => $translates['description'] ?? null,
                 'author' => $translates['author'] ?? null,
+                'file_id' => $this->getLanguageFileId($image, $translates['file_id'] ?? null),
             ];
             $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($image->id, $language);
             if($imageLanguage === null){
@@ -121,6 +122,24 @@ readonly class ImageFacade
 
         $this->clearCache($image->id);
         $this->logFacade->create(LogActionEnum::Updated, 'image', $image->id);
+    }
+
+    /**
+     * Soubor obrázku pro jazyk z pole formuláře; obrázek sám (nebo prázdné pole)
+     * znamená soubor výchozího jazyka.
+     *
+     * @param ImageEntity $image
+     */
+    private function getLanguageFileId(ActiveRow $image, mixed $value):?int
+    {
+        if(!is_numeric($value)){
+            return null;
+        }
+        $fileId = (int)$value;
+        if($fileId === $image->id || $this->imageModel->get($fileId) === null){
+            return null;
+        }
+        return $fileId;
     }
 
     /**

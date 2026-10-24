@@ -13,6 +13,7 @@ use Nette\Application\LinkGenerator;
 use Nette\Application\UI\Control;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Nette\Database\Table\ActiveRow;
 use Nette\Utils\Arrays;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Html;
@@ -49,8 +50,14 @@ class ImageControl extends Control
         return file_exists($this->parameterBag->uploadDir . '/' . $image->saved_name);
     }
 
-    public function getImage(int $id):?ImageDto{
-        $language = $this->translator->getLanguage();
+    /**
+     * Obrázek v jazyce webu, případně v zadaném jazyce. Jazyk může mít vlastní
+     * soubor obrázku (image_language.file_id), jinak se použije soubor obrázku.
+     *
+     * @param ?LanguageEntity $language
+     */
+    public function getImage(int $id, ?ActiveRow $language = null):?ImageDto{
+        $language ??= $this->translator->getLanguage();
         $cache = new Cache($this->storage, 'image');
         $image = $cache->load('id_' . $id . '_' . $language->id, function() use ($id, $language):?string{
             $image = $this->imageModel->get($id);
@@ -59,15 +66,21 @@ class ImageControl extends Control
             }
 
             $alt = $image->alt;
+            $savedName = $image->saved_name;
             if(!$language->is_default){
                 $imageLanguage = $this->imageLanguageModel->getByImageIdAndLanguage($id, $language);
                 if($imageLanguage !== null && $imageLanguage->alt !== null && $imageLanguage->alt !== ''){
                     $alt = $imageLanguage->alt;
                 }
+                // file_id míří do tabulky image, ne file - proto ref() s explicitní tabulkou
+                $file = $imageLanguage?->file_id === null ? null : $imageLanguage->ref('image', 'file_id');
+                if($file !== null){
+                    $savedName = $file->saved_name;
+                }
             }
 
             return json_encode(new ImageDto(
-                saved_name: $image->saved_name,
+                saved_name: $savedName,
                 alt: $alt,
             ));
         });
@@ -97,7 +110,7 @@ class ImageControl extends Control
             if($generateThumb){
                 FileSystem::copy($this->parameterBag->uploadDir.'/'.$image->saved_name, $this->parameterBag->previewDir . '/' . $previewName);
             }else {
-                return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId]);
+                return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'imageLanguageId' => $this->translator->getLanguage()->id]);
             }
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
@@ -131,7 +144,7 @@ class ImageControl extends Control
                     return $this->parameterBag->previewWwwDir . '/' . $previewName;
                 }
             }else {
-                return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
+                return $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type, 'imageLanguageId' => $this->translator->getLanguage()->id]);
             }
         }
         return $this->parameterBag->previewWwwDir . '/' . $previewName;
@@ -168,7 +181,7 @@ class ImageControl extends Control
             $ret['svg'] = null;
             $previewName = $this->imageFacade->getPreviewName($image, $width, $height, $type);
             if(!file_exists($this->parameterBag->previewDir . '/' . $previewName)){
-                $ret['imageFile'] = $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type]);
+                $ret['imageFile'] = $this->linkGenerator->link('Admin:Preview:default', ['fileId' => $fileId, 'width' => $width, 'height' => $height, 'type' => $type, 'imageLanguageId' => $this->translator->getLanguage()->id]);
             }else {
                 $ret['imageFile'] = $this->parameterBag->previewWwwDir . '/' . $previewName;
             }

@@ -270,6 +270,7 @@ class TranslateFixtures extends \Doctrine\Bundle\FixturesBundle\Fixture implemen
 		'input_alt' => 'ALT',
 		'input_description' => 'Description',
 		'input_author' => 'Autor',
+		'input_imageFile' => 'Soubor obrázku pro jazyk (prázdné = soubor výchozího jazyka)',
 		'action_created' => 'Vytvořeno',
 		'action_updated' => 'Upraveno',
 		'action_deleted' => 'Smazáno',

@@ -9,4 +9,5 @@ class EditFormData
     public ?string $description;
     public ?string $author;
     public ?int $image_id = null;
+    public ?int $file_id = null;
 }

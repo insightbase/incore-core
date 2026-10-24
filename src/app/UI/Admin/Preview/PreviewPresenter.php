@@ -5,6 +5,7 @@ namespace App\UI\Admin\Preview;
 use App\Component\Image\ImageDto;
 use App\UI\Accessory\Admin\PresenterTrait\StandardTemplateTrait;
 use App\UI\Accessory\ParameterBag;
+use App\Model\Admin\Language;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Utils\Arrays;
@@ -17,15 +18,20 @@ class PreviewPresenter extends Presenter
 
     public function __construct(
         private readonly ParameterBag $parameterBag,
+        private readonly Language $previewLanguageModel,
     )
     {
         parent::__construct();
     }
 
-    public function actionDefault(int $fileId, ?int $width = null, ?int $height = null, int $type = Image::OrBigger):void
+    /**
+     * @param ?int $imageLanguageId jazyk stránky, která náhled chce - jazyk může mít vlastní soubor obrázku
+     */
+    public function actionDefault(int $fileId, ?int $width = null, ?int $height = null, int $type = Image::OrBigger, ?int $imageLanguageId = null):void
     {
+        $language = $imageLanguageId === null ? null : $this->previewLanguageModel->get($imageLanguageId);
         /** @var ?ImageDto $imageDto */
-        $imageDto = $this->getComponent('image')->getImage($fileId);
+        $imageDto = $this->getComponent('image')->getImage($fileId, $language);
         if($imageDto === null){
             $this->error();
         }

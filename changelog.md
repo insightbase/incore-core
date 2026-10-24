@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-23
+### Přidáno (Added)
+- core - obrázky - v nastavení obrázku (modal i Obrázky → úprava) je v ostatních jazycích pole „Soubor obrázku pro jazyk“. Jazyk může mít vlastní soubor, alt, název, popis a autor zůstávají jeho texty z image_language; prázdné pole = soubor výchozího jazyka. Ve výchozím jazyce se pole nezobrazuje (nová volba formuláře `Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION`). Pole je nahoře vedle náhledu obrázku výchozího jazyka (define `imagePreviewWithLanguageFile`; basicForm má nový blok `beforeControls` a pole s volbou `Form::MANUAL_RENDER_OPTION` výpis polí přeskočí). ImageControl (existImage, getImage, getOriginal, getPreviewFile, render) vrací na webu soubor jazyka stránky, odkazy na Admin:Preview proto nesou `imageLanguageId`. Soubory jazyků „Smazat nepoužívané“ nemaže. Po nasazení je potřeba spustit db:update (sloupec image_language.file_id a překlad)
+### Opraveno (Fixed)
+- core - formuláře - jazykové kopie polí v původním designu formuláře (basic-form.latte, blok controls) vykreslovaly prázdný řádek s mb-4, formuláře s překládanými poli (např. modal obrázku) proto měly pod poli velkou prázdnou plochu
+
 ## 2026-10-22
 ### Opraveno (Fixed)
 - core - editor - blok Obrázek: při výběru souboru byly v macOS fotky HEIC zašedlé (knihovna @editorjs/image má výchozí `image/*`), nástroj dostal `types: 'image/*,.heic,.heif'` jako galerie a výměna obrázku

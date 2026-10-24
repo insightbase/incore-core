@@ -83,6 +83,7 @@ class ImagePresenter extends Presenter
                 'name' => $imageLanguage?->name,
                 'description' => $imageLanguage?->description,
                 'author' => $imageLanguage?->author,
+                'file_id' => $imageLanguage?->file_id,
             ]);
         }
         return $form;

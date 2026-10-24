@@ -5,7 +5,8 @@
 {block h1}{_'header_editImage'}{/block}
 
 {block content}
-    {control image, $imageEntity->id, 100, 100}
     {embed languageSelect, defaultId: $presenter->getParameter('languageId')}{/embed}
-    {embed basicForm, formEdit}{/embed}
+    {embed basicForm, formEdit}
+        {block beforeControls}{include imagePreviewWithLanguageFile, $form}{/block}
+    {/embed}
 {/block}

@@ -284,6 +284,11 @@ function updateFormLanguageSelect(value){
         // řeknou přes data-lang-display (např. flexový obal options-widgetu).
         element.style.display = element.dataset.langDisplay || 'inline';
     });
+    // Řádky polí jen pro ostatní jazyky (Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) –
+    // ve výchozím jazyce se skryjí celé i s popiskem.
+    Array.from(document.querySelectorAll('[data-hide-in-language]')).forEach((element) => {
+        element.style.display = element.dataset.hideInLanguage === String(value) ? 'none' : '';
+    });
 }
 
 // přepíše <options> v <select>

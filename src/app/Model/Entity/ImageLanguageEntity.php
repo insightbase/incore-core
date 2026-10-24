@@ -16,6 +16,7 @@ use Nette\Database\Table\ActiveRow;
  * @property-read ?string $name
  * @property-read ?string $description
  * @property-read ?string $author
+ * @property-read ?int $file_id
  */
 class ImageLanguageEntity extends ActiveRow
 {

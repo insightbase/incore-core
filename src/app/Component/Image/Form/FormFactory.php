@@ -3,6 +3,7 @@
 namespace App\Component\Image\Form;
 
 use App\Component\Translator\Translator;
+use App\UI\Accessory\Admin\Form\Controls\Dropzone\DropzoneImageLocationEnum;
 use App\UI\Accessory\Admin\Form\Form;
 
 readonly class FormFactory
@@ -32,6 +33,11 @@ readonly class FormFactory
         $form->addTextArea('author', $this->translator->translate('input_author'))
             ->setNullable()
             ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE);
+        // vlastní soubor obrázku pro jazyk (prázdné = soubor výchozího jazyka), ve výchozím jazyce se nezobrazuje
+        $form->addDropzoneImage(DropzoneImageLocationEnum::Content, 'file_id', $this->translator->translate('input_imageFile'))
+            ->setNullable()
+            ->setHtmlAttribute($form::LANG_CHANGE_ATTRIBUTE)
+            ->setOption($form::HIDE_IN_DEFAULT_LANGUAGE_OPTION, true);
         $form->addHidden('image_id')
             ->setRequired()
             ->addRule($form::Integer)

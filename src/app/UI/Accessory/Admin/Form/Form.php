@@ -29,6 +29,18 @@ class Form extends Nette\Application\UI\Form
     public const string LANG_CHANGE_ATTRIBUTE = 'langChange';
 
     /**
+     * Volba pole, které má smysl jen v ostatních jazycích - jeho řádek je ve výchozím
+     * jazyce skrytý (např. vlastní soubor obrázku pro jazyk).
+     */
+    public const string HIDE_IN_DEFAULT_LANGUAGE_OPTION = 'hideInDefaultLanguage';
+
+    /**
+     * Volba pole, které šablona vykreslila na vlastním místě (blok beforeControls) -
+     * výpis polí formuláře ho přeskočí.
+     */
+    public const string MANUAL_RENDER_OPTION = 'manualRender';
+
+    /**
      * Atributy vstupních widgetů, které se přenášejí na jazykové varianty pole.
      *
      * @var string[]

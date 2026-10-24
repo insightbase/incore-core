@@ -56,6 +56,9 @@
                     <li n:foreach="$form->getOwnErrors() as $error">{$error}</li>
                 </ul>
 
+                {* místo pro obsah nad poli formuláře (přes embed), např. náhled obrázku *}
+                {block beforeControls}{/block}
+
                 {if count($form->getGroups()) > 0}
                     {var array $usedRepeaters = []}
                     {foreach $form->getGroups() as $group}
@@ -230,9 +233,9 @@
                             {foreach $controls as $input1}
                                 {if $input1->getParent() instanceof App\UI\Accessory\Admin\Form\Container && $input1->getParent()->getToggleCaption() === $input->getParent()->getToggleCaption()}
                                     <div
-                                            n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
+                                            n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button && !str_starts_with($input1->getHtmlName(), 'language[') && !$input1->getOption(App\UI\Accessory\Admin\Form\Form::MANUAL_RENDER_OPTION)"
                                             n:class="!$repeater ? 'flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4', $repeater ? 'form-control w-full'"
-                                            n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden')"
+                                            n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden'), data-hide-in-language: $input1->getOption(App\UI\Accessory\Admin\Form\Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) ? $defaultLanguage->id, style: $input1->getOption(App\UI\Accessory\Admin\Form\Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) ? 'display: none'"
                                     >
                                         {embed input, $input1, $repeater}{/embed}
                                     </div>
@@ -244,9 +247,9 @@
                 {/if}
             {else}
                 <div
-                        n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
+                        n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button && !str_starts_with($input->getHtmlName(), 'language[') && !$input->getOption(App\UI\Accessory\Admin\Form\Form::MANUAL_RENDER_OPTION)"
                         n:class="!$repeater ? 'flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4', $repeater ? 'form-control w-full'"
-                        n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden')"
+                        n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden'), data-hide-in-language: $input->getOption(App\UI\Accessory\Admin\Form\Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) ? $defaultLanguage->id, style: $input->getOption(App\UI\Accessory\Admin\Form\Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) ? 'display: none'"
                 >
                     {embed input, $input, $repeater}{/embed}
                 </div>
@@ -254,9 +257,9 @@
         {/foreach}
     {else}
         <div n:foreach="$controls as $input"
-                n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button"
+                n:if="$input->getOption(type) !== hidden && $input->getOption(type) !== button && !str_starts_with($input->getHtmlName(), 'language[') && !$input->getOption(App\UI\Accessory\Admin\Form\Form::MANUAL_RENDER_OPTION)"
                 n:class="!$repeater ? 'flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-4', $repeater ? 'form-control w-full'"
-                n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden')"
+                n:attr="id: $input->getOption('id'), hidden: $input->getOption('hidden'), data-hide-in-language: $input->getOption(App\UI\Accessory\Admin\Form\Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) ? $defaultLanguage->id, style: $input->getOption(App\UI\Accessory\Admin\Form\Form::HIDE_IN_DEFAULT_LANGUAGE_OPTION) ? 'display: none'"
         >
             {embed input, $input, $repeater}{/embed}
         </div>
@@ -446,6 +449,22 @@
             </div>
         {/if}
     {/foreach}
+{/define}
+
+{* Náhled obrázku (výchozí jazyk) a vedle něj soubor obrázku pro zvolený jazyk.
+   Pole souboru se ve výchozím jazyce skrývá, ve výpisu polí se už nevykreslí. *}
+{define imagePreviewWithLanguageFile, App\UI\Accessory\Admin\Form\Form $form, string $fileInput = 'file_id'}
+    {var int $imageId = (int) $form['image_id']->getValue()}
+    {if $imageId > 0}
+        {var Nette\Forms\Controls\BaseControl $input = $form[$fileInput]}
+        {php $input->setOption(App\UI\Accessory\Admin\Form\Form::MANUAL_RENDER_OPTION, true)}
+        <div class="flex flex-wrap items-start gap-5 mb-4">
+            {control image, $imageId, 100, 100}
+            <div class="flex flex-col gap-2.5 grow" data-hide-in-language="{$defaultLanguage->id}" style="display: none">
+                {embed input, $input}{/embed}
+            </div>
+        </div>
+    {/if}
 {/define}
 
 {define languageSelect, ?int $defaultId = null}

@@ -463,10 +463,8 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
 		{/block}
 		{block body}
 			{snippet editImageForm}
-				{if $editedImage !== null}
-					{control image, $editedImage->id, 100, 100}
-				{/if}
 				{embed basicForm, editImageForm}
+					{block beforeControls}{include imagePreviewWithLanguageFile, $form}{/block}
 				{/embed}
 			{/snippet}
 		{/block}

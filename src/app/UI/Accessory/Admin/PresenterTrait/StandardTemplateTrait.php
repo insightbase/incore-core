@@ -128,6 +128,7 @@ trait StandardTemplateTrait
                 'name' => $imageLanguage?->name,
                 'description' => $imageLanguage?->description,
                 'author' => $imageLanguage?->author,
+                'file_id' => $imageLanguage?->file_id,
             ]);
         }
         $this->getPresenter()->redrawControl('editImageForm');
