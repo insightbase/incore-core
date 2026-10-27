@@ -27,7 +27,7 @@ class ImageLanguage implements Entity
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
     public ?string $name = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
+    #[ORM\Column(type: 'text', nullable: true, options: ['default' => null])]
     public ?string $description = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['default' => null])]
