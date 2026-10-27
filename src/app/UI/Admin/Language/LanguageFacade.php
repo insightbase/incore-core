@@ -576,8 +576,8 @@ class LanguageFacade
         $tempFile = $this->parameterBag->tempDir . '/language_api_' . time();
         foreach ($chunks as $iterator => $shortJson) {
             $body = Json::encode($bodyArray = [
-                'inputLocale' => $defaultLanguage->url,
-                'outputLocale' => $language->url,
+                'inputLocale' => $defaultLanguage->locale,
+                'outputLocale' => $language->locale,
                 'model' => 'flash',
                 'callback' => $callback,
                 'mode' => 'async',
